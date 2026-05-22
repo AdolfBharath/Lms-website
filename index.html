@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jenovate – Built for Gen Z. Designed for the Real World.</title>
+  <!-- Supabase CDN and Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260520"></script>
+  <script src="session-router.js?v=20260520" data-clear-active-session="true"></script>
+  <link rel="icon" href="/logos/logooo2.png" type="image/png" />
+  <link rel="stylesheet" href="colours.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- TOP BANNER -->
+  <div class="top-banner" id="topBanner">
+    <span class="banner-emoji">🎁</span>
+    <p>Get <strong>one skill get another free</strong> Double the Learning. Same Fee!</p>
+    <span class="banner-emoji">🎉</span>
+    <button class="banner-close" id="bannerClose">✕</button>
+  </div>
+
+  <!-- HEADER -->
+  <header class="navbar">
+    <div class="container nav-flex">
+      <div class="logo">
+        <img src="logos/favicon.png" alt="Jenovate" />
+      </div>
+
+      <nav class="nav-links">
+        <a
+          href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true">Connect
+          Now</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="campus-ambassador.html">Campus Ambassador</a>
+        <a href="aboutus.html">About Us</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle">🌝</button>
+        <a href="login.html" class="login-btn">Login</a>
+        <a href="#" class="login-btn">Join Us</a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <section class="center">
+      <div class="badge">
+        <span>✨ AI-Powered Career Programs</span>
+      </div>
+    </section>
+
+    <div class="hero-container">
+      <div class="hero-left">
+        <h1 class="hero-title">
+          Let's Land Your
+          <span class="highlight">Dream Job</span>
+          Together.
+        </h1>
+
+        <p class="hero-subtitle">
+          Unlock the power of our comprehensive suite of programs designed to
+          transform your upskilling journey. We have everything you need
+          to stand out in today's competitive job market.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true"
+            class="btn-primary">Get Started →</a>
+          <a href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true"
+            class="btn-secondary">Learn More ▼</a>
+        </div>
+      </div>
+
+      <!-- BANNER IMAGE STACK -->
+      <div class="hero-right">
+        <div class="hero-stack">
+          <img src="logos/logo.jpg" class="hero-main light-img" alt="" />
+          <img src="logos/logo1.jpg" class="hero-main dark-img" alt="" />
+
+          <div class="hero-layer layer1"></div>
+          <div class="hero-layer layer2"></div>
+        </div>
+      </div>
+
+      <!-- BACKGROUND BLOBS -->
+      <div class="hero-blob blob-yellow"></div>
+      <div class="hero-blob blob-pink"></div>
+      <div class="hero-blob blob-blue"></div>
+    </div>
+
+    <div class="scroll-strip">
+      <div class="scroll-track">
+        <!-- FIRST SET -->
+        <div class="scroll-content">
+          <img src="img/pic1.jpg" />
+          <img src="img/pic2.jpg" />
+          <img src="img/pic3.jpg" />
+          <img src="img/pic4.jpg" />
+          <img src="img/pic5.jpg" />
+          <img src="img/pic6.jpg" />
+          <img src="img/pic7.jpg" />
+          <img src="img/pic8.jpg" />
+        </div>
+
+        <!-- SECOND SET (duplicate) -->
+        <div class="scroll-content">
+          <img src="img/pic1.jpg" />
+          <img src="img/pic2.jpg" />
+          <img src="img/pic3.jpg" />
+          <img src="img/pic4.jpg" />
+          <img src="img/pic5.jpg" />
+          <img src="img/pic6.jpg" />
+          <img src="img/pic7.jpg" />
+          <img src="img/pic8.jpg" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI TOOLS / COURSES SECTION -->
+  <section class="ai-tools-section">
+    <div class="ai-tools-hero">
+      <!-- Floating icons -->
+      <div class="ai-hero-icon ai-hero-icon-star-left">★</div>
+      <div class="ai-hero-icon ai-hero-icon-star-right">🌟</div>
+      <div class="ai-hero-icon ai-hero-icon-pencil">✨</div>
+      <div class="ai-hero-icon ai-hero-icon-sparkle">✦</div>
+
+      <div class="ai-tools-pill">⚡ Learn smarter. Get job-ready faster</div>
+      <h2 class="ai-tools-title">
+        Optimize Your Job Search with AI-Powered learning
+      </h2>
+      <p class="ai-tools-subtitle">
+        AI-powered learning programs designed to help you apply better, prepare smarter, and get noticed faster.
+      </p>
+    </div>
+
+    <div class="ai-tools-courses">
+      <div class="ai-tools-tabs">
+        <button class="ai-tab active" data-filter="trending">Trending</button>
+        <button class="ai-tab" data-filter="data-tech">
+          Data & Technology
+        </button>
+        <button class="ai-tab" data-filter="business">
+          Business & Entrepreneurship
+        </button>
+        <button class="ai-tab" data-filter="design">Design & Creative</button>
+        <button class="ai-tab" data-filter="health">Health & Wellness</button>
+        <button class="ai-tab" data-filter="coming-soon">Coming Soon</button>
+      </div>
+
+      <div class="ai-tools-grid">
+        <!-- TRENDING + DESIGN -->
+        <article class="ai-card" data-category="trending design" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p13.jpg">
+          <img src="img/p13.jpg" alt="Course 1" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + BUSINESS -->
+        <article class="ai-card" data-category="trending business" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p2.jpg">
+          <img src="img/p2.jpg" alt="Course 6" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + ONLY HEALTH -->
+        <article class="ai-card" data-category="trending health" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p11.jpg">
+          <img src="img/p11.jpg" alt="Course 13" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + HEALTH -->
+        <article class="ai-card" data-category="trending health" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p3.jpg">
+          <img src="img/p3.jpg" alt="Course 5" class="ai-card-image" />
+        </article>
+
+        <!-- DATA & TECH -->
+        <article class="ai-card" data-category="data-tech" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p1.jpg">
+          <img src="img/p1.jpg" alt="Course 3" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + DATA & TECH -->
+        <article class="ai-card" data-category="trending data-tech" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p5.jpg">
+          <img src="img/p5.jpg" alt="Course 4" class="ai-card-image" />
+        </article>
+
+        <!-- BUSINESS -->
+        <article class="ai-card" data-category="business" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p10.jpg">
+          <img src="img/p10.jpg" alt="Course 2" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + DATA & TECH -->
+        <article class="ai-card" data-category="trending data-tech" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p4.jpg">
+          <img src="img/p4.jpg" alt="Course 7" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + DESIGN -->
+        <article class="ai-card" data-category="trending design" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p8.jpg">
+          <img src="img/p8.jpg" alt="Course 12" class="ai-card-image" />
+        </article>
+
+        <!-- TRENDING + DESIGN -->
+        <article class="ai-card" data-category="trending design" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p6.jpg">
+          <img src="img/p6.jpg" alt="Course 8" class="ai-card-image" />
+        </article>
+
+        <!-- ONLY BUSINESS -->
+        <article class="ai-card" data-category="business" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p7.jpg">
+          <img src="img/p7.jpg" alt="Course 9" class="ai-card-image" />
+        </article>
+
+        <!-- ONLY DATA & TECH -->
+        <article class="ai-card" data-category="data-tech" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p12.jpg">
+          <img src="img/p12.jpg" alt="Course 10" class="ai-card-image" />
+        </article>
+
+        <!-- ONLY DESIGN -->
+        <article class="ai-card" data-category="design" data-duration="6 Weeks" data-rating="★★★★★"
+          data-image="img/p9.jpg">
+          <img src="img/p9.jpg" alt="Course 11" class="ai-card-image" />
+        </article>
+
+        <!-- ONLY COMING SOON -->
+        <!-- <article class="ai-card" data-category="coming-soon">
+        <img src="course14.jpg" alt="Course 14" class="ai-card-image">
+      </article> -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCREDITED SECTION -->
+  <section class="accredited-section">
+    <div class="accredited-container">
+      <h2 class="accredited-title">We are accredited by</h2>
+
+      <div class="accredited-grid">
+        <div class="accredited-card">
+          <img src="/img/dpiit.jpeg" alt="dpiit" />
+          <p>DPIIT Certified</p>
+        </div>
+
+        <div class="accredited-card">
+          <img src="/img/msme.png" alt="msme" />
+          <p>MSME Certified</p>
+        </div>
+
+        <div class="accredited-card" id="iso-card">
+          <img src="/img/iso.png" alt="iso" />
+          <p>ISO Certified</p>
+        </div>
+
+        <div class="accredited-card" id="google-edu">
+          <img src="/img/googleEdu.jpg" alt="google-edu" />
+          <p>Authorized Partner</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS SECTION -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="testimonials-container">
+      <!-- Small badge -->
+      <div class="testimonials-badge">⭐ Customer Success Stories</div>
+
+      <!-- Heading + subtext -->
+      <h2 class="testimonials-title">Trusted by learners who believe skills matter more than certificates</h2>
+      <p class="testimonials-subtitle">
+        Jenovate is helping thousands of real learners enhance their
+        applications globally. See what our users have to say.
+      </p>
+
+      <!-- CATEGORY FILTER BUTTONS -->
+      <div class="testimonial-categories">
+        <button class="cat-btn active">All Testimonials</button>
+
+      </div>
+
+      <!-- STATS BOXES -->
+      <div class="stats-container">
+        <div class="stat-box">
+          <div class="stat-icon">👤</div>
+          <h3>700+</h3>
+          <p>Active Users</p>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">⬆️</div>
+          <h3>98%</h3>
+          <p>Satisfaction Rate</p>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">💬</div>
+          <h3>1000+</h3>
+          <p>Sessions Conducted</p>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">⭐</div>
+          <h3>4.9/5</h3>
+          <p>User Rating</p>
+        </div>
+      </div>
+
+      <!-- SCROLLING ROWS -->
+      <div class="testimonial-rows">
+        <!-- ROW 1 -->
+        <div class="testimonial-strip strip-top">
+          <div class="testimonial-track">
+            <!-- First set -->
+            <div class="testimonial-row">
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  It's really good to learn new concepts and ideas everyday.The session was very informative and
+                  helpful.I enjoy learning here..and also the mentor is truly amazing..!! new learning experience!!
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">S</div>
+                  <div>
+                    <div class="user-name">Sri Devi</div>
+                    <div class="user-role">Pacific Medical College</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  I am an international student , signed up with Jenovate to learn AI, Teaching methods are one on one
+                  is absolutely amazing . Would definitely recommend and encourage you to join this team
+
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">C</div>
+                  <div>
+                    <div class="user-name">Clifford</div>
+                    <div class="user-role">University of Toronto</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  The Psychology and Mental Health course offered by Jenovate is informative and thoughtfully
+                  structured,The course instructor skillfully clarifying concepts, making each class a valuable
+                  opportunity for growth.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">T</div>
+                  <div>
+                    <div class="user-name">~Tejaswini</div>
+                    <div class="user-role">NMIMS Mumbai</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★☆</div>
+                <p class="testimonial-text">
+                  The session was really informative and engaging. Suvidha ma’am who conducted the class was very kind,
+                  patient, and easy to understand. She explained the concepts clearly and was very helpful throughout
+                  the session. I truly enjoyed the class, and I’m excited to continue my learning journey with Jenovate.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">S</div>
+                  <div>
+                    <div class="user-name">~sheefa sharuk</div>
+                    <div class="user-role">St Josephs College</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Duplicate set for infinite loop -->
+            <div class="testimonial-row">
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  It's great to learn something new every single day .The way they teach everything in a very fun and
+                  detailed manner, including case studies and assignments it's just amazing. I am really learning a lot
+                  by joining the jenovate team .
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">P</div>
+                  <div>
+                    <div class="user-name">Parul</div>
+                    <div class="user-role">Amity Noida</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  online course on psych with Ms. Suvidha provided deep insight into how fun, challenging, and
+                  intriguing psychology can be and the best ways of implementing in our day-to-day lives. thank you,
+                  team Jenovate
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">A</div>
+                  <div>
+                    <div class="user-name">Aananditha</div>
+                    <div class="user-role">Christ University</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  The teachers are very polite ....the problem solving is easy...easy to understand...and most
+                  importantly great content with lots of benefitting resources shared by Miss Suvidha✨💙Thankyou ma'am
+                  for your hard work
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">P</div>
+                  <div>
+                    <div class="user-name">~ Payal sen</div>
+                    <div class="user-role">Gitam University</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★☆</div>
+                <p class="testimonial-text">
+                  Everything is great about Jenovate . Their teaching way is understandable, and every classes and their
+                  assignments are interesting to do.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">S</div>
+                  <div>
+                    <div class="user-name">~ srekumaren</div>
+                    <div class="user-role">ESI PGIMSR </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 2 (reverse direction) -->
+        <div class="testimonial-strip strip-bottom">
+          <div class="fade-left"></div>
+          <div class="fade-right"></div>
+
+          <div class="testimonial-track track-reverse">
+            <!-- First set -->
+            <div class="testimonial-row">
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  "Very professional approach. I liked the interactive sessions and how doubts were clarified promptly.
+                  It's worth the investment.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">D</div>
+                  <div>
+                    <div class="user-name">Dharani priyaa</div>
+                    <div class="user-role">Sri Ramachandra Medical College</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  I'm currently doing the psychology course offered by them , it is very insightful and I get to know
+                  new things every other day . They try to explain each and every concept in a very layman language so
+                  that it's easier to understand. They have also inculcated case studies which helps us get practical
+                  knowledge about the concept explained. I would really suggest you to join the course.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">D</div>
+                  <div>
+                    <div class="user-name">Dipali Yadav</div>
+                    <div class="user-role">Parul University</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  The course is well informative and compelling. In every lecture, we learn something new. The mentor
+                  teaching is up to the mark. Thanks to Ms. Suvidha, her efforts in making every class interactive and
+                  engaging is very appreciated.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">A</div>
+                  <div>
+                    <div class="user-name">Aanyaa</div>
+                    <div class="user-role">Amity Gurugram</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★☆</div>
+                <p class="testimonial-text">
+                  I honestly felt so productive and interactive throughout my class, I was really fascinated to know how
+                  vast psychology is. My faculty Ms. Suvidha carried the session with utmost attentiveness to our needs
+                  and was super ready to clear our doubts whenever needed.She made her best to make this interactive and
+                  her pop culture references and other examples helped me .Thank you
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">P</div>
+                  <div>
+                    <div class="user-name">Priyavarshini</div>
+                    <div class="user-role">Pramukh Swami medical College </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Duplicate set -->
+            <div class="testimonial-row">
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  I’m really loving this course as it’s giving me proper insights into the topic and helping me
+                  understand it better. I’ve learned a lot, and the mentor is truly amazing at what she does.
+
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">S</div>
+                  <div>
+                    <div class="user-name">Saanvi</div>
+                    <div class="user-role">Jss Medical College</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  "Great platform for practical learning. The instructors were industry experts and gave us lots of
+                  useful insights."
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">R</div>
+                  <div>
+                    <div class="user-name">Ruthresh</div>
+                    <div class="user-role">AJ Institute of medical sciences</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card blue-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">
+                  It's very interesting to learn something new...I am really enjoying it and the team is very supportive
+                  so it's very easy too ...
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">A</div>
+                  <div>
+                    <div class="user-name">Anjai Sharma</div>
+                    <div class="user-role">Mithibai College</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="testimonial-card pink-card">
+                <div class="testimonial-stars">★★★★☆</div>
+                <p class="testimonial-text">
+                  The platform provided an outstanding practical learning experience, guided by industry professionals
+                  who offered deep and meaningful insights.
+                </p>
+                <div class="testimonial-user">
+                  <div class="avatar-circle">V</div>
+                  <div>
+                    <div class="user-name">Vasanth</div>
+                    <div class="user-role">Jss Medical College</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED TESTIMONIAL CARD -->
+      <div class="featured-testimonial">
+        <p class="featured-text">
+          “Joining in this workshop was one of the best decisions I made, tbh. The entire program was so much detailed,
+          and was very adjustable as per my college schedule. The mentor was very friendly as she's from bangalore she
+          was very interactive and fun, exactly a character our generation likes. The relatable cases discussed were all
+          interesting and very informative. Overall, this was a very fun and detailed learning experience, and it is
+          worth joining!”
+        </p>
+        <div class="featured-footer">
+          <div class="featured-user">
+            <div class="avatar-circle big">A</div>
+            <div>
+              <div class="user-name">Ananya Das</div>
+              <div class="user-role">
+                Sri Ramachandra Medical College
+              </div>
+            </div>
+          </div>
+          <div class="featured-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN SECTION -->
+  <section class="pricing-section">
+    <h2 class="pricing-title">Choose Your tailored Plan</h2>
+
+    <div class="currency-toggle">
+      <span class="active" data-currency="usd">$ USD</span>
+      <span data-currency="inr">₹ INR</span>
+    </div>
+
+    <div class="pricing-cards">
+      <!-- FREE -->
+      <div class="price-card">
+        <div class="card-icon">🎯</div>
+        <h3>Jenovate Basics</h3>
+        <p class="card-desc">Get started with mentor-led program</p>
+
+        <div class="price" data-usd="67" data-inr="5999">67 USD</div>
+
+        <ul>
+          <li>Access to 1 selected program ✅</li>
+          <li>Live mentor-led sessions. ✅</li>
+          <li>Real-time case studies ✅</li>
+          <li>Portfolio Worthy projects. ✅</li>
+          <li>Certificates & Badges. ✅</li>
+          <li>Letter of Recommendations. ✅</li>
+          <li>Lifetime Community Access. ✅</li>
+        </ul>
+
+        <a
+          href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true"><button
+            class="btn-primary">Get Started</button></a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card popular">
+        <span class="popular-badge">Popular</span>
+        <div class="card-icon purple">🥇</div>
+        <h3>Jenovate Pro</h3>
+        <p class="card-desc">Tailor top 3 programs of your choice</p>
+
+        <div class="price" data-inr="7499" data-usd="84">84 USD</div>
+
+        <ul>
+          <li>Everything in Basics, plus. ✅</li>
+          <li>Access to multiple programs. ✅</li>
+          <li>Advanced, real-world projects✅</li>
+          <li>Mentor doubt-solving sessions✅</li>
+          <li>Career guidance & roadmap. ✅</li>
+          <li>Priority support. ✅</li>
+          <li>Free Masterclasses ✅</li>
+        </ul>
+
+        <a
+          href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true"><button
+            class="btn-primary">Get Started</button></a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card">
+        <div class="card-icon">🏆</div>
+        <h3>Jenovate Advanced</h3>
+        <p class="card-desc">Jack of all trades</p>
+
+        <div class="price" data-inr="11999" data-usd="134">134 USD</div>
+
+
+        <ul>
+          <li>All Pro Features✅</li>
+          <li>Unlimited program access✅</li>
+          <li>1:1 mentor guidance✅</li>
+          <li>Expert Resume Review✅</li>
+          <li>Resume & LinkedIn profile optimization✅</li>
+          <li>On demand Live classes✅</li>
+          <li>Simulations Exercises✅</li>
+        </ul>
+
+        <a
+          href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true"><button
+            class="btn-primary">Get Started</button></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="simple-footer">
+    <div class="footer-inner">
+      <!-- Left -->
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="logos/logooo2.png" alt="Jenovate logo" />
+          <span style="font-family: 'Poppins', league spartans;">Jenovate</span>
+        </div>
+
+        <p class="footer-address">
+          Think campus, Shanthipura Main Road, Electronic City Phase 2 -560100 <br />
+          Bengaluru, Karnataka, India<br />
+          © 2026 Jenovate. All rights reserved.
+        </p>
+      </div>
+
+      <!-- Right -->
+      <div class="footer-right">
+        <a href="/assets/policies/Jenovate_Privacy_Policy.pdf" target="_blank">
+          Privacy Policy
+        </a>
+        <a href="/assets/policies/Jenovate_Terms_and_Conditions.pdf" target="_blank">
+          Terms of Service
+        </a>
+        <a href="/assets/policies/Jenovate_Payments_Refunds_Reschedule_Policy_Entity.pdf" target="_blank"
+          rel="noopener noreferrer">
+          Refund Policy
+        </a>
+      </div>
+    </div>
+  </footer>
+
+<div class="course-modal" id="courseModal">
+  <div class="course-modal-content pw-style">
+    <button class="modal-close" id="courseModalClose">✕</button>
+
+    <div class="pw-left-card">
+      <h3 id="modalTitle">Video Editing & Freelancing</h3>
+      <div class="pw-stars" id="modalRating">★★★★★</div>
+
+      <ul class="pw-left-points">
+        <li>Practical Projects</li>
+        <li>Interactive classes</li>
+        <li>Flexible Timings</li>
+      </ul>
+
+      <div class="pw-duration" id="modalDuration">6 Weeks</div>
+
+      <div class="pw-image-wrap">
+        <img id="modalImage" src="" alt="course" />
+      </div>
+    </div>
+
+    <div class="pw-right-content">
+      <h2>
+        LEARN FROM THE BEST,<br />
+        BECOME YOUR BEST.
+      </h2>
+
+      <div class="pw-feature-icons">
+        <div>📅<span>Practical Projects</span></div>
+        <div>🎥<span>Interactive classes</span></div>
+        <div>🕒<span>Flexible Timings</span></div>
+        <div>⏱️<span>8 weeks</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <a class="whatsapp-float" aria-label="Chat on WhatsApp"
+    href="https://api.whatsapp.com/send?phone=919579598632&text=Hi%20Jenovate%20team" target="_blank" rel="noopener">
+    <img src="logos/whatsapp-logo.png" alt="WhatsApp Chat" />
+  </a>
+
+  <!-- LOGIN MODAL -->
+  <div class="login-modal" id="loginModal">
+    <div class="login-backdrop"></div>
+
+    <div class="login-box">
+      <button class="login-close" id="closeLogin" type="button">×</button>
+
+      <div class="login-left">
+        <h2>You Dream It,<br /><span>We Build It</span></h2>
+        <p>Connect quickly with:</p>
+
+        <div class="login-icons">
+          <img src="logos/whatsapp-logo.png" />
+          <img src="logos/letter.png" />
+          <img src="logos/Instagram.png" />
+          <img src="logos/Linkedin.png" />
+        </div>
+
+        <div class="login-stats">
+          <div><b>100+</b><span>Projects</span></div>
+          <div><b>600+</b><span>Happy Customers</span></div>
+          <div><b>98%</b><span>Satisfaction Rate</span></div>
+          <div><b>17+</b><span>Expert Mentor</span></div>
+        </div>
+      </div>
+
+      <form class="login-right" id="leadForm">
+        <h3>Got the vision? We’ve got the expertise.</h3>
+        <p>Tell us more about yourself and what you’re got in mind.</p>
+
+        <input id="leadName" name="full_name" type="text" placeholder="Your full name" required />
+        <input id="leadPhone" name="phone" type="tel" placeholder="Your phone number" required />
+        <input id="leadEmail" name="email" type="email" placeholder="Your email" required />
+        <textarea id="leadMessage" name="message" placeholder="Tell us little about your vision..." required></textarea>
+        <p class="lead-form-status" id="leadFormStatus" role="status" aria-live="polite"></p>
+
+        <button class="login-submit" type="submit">Submit →</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

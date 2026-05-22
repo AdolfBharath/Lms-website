@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Student | Jenovate LMS</title>
+  <link rel="icon" href="/logos/logooo2.png" type="image/png" />
+  <link rel="stylesheet" href="colours.css" />
+  <link rel="stylesheet" href="student.css?v=20260520-referral-polish" />
+  <link rel="stylesheet" href="lms-modern.css?v=20260522-professional-lms" />
+</head>
+<body>
+  <div class="student-shell">
+    <aside class="student-sidebar" aria-label="Student navigation">
+      <div class="brand-panel">
+        <img src="image/logo/logo new.png" alt="Jenovate" />
+        <span>STUDENT LMS</span>
+      </div>
+
+      <div class="student-card">
+        <div class="student-avatar" id="sidebarStudentAvatar">S</div>
+        <div>
+          <strong id="sidebarStudentName">Student</strong>
+          <small id="sidebarStudentEmail">student@jenovate.com</small>
+        </div>
+      </div>
+
+      <nav class="student-nav">
+        <button class="nav-item active" type="button" data-view="dashboard" aria-label="View dashboard overview">Overview</button>
+        <button class="nav-item" type="button" data-view="courses" aria-label="View my courses">My Courses</button>
+        <button class="nav-item" type="button" data-view="learn" aria-label="Learning resources">Learn</button>
+        <button class="nav-item" type="button" data-view="tasks" aria-label="View assigned tasks">Tasks</button>
+        <button class="nav-item" type="button" data-view="batch" aria-label="View batch information">Batch</button>
+        <button class="nav-item" type="button" data-view="announcements" aria-label="View announcements">Announcements</button>
+        <button class="nav-item" type="button" data-view="questions" aria-label="Ask or view questions">Questions</button>
+        <button class="nav-item" type="button" data-view="shop" aria-label="Rewards shop">Shop</button>
+        <button class="nav-item" type="button" data-view="rewards" aria-label="View rewards">Rewards</button>
+        <button class="nav-item" type="button" data-view="referral" aria-label="View referral code">Referral</button>
+        <button class="nav-item" type="button" data-view="profile" aria-label="Edit profile">Profile</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="secondary-btn full" id="homeBtn" type="button" aria-label="Open student dashboard">Home</button>
+        <button class="ghost-btn full" id="themeToggle" type="button" aria-label="Toggle dark mode">Dark Mode</button>
+        <button class="logout-btn full" id="logoutBtn" type="button" aria-label="Logout from your account">Logout</button>
+      </div>
+    </aside>
+    <button class="sidebar-scrim" id="studentSidebarScrim" type="button" aria-label="Close student menu"></button>
+
+    <main class="student-main">
+      <header class="student-topbar">
+        <button class="mobile-menu-btn" id="studentMenuBtn" type="button" aria-label="Open student menu">Menu</button>
+        <label class="lms-search" aria-label="Search student workspace">
+          <span>Search</span>
+          <input id="globalSearch" type="search" placeholder="Search courses, tasks, mentors" />
+        </label>
+        <div class="topbar-actions">
+          <button class="sync-pill" id="refreshBtn" type="button" aria-label="Refresh data from server">
+            <span class="live-dot"></span>
+            <span id="syncStatus">Preparing workspace...</span>
+          </button>
+          <div class="coin-pill" aria-label="Your coin balance"><span id="coinBalance">0</span> coins</div>
+          <div class="student-avatar small" id="topbarStudentAvatar" aria-label="Your profile avatar">S</div>
+        </div>
+      </header>
+
+      <div class="page-heading">
+        <div>
+          <p id="viewKicker">Welcome back</p>
+          <h1 id="viewTitle">Student Dashboard</h1>
+        </div>
+        <div class="heading-actions">
+          <button class="primary-btn" type="button" data-jump="learn">Continue Learning</button>
+          <button class="secondary-btn" type="button" data-jump="questions">Ask Question</button>
+        </div>
+      </div>
+
+      <div class="student-alert" id="studentAlert" role="status" aria-live="polite"></div>
+      <div class="loading-panel" id="loadingPanel">
+        <div class="loader"></div>
+        <p>Loading your live LMS data...</p>
+      </div>
+
+      <section class="student-view active" id="dashboardView" data-title="Student Dashboard" data-kicker="Welcome back">
+        <div class="hero-band">
+          <div class="hero-copy">
+            <span class="eyebrow" id="heroBatchName">Your learning workspace</span>
+            <h2 id="heroGreeting">Let's keep your streak alive.</h2>
+            <p id="heroSummary">Track your courses, submit work, ask questions, and stay connected with your batch.</p>
+          </div>
+          <div class="streak-card" aria-label="Daily learning streak">
+            <div class="streak-top">
+              <div class="streak-avatar" id="streakAvatar">S</div>
+              <div class="streak-intro">
+                <strong>Hi, <span id="streakStudentName">Student</span></strong>
+                <small id="streakStatusText">Ready to learn today?</small>
+              </div>
+              <div class="streak-coins" aria-label="Coins">
+                <span>CO</span>
+                <strong id="streakCoinBalance">0</strong>
+              </div>
+            </div>
+
+            <div class="streak-summary">
+              <div>
+                <small>Current streak</small>
+                <strong id="streakTitle">0 Day Streak</strong>
+              </div>
+              <div>
+                <small>Weekly progress</small>
+                <strong id="weeklyActivityLabel">0/7</strong>
+              </div>
+            </div>
+
+            <div class="streak-week" id="dashboardStreakWeek"></div>
+
+            <div class="streak-learning-progress">
+              <div>
+                <span id="overallProgressLabel">0%</span>
+                <small id="overallProgressMeta">No progress recorded yet</small>
+              </div>
+              <div class="progress-track"><span id="overallProgressBar"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card">
+            <span>Courses</span>
+            <strong id="metricCourses">0</strong>
+            <small>active enrollments</small>
+          </article>
+          <article class="metric-card">
+            <span>Tasks</span>
+            <strong id="metricTasks">0</strong>
+            <small id="metricTasksMeta">pending submissions</small>
+          </article>
+          <article class="metric-card">
+            <span>Streak</span>
+            <strong id="metricStreak">0</strong>
+            <small id="metricStreakMeta">daily learning streak</small>
+          </article>
+          <article class="metric-card">
+            <span>Rewards</span>
+            <strong id="metricRewards">0</strong>
+            <small>owned shop items</small>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel span-2">
+            <div class="panel-header">
+              <div>
+                <h2>Continue Learning</h2>
+                <p>Your enrolled courses and next lessons.</p>
+              </div>
+              <button class="text-btn" type="button" data-jump="courses">View all</button>
+            </div>
+            <div class="course-strip" id="dashboardCourses"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Batch Updates</h2>
+                <p>Latest class messages.</p>
+              </div>
+              <button class="text-btn" type="button" data-jump="batch">Open</button>
+            </div>
+            <div class="compact-list" id="dashboardChats"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Announcements</h2>
+                <p>Notices from admin and mentors.</p>
+              </div>
+              <button class="text-btn" type="button" data-jump="announcements">Open</button>
+            </div>
+            <div class="compact-list" id="dashboardAnnouncements"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Upcoming Tasks</h2>
+                <p>Assignments from your batch.</p>
+              </div>
+              <button class="text-btn" type="button" data-jump="tasks">Review</button>
+            </div>
+            <div class="compact-list" id="dashboardTasks"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Rewards</h2>
+                <p>Coins and achievements.</p>
+              </div>
+              <button class="text-btn" type="button" data-jump="rewards">Open</button>
+            </div>
+            <div class="achievement-row" id="dashboardAchievements"></div>
+          </article>
+        </div>
+        <aside class="lms-side-rail" aria-label="Student schedule and alerts">
+          <section class="rail-card">
+            <div class="rail-heading">
+              <h2>Daily Class Schedule</h2>
+              <p>Your next live sessions</p>
+            </div>
+            <div class="rail-list">
+              <article class="rail-event">
+                <span class="rail-avatar">PY</span>
+                <div>
+                  <strong>Python Foundations</strong>
+                  <small>08:30 AM - 09:30 AM</small>
+                </div>
+              </article>
+              <article class="rail-event">
+                <span class="rail-avatar accent">DB</span>
+                <div>
+                  <strong>Database Practice</strong>
+                  <small>11:00 AM - 12:00 PM</small>
+                </div>
+              </article>
+              <article class="rail-event">
+                <span class="rail-avatar calm">AI</span>
+                <div>
+                  <strong>AI Lab Review</strong>
+                  <small>02:00 PM - 03:00 PM</small>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="rail-card">
+            <div class="rail-heading">
+              <h2>Recent Absences</h2>
+              <p>Classes that need attention</p>
+            </div>
+            <div class="rail-list">
+              <article class="rail-note">
+                <span>!</span>
+                <div>
+                  <strong>Networking Fundamentals</strong>
+                  <small>Marked absent yesterday</small>
+                </div>
+              </article>
+              <article class="rail-note warning">
+                <span>!</span>
+                <div>
+                  <strong>Web Development</strong>
+                  <small>Attendance below target</small>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="student-view" id="coursesView" data-title="My Courses" data-kicker="Learning plan">
+        <div class="toolbar">
+          <div class="segmented" id="courseFilterTabs">
+            <button class="active" type="button" data-course-filter="all">All</button>
+            <button type="button" data-course-filter="active">Active</button>
+            <button type="button" data-course-filter="completed">Completed</button>
+          </div>
+          <button class="secondary-btn" type="button" data-jump="learn">Open Player</button>
+        </div>
+        <div class="course-grid" id="coursesGrid"></div>
+      </section>
+
+      <section class="student-view" id="learnView" data-title="Learning Player" data-kicker="Course content">
+        <div class="learn-layout">
+          <aside class="panel course-picker">
+            <div class="panel-header compact">
+              <div>
+                <h2>Courses</h2>
+                <p>Select a course to study.</p>
+              </div>
+            </div>
+            <div class="course-pick-list" id="learnCourseList"></div>
+          </aside>
+          <article class="panel lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span id="lessonCourseMeta">No course selected</span>
+                <h2 id="lessonTitle">Choose a course</h2>
+                <p id="lessonDescription">Your course modules and lessons will appear here.</p>
+              </div>
+              <div class="lesson-progress-status" id="lessonProgressStatus" aria-live="polite">
+                <strong id="lessonProgressPercent">0%</strong>
+                <small id="lessonProgressMeta">No progress yet</small>
+              </div>
+            </div>
+            <div class="lesson-player" id="lessonPlayer"></div>
+            <div class="module-list" id="moduleList"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="tasksView" data-title="Tasks" data-kicker="Assignments">
+        <div class="toolbar">
+          <select id="taskBatchFilter" aria-label="Filter tasks by batch"></select>
+          <button class="secondary-btn" id="reloadTasksBtn" type="button">Refresh Tasks</button>
+        </div>
+        <div class="task-grid" id="tasksGrid"></div>
+      </section>
+
+      <section class="student-view" id="batchView" data-title="Batch" data-kicker="Community">
+        <div class="batch-layout">
+          <aside class="panel batch-summary-panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Your Batch</h2>
+                <p>Mentor, classmates, and course.</p>
+              </div>
+            </div>
+            <div id="batchInfo"></div>
+            <div class="classmate-list" id="classmateList"></div>
+          </aside>
+          <article class="panel chat-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Batch Chat</h2>
+                <p>Ask, reply, and stay updated.</p>
+              </div>
+              <button class="secondary-btn" id="reloadChatBtn" type="button">Refresh</button>
+            </div>
+            <div class="chat-list" id="chatList"></div>
+            <form class="composer" id="chatComposer">
+              <input id="chatMessage" type="text" placeholder="Write a message to your batch..." autocomplete="off" required />
+              <button class="primary-btn" type="submit">Send</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="announcementsView" data-title="Announcements" data-kicker="Updates">
+        <div class="toolbar">
+          <div>
+            <h2>Announcements</h2>
+            <p>Role-based notices from admin and your mentors.</p>
+          </div>
+          <button class="secondary-btn" id="reloadAnnouncementsBtn" type="button">Refresh</button>
+        </div>
+        <div class="announcement-list" id="announcementsList"></div>
+      </section>
+
+      <section class="student-view" id="questionsView" data-title="Questions" data-kicker="Support">
+        <div class="question-layout">
+          <article class="panel question-form-panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Ask a Question</h2>
+                <p>Send context to your mentor or admin.</p>
+              </div>
+            </div>
+            <form class="stack-form" id="questionForm">
+              <label>
+                Course
+                <select id="questionCourse"></select>
+              </label>
+              <label>
+                Title
+                <input id="questionTitle" type="text" placeholder="What are you stuck on?" required />
+              </label>
+              <label>
+                Details
+                <textarea id="questionDetails" rows="5" placeholder="Explain the problem, lesson, or error." required></textarea>
+              </label>
+              <label>
+                Attachment or Drive Link
+                <input id="questionLink" type="url" placeholder="https://..." />
+              </label>
+              <button class="primary-btn" type="submit">Submit Question</button>
+            </form>
+          </article>
+          <article class="panel question-list-panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>My Questions</h2>
+                <p>Status and responses from the team.</p>
+              </div>
+            </div>
+            <div class="compact-list" id="questionList"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="shopView" data-title="Shop" data-kicker="Spend coins">
+        <div class="toolbar">
+          <div class="coin-pill large"><span id="shopCoinBalance">0</span> coins available</div>
+          <button class="secondary-btn" type="button" data-jump="rewards">Owned Rewards</button>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </section>
+
+      <section class="student-view" id="rewardsView" data-title="Rewards" data-kicker="Achievements">
+        <div class="rewards-grid">
+          <article class="panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Weekly Activity</h2>
+                <p>Practice consistency beats one-day bursts.</p>
+              </div>
+            </div>
+            <div class="week-row" id="weeklyActivity"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Achievements</h2>
+                <p>Unlocked by progress, tasks, and questions.</p>
+              </div>
+            </div>
+            <div class="achievement-grid" id="achievementGrid"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="panel-header compact">
+              <div>
+                <h2>Owned Items</h2>
+                <p>Rewards purchased with your coins.</p>
+              </div>
+            </div>
+            <div class="owned-grid" id="ownedItems"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="referralView" data-title="Referral" data-kicker="Invite friends">
+        <div class="referral-layout">
+          <article class="panel referral-hero-card">
+            <div class="referral-hero-top">
+              <div class="student-avatar referral-avatar" id="referralAvatar">S</div>
+              <div class="referral-profile-copy">
+                <span class="eyebrow">Student Referral</span>
+                <h2 id="referralStudentName">Student</h2>
+                <p id="referralStudentEmail" class="muted"></p>
+              </div>
+              <span class="referral-badge">Active Code</span>
+            </div>
+
+            <div class="referral-code-box">
+              <div class="referral-code-head">
+                <div>
+                  <small>Your Code</small>
+                  <span>Use this when submitting the referral form.</span>
+                </div>
+                <button class="secondary-btn" type="button" data-copy-referral-code>Copy</button>
+              </div>
+              <strong id="referralCodeText">JNV-0000000</strong>
+              <input id="referralCodeValue" type="text" value="JNV-0000000" readonly aria-label="Referral code" tabindex="-1" />
+            </div>
+
+            <div class="referral-action-strip">
+              <button class="primary-btn" type="button" data-open-referral-form>Open Google Form</button>
+              <button class="secondary-btn" type="button" data-copy-referral-text>Copy Invite Message</button>
+            </div>
+            <p class="referral-status" id="referralStatus" aria-live="polite"></p>
+          </article>
+
+          <article class="panel referral-share-card">
+            <div class="panel-header compact">
+              <div>
+                <h2>Share Card</h2>
+                <p>Referral message and form access.</p>
+              </div>
+            </div>
+            <textarea id="referralShareText" readonly rows="4" aria-label="Referral message"></textarea>
+            <div class="referral-form-link">
+              <div>
+                <small>Google Form</small>
+                <strong id="referralFormUrl">https://forms.gle/RGxPJsL4fcWsSBJp6</strong>
+              </div>
+              <button class="text-btn" type="button" data-open-referral-form>Open</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="profileView" data-title="Profile" data-kicker="Account">
+        <div class="profile-layout">
+          <article class="panel profile-summary" id="profileSummary"></article>
+          <article class="panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Update Profile</h2>
+                <p>Keep your learning profile accurate.</p>
+              </div>
+            </div>
+            <form class="stack-form" id="profileForm">
+              <label>Name <input id="profileName" type="text" required /></label>
+              <label>Username <input id="profileUsername" type="text" /></label>
+              <label>Phone <input id="profilePhone" type="tel" /></label>
+              <button class="primary-btn" type="submit">Save Profile</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-header compact">
+              <div>
+                <h2>Password</h2>
+                <p>Updates the password stored in your LMS profile.</p>
+              </div>
+            </div>
+            <form class="stack-form" id="passwordForm">
+              <label>Current Password <input id="currentPassword" type="password" autocomplete="current-password" required /></label>
+              <label>New Password <input id="newPassword" type="password" minlength="6" required /></label>
+              <button class="secondary-btn" type="submit">Update Password</button>
+            </form>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="lms-mobile-nav" aria-label="Student quick navigation">
+    <button class="nav-item active" type="button" data-view="dashboard"><span>HM</span>Home</button>
+    <button class="nav-item" type="button" data-view="courses"><span>BK</span>Courses</button>
+    <button class="nav-item" type="button" data-view="batch"><span>BT</span>Batch</button>
+    <button class="nav-item" type="button" data-view="shop"><span>SH</span>Shop</button>
+    <button class="nav-item" type="button" data-view="profile"><span>PR</span>Profile</button>
+  </nav>
+
+  <div class="student-modal" id="studentModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal>Close</button>
+      <h2 id="modalTitle">Details</h2>
+      <div id="modalBody"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260520"></script>
+  <script src="session-router.js?v=20260520"></script>
+  <script type="module" src="modules/portal-errors.js?v=20260520-errors"></script>
+  <script type="module" src="student-referral.js?v=20260520-referral"></script>
+  <script src="student.js?v=20260521-mentor-course-fallback"></script>
+</body>
+</html>

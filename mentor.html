@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Mentor | Jenovate LMS</title>
+  <link rel="icon" href="/logos/logooo2.png" type="image/png" />
+  <link rel="stylesheet" href="colours.css" />
+  <link rel="stylesheet" href="mentor-new.css?v=20260520-ui" />
+  <link rel="stylesheet" href="lms-modern.css?v=20260522-professional-lms" />
+</head>
+<body>
+  <div class="mentor-shell">
+    <!-- Sidebar Navigation -->
+    <aside class="mentor-sidebar">
+      <div class="mentor-brand">
+        <img src="image/logo/logo new.png" alt="Jenovate" />
+        <span>MENTOR LMS</span>
+      </div>
+
+      <div class="mentor-profile-card">
+        <div class="profile-avatar" id="sidebarMentorAvatar">M</div>
+        <div>
+          <strong id="sidebarMentorName">Mentor</strong>
+          <small id="sidebarMentorEmail">mentor@jenovate.com</small>
+        </div>
+      </div>
+
+      <nav class="mentor-nav" aria-label="Primary">
+        <div class="nav-section">
+          <div class="nav-label">WORKSPACE</div>
+          <button class="nav-item active" data-view="dashboard" type="button" aria-label="Mentor dashboard overview"><span>DB</span>Dashboard</button>
+          <button class="nav-item" data-view="courses" type="button" aria-label="View courses"><span>CO</span>Courses</button>
+          <button class="nav-item" data-view="batches" type="button" aria-label="View batches"><span>BA</span>Batches</button>
+          <button class="nav-item" data-view="students" type="button" aria-label="View students"><span>ST</span>Students</button>
+          <button class="nav-item" data-view="enrollments" type="button" aria-label="Assign students to courses and batches"><span>EN</span>Enrollments</button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">MENTORING</div>
+          <button class="nav-item" data-view="tasks" type="button" aria-label="Manage tasks"><span>TS</span>Tasks</button>
+          <button class="nav-item" data-view="reviews" type="button" aria-label="Review student work"><span>RV</span>Reviews</button>
+          <button class="nav-item" data-view="announcements" type="button" aria-label="Post announcements"><span>AN</span>Announcements</button>
+          <button class="nav-item" data-view="chat" type="button" aria-label="View messages"><span>MS</span>Messages</button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">ACCOUNT</div>
+          <button class="nav-item" data-view="profile" type="button" aria-label="Edit profile"><span>PR</span>Profile</button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="secondary-btn" id="homeBtn" type="button" style="width: 100%; margin-bottom: 8px;" aria-label="Open mentor dashboard">Home</button>
+        <button class="logout-btn" id="logoutBtn" type="button" aria-label="Logout from your account"><span aria-hidden="true">LO</span>Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="mentor-main">
+      <!-- Top Bar -->
+      <header class="mentor-topbar">
+        <label class="lms-search" aria-label="Search mentor workspace">
+          <span>Search</span>
+          <input id="globalSearch" type="search" placeholder="Search students, batches, reviews" />
+        </label>
+        <div class="topbar-actions">
+          <button class="year-btn" type="button" aria-label="Mentor LMS 2026">Mentor LMS 2026</button>
+          <button class="icon-btn" id="refreshBtn" type="button" aria-label="Refresh data" title="Refresh data">RF</button>
+          <div class="avatar" id="mentorAvatar" aria-label="Mentor profile avatar">M</div>
+        </div>
+      </header>
+
+      <!-- Page Heading -->
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Jenovate Mentor</p>
+          <h1 id="viewTitle">Dashboard</h1>
+        </div>
+        <div class="heading-status">
+          <span class="live-dot"></span>
+          <span id="syncStatus">Preparing mentor workspace</span>
+        </div>
+      </div>
+
+      <div class="mentor-alert" id="mentorAlert" role="status" aria-live="polite"></div>
+      <div class="loading-panel" id="loadingPanel">Loading mentor data...</div>
+
+      <!-- Page Content Area -->
+      <div class="mentor-views">
+        <!-- Dashboard View -->
+        <section class="mentor-view active" id="dashboardView" data-title="Dashboard">
+          <div class="overview-grid">
+            <!-- Hero Section -->
+            <section class="mentor-hero">
+              <div class="hero-copy">
+                <span class="status-pill">Verified Mentor</span>
+                <h2 id="welcomeTitle">Welcome back</h2>
+                <p id="welcomeMeta">Your assigned courses, batches, reviews, and messages are synced from Supabase.</p>
+              </div>
+              <div class="hero-stats">
+                <div>
+                  <span>Assigned courses</span>
+                  <strong id="metricCourses">0</strong>
+                </div>
+                <div>
+                  <span>Active students</span>
+                  <strong id="metricStudents">0</strong>
+                </div>
+              </div>
+            </section>
+
+            <!-- Review Panel -->
+            <section class="panel review-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Review Queue</h2>
+                  <p>Pending task and project submissions</p>
+                </div>
+                <button class="primary-btn" data-jump="reviews" type="button">Open</button>
+              </div>
+              <div class="queue-row">
+                <span>Pending</span>
+                <strong id="metricReviews">0</strong>
+              </div>
+              <div class="queue-row">
+                <span>Project tasks</span>
+                <strong id="metricTasks">0</strong>
+              </div>
+            </section>
+          </div>
+
+          <!-- Metric Cards Grid -->
+          <div class="metric-grid">
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">BA</span><span>Batches</span></div>
+              <strong id="metricBatches">0</strong>
+              <small>Assigned learning groups</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">MS</span><span>Messages</span></div>
+              <strong id="metricMessages">0</strong>
+              <small>Batch chat messages</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">PG</span><span>Avg Progress</span></div>
+              <strong id="metricProgress">0%</strong>
+              <small>Students in your courses</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">MD</span><span>Modules</span></div>
+              <strong id="metricModules">0</strong>
+              <small>Across assigned courses</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">QZ</span><span>Quiz Marks</span></div>
+              <strong id="metricQuizMarks">0</strong>
+              <small>Best scored quiz attempts</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">EX</span><span>Extra Marks</span></div>
+              <strong id="metricExtraMarks">0</strong>
+              <small>Mentor performance marks</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span class="metric-icon">TM</span><span>Total Marks</span></div>
+              <strong id="metricTotalMarks">0</strong>
+              <small>Quiz plus performance</small>
+            </article>
+          </div>
+
+          <!-- Dashboard Grid -->
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Assigned Courses</h2>
+                  <p>Curriculum and content status</p>
+                </div>
+                <button class="primary-btn" data-jump="courses" type="button">Manage</button>
+              </div>
+              <div class="stack-list" id="dashboardCourses"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Batch Activity</h2>
+                  <p>Students, tasks, and chat</p>
+                </div>
+                <button class="primary-btn" data-jump="batches" type="button">View</button>
+              </div>
+              <div class="stack-list" id="dashboardBatches"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Announcements</h2>
+                  <p>Notices sent to your students</p>
+                </div>
+                <button class="primary-btn" data-jump="announcements" type="button">Open</button>
+              </div>
+              <div class="stack-list" id="dashboardAnnouncements"></div>
+            </section>
+
+            <section class="panel wide">
+              <div class="panel-heading">
+                <div>
+                  <h2>Student Progress</h2>
+                  <p>Latest progress in assigned courses</p>
+                </div>
+                <button class="primary-btn" data-jump="students" type="button">Open</button>
+              </div>
+              <div class="progress-list" id="dashboardProgress"></div>
+              <div class="score-list" id="dashboardScores"></div>
+            </section>
+          </div>
+          <aside class="lms-side-rail" aria-label="Mentor schedule and review focus">
+            <section class="rail-card">
+              <div class="rail-heading">
+                <h2>Today</h2>
+                <p>Teaching and review plan</p>
+              </div>
+              <div class="rail-list">
+                <article class="rail-event">
+                  <span class="rail-avatar">RV</span>
+                  <div>
+                    <strong>Project Review Block</strong>
+                    <small>10:00 AM - 11:00 AM</small>
+                  </div>
+                </article>
+                <article class="rail-event">
+                  <span class="rail-avatar accent">QA</span>
+                  <div>
+                    <strong>Student Q&A</strong>
+                    <small>01:30 PM - 02:15 PM</small>
+                  </div>
+                </article>
+                <article class="rail-event">
+                  <span class="rail-avatar calm">BT</span>
+                  <div>
+                    <strong>Batch Standup</strong>
+                    <small>04:00 PM - 04:30 PM</small>
+                  </div>
+                </article>
+              </div>
+            </section>
+            <section class="rail-card">
+              <div class="rail-heading">
+                <h2>Priority Queue</h2>
+                <p>Work that needs mentor action</p>
+              </div>
+              <div class="rail-list">
+                <article class="rail-note">
+                  <span>!</span>
+                  <div>
+                    <strong>Pending submissions</strong>
+                    <small>Review the oldest project work first</small>
+                  </div>
+                </article>
+                <article class="rail-note success">
+                  <span>OK</span>
+                  <div>
+                    <strong>Progress sync</strong>
+                    <small>Scores and course progress are live</small>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </aside>
+        </section>
+
+        <!-- Students View -->
+        <section class="mentor-view" id="studentsView" data-title="Students">
+          <div class="view-toolbar">
+            <div>
+              <h2>Students</h2>
+              <p>Learners attached to your batches and courses.</p>
+            </div>
+            <div class="toolbar-actions">
+              <input id="studentSearch" type="search" placeholder="Search students..." />
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Batch</th>
+                  <th>Course</th>
+                  <th>Progress</th>
+                  <th>Coins</th>
+                  <th>Last Active</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Courses View -->
+        <section class="mentor-view" id="coursesView" data-title="Courses">
+          <div class="view-toolbar">
+            <div>
+              <h2>Your Courses</h2>
+              <p>Manage curriculum, modules, lessons, and course metadata.</p>
+            </div>
+            <button class="primary-btn" id="addCourseBtn" type="button">New Course</button>
+          </div>
+          <div class="course-grid" id="courseGrid"></div>
+        </section>
+
+        <!-- Enrollments View -->
+        <section class="mentor-view" id="enrollmentsView" data-title="Enrollments">
+          <div class="view-toolbar">
+            <div>
+              <h2>Enrollment Control</h2>
+              <p>Assign students to your courses and batches, then monitor progress.</p>
+            </div>
+            <div class="toolbar-actions">
+              <input id="enrollmentSearch" type="search" placeholder="Search enrollments..." />
+              <button class="primary-btn" id="addEnrollmentBtn" type="button">Assign Student</button>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Course</th>
+                  <th>Batch</th>
+                  <th>Progress</th>
+                  <th>Marks</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="enrollmentsTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Batches View -->
+        <section class="mentor-view" id="batchesView" data-title="Batches">
+          <div class="view-toolbar">
+            <div>
+              <h2>Assigned Batches</h2>
+              <p>Track batch capacity, enrollments, dates, tasks, and chat.</p>
+            </div>
+          </div>
+          <div class="batch-grid" id="batchGrid"></div>
+        </section>
+
+        <!-- Tasks View -->
+        <section class="mentor-view" id="tasksView" data-title="Tasks">
+          <div class="view-toolbar">
+            <div>
+              <h2>Project Tasks</h2>
+              <p>Create and review tasks for your assigned batches.</p>
+            </div>
+            <div class="toolbar-actions">
+              <select id="taskBatchFilter" aria-label="Filter tasks by batch"></select>
+              <button class="primary-btn" id="addTaskBtn" type="button">New Task</button>
+            </div>
+          </div>
+          <div class="task-grid" id="tasksGrid"></div>
+        </section>
+
+        <!-- Reviews View -->
+        <section class="mentor-view" id="reviewsView" data-title="Reviews">
+          <div class="view-toolbar">
+            <div>
+              <h2>Reviews</h2>
+              <p>Task submissions and project work awaiting feedback.</p>
+            </div>
+            <button class="primary-btn" id="refreshReviewsBtn" type="button">Refresh</button>
+          </div>
+          <div class="review-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Task Submissions</h2>
+                  <p>Student attempts against project tasks</p>
+                </div>
+              </div>
+              <div class="stack-list" id="submissionsList"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Projects</h2>
+                  <p>Course and capstone submissions</p>
+                </div>
+              </div>
+              <div class="stack-list" id="projectsList"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Announcements View -->
+        <section class="mentor-view" id="announcementsView" data-title="Announcements">
+          <div class="view-toolbar">
+            <div>
+              <h2>Announcements</h2>
+              <p>Send class notices to students in your assigned batches or courses.</p>
+            </div>
+            <div class="toolbar-actions">
+              <button class="secondary-btn" id="reloadAnnouncementsBtn" type="button">Refresh</button>
+              <button class="primary-btn" id="addAnnouncementBtn" type="button">New Announcement</button>
+            </div>
+          </div>
+          <div class="announcement-grid" id="announcementsGrid"></div>
+        </section>
+
+        <!-- Messages View -->
+        <section class="mentor-view" id="chatView" data-title="Batch Chat">
+          <div class="view-toolbar">
+            <div>
+              <h2>Batch Chat</h2>
+              <p>Read messages and reply to your batches in real time.</p>
+            </div>
+            <button class="primary-btn" id="reloadChatBtn" type="button">Reload</button>
+          </div>
+          <div class="chat-layout">
+            <aside class="chat-batches" id="chatBatchList"></aside>
+            <section class="chat-panel">
+              <div class="chat-heading">
+                <div>
+                  <h2 id="chatBatchTitle">Choose a batch</h2>
+                  <p id="chatBatchSubtitle">Messages from assigned batches</p>
+                </div>
+              </div>
+              <div class="chat-feed" id="chatFeed"></div>
+              <form class="chat-composer" id="chatComposer">
+                <input id="chatMessage" type="text" placeholder="Write a mentor reply..." autocomplete="off" />
+                <button class="primary-btn" type="submit">Send</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <!-- Profile View -->
+        <section class="mentor-view" id="profileView" data-title="Profile">
+          <div class="profile-grid">
+            <section class="profile-card">
+              <div class="profile-banner">
+                <div class="profile-avatar large" id="profileAvatar">M</div>
+                <div>
+                  <h2 id="profileName">Mentor</h2>
+                  <p id="profileEmail">mentor@jenovate.com</p>
+                  <span class="status-pill">Verified Mentor</span>
+                </div>
+              </div>
+              <form class="form-grid" id="profileForm">
+                <div class="form-row two">
+                  <div>
+                    <label for="profileFullName">Full Name</label>
+                    <input id="profileFullName" autocomplete="name" />
+                  </div>
+                  <div>
+                    <label for="profilePhone">Phone</label>
+                    <input id="profilePhone" autocomplete="tel" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <label for="profileExpertise">Expertise</label>
+                  <input id="profileExpertise" placeholder="Python, UI, Data" />
+                </div>
+                <div class="form-actions">
+                  <button class="primary-btn" type="submit">Update Profile</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="profile-card">
+              <div class="panel-heading">
+                <div>
+                  <h2>Security Settings</h2>
+                  <p>Update the password stored in your LMS profile.</p>
+                </div>
+              </div>
+              <form class="form-grid" id="passwordForm">
+                <div class="form-row">
+                  <label for="currentPassword">Current Password</label>
+                  <input id="currentPassword" type="password" autocomplete="current-password" />
+                </div>
+                <div class="form-row two">
+                  <div>
+                    <label for="newPassword">New Password</label>
+                    <input id="newPassword" type="password" autocomplete="new-password" />
+                  </div>
+                  <div>
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input id="confirmPassword" type="password" autocomplete="new-password" />
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="primary-btn" type="submit">Update Password</button>
+                </div>
+              </form>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="lms-mobile-nav" aria-label="Mentor quick navigation">
+    <button class="nav-item" type="button" data-view="courses"><span>CO</span>Courses</button>
+    <button class="nav-item" type="button" data-view="batches"><span>BA</span>Batches</button>
+    <button class="nav-item active" type="button" data-view="dashboard"><span>HM</span>Home</button>
+    <button class="nav-item" type="button" data-view="reviews"><span>RV</span>Reviews</button>
+    <button class="nav-item" type="button" data-view="profile"><span>PR</span>Profile</button>
+  </nav>
+
+  <div class="modal" id="mentorModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Mentor Action</h2>
+        <button class="icon-btn" type="button" aria-label="Close modal" data-close-modal>X</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260520"></script>
+  <script src="session-router.js?v=20260520"></script>
+  <script src="mentor.js?v=20260521-course-module-sync"></script>
+</body>
+</html>
