@@ -815,7 +815,7 @@
         const coursePrice = formatCoursePrice(course.price);
         return `
           <article class="course-card">
-            <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/icon/logo_new-removebg-preview.png")}" alt="">
+            <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.png")}" alt="">
             <div class="course-body">
               <div class="list-row">
                 <div>

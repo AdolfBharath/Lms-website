@@ -523,8 +523,10 @@
       const title = escapeHtml(course.title || course.name || "Untitled course");
       const description = escapeHtml(truncate(course.description || "No course description available.", options.compact ? 110 : 160));
       const status = progress.percent >= 100 ? "Completed" : "Active";
+      const thumbnail = escapeAttr(course.thumbnail_url || "image/login/loginimg.png");
       return `
         <article class="course-card">
+          <img class="course-thumb" src="${thumbnail}" alt="">
           <span class="pill ${progress.percent >= 100 ? "success" : ""}">${escapeHtml(status)}</span>
           <h3>${title}</h3>
           <p>${description}</p>

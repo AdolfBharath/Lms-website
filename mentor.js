@@ -380,7 +380,7 @@
       const status = String(course.status || "Draft");
       return `
         <article class="course-card">
-          <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/icon/logo_new-removebg-preview.png")}" alt="">
+          <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.png")}" alt="">
           <h3>${escapeHtml(course.title || "Untitled Course")}</h3>
           <p>${escapeHtml(course.description || "No course description.")}</p>
           <div class="card-meta">
