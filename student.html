@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Student | Jenovate LMS</title>
+  <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="styles/global/colours.css" />
+  <link rel="stylesheet" href="styles/pages/student-stitch-ui.css?v=20260624-student-cleanup" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body data-ui-build="stitch-20260605">
+  <div class="student-shell">
+    <aside class="student-sidebar" aria-label="Student navigation">
+      <div class="brand-panel">
+        <img src="image/logo/logonew.png" alt="Jenovate" />
+        <div class="brand-mark" aria-hidden="true">J</div>
+        <div class="brand-copy">
+          <strong>Jenovate</strong>
+          <small id="sidebarBatchName">Batch: Alpha-2024</small>
+        </div>
+      </div>
+
+      <div class="student-card">
+        <div class="student-avatar" id="sidebarStudentAvatar">S</div>
+        <div>
+          <strong id="sidebarStudentName">Student</strong>
+          <small id="sidebarStudentEmail">student@jenovate.com</small>
+        </div>
+      </div>
+
+      <nav class="student-nav">
+        <button class="nav-item active" type="button" data-view="dashboard" aria-label="View dashboard overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" type="button" data-view="catalog" aria-label="Browse all courses">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3.33 2 8.67 2 12 0v-5"/>
+          </svg>
+          <span>Courses</span>
+        </button>
+        <button class="nav-item" type="button" data-view="courses" aria-label="View enrolled courses">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/><path d="M12 14c-5 0-8 2-8 3v1h16v-1c0-1-3-3-8-3z"/>
+            <path d="M16 3.5A4 4 0 0 1 16 12.5" stroke-dasharray="2 2"/>
+          </svg>
+          <span>My Courses</span>
+        </button>
+        <button class="nav-item" type="button" data-view="questions" aria-label="Ask or view questions">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Questions</span>
+        </button>
+        <button class="nav-item" type="button" data-view="tasks" aria-label="View assigned tasks">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <span>Tasks</span>
+        </button>
+        <button class="nav-item" type="button" data-view="batch" aria-label="View batch information">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Batch</span>
+        </button>
+        <button class="nav-item" type="button" data-view="announcements" aria-label="View announcements">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span>Announcements</span>
+        </button>
+        <button class="nav-item" type="button" data-view="shop" aria-label="Rewards shop">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span>Shop</span>
+        </button>
+        <button class="nav-item" type="button" data-view="referral" aria-label="View referral code">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          <span>Referral</span>
+        </button>
+        <button class="nav-item" type="button" data-view="support" aria-label="Create and view support tickets">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Support</span>
+        </button>
+        <button class="nav-item sidebar-settings" type="button" data-view="profile" aria-label="Edit profile">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-promo" aria-hidden="true">
+          <img src="assets/image/Photo/software Design.webp" alt="" />
+          <div>
+            <strong>Learn. Build. Succeed.</strong>
+            <span>Keep your LMS streak active.</span>
+          </div>
+        </div>
+        <button class="logout-btn full" id="logoutBtn" type="button" aria-label="Logout from your account">Logout</button>
+      </div>
+    </aside>
+    <button class="sidebar-scrim" id="studentSidebarScrim" type="button" aria-label="Close student menu"></button>
+
+    <main class="student-main">
+      <header class="student-topbar">
+        <button class="mobile-menu-btn" id="studentMenuBtn" type="button" aria-label="Open student menu" aria-expanded="false">Menu</button>
+        <label class="top-search" for="topSearchInput">
+          <span aria-hidden="true">Search</span>
+          <input id="topSearchInput" type="search" placeholder="Search courses, mentors, topics..." autocomplete="off" />
+        </label>
+        <div class="topbar-actions">
+          <button class="sync-pill hidden-sync-pill" id="refreshBtn" type="button" aria-label="Refresh data" hidden>
+            <span class="live-dot"></span>
+            <span id="syncStatus"></span>
+          </button>
+          <button class="top-icon-btn" type="button" data-jump="support" aria-label="Open support messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+          <button class="top-icon-btn bell" type="button" data-jump="announcements" aria-label="Open announcements">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="notification-dot"></span>
+          </button>
+          <div class="coin-pill" aria-label="Your coin balance"><span id="coinBalance">0</span> coins</div>
+          <div class="top-profile-copy">
+            <strong id="topbarStudentName">Student</strong>
+            <small>Pro Learner</small>
+          </div>
+          <button class="student-avatar small" id="topbarStudentAvatar" type="button" data-jump="profile" aria-label="Open your profile">S</button>
+        </div>
+      </header>
+
+      <div class="page-heading">
+        <div>
+          <p id="viewKicker">Welcome back</p>
+          <h1 id="viewTitle">Student Dashboard</h1>
+        </div>
+        <div class="heading-actions">
+          <button class="primary-btn" type="button" data-jump="learn">Continue Learning</button>
+          <button class="secondary-btn" type="button" data-jump="questions">Ask Question</button>
+        </div>
+      </div>
+
+      <div class="student-alert" id="studentAlert" role="status" aria-live="polite"></div>
+      <div class="loading-panel" id="loadingPanel">
+        <div class="loader"></div>
+        <p>Loading your live LMS data...</p>
+      </div>
+
+      <section class="student-view active" id="dashboardView" data-title="Student Dashboard" data-kicker="Welcome back">
+        <div class="dashboard-reference-shell">
+          <section class="dashboard-hero-card">
+            <div class="dashboard-hero-copy">
+              <span id="heroBatchName">Welcome back</span>
+              <h2 id="heroGreeting">Welcome back, Student.</h2>
+              <p id="heroSummary">You're on a roll! You've completed your weekly goals. Keep it up!</p>
+              <div class="dashboard-hero-actions">
+                <button class="primary-btn" type="button" data-jump="learn">Continue Learning</button>
+                <button class="secondary-btn" type="button" data-jump="catalog">Browse Courses</button>
+              </div>
+            </div>
+            <aside class="dashboard-active-course">
+              <span>Active Course</span>
+              <div class="dashboard-active-course-top">
+                <strong id="dashboardActiveCourseTitle">Your current course</strong>
+                <b id="dashboardActiveCourseInitial">J</b>
+              </div>
+              <div class="dashboard-active-meta">
+                <small id="dashboardActiveCourseChapter">Chapter 1</small>
+                <em id="dashboardActiveCoursePercent">0%</em>
+              </div>
+              <div class="dashboard-active-progress"><i id="dashboardActiveCourseBar"></i></div>
+              <p id="dashboardActiveCourseTime">Start learning today</p>
+            </aside>
+          </section>
+
+          <section class="metric-grid dashboard-reference-metrics" aria-label="Student dashboard summary">
+            <article class="metric-card"><i>CE</i><small>+2 this month</small><span>Courses Enrolled</span><strong id="metricCourses">0</strong></article>
+            <article class="metric-card"><i>CC</i><small id="dashboardCompletionRate">0% rate</small><span>Courses Completed</span><strong id="metricCompletedCourses">0</strong></article>
+            <article class="metric-card"><i>TS</i><small id="metricTasksMeta">pending submissions</small><span>Tasks Pending</span><strong id="metricTasks">0</strong></article>
+            <article class="metric-card"><i>QS</i><small>Top 5%</small><span>Avg Quiz Score</span><strong id="dashboardAvgQuizScore">0%</strong></article>
+          </section>
+
+          <!-- ── 7-Day Streak Widget ── -->
+          <section class="streak-widget-bar" aria-label="Daily streak">
+            <div class="streak-widget-left">
+              <span class="streak-flame" aria-hidden="true">🔥</span>
+              <div class="streak-widget-info">
+                <span class="streak-widget-label">7-Day Streak</span>
+                <strong class="streak-widget-count" id="streakTitle">0 Days Streak</strong>
+              </div>
+            </div>
+            <div class="streak-week-dots" id="dashboardStreakWeek" aria-label="Activity this week">
+              <!-- Populated by renderStreakCard() -->
+            </div>
+            <div class="streak-widget-right">
+              <span class="streak-status-chip" id="streakStatusText">Start today to save it</span>
+              <span class="streak-coin-chip" aria-label="Your coins">
+                <span aria-hidden="true">🪙</span>
+                <span id="streakCoinBalance">0</span>
+              </span>
+            </div>
+          </section>
+          <!-- ── /Streak Widget ── -->
+
+          <section class="dashboard-reference-main">
+            <div class="dashboard-reference-left">
+              <div class="dashboard-section-title">
+                <div>
+                  <h2>Continue Learning</h2>
+                  <p>Pick up right where you left off</p>
+                </div>
+                <button class="text-btn" type="button" data-jump="courses">View All</button>
+              </div>
+              <div class="dashboard-course-overview" id="dashboardCourseOverview"></div>
+            </div>
+            <aside class="dashboard-deadline-card">
+              <div class="dashboard-card-head">
+                <h2>Activity Log</h2>
+              </div>
+              <div class="rail-list" id="dashboardRailTasks"></div>
+              <button class="secondary-btn" type="button" data-jump="tasks">View Full Activity Log</button>
+            </aside>
+          </section>
+        </div>
+      </section>
+
+      <section class="student-view" id="catalogView" data-title="Courses" data-kicker="Browse catalog">
+        <div class="reference-page-intro">
+          <div>
+            <span class="reference-eyebrow">Course catalog</span>
+            <h2>Explore Courses</h2>
+            <p>Explore available courses and view details before enrollment.</p>
+          </div>
+        </div>
+        <div class="course-grid catalog-grid" id="catalogCoursesGrid"></div>
+      </section>
+
+      <section class="student-view" id="coursesView" data-title="My Courses" data-kicker="Learning plan">
+        <div class="reference-page-intro course-page-intro">
+          <div>
+            <span class="reference-eyebrow">Learning library</span>
+            <h2>My Courses</h2>
+            <p>Continue your journey toward mastery. Your progress is saved automatically across your devices.</p>
+          </div>
+          <div class="overall-course-progress">
+            <span>Overall progress</span>
+            <strong id="coursesOverallProgress">0%</strong>
+            <div class="mini-progress"><span id="coursesOverallProgressBar"></span></div>
+          </div>
+        </div>
+        <div class="toolbar course-toolbar">
+          <div class="segmented" id="courseFilterTabs">
+            <button class="active" type="button" data-course-filter="active">Ongoing</button>
+            <button type="button" data-course-filter="completed">Completed</button>
+            <button type="button" data-course-filter="wishlist">Wishlist</button>
+          </div>
+          <button class="secondary-btn" type="button" data-jump="learn">Open Player</button>
+        </div>
+        <div class="course-grid" id="coursesGrid"></div>
+      </section>
+
+      <section class="student-view" id="learnView" data-title="Learning Player" data-kicker="Course content">
+        <div class="learn-udemy-shell" id="learnSurface"></div>
+      </section>
+
+      <section class="student-view" id="tasksView" data-title="Tasks" data-kicker="Assignments">
+        <div class="tasks-shell">
+          <!-- Left Sidebar: tasks list -->
+          <aside class="tasks-sidebar">
+            <div class="tasks-sidebar-head">
+              <span class="tasks-title">Tasks</span>
+              <div class="tasks-header-actions">
+                <select id="taskBatchFilter" class="tasks-batch-select" aria-label="Filter tasks by batch"></select>
+                <button class="tasks-refresh-btn" id="reloadTasksBtn" type="button" title="Refresh tasks">🔄</button>
+              </div>
+            </div>
+            
+            <div class="tasks-tabs" role="tablist">
+              <button class="tasks-tab-btn active" type="button" role="tab" data-task-filter="pending">
+                Pending Tasks <span class="tasks-tab-badge" id="tasksTabBadgePending">0</span>
+              </button>
+              <button class="tasks-tab-btn" type="button" role="tab" data-task-filter="submitted">Submitted</button>
+              <button class="tasks-tab-btn" type="button" role="tab" data-task-filter="reviewed">Reviewed</button>
+            </div>
+            
+            <div class="tasks-list" id="taskList" aria-label="Assignments">
+              <!-- Populated by renderTasks() -->
+            </div>
+          </aside>
+
+          <!-- Main Pane: selected task details -->
+          <main class="tasks-main" id="taskMain" aria-label="Task details">
+            <!-- Populated by renderTasks() -->
+          </main>
+        </div>
+      </section>
+
+      <section class="student-view" id="batchView" data-title="Batch" data-kicker="Community">
+        <div class="batch-layout">
+          <!-- Left Column: Learning Hub sidebar -->
+          <aside class="batch-sidebar" id="batchSidebar">
+            <!-- Populated dynamically by renderBatch() -->
+          </aside>
+
+          <!-- Right Column: Batch Chat -->
+          <article class="batch-chat-panel">
+            <div class="batch-chat-header">
+              <div class="batch-chat-header-left">
+                <div class="chat-icon-circle">💬</div>
+                <div>
+                  <h2>Batch Chat</h2>
+                  <span class="online-status" id="chatOnlineStatus">• 0 Students Online</span>
+                </div>
+              </div>
+              <div class="batch-chat-header-right">
+                <div class="chat-header-actions">
+                  <select id="chatBatchSelect" class="chat-batch-select" aria-label="Select batch for chat"></select>
+                  <button class="chat-refresh-btn" id="reloadChatBtn" type="button" title="Refresh chat">🔄</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-list" id="chatList">
+              <!-- Populated dynamically by renderChat() -->
+            </div>
+            
+            <div class="chat-reply-bar" id="chatReplyBar" hidden></div>
+
+            <form class="chat-composer" id="chatComposer">
+              <div class="composer-input-wrapper">
+                <input id="chatMessage" type="text" placeholder="Type your message..." autocomplete="off" required />
+              </div>
+              <button class="composer-send-btn" type="submit" aria-label="Send message">
+                <span class="send-icon">➤</span>
+              </button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="announcementsView" data-title="Announcements" data-kicker="Updates">
+        <div class="secondary-page-intro">
+          <span class="reference-eyebrow">Live updates</span>
+          <h2>Announcements</h2>
+          <p>Stay aligned with notices from your mentors and the Jenovate team.</p>
+        </div>
+        <div class="toolbar">
+          <div>
+            <h2>Announcements</h2>
+            <p>Role-based notices from admin and your mentors.</p>
+          </div>
+          <button class="secondary-btn" id="reloadAnnouncementsBtn" type="button">Refresh</button>
+        </div>
+        <div class="announcement-list" id="announcementsList"></div>
+      </section>
+
+      <section class="student-view" id="questionsView" data-title="Discussions" data-kicker="Q&amp;A">
+        <div class="discussions-shell">
+
+          <!-- ── Left Sidebar: question list ── -->
+          <aside class="disc-sidebar">
+            <div class="disc-sidebar-head">
+              <span class="disc-title">Discussions</span>
+              <button class="disc-ask-btn" type="button" id="discAskBtn" aria-label="Ask a question">
+                + Ask Question
+              </button>
+            </div>
+            <div class="disc-sidebar-search">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input type="search" id="discSearchInput" placeholder="Search discussions..." aria-label="Search discussions" />
+            </div>
+            <div class="disc-filter-tabs" role="tablist" aria-label="Discussion filters">
+              <button class="active" type="button" role="tab" data-disc-filter="all">My Questions</button>
+              <button type="button" role="tab" data-disc-filter="pending">Unanswered</button>
+              <button type="button" role="tab" data-disc-filter="answered">Answered</button>
+            </div>
+            <div class="disc-list" id="questionList" aria-label="Your questions">
+              <!-- Populated by renderQuestions() -->
+            </div>
+          </aside>
+
+          <!-- ── Main Pane: selected question + answers ── -->
+          <main class="disc-main" id="discMain" aria-label="Question thread">
+            <!-- Populated by renderQuestions() / openDiscQuestion() -->
+            <div class="disc-empty-pane" id="discEmptyPane">
+              <span aria-hidden="true">💬</span>
+              <strong>Select a question</strong>
+              <p>Pick a question from the left, or ask a new one.</p>
+              <button class="primary-btn" type="button" id="discAskBtnAlt">Ask a Question</button>
+            </div>
+          </main>
+
+        </div>
+
+        <!-- ── Ask Question drawer (hidden by default) ── -->
+        <div class="disc-ask-overlay" id="discAskOverlay" aria-hidden="true">
+          <div class="disc-ask-drawer" role="dialog" aria-modal="true" aria-labelledby="discAskHeading">
+            <div class="disc-ask-drawer-head">
+              <h2 id="discAskHeading">Ask a Question</h2>
+              <button class="disc-drawer-close" type="button" id="discAskClose" aria-label="Close">✕</button>
+            </div>
+            <form class="stack-form disc-ask-form" id="questionForm">
+              <label>
+                Course
+                <select id="questionCourse" required></select>
+              </label>
+              <label>
+                Question Title
+                <input id="questionTitle" type="text" placeholder="e.g. Issues with Flexbox centering in Safari" required />
+              </label>
+              <label>
+                Description
+                <textarea id="questionDetails" rows="5" placeholder="Describe your problem in detail..." required></textarea>
+              </label>
+              <label>
+                Attachment Link <span class="optional-tag">optional</span>
+                <input id="questionLink" type="url" placeholder="GitHub, Figma, Loom, etc." />
+              </label>
+              <div class="disc-ask-footer">
+                <aside class="disc-response-hint">
+                  <span aria-hidden="true">⏱</span> Mentors reply within 2–4 hours
+                </aside>
+                <button class="primary-btn" id="questionSubmitBtn" type="submit">Submit Question →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="student-view" id="supportView" data-title="Support Tickets" data-kicker="Help desk">
+        <div class="support-workspace">
+
+          <!-- LEFT: Create Ticket Form -->
+          <article class="support-form-card">
+            <div class="support-form-header">
+              <h2>Create Ticket</h2>
+              <p>Describe your issue and our team will get back to you within 24 hours.</p>
+            </div>
+            <form class="support-form" id="supportTicketForm">
+              <div class="support-field">
+                <label for="supportCategory">Category</label>
+                <div class="support-select-wrap">
+                  <select id="supportCategory" required>
+                    <option value="technical">Technical Issue</option>
+                    <option value="course">Course Access</option>
+                    <option value="billing">Billing</option>
+                    <option value="account">Account</option>
+                    <option value="administrative">Administrative</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="support-field">
+                <label for="supportSubject">Subject</label>
+                <input id="supportSubject" type="text" placeholder="Enter a descriptive subject" required />
+              </div>
+              <div class="support-field">
+                <label for="supportMessage">Message</label>
+                <textarea id="supportMessage" rows="5" placeholder="Tell us more about the issue..." required></textarea>
+              </div>
+              <div class="support-field">
+                <label>Attachment <span class="support-optional">(Optional)</span></label>
+                <label class="support-upload-zone" for="supportAttachment">
+                  <span class="support-upload-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                  </span>
+                  <div>
+                    <span>Upload relevant screenshots</span>
+                    <small>PNG, JPG or PDF up to 5MB</small>
+                  </div>
+                  <input id="supportAttachment" type="file" accept=".png,.jpg,.jpeg,.pdf" />
+                </label>
+              </div>
+              <button class="support-submit-btn" type="submit">Submit Ticket</button>
+            </form>
+          </article>
+
+          <!-- RIGHT: Active Tickets + Quick Actions -->
+          <div class="support-right-col">
+            <!-- Tickets list -->
+            <article class="support-tickets-card">
+              <div class="support-tickets-header">
+                <div>
+                  <h2>Active Tickets</h2>
+                  <p id="supportTicketSubtitle">Tracking your open support cases</p>
+                </div>
+                <button class="support-refresh-btn" id="refreshSupportBtn" type="button" aria-label="Refresh tickets">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+              </div>
+              <div class="support-ticket-list" id="supportTicketList">
+                <!-- Populated by JS -->
+              </div>
+            </article>
+
+          </div>
+
+        </div>
+      </section>
+
+      <section class="student-view" id="shopView" data-title="Shop" data-kicker="Spend coins">
+
+        <!-- Shop hero: coin balance -->
+        <div class="shop-hero-banner">
+          <div class="shop-hero-left">
+            <span class="shop-hero-eyebrow">Jenovate Rewards</span>
+            <h2 class="shop-hero-heading">Featured Rewards</h2>
+            <p class="shop-hero-sub">Redeem items selected for active Jenovate learners.</p>
+          </div>
+          <div class="shop-hero-coin-badge">
+            <span class="shop-hero-coin-icon">🪙</span>
+            <div>
+              <span class="shop-hero-coin-label">Your Balance</span>
+              <strong class="shop-hero-coin-val"><span id="shopCoinBalance">0</span> coins</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shop cards grid -->
+        <div class="shop-grid" id="shopGrid"></div>
+
+      </section>
+
+      <section class="student-view" id="rewardsView" data-title="Rewards" data-kicker="Achievements">
+        <div class="secondary-page-intro">
+          <span class="reference-eyebrow">Your collection</span>
+          <h2>Achievements &amp; Rewards</h2>
+          <p>See the progress, activity, and rewards connected to your learning journey.</p>
+        </div>
+        <div class="rewards-grid">
+          <article class="panel span-2">
+            <div class="panel-header compact">
+              <div>
+                <h2>Achievements</h2>
+                <p>Unlocked by progress, tasks, and questions.</p>
+              </div>
+            </div>
+            <div class="achievement-grid" id="achievementGrid"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="panel-header compact">
+              <div>
+                <h2>Owned Items</h2>
+                <p>Rewards purchased with your coins.</p>
+              </div>
+            </div>
+            <div class="owned-grid" id="ownedItems"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="referralView" data-title="Referral" data-kicker="Invite friends">
+        <section class="referral-hero">
+          <div class="referral-hero-copy">
+            <span>Referral Program</span>
+            <h2>Invite Friends,<br>Earn Big Rewards</h2>
+            <p>Build your learning community. For every successful enrollment using your code, both you and your friend unlock premium benefits.</p>
+            <div class="referral-hero-badges">
+              <b>✅ Verified Program</b>
+              <b>🎁 Exclusive Privileges</b>
+              <b>🚀 Instant Rewards</b>
+            </div>
+          </div>
+          <aside class="referral-stats-card">
+            <strong>Your Referral Stats</strong>
+            <div class="referral-stat-grid">
+              <div><span id="referralInviteCount">12</span><small>Total Invites</small></div>
+              <div><span id="referralCoinsEarned">0</span><small>Coins Earned</small></div>
+            </div>
+            <div class="referral-next-reward">
+              <small>Next Reward: Silver Badge</small>
+              <b>8/10</b>
+              <div><span></span></div>
+            </div>
+          </aside>
+        </section>
+        <div class="referral-studio">
+          <article class="panel referral-pass-card">
+            <h3>Your Identity <span>Active Status</span></h3>
+            <div class="referral-profile-row">
+              <div class="student-avatar referral-avatar" id="referralAvatar">S</div>
+              <div>
+                <h2 id="referralStudentName">Student</h2>
+                <p id="referralStudentEmail" class="muted"></p>
+              </div>
+            </div>
+            <div class="referral-code-box">
+              <small>Unique Referral Code</small>
+              <strong id="referralCodeText">JNV-0000000</strong>
+              <input id="referralCodeValue" type="text" value="JNV-0000000" readonly aria-label="Referral code" tabindex="-1" />
+            </div>
+            <div class="referral-action-strip">
+              <button class="primary-btn" type="button" data-copy-referral-code>Copy Referral Code</button>
+            </div>
+            <p class="referral-status" id="referralStatus" aria-live="polite"></p>
+          </article>
+
+          <article class="panel referral-share-card">
+            <div class="referral-share-head">
+              <div>
+                <h3>Quick Share Message</h3>
+                <p>Ready-to-share template for your social channels.</p>
+              </div>
+              <span aria-hidden="true">Edit</span>
+            </div>
+            <textarea id="referralShareText" readonly rows="5" aria-label="Referral message"></textarea>
+            <div class="referral-share-actions">
+              <button class="secondary-btn" type="button" data-open-referral-form>Share Link</button>
+              <button class="primary-btn" type="button" data-copy-referral-text>Copy Text</button>
+            </div>
+          </article>
+
+          <article class="panel referral-form-card">
+            <div class="referral-form-icon" aria-hidden="true">📋</div>
+            <div>
+              <strong>Official Enrollment Form</strong>
+              <small id="referralFormUrl">https://forms.gle/RGxPJsL4fcWsSBJp6</small>
+            </div>
+            <button class="secondary-btn" type="button" data-open-referral-form>Open Form →</button>
+          </article>
+
+          <article class="panel referral-guide-card referral-stepper-card">
+            <div class="referral-guide-head">
+              <h2>How It Works</h2>
+              <p>Three simple steps to earn rewards and grow your learning community together.</p>
+            </div>
+            <div class="referral-stepper" data-referral-stepper>
+              <div class="referral-stepper-indicators" aria-label="Referral program steps">
+                <div class="referral-step-indicator-wrap">
+                  <button class="active" type="button" data-referral-step="1" aria-label="Step 1: Share Invite"><span>1</span></button>
+                  <span class="referral-step-label">Share</span>
+                </div>
+                <i aria-hidden="true"></i>
+                <div class="referral-step-indicator-wrap">
+                  <button type="button" data-referral-step="2" aria-label="Step 2: Friend Enrolls"><span>2</span></button>
+                  <span class="referral-step-label">Enroll</span>
+                </div>
+                <i aria-hidden="true"></i>
+                <div class="referral-step-indicator-wrap">
+                  <button type="button" data-referral-step="3" aria-label="Step 3: Earn Rewards"><span>3</span></button>
+                  <span class="referral-step-label">Earn</span>
+                </div>
+              </div>
+              <div class="referral-stepper-content">
+                <section class="referral-step-panel active" data-referral-panel="1">
+                  <span class="referral-step-icon">01</span>
+                  <div>
+                    <h3>Share Your Invite</h3>
+                    <p>Send your unique referral code or the ready-made share message to friends who want to join Jenovate and level up their learning.</p>
+                    <small>Copy your code exactly — it's unique to you and tracks your referrals</small>
+                  </div>
+                </section>
+                <section class="referral-step-panel" data-referral-panel="2">
+                  <span class="referral-step-icon">02</span>
+                  <div>
+                    <h3>Friend Enrolls</h3>
+                    <p>Your friend opens the official enrollment form and enters your referral code during signup. It takes less than 2 minutes.</p>
+                    <small>Admin validates each referral against the submitted form details</small>
+                  </div>
+                </section>
+                <section class="referral-step-panel" data-referral-panel="3">
+                  <span class="referral-step-icon">03</span>
+                  <div>
+                    <h3>Earn Rewards 🎉</h3>
+                    <p>After validation, both you and your friend receive learning coins, exclusive badges, and premium learning benefits instantly.</p>
+                    <small>Rewards are credited within 24 hours of enrollment validation</small>
+                  </div>
+                </section>
+              </div>
+              <div class="referral-stepper-footer">
+                <button class="secondary-btn" type="button" data-referral-prev>← Previous</button>
+                <button class="primary-btn" type="button" data-referral-next>Next →</button>
+              </div>
+            </div>
+            <div class="referral-guide-footer">
+              <small>Rewards are processed within 24 hours of enrollment validation.</small>
+              <button class="text-btn" type="button" data-open-referral-form>Read Program Terms</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="student-view" id="profileView" data-title="Profile" data-kicker="Account">
+        <!-- Banner container -->
+        <article class="profile-banner-container" id="profileSummary">
+          <!-- Populated dynamically by renderProfile() -->
+        </article>
+
+        <!-- Metric cards row -->
+        <div class="profile-metrics-grid">
+          <div class="profile-metric-card">
+            <div class="metric-icon-circle coins">🪙</div>
+            <div class="metric-info">
+              <small>JNOVATE COINS</small>
+              <strong><span id="profileCoinsVal">0</span> Available</strong>
+            </div>
+          </div>
+          <div class="profile-metric-card">
+            <div class="metric-icon-circle streak">🔥</div>
+            <div class="metric-info">
+              <small>DAILY STREAK</small>
+              <strong><span id="profileStreakVal">0 Days</span> Keep it up!</strong>
+            </div>
+          </div>
+          <div class="profile-metric-card">
+            <div class="metric-icon-circle leaderboard">🏅</div>
+            <div class="metric-info">
+              <small>COURSES ENROLLED</small>
+              <strong><span id="profileEnrolledCount">0</span> Active</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two column split layout -->
+        <div class="profile-main-layout">
+          <!-- Left Column -->
+          <div class="profile-column-left">
+            <article class="panel profile-form-card">
+              <div class="panel-header-custom">
+                <h2>Personal Information</h2>
+                <button type="button" class="edit-details-btn" id="profileEditToggleBtn">
+                  <span class="edit-icon">✎</span> Edit Details
+                </button>
+              </div>
+              <form class="profile-form-grid" id="profileForm">
+                <div class="profile-input-group">
+                  <small class="profile-input-label">FULL NAME</small>
+                  <div class="profile-input-wrapper">
+                    <span class="profile-input-icon">👤</span>
+                    <input id="profileName" type="text" required disabled />
+                  </div>
+                </div>
+                <div class="profile-input-group">
+                  <small class="profile-input-label">USERNAME</small>
+                  <div class="profile-input-wrapper">
+                    <span class="profile-input-icon">@</span>
+                    <input id="profileUsername" type="text" disabled />
+                  </div>
+                </div>
+                <div class="profile-input-group">
+                  <small class="profile-input-label">EMAIL ADDRESS</small>
+                  <div class="profile-input-wrapper">
+                    <span class="profile-input-icon">✉</span>
+                    <input id="profileEmail" type="email" disabled />
+                  </div>
+                </div>
+                <div class="profile-input-group">
+                  <small class="profile-input-label">PHONE NUMBER</small>
+                  <div class="profile-input-wrapper">
+                    <span class="profile-input-icon">📞</span>
+                    <input id="profilePhone" type="tel" disabled />
+                  </div>
+                </div>
+                <div class="profile-form-actions" id="profileFormActions" style="display: none;">
+                  <button type="button" class="cancel-btn" id="profileCancelBtn">Cancel</button>
+                  <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="panel profile-security-card">
+              <h2>Settings & Security</h2>
+              
+              <!-- Password management block -->
+              <div class="security-banner-row">
+                <div class="security-banner-left">
+                  <div class="security-icon-circle">🔐</div>
+                  <div>
+                    <strong>Password Management</strong>
+                    <small>Update your account password securely</small>
+                  </div>
+                </div>
+                <button type="button" class="security-action-btn" id="passwordToggleBtn">Change Password</button>
+              </div>
+
+              <!-- Password inline form (hidden by default) -->
+              <form class="password-inline-form" id="passwordForm" style="display: none;">
+                <div class="form-grid two">
+                  <div class="profile-input-group">
+                    <small class="profile-input-label">CURRENT PASSWORD</small>
+                    <div class="profile-input-wrapper">
+                      <input id="currentPassword" type="password" autocomplete="current-password" placeholder="Enter current password" required />
+                    </div>
+                  </div>
+                  <div class="profile-input-group">
+                    <small class="profile-input-label">NEW PASSWORD</small>
+                    <div class="profile-input-wrapper">
+                      <input id="newPassword" type="password" minlength="6" placeholder="Enter new password" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="password-form-actions">
+                  <button type="button" class="cancel-btn" id="passwordCancelBtn">Cancel</button>
+                  <button type="submit" class="save-btn">Update Password</button>
+                </div>
+              </form>
+
+            </article>
+          </div>
+
+          <!-- Right Column -->
+          <div class="profile-column-right">
+            <article class="panel academic-milestones-card">
+              <div class="milestones-header">
+                <span class="milestones-icon">📊</span>
+                <h2>Learning Progress</h2>
+              </div>
+              <div class="milestone-items">
+                <div class="milestone-pill">
+                  <span>Courses Completed</span>
+                  <strong class="milestone-badge" id="profileCoursesCount">0</strong>
+                </div>
+                <div class="milestone-pill">
+                  <span>Average Course Progress</span>
+                  <strong class="rank-badge" id="profileAverageProgress">0%</strong>
+                </div>
+                <div class="milestone-pill">
+                  <span>Current Batch</span>
+                  <strong class="rank-badge" id="profileBatchName">Not assigned</strong>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel active-enrollment-card">
+              <small class="enrollment-eyebrow">• ACTIVE ENROLLMENT</small>
+              <h2 id="profileActiveCourse">No active course</h2>
+              
+              <div class="enrollment-progress-section">
+                <div class="progress-labels">
+                  <span>Course Progress</span>
+                  <strong id="profileActiveProgressPercent">0%</strong>
+                </div>
+                <div class="enrollment-progress-bar-wrap">
+                  <div class="enrollment-progress-bar"><i id="profileActiveProgressBar"></i></div>
+                </div>
+              </div>
+
+              <button class="resume-learning-btn" type="button" data-jump="courses">
+                <span class="play-icon">🎯</span> Resume Learning
+              </button>
+            </article>
+            
+            <div class="profile-footer-bar"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="student-modal" id="studentModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal>Close</button>
+      <h2 id="modalTitle">Details</h2>
+      <div id="modalBody"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/core/supabase-config.js?v=20260618-signed-storage"></script>
+  <script src="scripts/core/session-router.js?v=20260615-auth"></script>
+  <script src="scripts/core/auth-session.js?v=20260618-auth-migration"></script>
+  <script type="module" src="scripts/core/portal-errors.js?v=20260603-student-audit"></script>
+  <script type="module" src="scripts/pages/student-referral.js?v=20260603-student-audit"></script>
+  <script src="scripts/pages/student.js?v=20260624-student-cleanup"></script>
+</body>
+</html>

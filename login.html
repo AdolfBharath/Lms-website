@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Login - Jenovate</title>
+  <link rel="stylesheet" href="styles/pages/lms-premium.css?v=20260522-ui-stability" />
+  <link rel="stylesheet" href="styles/pages/login.css?v=20260623-login-image-right-nudge" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="logo-container">
+        <a href="index.html">
+          <img src="image/logo/logonew.png" alt="Jenovate Logo" class="logo-img" />
+        </a>
+      </div>
+      <img src="image/login/loginimg.webp" alt="Learn Engage Succeed" class="illustration-img" />
+    </div>
+    <div class="login-right">
+      <div class="login-form-container">
+        <h1 class="welcome-title">Welcome</h1>
+        <p class="welcome-subtitle">Login with Email</p>
+        
+        <form class="login-form" action="#" method="POST">
+          <div class="form-group">
+            <label for="email">EMAIL</label>
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="email" placeholder="you@example.com" required />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <div class="label-row">
+              <label for="password">PASSWORD</label>
+              <a href="#" class="forgot-password">Forgot your password?</a>
+            </div>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="password" placeholder="Password" required />
+              <i class="fa-regular fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+            </div>
+          </div>
+          
+          <button type="submit" class="submit-btn">LOGIN</button>
+          <p class="login-error" id="loginError" role="alert"></p>
+          <p class="join-account">
+            Don't have an account?
+            <a href="form-engine/index.html?category=student_registration">Join Now</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN and Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/core/supabase-config.js?v=20260618-signed-storage"></script>
+  <script src="scripts/core/auth-session.js?v=20260618-auth-migration-fix"></script>
+  
+  <script>
+    const APP_SESSION_KEY = 'jenovateCurrentUser';
+    const ADMIN_SESSION_KEY = 'jenovateAdminSession';
+    const MENTOR_SESSION_KEY = 'jenovateMentorSession';
+    const STUDENT_SESSION_KEY = 'jenovateStudentSession';
+    const PREV_PAGE_KEY = 'jenovatePrevPage';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      clearExistingSession();
+      initializeLoginBackNavigation();
+    });
+
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.querySelector('.toggle-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+
+    document.querySelector('.login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.querySelector('.submit-btn');
+      const errorBox = document.getElementById('loginError');
+      
+      errorBox.textContent = '';
+      submitBtn.textContent = 'LOGGING IN...';
+      submitBtn.disabled = true;
+
+      try {
+        let profile = await verifyLogin(email, password);
+        if (!profile) {
+          throw new Error('Invalid email or password.');
+        }
+
+        const rewardResult = await claimDailyLoginReward(profile);
+        if (rewardResult?.profile) {
+          profile = rewardResult.profile;
+        }
+
+        const sessionProfile = {
+          id: profile.id,
+          name: profile.name || profile.username || profile.email,
+          email: profile.email,
+          role: (profile.role || 'student').toLowerCase(),
+          username: profile.username || '',
+          phone: profile.phone || '',
+          batch_id: profile.batch_id || '',
+          course_ids: Array.isArray(profile.course_ids) ? profile.course_ids : [],
+          coins: profile.coins || 0,
+          streak_count: profile.streak_count || 0,
+          last_active_date: profile.last_active_date || '',
+          auth_mode: 'supabase_auth'
+        };
+
+        if (rewardResult?.claimed) {
+          sessionProfile.daily_login_reward_claimed = true;
+          sessionProfile.daily_login_reward_amount = rewardResult.amount || 10;
+        }
+
+        // Use sessionStorage so the session stays in this browser tab until logout or tab close.
+        sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(sessionProfile));
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        sessionStorage.removeItem(MENTOR_SESSION_KEY);
+        sessionStorage.removeItem(STUDENT_SESSION_KEY);
+
+        if (sessionProfile.role === 'admin') {
+          sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionProfile));
+          window.location.replace('admin.html');
+        } else if (sessionProfile.role === 'mentor') {
+          sessionStorage.setItem(MENTOR_SESSION_KEY, JSON.stringify(sessionProfile));
+          window.location.replace('mentor.html');
+        } else if (sessionProfile.role === 'student') {
+          sessionStorage.setItem(STUDENT_SESSION_KEY, JSON.stringify(sessionProfile));
+          window.location.replace('student.html');
+        } else {
+          window.location.replace('index.html');
+        }
+      } catch (error) {
+        errorBox.textContent = error.message || 'Login failed. Please try again.';
+        submitBtn.textContent = 'LOGIN';
+        submitBtn.disabled = false;
+      }
+    });
+
+    async function verifyLogin(email, password) {
+      return window.JenovateAuth.signInWithPassword(email, password);
+    }
+
+    async function claimDailyLoginReward(profile) {
+      if (!profile?.id) return null;
+      const supabaseClient = window.getSupabaseClient?.();
+      if (!supabaseClient?.rpc) return null;
+
+      const { data, error } = await supabaseClient.rpc('lms_claim_daily_login_reward', {
+        target_user_id: profile.id
+      });
+
+      if (error) {
+        if (/function|schema cache|not found|could not find/i.test(error.message || '') || error.code === 'PGRST202') {
+          return null;
+        }
+        throw error;
+      }
+
+      const result = Array.isArray(data) ? data[0] : data;
+      if (!result) return null;
+      return {
+        claimed: Boolean(result.claimed),
+        amount: Number(result.reward_amount || 0),
+        profile: {
+          ...profile,
+          coins: Number(result.coins ?? profile.coins ?? 0),
+          last_login_reward_date: result.last_login_reward_date || profile.last_login_reward_date || ''
+        }
+      };
+    }
+
+    async function clearExistingSession() {
+      const hadSession = Boolean(
+        sessionStorage.getItem(APP_SESSION_KEY) ||
+        sessionStorage.getItem(ADMIN_SESSION_KEY) ||
+        sessionStorage.getItem(MENTOR_SESSION_KEY) ||
+        sessionStorage.getItem(STUDENT_SESSION_KEY)
+      );
+      await window.JenovateAuth?.signOut?.();
+      if (hadSession) {
+        document.getElementById('loginError').textContent = 'Session ended. Login again to continue.';
+      }
+    }
+
+    document.querySelector('.forgot-password')?.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const errorBox = document.getElementById('loginError');
+      if (!email) {
+        errorBox.textContent = 'Enter your email first, then request a password reset.';
+        return;
+      }
+      try {
+        const redirectTo = `${window.location.origin}${window.location.pathname}`;
+        const { error } = await window.getSupabaseClient().auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+        errorBox.textContent = 'Password reset link sent. Please check your email.';
+      } catch (error) {
+        errorBox.textContent = error.message || 'Unable to send reset email.';
+      }
+    });
+
+    function initializeLoginBackNavigation() {
+      if (!window.history?.pushState) return;
+      history.replaceState({ loginView: true }, '', window.location.href);
+      history.pushState({ loginGuard: true }, '', window.location.href);
+      window.addEventListener('popstate', () => {
+        window.location.replace('index.html');
+      });
+    }
+  </script>
+</body>
+</html>

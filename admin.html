@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | Jenovate LMS</title>
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="styles/global/colours.css" />
+  <link rel="stylesheet" href="styles/pages/admin.css?v=20260604-task-support-shop-fixes" />
+  <link rel="stylesheet" href="styles/layout/role-compact.css?v=20260524-sidebar-actions-v1" />
+  <link rel="stylesheet" href="styles/layout/role-final-fixes.css?v=20260605-device-comfort" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="admin-redesign-final">
+  <div class="admin-shell">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-brand">
+        <img src="image/logo/logonew.png" alt="Jenovate" />
+        <span>ADMIN LMS</span>
+      </div>
+
+      <div class="admin-profile-card">
+        <div class="profile-avatar" id="sidebarAdminAvatar">A</div>
+        <div>
+          <strong id="sidebarAdminName">Admin</strong>
+          <small id="sidebarAdminEmail">E-Learning</small>
+        </div>
+        <button class="profile-switch" id="profileQuickBtn" type="button" aria-label="Open admin profile">PR</button>
+      </div>
+
+      <nav class="admin-nav" aria-label="Primary">
+        <div class="nav-section">
+          <div class="nav-label">
+            <span>GENERAL</span>
+            <button type="button" aria-label="General navigation options">...</button>
+          </div>
+          <button class="nav-item active" data-view="dashboard" type="button" aria-label="Admin dashboard overview"><span>DB</span>Dashboard</button>
+          <button class="nav-item" data-view="users" type="button" aria-label="Manage users"><span>US</span>Users</button>
+          <button class="nav-item" data-view="enrollments" type="button" aria-label="Manage course enrollments"><span>EN</span>Enrollments</button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">
+            <span>LEARNING</span>
+            <button type="button" aria-label="Learning navigation options">...</button>
+          </div>
+          <button class="nav-item" data-view="courses" type="button" aria-label="Manage courses"><span>CO</span>Courses</button>
+          <button class="nav-item" data-view="batches" type="button" aria-label="Manage batches"><span>BA</span>Batches</button>
+          <button class="nav-item" data-view="tasks" type="button" aria-label="Manage tasks"><span>TS</span>Tasks</button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-label">
+            <span>OPERATIONS</span>
+            <button type="button" aria-label="Operations navigation options">...</button>
+          </div>
+          <button class="nav-item" data-view="chat" type="button" aria-label="View batch chat"><span>CH</span>Batch Chat</button>
+          <button class="nav-item" data-view="announcements" type="button" aria-label="Manage announcements"><span>AN</span>Announcements</button>
+          <button class="nav-item" data-view="support" type="button" aria-label="Manage support tickets"><span>SP</span>Support</button>
+          <button class="nav-item" data-view="reviews" type="button" aria-label="Review student projects"><span>RV</span>Reviews</button>
+          <button class="nav-item" data-view="shop" type="button" aria-label="Manage shop items"><span>SH</span>Shop</button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-profile-link" id="sidebarProfileBtn" type="button" aria-label="Open admin profile">
+          <span id="footerAdminAvatar">A</span>
+          <strong>Admin Profile</strong>
+          <small>Account settings</small>
+        </button>
+        <div class="sidebar-action-grid">
+          <button class="sidebar-action-btn" id="homeBtn" type="button" aria-label="Open admin dashboard">
+            <span>HM</span>
+            <strong>Home</strong>
+          </button>
+          <button class="sidebar-action-btn danger" id="logoutBtn" type="button" aria-label="Logout from your account">
+            <span>LO</span>
+            <strong>Logout</strong>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-actions">
+          <button class="sync-pill" id="refreshBtn" type="button" aria-label="Refresh admin data">
+            <span class="live-dot"></span>
+            <span id="syncStatus">Realtime connected</span>
+          </button>
+          <div class="role-pill" aria-label="Admin role">Admin</div>
+          <button class="avatar" id="adminAvatar" type="button" aria-label="Open admin profile">A</button>
+        </div>
+      </header>
+
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Jenovate LMS</p>
+          <h1 id="viewTitle">Dashboard</h1>
+          <div class="page-tabs" aria-label="Admin dashboard sections">
+            <button class="active" type="button" data-jump="dashboard">Overview</button>
+            <button type="button" data-jump="users">Users</button>
+            <button type="button" data-jump="courses">Courses</button>
+          </div>
+        </div>
+        <div class="heading-actions">
+          <button class="primary-btn" type="button" data-jump="courses">Manage Courses</button>
+          <button class="secondary-btn" type="button" data-jump="users">Manage Users</button>
+        </div>
+      </div>
+
+      <div class="admin-alert" id="adminAlert" role="status" aria-live="polite"></div>
+      <div class="loading-panel" id="loadingPanel">Loading admin data...</div>
+
+      <section class="admin-view active report-dashboard-ready" id="dashboardView" data-title="Dashboard" data-report-dashboard="true">
+        <div class="role-report-dashboard">
+          <section class="report-card report-activity-card">
+            <div class="report-card-head">
+              <div>
+                <h2>Learners activity <span aria-hidden="true">i</span></h2>
+              </div>
+              <button class="report-link" type="button" data-jump="users">View all</button>
+            </div>
+            <div class="report-mini-tabs" aria-label="Activity filters">
+              <button class="active" type="button" data-report-filter="all">All</button>
+              <button type="button" data-report-filter="courses">Courses</button>
+              <button type="button" data-report-filter="tasks">Tasks</button>
+              <button type="button" data-report-filter="reviews">Reviews</button>
+            </div>
+            <div class="report-list" id="adminReportActivityList"></div>
+          </section>
+
+          <section class="report-card report-total-card">
+            <div class="report-card-head">
+              <h2>Total learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">All roles</button>
+            </div>
+            <div class="report-total"><strong id="adminReportTotalLearners">0</strong><span>People</span></div>
+            <div class="report-breakdown" id="adminReportBreakdown"></div>
+          </section>
+
+          <section class="report-card report-time-card">
+            <div class="report-card-head">
+              <h2>Learning time <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">All courses</button>
+            </div>
+            <div class="report-total"><strong id="adminReportLearningTime">0</strong><span>Hours</span></div>
+            <small class="report-growth">+ synced from active LMS data</small>
+            <div class="report-sparkline" id="adminReportSparkline"></div>
+          </section>
+
+          <section class="report-card report-line-card">
+            <div class="report-card-head">
+              <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">This week</button>
+            </div>
+            <div class="report-chart" id="adminReportWeeklyChart"></div>
+          </section>
+
+          <section class="report-card report-bars-card">
+            <div class="report-card-head">
+              <h2>Most active learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">Last 4 weeks</button>
+            </div>
+            <div class="report-bars" id="adminReportActiveLearners"></div>
+          </section>
+
+          <section class="report-card report-health-card">
+            <div class="report-card-head">
+              <h2>Content health <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="courses">Manage</button>
+            </div>
+            <div class="report-kpi-grid" id="adminReportContentHealth"></div>
+          </section>
+
+          <section class="report-card report-workload-card">
+            <div class="report-card-head">
+              <h2>Operations queue <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="reviews">Open</button>
+            </div>
+            <div class="report-kpi-grid" id="adminReportWorkload"></div>
+          </section>
+
+          <section class="report-card report-courses-card">
+            <div class="report-card-head">
+              <h2>Course snapshot <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="courses">View all</button>
+            </div>
+            <div class="report-compact-list" id="adminReportCourses"></div>
+          </section>
+
+          <section class="report-card report-batches-card">
+            <div class="report-card-head">
+              <h2>Batch snapshot <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="batches">View all</button>
+            </div>
+            <div class="report-compact-list" id="adminReportBatches"></div>
+          </section>
+
+          <section class="report-card report-attention-card">
+            <div class="report-card-head">
+              <h2>Needs attention <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">Live</button>
+            </div>
+            <div class="report-compact-list" id="adminReportAttention"></div>
+          </section>
+        </div>
+        <div class="overview-grid">
+          <section class="review-spotlight">
+            <div class="spotlight-top">
+              <span class="spotlight-icon">RV</span>
+              <span class="status-pill">Live Operations</span>
+            </div>
+            <div>
+              <h2>Admin Workspace</h2>
+              <p>Manage users, courses, enrollments, reviews, batches, and rewards from one clean control center.</p>
+            </div>
+            <div class="spotlight-stats">
+              <div>
+                <span>Pending</span>
+                <strong id="reviewPendingCount">0</strong>
+              </div>
+              <div>
+                <span>Reviewed</span>
+                <strong id="reviewedCount">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="library-summary">
+            <div class="panel-heading">
+              <div>
+                <h2>Active Library</h2>
+                <p>Courses, live batches, and assignments</p>
+              </div>
+              <button class="ghost-btn" data-jump="courses" type="button">Manage</button>
+            </div>
+            <div class="library-row">
+              <span class="metric-icon">CO</span>
+              <div>
+                <strong id="libraryCourseCount">0</strong>
+                <small>Total courses</small>
+              </div>
+              <b id="liveCourseCount">0 live</b>
+            </div>
+            <div class="library-row">
+              <span class="metric-icon">BA</span>
+              <div>
+                <strong id="activeBatchCount">0</strong>
+                <small>Active batches</small>
+              </div>
+              <b id="draftCourseCount">0 draft</b>
+            </div>
+          </section>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">US</span>
+              <span>Total Users</span>
+            </div>
+            <strong id="metricUsers">0</strong>
+            <div class="metric-footer">
+              <small id="metricUsersMeta">Students, mentors, admins</small>
+              <span>-></span>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">CO</span>
+              <span>Courses</span>
+            </div>
+            <strong id="metricCourses">0</strong>
+            <div class="metric-footer">
+              <small>Published and draft courses</small>
+              <span>-></span>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">BA</span>
+              <span>Batches</span>
+            </div>
+            <strong id="metricBatches">0</strong>
+            <div class="metric-footer">
+              <small>Live learning groups</small>
+              <span>-></span>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">SH</span>
+              <span>Shop Items</span>
+            </div>
+            <strong id="metricShop">0</strong>
+            <div class="metric-footer">
+              <small>Coin redemption catalog</small>
+              <span>-></span>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">TS</span>
+              <span>Tasks</span>
+            </div>
+            <strong id="metricTasks">0</strong>
+            <div class="metric-footer">
+              <small id="metricTasksMeta">Assignments and submissions</small>
+              <span>-></span>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span class="metric-icon">EN</span>
+              <span>Enrollments</span>
+            </div>
+            <strong id="metricEnrollments">0</strong>
+            <div class="metric-footer">
+              <small id="metricEnrollmentsMeta">Course assignments</small>
+              <span>-></span>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel analytics-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Report Analytics</h2>
+                <p>All platform activity - last 30 days, 12 weeks, or 12 months</p>
+              </div>
+              <div class="mini-tabs" aria-label="Analytics range">
+                <button class="active" type="button">Daily</button>
+                <button type="button">Weekly</button>
+                <button type="button">Monthly</button>
+              </div>
+            </div>
+            <div class="chart-shell" aria-label="Report analytics chart">
+              <div class="chart-axis">
+                <!-- Populated by renderAnalyticsChart() in admin.js -->
+              </div>
+              <div class="chart-scroll-wrap">
+                <div class="chart-bars">
+                  <!-- Populated by renderAnalyticsChart() in admin.js -->
+                </div>
+              </div>
+            </div>
+            <div class="chart-legend" aria-label="Event type legend">
+              <!-- Populated by renderAnalyticsChart() in admin.js -->
+            </div>
+          </section>
+
+
+          <section class="panel online-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Live Batches</h2>
+                <p><span class="live-dot"></span> Active learning groups</p>
+              </div>
+            </div>
+            <div class="class-list" id="liveBatchList"></div>
+          </section>
+
+          <section class="panel user-index-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>User Index</h2>
+                <p>Search students and mentors</p>
+              </div>
+              <button class="ghost-btn" data-jump="users" type="button">Open</button>
+            </div>
+            <div class="segmented" id="dashboardUserTabs">
+              <button class="active" data-role="student" type="button">Students</button>
+              <button data-role="mentor" type="button">Mentors</button>
+            </div>
+            <label class="search-field">
+              <span>Search</span>
+              <input id="dashboardUserSearch" type="search" placeholder="Search directory" />
+            </label>
+            <div class="compact-list" id="dashboardUsersList"></div>
+          </section>
+
+          <section class="panel course-activity-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Course Activity</h2>
+                <p>Enrollment and completion snapshot</p>
+              </div>
+            </div>
+            <div class="bar-list" id="courseProgressList"></div>
+          </section>
+
+          <section class="panel task-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Task Pipeline</h2>
+                <p>Assignments and recent submission workload</p>
+              </div>
+              <button class="ghost-btn" data-jump="tasks" type="button">Open</button>
+            </div>
+            <div class="compact-list" id="dashboardTasksList"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Review Projects</h2>
+                <p>Submitted work waiting for admin review</p>
+              </div>
+              <button class="ghost-btn" data-jump="reviews" type="button">Open</button>
+            </div>
+            <div class="compact-list" id="dashboardReviewsList"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Shop Control</h2>
+                <p>Coin store items</p>
+              </div>
+              <button class="ghost-btn" data-jump="shop" type="button">Open</button>
+            </div>
+            <div class="compact-list" id="dashboardShopList"></div>
+          </section>
+        </div>
+        <aside class="lms-side-rail" aria-label="Admin operations rail">
+          <section class="rail-card">
+            <div class="rail-heading">
+              <h2>Operations Today</h2>
+              <p>Platform control checklist</p>
+            </div>
+            <div class="rail-list">
+              <article class="rail-event">
+                <span class="rail-avatar">US</span>
+                <div>
+                  <strong>User Enrollment Audit</strong>
+                  <small>09:30 AM - 10:00 AM</small>
+                </div>
+              </article>
+              <article class="rail-event">
+                <span class="rail-avatar accent">AN</span>
+                <div>
+                  <strong>Announcement Review</strong>
+                  <small>12:00 PM - 12:30 PM</small>
+                </div>
+              </article>
+              <article class="rail-event">
+                <span class="rail-avatar calm">RV</span>
+                <div>
+                  <strong>Review Escalations</strong>
+                  <small>03:00 PM - 03:45 PM</small>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="rail-card">
+            <div class="rail-heading">
+              <h2>System Attention</h2>
+              <p>Quick operational signals</p>
+            </div>
+            <div class="rail-list">
+              <article class="rail-note">
+                <span>!</span>
+                <div>
+                  <strong>Pending project reviews</strong>
+                  <small>Keep the review queue under control</small>
+                </div>
+              </article>
+              <article class="rail-note success">
+                <span>OK</span>
+                <div>
+                  <strong>Live data connected</strong>
+                  <small>Dashboard metrics are Supabase-driven</small>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="admin-view" id="usersView" data-title="Users">
+        <div class="section-toolbar">
+          <div class="segmented" id="userRoleTabs">
+            <button class="active" data-role="all" type="button">All</button>
+            <button data-role="student" type="button">Students</button>
+            <button data-role="mentor" type="button">Mentors</button>
+            <button data-role="admin" type="button">Admins</button>
+          </div>
+          <div class="toolbar-actions">
+            <label class="search-field slim">
+              <span>Search</span>
+              <input id="userSearch" type="search" placeholder="Search users" />
+            </label>
+            <button class="primary-btn" id="addUserBtn" type="button">+ Add User</button>
+            <button class="soft-btn" id="importUsersBtn" type="button">Import CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Course / Batch</th>
+                <th>Coins</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-view" id="enrollmentsView" data-title="Enrollments">
+        <div class="section-toolbar">
+          <div>
+            <h2>Enrollment Control</h2>
+            <p>Assign learners to courses and monitor completion signals</p>
+          </div>
+          <button class="primary-btn" id="addEnrollmentBtn" type="button">+ Assign Course</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Batch</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="enrollmentsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-view" id="coursesView" data-title="Courses">
+        <div class="section-toolbar">
+          <div>
+            <h2>Manage Courses</h2>
+            <p>View, add, edit, publish, and remove courses</p>
+          </div>
+          <button class="primary-btn" id="addCourseBtn" type="button">+ Add Course</button>
+        </div>
+        <div class="course-grid" id="coursesGrid"></div>
+      </section>
+
+      <section class="admin-view" id="batchesView" data-title="Batches">
+        <div class="section-toolbar">
+          <div>
+            <h2>Manage Batches</h2>
+            <p>Assign courses, mentors, status, and capacity</p>
+          </div>
+          <button class="primary-btn" id="addBatchBtn" type="button">+ Add Batch</button>
+        </div>
+        <div class="batch-grid" id="batchesGrid"></div>
+      </section>
+
+      <section class="admin-view" id="tasksView" data-title="Tasks">
+        <div class="section-toolbar">
+          <div>
+            <h2>Batch Tasks</h2>
+            <p>Create assignments, watch submissions, and review learner work</p>
+          </div>
+          <button class="primary-btn" id="addTaskBtn" type="button">+ Add Task</button>
+        </div>
+        <div class="task-grid" id="tasksGrid"></div>
+      </section>
+
+      <section class="admin-view" id="chatView" data-title="Batch Chat">
+        <div class="chat-layout">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Batch Rooms</h2>
+                <p>Select a batch to moderate chat</p>
+              </div>
+            </div>
+            <div class="compact-list selectable-list" id="chatBatchList"></div>
+          </section>
+          <section class="panel chat-panel">
+            <div class="chat-header">
+              <div>
+                <h2 id="chatBatchTitle">Batch Chat</h2>
+                <p id="chatBatchSubtitle">Choose a batch</p>
+              </div>
+              <button class="ghost-btn" id="reloadChatBtn" type="button">Reload</button>
+            </div>
+            <div class="chat-feed" id="chatFeed"></div>
+            <form class="chat-composer" id="chatComposer">
+              <input id="chatMessage" type="text" placeholder="Post as admin..." autocomplete="off" />
+              <button class="primary-btn" type="submit">Post</button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-view" id="announcementsView" data-title="Announcements">
+        <div class="section-toolbar">
+          <div>
+            <h2>Announcements</h2>
+            <p>Send platform notices to mentors, students, batches, or courses</p>
+          </div>
+          <button class="primary-btn" id="addAnnouncementBtn" type="button">+ Create Announcement</button>
+        </div>
+        <div class="announcement-grid" id="announcementsGrid"></div>
+      </section>
+
+      <section class="admin-view" id="supportView" data-title="Support Tickets">
+        <div class="section-toolbar">
+          <div>
+            <h2>Support Management</h2>
+            <p>View, prioritize, reply, close, and reopen user support tickets.</p>
+          </div>
+          <button class="secondary-btn" id="refreshSupportBtn" type="button">Refresh</button>
+        </div>
+        <div class="support-filters">
+          <select id="supportStatusFilter" aria-label="Filter support tickets by status">
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <input id="supportSearch" type="search" placeholder="Search tickets..." />
+        </div>
+        <div class="support-management-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div><h2>Tickets</h2><p id="supportTicketCount">0 active tickets</p></div>
+            </div>
+            <div class="compact-list support-ticket-list" id="supportTicketList"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <div><h2>Conversation</h2><p id="supportThreadMeta">Choose a ticket to reply.</p></div>
+            </div>
+            <div class="support-thread" id="supportThread"></div>
+            <form class="form-grid support-reply-form" id="supportReplyForm">
+              <div class="form-row"><label for="supportReplyMessage">Admin Reply</label><textarea id="supportReplyMessage" rows="4" placeholder="Write a reply..."></textarea></div>
+              <div class="form-row two">
+                <div>
+                  <label for="supportStatusUpdate">Status</label>
+                  <select id="supportStatusUpdate">
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="supportPriorityUpdate">Priority</label>
+                  <select id="supportPriorityUpdate">
+                    <option value="normal">Normal</option>
+                    <option value="low">Low</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row"><label for="supportReplyAttachment">Attachment</label><input id="supportReplyAttachment" type="file"></div>
+              <div class="form-actions"><button class="primary-btn" type="submit">Send Reply / Update</button></div>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-view" id="reviewsView" data-title="Reviews">
+        <div class="section-toolbar">
+          <div>
+            <h2>Review Center</h2>
+            <p>Projects and task submissions</p>
+          </div>
+          <button class="ghost-btn" id="refreshReviewsBtn" type="button">Refresh</button>
+        </div>
+        <div class="review-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Projects</h2>
+                <p>Approve or request changes</p>
+              </div>
+            </div>
+            <div class="compact-list" id="projectsList"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Task Submissions</h2>
+                <p>Feedback from batch work</p>
+              </div>
+            </div>
+            <div class="compact-list" id="submissionsList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-view" id="shopView" data-title="Shop">
+        <div class="section-toolbar">
+          <div>
+            <h2>Shop Items</h2>
+            <p>Create and edit coin redemption items</p>
+          </div>
+          <button class="primary-btn" id="addShopBtn" type="button">+ Add Item</button>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </section>
+
+      <section class="admin-view" id="profileView" data-title="Admin Profile">
+        <div class="profile-hero-panel">
+          <div class="profile-page-avatar" id="profilePageAvatar">A</div>
+          <div class="profile-hero-copy">
+            <span class="profile-role-pill">Admin Access</span>
+            <h2 id="profilePageName">Admin</h2>
+            <p id="profilePageEmail">admin@jenovate.com</p>
+          </div>
+          <div class="profile-hero-stats">
+            <div>
+              <span>Total users</span>
+              <strong id="profileTotalUsers">0</strong>
+            </div>
+            <div>
+              <span>Courses</span>
+              <strong id="profileTotalCourses">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-admin-grid">
+          <section class="panel profile-form-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Account Details</h2>
+                <p>Keep the admin contact information accurate</p>
+              </div>
+            </div>
+            <form class="form-grid" id="adminProfileForm">
+              <div class="form-row two">
+                <div>
+                  <label for="adminProfileName">Full Name</label>
+                  <input id="adminProfileName" type="text" autocomplete="name" />
+                </div>
+                <div>
+                  <label for="adminProfileUsername">Username</label>
+                  <input id="adminProfileUsername" type="text" autocomplete="username" />
+                </div>
+              </div>
+              <div class="form-row two">
+                <div>
+                  <label for="adminProfileEmail">Email</label>
+                  <input id="adminProfileEmail" type="email" readonly />
+                </div>
+                <div>
+                  <label for="adminProfilePhone">Phone</label>
+                  <input id="adminProfilePhone" type="tel" autocomplete="tel" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="ghost-btn" type="button" id="resetProfileFormBtn">Reset</button>
+                <button class="primary-btn" type="submit">Save Profile</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel profile-status-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Workspace Status</h2>
+                <p>Current role and platform scope</p>
+              </div>
+            </div>
+            <div class="profile-status-list">
+              <div>
+                <span>Role</span>
+                <strong id="profileRole">Admin</strong>
+              </div>
+              <div>
+                <span>Active mentors</span>
+                <strong id="profileMentorCount">0</strong>
+              </div>
+              <div>
+                <span>Active students</span>
+                <strong id="profileStudentCount">0</strong>
+              </div>
+              <div>
+                <span>Last sync</span>
+                <strong id="profileSyncText">Live workspace</strong>
+              </div>
+            </div>
+            <div class="profile-shortcuts">
+              <button class="ghost-btn" data-jump="users" type="button">Manage Users</button>
+              <button class="ghost-btn" data-jump="courses" type="button">Manage Courses</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="lms-mobile-nav" aria-label="Admin quick navigation">
+    <button class="nav-item" type="button" data-view="users"><span>US</span>Users</button>
+    <button class="nav-item" type="button" data-view="courses"><span>CO</span>Courses</button>
+    <button class="nav-item active" type="button" data-view="dashboard"><span>HM</span>Home</button>
+    <button class="nav-item" type="button" data-view="batches"><span>BA</span>Batches</button>
+    <button class="nav-item" type="button" data-view="profile"><span>PR</span>Profile</button>
+  </nav>
+
+  <div class="modal" id="adminModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">x</button>
+      <h2 id="modalTitle">Edit</h2>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/core/supabase-config.js?v=20260618-signed-storage"></script>
+  <script src="scripts/core/session-router.js?v=20260615-auth"></script>
+  <script src="scripts/core/auth-session.js?v=20260618-auth-migration"></script>
+  <script src="scripts/pages/admin.js?v=20260618-advisor-cleanup"></script>
+
+  <!-- Scroll-to-top / Scroll-to-bottom floating buttons -->
+  <div class="scroll-fab-group" id="scrollFabGroup" aria-label="Page navigation">
+    <button class="scroll-fab" id="scrollToTopBtn" type="button" title="Scroll to top" aria-label="Scroll to top">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
+        <path fill-rule="evenodd" d="M10 3.293L3.707 9.586 2.293 8.172 10 .464l7.707 7.708-1.414 1.414L10 3.293z"/>
+        <path fill-rule="evenodd" d="M3 19h14v-2H3v2z"/>
+      </svg>
+    </button>
+    <div class="scroll-fab-track" id="scrollFabTrack" aria-hidden="true">
+      <div class="scroll-fab-thumb" id="scrollFabThumb"></div>
+    </div>
+    <button class="scroll-fab" id="scrollToBottomBtn" type="button" title="Scroll to bottom" aria-label="Scroll to bottom">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
+        <path fill-rule="evenodd" d="M3 1h14v2H3V1z"/>
+        <path fill-rule="evenodd" d="M10 16.707l6.293-6.293 1.414 1.414L10 19.535l-7.707-7.707 1.414-1.414L10 16.707z"/>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      const main    = document.querySelector(".admin-main");
+      const group   = document.getElementById("scrollFabGroup");
+      const topBtn  = document.getElementById("scrollToTopBtn");
+      const botBtn  = document.getElementById("scrollToBottomBtn");
+      const track   = document.getElementById("scrollFabTrack");
+      const thumb   = document.getElementById("scrollFabThumb");
+
+      if (!main || !group) return;
+
+      function updateFab() {
+        const scrolled  = main.scrollTop;
+        const maxScroll = main.scrollHeight - main.clientHeight;
+
+        // Show/hide group
+        group.classList.toggle("visible", scrolled > 150);
+
+        // Move thumb
+        if (maxScroll > 0) {
+          const pct = Math.min(scrolled / maxScroll, 1);
+          const trackH = track.clientHeight;
+          const thumbH = thumb.clientHeight;
+          thumb.style.top = (pct * (trackH - thumbH)) + "px";
+        }
+
+        // Dim buttons at limits
+        topBtn.style.opacity = scrolled < 10 ? "0.35" : "1";
+        botBtn.style.opacity = main.scrollTop + main.clientHeight >= main.scrollHeight - 10 ? "0.35" : "1";
+      }
+
+      main.addEventListener("scroll", updateFab, { passive: true });
+      updateFab();
+
+      topBtn.addEventListener("click", () => main.scrollTo({ top: 0, behavior: "smooth" }));
+      botBtn.addEventListener("click", () => main.scrollTo({ top: main.scrollHeight, behavior: "smooth" }));
+
+      // Click on track = jump to position
+      track.addEventListener("click", function (e) {
+        const rect = track.getBoundingClientRect();
+        const pct  = (e.clientY - rect.top) / rect.height;
+        main.scrollTo({ top: pct * (main.scrollHeight - main.clientHeight), behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>

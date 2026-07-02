@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jenovate - Built for Gen Z. Designed for Growth</title>
+  <meta name="description" content="Jenovate is built for Gen Z learners with guided courses, mentors, projects, and career-ready growth.">
+  <link rel="icon" type="image/png" href="assets/img/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/global/styles.css?v=20260623-campus-review-hover-fix">
+  <link rel="stylesheet" href="styles/global/public-mobile-comfort.css?v=20260605-final-mobile-ux">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html#home" aria-label="Jenovate home">
+      <img src="image/logo/logonew.png" alt="Jenovate" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
+    </a>
+    <nav class="nav">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#courses">Courses</a>
+      <a href="launchpad-detail.html?plan=advanced">Launchpad</a>
+      <a class="active" href="campus-ambassador.html">Campus Ambassador</a>
+      <a href="index.html#testimonials">Testimonials</a>
+      <a href="about-us.html">About Us</a>
+    </nav>
+
+    <div class="header-actions">
+      <form class="search" id="courseSearch">
+        <button class="category-btn" id="categoryButton" type="button" aria-expanded="false">
+          <span class="grid-dot" aria-hidden="true"></span>
+          <span class="category-label">Categories</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <label class="sr-only" for="searchInput">Search for course</label>
+        <input id="searchInput" type="search" placeholder="Search For Course . . .">
+        <button class="search-btn" type="submit" aria-label="Search"><span aria-hidden="true"></span></button>
+      </form>
+      <button class="login" type="button">Log in</button>
+      <button class="join-us" type="button" data-form-target="student">Join Us</button>
+    </div>
+  </header>
+
+  <main class="campus-page">
+    <section class="campus-hero" id="campus">
+      <div class="ambassador-copy">
+        <span class="campus-kicker">Campus Ambassador Program</span>
+        <h1>Lead Your Campus With<br><strong>Jenovate</strong></h1>
+        <p>Represent Jenovate in your college, create learning conversations, build your personal brand, and earn rewards while helping students discover better opportunities.</p>
+        <a class="btn yellow" href="form-engine/index.html?category=campus_ambassador">Apply Now</a>
+      </div>
+      <div class="ambassador-dashboard" aria-hidden="true">
+        <span class="amb-card earnings">Earn up to <b>10 lakh</b><small>monthly potential</small></span>
+        <span class="amb-card trusted">Trusted by <b>10k+ learners</b></span>
+        <span class="amb-card easy">Simple <b>payouts</b></span>
+        <span class="amb-card realtime">Live <b>progress tracking</b></span>
+        <div class="dashboard-panel">
+          <div class="dash-top"><span></span><span></span><span></span></div>
+          <div class="dash-grid"><span>Reach</span><span>Referrals</span><span>Rewards</span></div>
+          <div class="dash-chart"></div>
+          <div class="dash-footer"><b>Campus Rank</b><strong>#08</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="campus-rewards">
+      <div class="section-title light">
+        <span class="pill">Ambassador Rewards</span>
+        <h2>Perks That Feel Worth Showing Up For</h2>
+        <p>Recognition, rewards, and useful experience designed for active student leaders.</p>
+      </div>
+      <div class="reward-grid">
+        <article class="reward-card">
+          <div class="reward-visual reward-visual-certificate">
+            <img src="assets/campus/certificate.webp" alt="Letter of recommendation and certificate reward" loading="lazy" decoding="async">
+          </div>
+          <h3>Letter of Recommendation &amp; Certificate</h3>
+          <p>Proof of contribution for your resume and campus portfolio.</p>
+        </article>
+        <article class="reward-card">
+          <div class="reward-visual reward-visual-voucher">
+            <img src="assets/campus/giftcard.webp" alt="Gift voucher and OTT subscription reward" loading="lazy" decoding="async">
+          </div>
+          <h3>Gift Vouchers &amp; OTT Subscriptions</h3>
+          <p>Unlock milestone rewards as your campus activity grows.</p>
+        </article>
+        <article class="reward-card">
+          <div class="reward-visual reward-visual-shirt">
+            <img src="assets/campus/hoodies.webp" alt="Jenovate branded merchandise reward" loading="lazy" decoding="async">
+          </div>
+          <h3>Jenovate Branded T-shirts</h3>
+          <p>Wear the community and stand out as a campus voice.</p>
+        </article>
+        <article class="reward-card">
+          <div class="reward-visual reward-visual-training">
+            <img src="assets/campus/mentors.webp" alt="Unified mentor training reward" loading="lazy" decoding="async">
+          </div>
+          <h3>Unified Mentor Trainings</h3>
+          <p>Build confidence in communication, outreach, and leadership.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="campus-steps">
+      <div class="section-title">
+        <span class="pill">How It Works</span>
+        <h2>Simple Steps To Start Leading</h2>
+        <p>Everything is structured so you can participate without confusion.</p>
+      </div>
+      <div class="campus-stepper" data-campus-stepper data-initial-step="1">
+        <div class="campus-stepper-card">
+          <div class="campus-stepper-indicators" role="tablist" aria-label="Campus ambassador steps">
+            <button class="campus-step-indicator" type="button" data-step-indicator="1" aria-label="Apply step"><span>1</span></button>
+            <i data-step-connector="1"></i>
+            <button class="campus-step-indicator" type="button" data-step-indicator="2" aria-label="Activate step"><span>2</span></button>
+            <i data-step-connector="2"></i>
+            <button class="campus-step-indicator" type="button" data-step-indicator="3" aria-label="Track step"><span>3</span></button>
+            <i data-step-connector="3"></i>
+            <button class="campus-step-indicator" type="button" data-step-indicator="4" aria-label="Grow step"><span>4</span></button>
+          </div>
+          <div class="campus-stepper-viewport">
+            <article class="campus-step-panel" data-step-panel="1">
+              <span>Step 01</span>
+              <h3>Apply to join the program</h3>
+              <p>Submit your interest, tell us about your campus, and share how you can bring Jenovate to more students.</p>
+            </article>
+            <article class="campus-step-panel" data-step-panel="2">
+              <span>Step 02</span>
+              <h3>Activate your campus network</h3>
+              <p>Use ready campaign materials, start student conversations, and complete simple weekly ambassador tasks.</p>
+            </article>
+            <article class="campus-step-panel" data-step-panel="3">
+              <span>Step 03</span>
+              <h3>Track reach, referrals, and rewards</h3>
+              <p>Follow your activity from a clear progress view so every referral, milestone, and reward feels visible.</p>
+            </article>
+            <article class="campus-step-panel" data-step-panel="4">
+              <span>Step 04</span>
+              <h3>Grow as a campus leader</h3>
+              <p>Earn recognition, sharpen communication skills, unlock higher milestones, and build proof of leadership.</p>
+            </article>
+          </div>
+          <div class="campus-stepper-actions">
+            <button class="campus-step-back" type="button" data-step-back>Previous</button>
+            <button class="campus-step-next" type="button" data-step-next>Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="campus-earnings" id="earnings">
+      <div class="section-title">
+        <h2>How much can you Earn?</h2>
+        <p>Drag the sliders to estimate your possible ambassador rewards.</p>
+      </div>
+      <div class="earn-card">
+        <span>Upto</span>
+        <strong id="earningAmount">&#8377;1,39,432*</strong>
+        <div class="earn-controls">
+          <label>
+            <span>Number of courses <b id="courseValue">100</b></span>
+            <input id="courseRange" type="range" min="0" max="200" value="100">
+            <em><i>0</i><i>200</i></em>
+          </label>
+          <label>
+            <span>Average order value <b id="orderValue">17429</b></span>
+            <input id="orderRange" type="range" min="4000" max="20000" value="17429">
+            <em><i>4000</i><i>20000</i></em>
+          </label>
+        </div>
+        <p class="earn-note">*Earning estimates are illustrative and depend on campaign performance.</p>
+      </div>
+    </section>
+
+    <section class="campus-community" id="ambassador-reviews">
+      <div class="campus-review-copy">
+        <span class="pill">Ambassador Reviews</span>
+        <h2>Words from Our Ambassadors</h2>
+        <p>Hear directly from students and creators who are growing with the JENOVATE programme.</p>
+      </div>
+      <div class="campus-review-grid">
+        <article class="campus-review-card featured">
+          <div class="review-head">
+            <span>PP</span>
+            <div>
+              <strong>Priya Patel</strong>
+              <small>Campus Ambassador</small>
+            </div>
+          </div>
+          <p>"I started by sharing one campaign in my class WhatsApp group. It took a few tries to explain it properly, but the team gave us clear captions and helped me track the responses."</p>
+          <div class="review-meta"><b>Campus Programme</b></div>
+        </article>
+        <article class="campus-review-card">
+          <div class="review-head">
+            <span>RG</span>
+            <div>
+              <strong>Rohan Gupta</strong>
+              <small>Campus Programme</small>
+            </div>
+          </div>
+          <p>"The programme is useful if you are consistent. I usually spend an hour or two a week on posts and follow-ups, and the dashboard makes it easy to see what actually worked."</p>
+          <div class="review-meta"><b>Campus Programme</b></div>
+        </article>
+        <article class="campus-review-card">
+          <div class="review-head">
+            <span>NS</span>
+            <div>
+              <strong>Neha Sharma</strong>
+              <small>Influencer Programme</small>
+            </div>
+          </div>
+          <p>"I already posted education content, so Jenovate fit my audience. Not every post converted, but the team shared feedback on what to improve for the next campaign."</p>
+          <div class="review-meta"><b>Influencer Programme</b></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="campus-cta">
+      <h2>Ready To Represent Jenovate?</h2>
+      <p>Start small, lead consistently, and turn your campus presence into real growth.</p>
+      <a class="btn primary" href="form-engine/index.html?category=campus_ambassador">Apply Now <span></span></a>
+    </section>
+  </main>
+
+  <footer class="footer simple-footer">
+    <div class="simple-footer-inner">
+      <a class="footer-brand" href="index.html#home">
+        <img src="assets/img/logo/favicon.png" alt="">
+        <span>Jenovate</span>
+      </a>
+      <p>Think campus, Shanthipura Main Road, Electronic City Phase 2 -560100<br>Bengaluru, Karnataka, India</p>
+      <p>&copy; 2026 Jenosphere Digital Learning LLP. All rights reserved.</p>
+    </div>
+    <nav class="footer-policy-links" aria-label="Policy documents">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="refund-policy.html">Refund Policy</a>
+    </nav>
+    <div class="footer-main">
+      <div>
+        <a class="footer-brand" href="index.html#home">
+          <img src="assets/img/logo/favicon.png" alt="">
+        </a>
+        <h3>Useful Links</h3>
+        <a href="index.html#courses">Courses</a>
+        <a href="about-us.html">About Us</a>
+        <a href="index.html#testimonials">Testimonials</a>
+      </div>
+      <div>
+        <h3>Our Company</h3>
+        <a href="campus-ambassador.html">Campus Ambassador</a>
+        <a href="index.html#mentors">Mentors</a>
+        <a href="index.html#journey">How It Works</a>
+      </div>
+      <div>
+        <h3>Get In Touch</h3>
+        <p>Build your future with practical learning and student leadership.</p>
+        <div class="socials"><span>f</span><span>t</span><span>o</span><span>p</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 jenovate.com. All rights reserved.</p>
+      <p><a href="terms-of-service.html">Terms of Service</a> <span>|</span> <a href="privacy-policy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script src="scripts/public/script.js?v=20260602-course-categories-v19"></script>
+  <script src="scripts/public/effects-loader.js?v=20260602-course-categories-v19"></script>
+</body>
+</html>

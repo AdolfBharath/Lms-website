@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Jenovate</title>
+  <meta name="description" content="Join Jenovate by sharing your details, preferred course, and reference ID.">
+  <link rel="icon" type="image/png" href="assets/img/logo/favicon.png">
+  <link rel="stylesheet" href="styles/global/styles.css?v=20260611-settled-card-button">
+  <link rel="stylesheet" href="styles/global/public-mobile-comfort.css?v=20260611-settled-card-button">
+  <link rel="stylesheet" href="styles/pages/join-form.css?v=20260618-student-register">
+</head>
+<body class="join-page">
+  <header class="site-header">
+    <a class="brand" href="index.html#home" aria-label="Jenovate home">
+      <img src="image/logo/logonew.png" alt="Jenovate">
+    </a>
+    <nav class="nav">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#courses">Courses</a>
+      <a href="launchpad-detail.html?plan=advanced">Launchpad</a>
+      <a href="campus-ambassador.html">Campus Ambassador</a>
+      <a href="index.html#testimonials">Testimonials</a>
+      <a href="about-us.html">About Us</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="login" type="button">Log in</button>
+      <a class="join-us" href="form-engine/index.html?category=student_registration">Join Us</a>
+      <button class="join-close" type="button" aria-label="Close page">&times;</button>
+    </div>
+  </header>
+
+  <main class="join-main">
+    <section class="join-hero">
+      <div class="join-copy">
+        <span class="join-kicker">Jenovate Enrollment</span>
+        <h1>Start Your Learning Journey</h1>
+        <p>Share your basic details and our team will help you choose the right program.</p>
+      </div>
+
+      <form class="join-form" id="joinForm">
+        <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+
+        <label class="field">
+          <span>Your Full Name <b>*</b></span>
+          <input name="fullName" type="text" autocomplete="name" placeholder="Enter your full name" required>
+        </label>
+
+        <fieldset class="field radio-field">
+          <legend>Gender <b>*</b></legend>
+          <label><input name="gender" type="radio" value="Woman" required> Woman</label>
+          <label><input name="gender" type="radio" value="Man"> Man</label>
+        </fieldset>
+
+        <label class="field">
+          <span>Email <b>*</b></span>
+          <input name="email" type="email" autocomplete="email" placeholder="Enter your email" required>
+        </label>
+
+        <label class="field">
+          <span>Phone Number <b>*</b></span>
+          <input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Enter your phone number" required>
+        </label>
+
+        <label class="field">
+          <span>Your College Name <b>*</b></span>
+          <input name="college" type="text" autocomplete="organization" placeholder="Enter your college name" required>
+        </label>
+
+        <label class="field">
+          <span>The Course Are You Looking For <b>*</b></span>
+          <input name="course" type="text" placeholder="Enter the course name" required>
+        </label>
+
+        <label class="field">
+          <span>Reference ID <em>Optional</em></span>
+          <input name="referenceId" type="text" placeholder="Enter reference ID if someone referred you">
+        </label>
+
+        <button class="submit-btn" type="submit">Submit</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/core/supabase-config.js?v=20260618-student-register"></script>
+  <script src="scripts/pages/join-form.js?v=20260618-student-register"></script>
+</body>
+</html>
