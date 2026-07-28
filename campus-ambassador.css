@@ -536,9 +536,10 @@ body {
   top: 33%;
   width: 310px;
   height: 310px;
-  background-image: url("/logos/ca-earn-bg.jpeg");
-  background-repeat: no-repeat;
-  background-size: contain;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.28), transparent 36%),
+    radial-gradient(circle at 65% 62%, rgba(255, 195, 41, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(226, 235, 255, 0.74));
   opacity: 0.35;
   transform: translateY(-50%);
   pointer-events: none;

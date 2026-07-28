@@ -3,25 +3,51 @@
   const APP_SESSION_KEY = "jenovateCurrentUser";
   const ADMIN_SESSION_KEY = "jenovateAdminSession";
   const getClient = () => window.getSupabaseClient?.();
+  const PAGE_SIZE = 20;
+  const CHAT_PAGE_SIZE = 30;
+  const QUERY_CACHE_TTL = 45_000;
+  const QUERY_CACHE_PREFIX = "jenovate:lms:mentor:";
+  const SELECTS = {
+    users: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,last_login_reward_date,status,deleted_at,courseNames,created_at",
+    courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
+    batches: "id,name,course_id,mentor_id,capacity,enroll_limit,smart_waitlist,status,start_date,end_date,progress,enrolled_count,created_at",
+    userCourses: "id,user_id,student_id,learner_id,course_id,batch_id,created_at,status,deleted_at",
+    progress: "student_id,course_id,completed_lessons,completed_modules,rewarded_modules,quiz_completed,quiz_score,updated_at,quiz_attempts,quiz_failed_attempts,quiz_locked,quiz_rewatch_required,quiz_last_score,quiz_last_total,quiz_best_score,module_quiz_state",
+    projects: "id,title,description,status,student_id,user_id,batch_id,course_id,type,drive_link,file_url,file_urls,review_notes,feedback,reviewed_at,created_at,updated_at",
+    batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,published_at,deleted_at,created_by,created_at",
+    taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
+    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at,deleted_at",
+    extraMarks: "id,student_id,course_id,mentor_id,marks,reason,created_at,updated_at",
+    chats: "id,batch_id,user_id,message,parent_id,created_at",
+    announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
+    supportTickets: "id,ticket_id,user_id,user_role,category,subject,message,attachment_url,status,priority,created_at,updated_at",
+    supportMessages: "id,ticket_id,sender_id,sender_role,message,attachment_url,is_read,read_at,created_at",
+    supportNotifications: "id,ticket_id,recipient_user_id,recipient_role,title,body,channel,is_read,read_at,created_at"
+  };
 
   const TABLE_SPECS = [
     {
       key: "users",
       table: "users",
-      select: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,courseNames,created_at",
-      limit: 500
+      select: SELECTS.users,
+      fallbackSelect: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,courseNames,created_at",
+      limit: 1000,
+      scope: "mentorUsers"
     },
-    { key: "courses", table: "courses", select: "*", limit: 200 },
-    { key: "batches", table: "batches", select: "*", limit: 200 },
-    { key: "userCourses", table: "user_courses", select: "*", limit: 1000 },
-    { key: "progress", table: "student_course_progress", select: "*", limit: 1000 },
-    { key: "projects", table: "projects", select: "*", limit: 500 },
-    { key: "batchTasks", table: "batch_tasks", select: "*", limit: 500 },
-    { key: "taskSubmissions", table: "task_submissions", select: "*", limit: 500 },
-    { key: "quizAttempts", table: "student_quiz_attempts", select: "*", optional: true, limit: 1000 },
-    { key: "extraMarks", table: "student_extra_marks", select: "*", optional: true, limit: 1000 },
-    { key: "chats", table: "batch_chats", select: "*", limit: 200 },
-    { key: "announcements", table: "announcements", select: "*", limit: 100 }
+    { key: "courses", table: "courses", select: SELECTS.courses, limit: PAGE_SIZE, scope: "mentorCourses" },
+    { key: "batches", table: "batches", select: SELECTS.batches, limit: PAGE_SIZE, scope: "mentorBatches" },
+    { key: "userCourses", table: "user_courses", select: SELECTS.userCourses, fallbackSelect: "user_id,course_id,created_at,status", limit: 1000 },
+    { key: "progress", table: "student_course_progress", select: SELECTS.progress, limit: 1000 },
+    { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,user_id,batch_id,course_id,type,file_urls,review_notes,feedback,created_at", limit: 200, scope: "mentorContent", order: "created_at.desc" },
+    { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, scope: "mentorBatchesContent" },
+    { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 500, order: "submitted_at.desc" },
+    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, optional: true, limit: 500, order: "submitted_at.desc" },
+    { key: "extraMarks", table: "student_extra_marks", select: SELECTS.extraMarks, optional: true, limit: 500, scope: "mentorMarks" },
+    { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "mentorBatchesContent", order: "created_at.desc" },
+    { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, scope: "mentorAnnouncements", order: "published_at.desc" },
+    { key: "supportTickets", table: "support_tickets", select: SELECTS.supportTickets, optional: true, limit: 30, scope: "supportOwnerRows", order: "updated_at.desc" },
+    { key: "supportMessages", table: "support_messages", select: SELECTS.supportMessages, optional: true, limit: 120, order: "created_at.desc" },
+    { key: "supportNotifications", table: "support_notifications", select: SELECTS.supportNotifications, optional: true, limit: 30, scope: "supportNotificationRows", order: "created_at.desc" }
   ];
 
   const state = {
@@ -29,6 +55,7 @@
     activeView: "dashboard",
     selectedBatchId: null,
     globalQuery: "",
+    reportActivityFilter: "all",
     realtimeChannel: null,
     refreshTimer: null,
     tableErrors: {},
@@ -44,9 +71,28 @@
       quizAttempts: [],
       extraMarks: [],
       chats: [],
-      announcements: []
-    }
+      announcements: [],
+      supportTickets: [],
+      supportMessages: [],
+      supportNotifications: []
+    },
+    queryCache: new Map(),
+    inFlightRequests: new Map()
   };
+
+  const tableClient = window.JenovatePortalData.createTableClient({
+    applyScopedFilters,
+    cachePrefix: QUERY_CACHE_PREFIX,
+    cacheTtl: QUERY_CACHE_TTL,
+    defaultOrderTables: ["batch_chats", "announcements", "batch_tasks", "student_extra_marks"],
+    getCacheScope: () => [state.mentor?.id || "", state.selectedBatchId || ""].join(":"),
+    getClient,
+    onFetchError: (spec, error) => {
+      if (!spec.optional) console.error(`Supabase fetch failed for ${spec.table}`, error);
+    },
+    pageSize: PAGE_SIZE,
+    state
+  });
 
   const views = {
     dashboard: document.getElementById("dashboardView"),
@@ -56,8 +102,10 @@
     enrollments: document.getElementById("enrollmentsView"),
     tasks: document.getElementById("tasksView"),
     reviews: document.getElementById("reviewsView"),
+    questions: document.getElementById("questionsView"),
     announcements: document.getElementById("announcementsView"),
     chat: document.getElementById("chatView"),
+    support: document.getElementById("supportView"),
     profile: document.getElementById("profileView")
   };
 
@@ -70,14 +118,21 @@
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
   async function init() {
+    buildPremiumDashboardShell();
+    applyMentorSidebarState(readMentorSidebarCollapsed());
     wireNavigation();
     wireActions();
+    document.body.dataset.mentorView = state.activeView;
 
     if (!getClient()) {
-      showAlert("Supabase library did not load. Check your internet connection and refresh.", true);
+      showAlert("Mentor data could not load. Check your internet connection and refresh.", true);
       return;
     }
 
@@ -97,7 +152,8 @@
     // on in-tab navigation. Session is cleared only on explicit logout.
     
     renderMentorIdentity();
-    await loadAllData();
+    initializeHistoryNavigation();
+    await loadAllData({ force: true });
     setupRealtime();
   }
 
@@ -110,6 +166,8 @@
       button.addEventListener("click", () => setView(button.dataset.jump));
     });
 
+    wireReportTabs();
+
     document.querySelectorAll("[data-close-modal]").forEach((button) => {
       button.addEventListener("click", closeModal);
     });
@@ -120,38 +178,298 @@
   }
 
   function wireActions() {
-    on("refreshBtn", "click", () => loadAllData());
-    on("refreshReviewsBtn", "click", () => loadAllData());
+    on("refreshBtn", "click", () => loadAllData({ force: true }));
+    on("refreshReviewsBtn", "click", () => loadAllData({ force: true }));
+    on("refreshQuestionsBtn", "click", () => loadAllData({ force: true }));
     on("reloadChatBtn", "click", loadChats);
-    on("reloadAnnouncementsBtn", "click", () => loadAllData());
+    on("reloadAnnouncementsBtn", "click", () => loadAllData({ force: true }));
+    on("refreshSupportBtn", "click", () => loadAllData({ force: true }));
     on("homeBtn", "click", () => {
       closeModal();
       setView("dashboard");
       document.querySelector(".mentor-main")?.scrollTo({ top: 0, behavior: "smooth" });
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    on("logoutBtn", "click", logout);
-    on("addCourseBtn", "click", () => openCourseEditor());
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("#logoutBtn")) {
+        event.preventDefault();
+        logout();
+      }
+    });
     on("addEnrollmentBtn", "click", () => openEnrollmentModal());
     on("addTaskBtn", "click", () => openTaskModal());
     on("addAnnouncementBtn", "click", () => openAnnouncementModal());
+    document.querySelectorAll("[data-open-task-modal]").forEach((button) => {
+      button.addEventListener("click", () => openTaskModal());
+    });
+    on("mentorSidebarToggle", "click", () => {
+      const collapsed = !document.body.classList.contains("mentor-sidebar-collapsed");
+      applyMentorSidebarState(collapsed);
+    });
+    on("mentorThemeToggle", "click", () => {
+      document.body.classList.toggle("mentor-dark-mode");
+    });
     on("globalSearch", "input", (event) => {
       state.globalQuery = event.target.value.trim().toLowerCase();
       renderActiveView();
     });
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        document.getElementById("globalSearch")?.focus();
+      }
+    });
     on("studentSearch", "input", renderStudents);
+    on("studentCourseFilter", "change", renderStudents);
     on("enrollmentSearch", "input", renderEnrollments);
     on("taskBatchFilter", "change", (event) => {
       state.selectedBatchId = event.target.value;
       renderTasks();
     });
     on("chatComposer", "submit", postChatMessage);
+    on("supportTicketForm", "submit", submitSupportTicket);
     on("profileForm", "submit", saveProfile);
     on("passwordForm", "submit", updatePassword);
   }
 
+  function buildPremiumDashboardShell() {
+    const dashboard = document.getElementById("dashboardView");
+    if (!dashboard) return;
+    dashboard.classList.add("premium-reference-dashboard");
+    dashboard.dataset.premiumShell = "true";
+    dashboard.dataset.reportDashboard = "true";
+    dashboard.innerHTML = `
+      <div class="real-data-dashboard">
+      <section class="premium-welcome">
+        <div>
+          <h2 id="welcomeTitle">Welcome back</h2>
+          <p id="welcomeMeta">Live mentor workspace data is loading.</p>
+        </div>
+        <div class="premium-actions">
+          <button class="secondary-btn" type="button" data-open-task-modal>+ Assignment</button>
+          <button class="secondary-btn" type="button" data-jump="reviews">Review Queue</button>
+          <button class="secondary-btn" type="button" data-jump="batches">Calendar</button>
+        </div>
+      </section>
+
+      <div class="premium-kpi-grid" aria-label="Mentor metrics">
+        <article class="premium-kpi-card students">
+          <div><span>ST</span><small>Students</small></div>
+          <strong id="metricStudents">0</strong>
+          <em id="metricStudentsTrend">Live assigned learners</em>
+          <i aria-hidden="true"></i>
+        </article>
+        <article class="premium-kpi-card courses">
+          <div><span>CR</span><small>Courses</small></div>
+          <strong id="metricCourses">0</strong>
+          <em id="metricCoursesTrend">Live assigned courses</em>
+          <i aria-hidden="true"></i>
+        </article>
+        <article class="premium-kpi-card reviews">
+          <div><span>RV</span><small>Pending Reviews</small></div>
+          <strong id="metricReviews">0</strong>
+          <em id="metricReviewsTrend">Live pending work</em>
+          <i aria-hidden="true"></i>
+        </article>
+        <article class="premium-kpi-card progress">
+          <div><span>PG</span><small>Average Progress</small></div>
+          <strong id="metricProgress">0%</strong>
+          <em id="metricProgressTrend">Live course progress</em>
+          <i aria-hidden="true"></i>
+        </article>
+        <span hidden id="metricTasks">0</span>
+        <span hidden id="metricBatches">0</span>
+        <span hidden id="metricMessages">0</span>
+        <span hidden id="metricModules">0</span>
+        <span hidden id="metricQuizMarks">0</span>
+        <span hidden id="metricExtraMarks">0</span>
+        <span hidden id="metricTotalMarks">0</span>
+      </div>
+
+      <div class="premium-dashboard-grid premium-top-grid">
+        <section class="premium-panel premium-weekly-panel">
+          <div class="premium-panel-head">
+            <h2>Weekly Engagement</h2>
+            <button class="report-select" type="button">This Week</button>
+          </div>
+          <div class="premium-chart-legend" aria-hidden="true">
+            <span class="purple">Assignments</span>
+            <span class="blue">Quizzes</span>
+            <span class="green">Attendance</span>
+            <span class="orange">Course Views</span>
+          </div>
+          <div class="report-chart" id="mentorReportWeeklyChart"></div>
+        </section>
+
+        <section class="premium-panel premium-review-panel">
+          <div class="premium-panel-head">
+            <h2>Review Queue</h2>
+            <button class="report-link" type="button" data-jump="reviews">View all</button>
+          </div>
+          <div class="reference-list" id="premiumReviewQueue"></div>
+        </section>
+
+        <section class="premium-panel premium-calendar-panel">
+          <div class="premium-panel-head">
+            <h2>Upcoming Schedule</h2>
+            <button class="report-link" type="button" data-jump="batches">View all</button>
+          </div>
+          <div class="calendar-head"><strong id="premiumScheduleDate">Live LMS schedule</strong></div>
+          <div class="reference-list" id="premiumSchedule"></div>
+        </section>
+      </div>
+
+      <div class="premium-dashboard-grid premium-bottom-grid">
+        <section class="premium-panel premium-courses-panel">
+          <div class="premium-panel-head">
+            <h2>My Courses</h2>
+            <button class="report-link" type="button" data-jump="courses">View all courses</button>
+          </div>
+          <div class="stack-list" id="dashboardCourses"></div>
+        </section>
+
+        <section class="premium-panel premium-activity-panel">
+          <div class="premium-panel-head">
+            <h2>Recent Activity</h2>
+            <button class="report-link" type="button" data-jump="students">View all</button>
+          </div>
+          <div class="report-list" id="mentorReportActivityList"></div>
+        </section>
+
+        <section class="premium-panel premium-messages-panel">
+          <div class="premium-panel-head">
+            <h2>Messages</h2>
+            <button class="report-link" type="button" data-jump="chat">View all</button>
+          </div>
+          <div class="reference-list" id="premiumMessages"></div>
+          <button class="secondary-btn premium-message-button" type="button" data-jump="chat">Go to Messages</button>
+        </section>
+      </div>
+
+      <div class="premium-hidden-report" hidden>
+        <div id="mentorReportTotalLearners"></div>
+        <div id="mentorReportLearningTime"></div>
+        <div id="mentorReportBreakdown"></div>
+        <div id="mentorReportSparkline"></div>
+        <div id="mentorReportActiveLearners"></div>
+        <div id="mentorReportReadiness"></div>
+        <div id="mentorReportWorkload"></div>
+        <div id="mentorReportCourses"></div>
+        <div id="mentorReportBatches"></div>
+        <div id="mentorReportAttention"></div>
+        <div id="dashboardBatches"></div>
+        <div id="dashboardAnnouncements"></div>
+        <div id="dashboardProgress"></div>
+        <div id="dashboardScores"></div>
+      </div>
+      </div>
+    `;
+    dashboard.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", () => setView(button.dataset.jump));
+    });
+  }
+
+  function wireReportTabs() {
+    document.querySelectorAll("#dashboardView [data-report-filter]").forEach((button) => {
+      if (button.dataset.wired === "true") return;
+      button.dataset.wired = "true";
+      button.addEventListener("click", () => {
+        state.reportActivityFilter = button.dataset.reportFilter || "all";
+        document.querySelectorAll("#dashboardView [data-report-filter]").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+        renderMentorReportActivity();
+      });
+    });
+  }
+
+  function arrangePremiumDashboard() {
+    const dashboard = document.getElementById("dashboardView");
+    if (!dashboard) return;
+    if (dashboard.dataset.referenceLayout === "true") return;
+
+    const report = dashboard.querySelector(".role-report-dashboard");
+    const legacyGrid = dashboard.querySelector(".dashboard-grid");
+    const rail = dashboard.querySelector(".lms-side-rail");
+    const weekly = report?.querySelector(".report-line-card");
+    const activity = report?.querySelector(".report-activity-card");
+    const coursesPanel = legacyGrid?.querySelector(".panel");
+
+    const topGrid = document.createElement("div");
+    topGrid.className = "reference-card-grid reference-card-grid-top";
+
+    const bottomGrid = document.createElement("div");
+    bottomGrid.className = "reference-card-grid reference-card-grid-bottom";
+
+    const reviewCard = document.createElement("section");
+    reviewCard.className = "report-card premium-review-card";
+    reviewCard.innerHTML = `
+      <div class="report-card-head">
+        <h2>Review Queue</h2>
+        <button class="report-link" type="button" data-jump="reviews">View all</button>
+      </div>
+      <div class="reference-list" id="premiumReviewQueue"></div>
+    `;
+
+    const calendarCard = document.createElement("section");
+    calendarCard.className = "report-card premium-calendar-card";
+    calendarCard.innerHTML = `
+      <div class="report-card-head">
+        <h2>Upcoming Schedule</h2>
+        <button class="report-link" type="button" data-jump="batches">View all</button>
+      </div>
+      <div class="calendar-head"><strong id="premiumScheduleDate">Live LMS schedule</strong></div>
+      <div class="reference-list" id="premiumSchedule"></div>
+    `;
+
+    const messagesCard = document.createElement("section");
+    messagesCard.className = "report-card premium-messages-card";
+    messagesCard.innerHTML = `
+      <div class="report-card-head">
+        <h2>Messages</h2>
+        <button class="report-link" type="button" data-jump="chat">View all</button>
+      </div>
+      <div class="reference-list" id="premiumMessages"></div>
+      <button class="secondary-btn premium-message-button" type="button" data-jump="chat">Go to Messages</button>
+    `;
+
+    if (weekly) topGrid.appendChild(weekly);
+    topGrid.appendChild(reviewCard);
+    topGrid.appendChild(calendarCard);
+
+    if (coursesPanel) bottomGrid.appendChild(coursesPanel);
+    if (activity) bottomGrid.appendChild(activity);
+    bottomGrid.appendChild(messagesCard);
+
+    [
+      dashboard.querySelector(".mentor-hero"),
+      dashboard.querySelector(".metric-grid"),
+      topGrid,
+      bottomGrid
+    ].filter(Boolean).forEach((section) => dashboard.appendChild(section));
+
+    if (report) report.hidden = true;
+    if (legacyGrid) legacyGrid.hidden = true;
+    if (rail) rail.hidden = true;
+
+    dashboard.querySelectorAll("[data-jump]").forEach((button) => {
+      if (button.dataset.referenceWired === "true") return;
+      button.dataset.referenceWired = "true";
+      button.addEventListener("click", () => setView(button.dataset.jump));
+    });
+
+    dashboard.dataset.referenceLayout = "true";
+  }
+
   async function resolveMentorSession() {
-    return readStoredRoleSession("mentor");
+    try {
+      const profile = await window.JenovateAuth?.requireRole?.("mentor");
+      if (profile) return normalizeUser(profile);
+    } catch (error) {
+      console.warn("Mentor auth check failed", error);
+    }
+    return null;
   }
 
   function readStoredRoleSession(expectedRole) {
@@ -169,8 +487,8 @@
     return null;
   }
 
-  function enforceLiveSession() {
-    if (!readStoredRoleSession("mentor")) {
+  async function enforceLiveSession() {
+    if (!(await resolveMentorSession())) {
       if (redirectToActiveSession("mentor")) return;
       window.location.replace("login.html?next=mentor");
     }
@@ -180,17 +498,19 @@
     const profile = window.JenovateSessionRouter?.activeSession?.();
     const target = window.JenovateSessionRouter?.routeFor?.(profile);
     if (!profile?.role || profile.role === expectedRole || !target) return false;
-    window.location.replace(target);
+    window.location.replace(`unauthorized.html?expected=${encodeURIComponent(expectedRole)}&role=${encodeURIComponent(profile.role)}`);
     return true;
   }
 
   async function loadAllData(options = {}) {
     const silent = options?.silent === true;
-    setSyncStatus("Connecting to Supabase...");
+    if (options.force === true) clearQueryCache();
+    setSyncStatus("");
     setLoading(!silent);
     try {
-      const results = await Promise.all(TABLE_SPECS.map(fetchTableSafe));
+      const results = await Promise.all(TABLE_SPECS.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
+      await window.resolveSupabaseAssetsDeep?.(rows);
       const failed = results.filter((result) => result.error && !result.optional);
 
       state.tableErrors = Object.fromEntries(failed.map((result) => [result.table, result.error.message || "Unable to fetch"]));
@@ -206,6 +526,9 @@
       state.data.extraMarks = rows.extraMarks || [];
       state.data.chats = rows.chats;
       state.data.announcements = rows.announcements;
+      state.data.supportTickets = rows.supportTickets || [];
+      state.data.supportMessages = rows.supportMessages || [];
+      state.data.supportNotifications = rows.supportNotifications || [];
 
       const batches = scopedBatches();
       if (state.selectedBatchId && !batches.some((batch) => sameId(batch.id, state.selectedBatchId))) {
@@ -215,42 +538,112 @@
       renderAll();
       const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
       if (failed.length) {
-        setSyncStatus(`Synced with ${failed.length} warning${failed.length === 1 ? "" : "s"} at ${stamp}`);
-        if (!silent) showAlert(`Some Supabase tables need attention: ${failed.map((item) => item.table).join(", ")}`, true);
+        console.warn("Mentor background data loaded with warnings", failed.map((item) => ({ table: item.table, error: friendlySupabaseError(item.error) })));
+        setSyncStatus("");
       } else {
-        setSyncStatus(`Live Supabase data synced ${stamp}`);
-        if (!silent) showAlert("Mentor data synced from Supabase.");
+        setSyncStatus("");
       }
     } catch (error) {
-      showAlert(error.message || "Unable to load mentor data.", true);
-      setSyncStatus("Sync needs attention");
+      console.error("Mentor background data sync failed", error.message || error);
+      setSyncStatus("");
     } finally {
       setLoading(false);
     }
   }
 
-  async function fetchTableSafe(spec) {
-    try {
-      const rows = await fetchTable(spec.table, spec.select, spec.limit);
-      return { ...spec, rows, error: null };
-    } catch (error) {
-      if (!spec.optional) {
-        console.error(`Supabase fetch failed for ${spec.table}`, error);
+  async function fetchTableSafe(spec, options = {}) {
+    return tableClient.fetchTableSafe(spec, options);
+  }
+
+  function isMissingColumnError(error) {
+    return window.JenovatePortalData.isMissingColumnError(error);
+  }
+
+  async function fetchTable(spec, options = {}) {
+    return tableClient.fetchTable(spec, options);
+  }
+
+  async function runSupabaseQuery(supabaseClient, spec, limit) {
+    return tableClient.runSupabaseQuery(supabaseClient, spec, limit);
+  }
+
+  function applyScopedFiltersToRows(rows, spec) {
+    if (spec.scope !== "mentorUsers") return rows;
+    const mentorId = String(state.mentor?.id || "");
+    return mentorId
+      ? rows.filter((user) => String(user.id) === mentorId || String(user.role || "").toLowerCase() === "student")
+      : rows;
+  }
+
+  function applyScopedFilters(query, spec) {
+    const mentorId = state.mentor?.id;
+    switch (spec.scope) {
+      case "mentorCourses": {
+        const courseIds = parseIdList(state.mentor?.course_ids).map(String).filter(Boolean);
+        if (mentorId && courseIds.length) return query.or(`mentor_id.eq.${mentorId},id.in.(${courseIds.join(",")})`);
+        if (mentorId) return query.eq("mentor_id", mentorId);
+        return courseIds.length ? query.in("id", courseIds) : query;
       }
-      return { ...spec, rows: [], error };
+      case "mentorBatches":
+        {
+          const courseIds = parseIdList(state.mentor?.course_ids).map(String).filter(Boolean);
+          if (mentorId && courseIds.length) return query.or(`mentor_id.eq.${mentorId},course_id.in.(${courseIds.join(",")})`);
+          if (mentorId) return query.eq("mentor_id", mentorId);
+          return courseIds.length ? query.in("course_id", courseIds) : query;
+        }
+      case "mentorUsers":
+        return mentorId ? query.or(`id.eq.${mentorId},role.eq.student`) : query;
+      case "mentorContent":
+        return query;
+      case "mentorBatchesContent":
+        return state.selectedBatchId ? query.eq("batch_id", state.selectedBatchId) : query;
+      case "mentorMarks":
+        return mentorId ? query.eq("mentor_id", mentorId) : query;
+      case "mentorAnnouncements": {
+        const clauses = ["audience.in.(all,mentors)"];
+        if (mentorId) clauses.push(`created_by.eq.${mentorId}`);
+        return query.or(clauses.join(","));
+      }
+      case "supportOwnerRows":
+        return mentorId ? query.eq("user_id", mentorId) : query;
+      case "supportMessageRows": {
+        const ticketIds = state.data.supportTickets.map((ticket) => String(ticket.id || ticket.ticket_id)).filter(Boolean);
+        return ticketIds.length ? query.in("ticket_id", ticketIds) : query.eq("ticket_id", "00000000-0000-0000-0000-000000000000");
+      }
+      case "supportNotificationRows":
+        return mentorId ? query.eq("recipient_user_id", mentorId) : query;
+      default:
+        return query;
     }
   }
 
-  async function fetchTable(table, select, limit = 500) {
-    const supabaseClient = getClient();
-    const { data, error } = await supabaseClient.from(table).select(select).limit(limit);
-    if (error) throw error;
-    return data || [];
+  function normalizeLimit(limit = PAGE_SIZE) {
+    return tableClient.normalizeLimit(limit);
+  }
+
+  function queryCacheKey(spec, limit) {
+    return tableClient.queryCacheKey(spec, limit);
+  }
+
+  function readCachedRows(cacheKey) {
+    return tableClient.readCachedRows(cacheKey);
+  }
+
+  function writeCachedRows(cacheKey, rows) {
+    return tableClient.writeCachedRows(cacheKey, rows);
+  }
+
+  function revalidateTable(spec, limit, cacheKey) {
+    return tableClient.revalidateTable(spec, limit, cacheKey);
+  }
+
+  function clearQueryCache() {
+    return tableClient.clearQueryCache();
   }
 
   async function loadChats() {
     try {
-      state.data.chats = await fetchTable("batch_chats", "*");
+      state.data.chats = await fetchTable(TABLE_SPECS.find((spec) => spec.key === "chats"), { force: true });
       renderChatBatches();
       renderChat();
       showAlert("Batch chat refreshed.");
@@ -263,19 +656,7 @@
     const supabaseClient = getClient();
     if (!supabaseClient?.channel || state.realtimeChannel) return;
 
-    const liveTables = [
-      "courses",
-      "batches",
-      "user_courses",
-      "student_course_progress",
-      "projects",
-      "batch_tasks",
-      "task_submissions",
-      "student_quiz_attempts",
-      "student_extra_marks",
-      "batch_chats",
-      "announcements"
-    ];
+    const liveTables = ["projects", "batch_chats", "announcements", "support_tickets", "support_messages", "support_notifications"];
 
     const channel = supabaseClient.channel("mentor-lms-realtime");
     liveTables.forEach((table) => {
@@ -287,22 +668,30 @@
     });
 
     channel.subscribe((status) => {
-      if (status === "SUBSCRIBED") {
-        setSyncStatus("Realtime connected");
-      } else if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
-        setSyncStatus("Realtime reconnecting");
+      if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
+        console.warn("Mentor realtime status", status);
       }
     });
 
     state.realtimeChannel = channel;
+    window.addEventListener("pagehide", cleanupRealtime, { once: true });
+    window.addEventListener("beforeunload", cleanupRealtime, { once: true });
   }
 
   function queueRealtimeRefresh(table) {
-    setSyncStatus(`Live update from ${formatTableName(table)}`);
+    setSyncStatus("");
     window.clearTimeout(state.refreshTimer);
     state.refreshTimer = window.setTimeout(() => {
-      loadAllData({ silent: true });
-    }, 450);
+      loadAllData({ silent: true, force: true });
+    }, 900);
+  }
+
+  async function cleanupRealtime() {
+    window.clearTimeout(state.refreshTimer);
+    if (state.realtimeChannel && getClient()?.removeChannel) {
+      await getClient().removeChannel(state.realtimeChannel);
+    }
+    state.realtimeChannel = null;
   }
 
   function renderAll() {
@@ -314,9 +703,11 @@
     renderEnrollments();
     renderTasks();
     renderReviews();
+    renderQuestions();
     renderAnnouncements();
     renderChatBatches();
     renderChat();
+    renderSupport();
     renderProfile();
   }
 
@@ -327,11 +718,13 @@
     text("sidebarMentorEmail", email);
     text("sidebarMentorAvatar", initials(name));
     text("mentorAvatar", initials(name));
+    text("topbarMentorName", name);
     text("welcomeTitle", `Welcome back, ${name}`);
     text("welcomeMeta", `${email} is connected to the mentor workspace.`);
   }
 
   function renderDashboard() {
+    ensureMentorReportDashboard();
     const query = state.globalQuery;
     const courses = scopedCourses().filter((course) => matchesCourse(course, query));
     const batches = scopedBatches().filter((batch) => matchesBatch(batch, query));
@@ -360,13 +753,677 @@
     text("metricQuizMarks", totalQuizMarks);
     text("metricExtraMarks", totalExtraMarks);
     text("metricTotalMarks", totalMarks);
+    setBadge("sidebarMessageBadge", chats.length);
+    setBadge("topbarMessageBadge", chats.length);
+    setBadge("topbarAnnouncementBadge", announcements.length);
+    text("metricStudentsTrend", liveComparisonLabel(students, "created_at", "this week"));
+    text("metricCoursesTrend", liveComparisonLabel(courses, "created_at", "this week"));
+    text("metricReviewsTrend", liveComparisonLabel([...submissions, ...projects].filter(isPendingReview), ["submitted_at", "created_at"], "pending"));
+    text("metricProgressTrend", progressTrendLabel(students));
+
+    renderMentorReportDashboard({ courses, batches, students, tasks, submissions, projects, chats, announcements, pendingReviews, moduleCount, avgProgress, scoreRows });
 
     html("dashboardCourses", courses.length ? courses.slice(0, 4).map(courseRow).join("") : emptyState(hasQuery(query) ? "No assigned courses match this search." : "No assigned courses yet."));
     html("dashboardBatches", batches.length ? batches.slice(0, 4).map(batchRow).join("") : emptyState(hasQuery(query) ? "No assigned batches match this search." : "No assigned batches yet."));
     html("dashboardAnnouncements", announcements.length ? announcements.slice(0, 4).map(announcementRow).join("") : emptyState(hasQuery(query) ? "No announcements match this search." : "No announcements yet."));
     html("dashboardProgress", students.length ? students.slice(0, 8).map(studentProgressRow).join("") : emptyState(hasQuery(query) ? "No students match this search." : "No students are assigned yet."));
     html("dashboardScores", scoreRows.length ? scoreRows.slice(0, 6).map(scoreProgressRow).join("") : emptyState(hasQuery(query) ? "No marks match this search." : "Quiz and performance marks will appear here."));
+    renderPremiumReferenceWidgets({ courses, students, tasks, submissions, projects, chats });
+    renderPremiumSchedule({ batches, tasks, submissions, projects });
     bindDynamicActions();
+  }
+
+  function renderPremiumReferenceWidgets(summary) {
+    const pendingItems = [
+      ...summary.submissions.filter(isPendingReview).map((submission) => {
+        const task = findById(state.data.batchTasks, submission.task_id);
+        const course = findById(state.data.courses, submission.course_id || task?.course_id);
+        return {
+          badge: "AS",
+          title: task?.title || "Assignment Review",
+          meta: course?.title || "Course submission",
+          value: "Pending",
+          tone: "blue"
+        };
+      }),
+      ...summary.projects.filter(isPendingReview).map((project) => {
+        const course = findById(state.data.courses, project.course_id);
+        return {
+          badge: "PR",
+          title: project.title || "Project Report",
+          meta: course?.title || "Student project",
+          value: "Review",
+          tone: "green"
+        };
+      }),
+      ...summary.tasks.slice(0, 3).map((task) => {
+        const course = findById(state.data.courses, task.course_id);
+        return {
+          badge: "TS",
+          title: task.title || "Assignment",
+          meta: course?.title || "Batch task",
+          value: "Open",
+          tone: "purple"
+        };
+      })
+    ].slice(0, 3);
+
+    html("premiumReviewQueue", pendingItems.length ? pendingItems.map(referenceQueueRow).join("") : emptyState("No pending reviews right now."));
+
+    const messages = summary.chats.slice(0, 3).map((chat) => {
+      const user = findById(state.data.users, chat.user_id || chat.sender_id);
+      return {
+        initials: initials(user?.name || user?.email || "M"),
+        title: user?.name || user?.email || "Student",
+        meta: truncate(chat.message || "New message", 46),
+        value: relativeTime(chat.created_at)
+      };
+    });
+    html("premiumMessages", messages.length ? messages.map(referenceMessageRow).join("") : emptyState("Messages from learners will appear here."));
+  }
+
+  function renderPremiumSchedule(summary) {
+    const rows = mentorScheduleRows(summary);
+    const nextDate = rows.find((row) => row.date)?.date;
+    text("premiumScheduleDate", nextDate ? formatDate(nextDate) : "Live LMS schedule");
+    html("premiumSchedule", rows.length ? rows.map(scheduleRow).join("") : emptyState("No dated batches, deadlines, or reviews are scheduled."));
+  }
+
+  function mentorScheduleRows(summary) {
+    const rows = [
+      ...summary.tasks
+        .filter((task) => task.deadline)
+        .map((task) => {
+          const batch = findById(state.data.batches, task.batch_id);
+          return {
+            tone: "blue",
+            badge: "TS",
+            title: task.title || "Assignment deadline",
+            meta: `${batch?.name || "Assigned batch"} - due ${formatDateTime(task.deadline)}`,
+            value: statusLabel(task.status || "active"),
+            date: task.deadline
+          };
+        }),
+      ...summary.submissions
+        .filter((submission) => isPendingReview(submission))
+        .map((submission) => {
+          const task = findById(state.data.batchTasks, submission.task_id);
+          return {
+            tone: "purple",
+            badge: "RV",
+            title: task?.title || "Submission review",
+            meta: `${submission.submitted_at ? `Submitted ${formatDateTime(submission.submitted_at)}` : "Awaiting review"}`,
+            value: "Review",
+            date: submission.submitted_at || submission.created_at
+          };
+        }),
+      ...summary.projects
+        .filter((project) => isPendingReview(project))
+        .map((project) => ({
+          tone: "green",
+          badge: "PR",
+          title: project.title || "Project review",
+          meta: project.submitted_at ? `Submitted ${formatDateTime(project.submitted_at)}` : "Awaiting review",
+          value: "Review",
+          date: project.submitted_at || project.created_at
+        })),
+      ...summary.batches
+        .filter((batch) => batch.start_date || batch.end_date)
+        .map((batch) => ({
+          tone: "green",
+          badge: "BA",
+          title: batch.name || "Batch",
+          meta: batchPeriod(batch),
+          value: statusLabel(batch.status || "batch"),
+          date: batch.start_date || batch.end_date
+        }))
+    ];
+    return rows
+      .filter((row) => row.date && !Number.isNaN(new Date(row.date).getTime()))
+      .sort((a, b) => Math.abs(new Date(a.date) - Date.now()) - Math.abs(new Date(b.date) - Date.now()))
+      .slice(0, 4);
+  }
+
+  function scheduleRow(row) {
+    return `
+      <article class="reference-row ${escapeAttr(row.tone || "purple")}">
+        <span>${escapeHtml(row.badge)}</span>
+        <div>
+          <strong>${escapeHtml(row.title)}</strong>
+          <small>${escapeHtml(row.meta)}</small>
+        </div>
+        <b>${escapeHtml(row.value)}</b>
+      </article>
+    `;
+  }
+
+  function referenceQueueRow(row) {
+    return `
+      <article class="reference-row ${escapeAttr(row.tone || "purple")}">
+        <span>${escapeHtml(row.badge)}</span>
+        <div>
+          <strong>${escapeHtml(row.title)}</strong>
+          <small>${escapeHtml(row.meta)}</small>
+        </div>
+        <b>${escapeHtml(row.value)}</b>
+      </article>
+    `;
+  }
+
+  function referenceMessageRow(row) {
+    return `
+      <article class="reference-row message">
+        <span>${escapeHtml(row.initials)}</span>
+        <div>
+          <strong>${escapeHtml(row.title)}</strong>
+          <small>${escapeHtml(row.meta)}</small>
+        </div>
+        <time>${escapeHtml(row.value)}</time>
+      </article>
+    `;
+  }
+
+  function ensureMentorReportDashboard() {
+    const view = document.getElementById("dashboardView");
+    if (!view || view.dataset.reportDashboard === "true") return;
+    view.dataset.reportDashboard = "true";
+    view.innerHTML = `
+      <div class="role-report-dashboard">
+        <section class="report-card report-activity-card">
+          <div class="report-card-head">
+            <div>
+              <h2>Learners activity <span aria-hidden="true">i</span></h2>
+            </div>
+            <button class="report-link" type="button" data-jump="students">View all</button>
+          </div>
+          <div class="report-mini-tabs" aria-label="Activity filters">
+                <button class="active" type="button" data-report-filter="all">All</button>
+                <button type="button" data-report-filter="courses">Course</button>
+                <button type="button" data-report-filter="quiz">Quiz</button>
+                <button type="button" data-report-filter="assignment">Assignment</button>
+          </div>
+          <div class="report-list" id="mentorReportActivityList"></div>
+        </section>
+
+        <section class="report-card report-total-card">
+          <div class="report-card-head">
+            <h2>Total learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">My batches</button>
+          </div>
+          <div class="report-total"><strong id="mentorReportTotalLearners">0</strong><span>People</span></div>
+          <div class="report-breakdown" id="mentorReportBreakdown"></div>
+        </section>
+
+        <section class="report-card report-time-card">
+          <div class="report-card-head">
+            <h2>Learning time <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">My courses</button>
+          </div>
+          <div class="report-total"><strong id="mentorReportLearningTime">0</strong><span>Hours</span></div>
+          <small class="report-growth">+ live mentor workspace</small>
+          <div class="report-sparkline" id="mentorReportSparkline"></div>
+        </section>
+
+        <section class="report-card report-line-card">
+          <div class="report-card-head">
+            <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">This week</button>
+          </div>
+          <div class="report-chart" id="mentorReportWeeklyChart"></div>
+        </section>
+
+        <section class="report-card report-bars-card">
+          <div class="report-card-head">
+            <h2>Most active learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">Last 4 weeks</button>
+          </div>
+          <div class="report-bars" id="mentorReportActiveLearners"></div>
+        </section>
+
+        <section class="report-card report-health-card">
+          <div class="report-card-head">
+            <h2>Course readiness <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="courses">Manage</button>
+          </div>
+          <div class="report-kpi-grid" id="mentorReportReadiness"></div>
+        </section>
+
+        <section class="report-card report-workload-card">
+          <div class="report-card-head">
+            <h2>Review workload <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="reviews">Open</button>
+          </div>
+          <div class="report-kpi-grid" id="mentorReportWorkload"></div>
+        </section>
+
+        <section class="report-card report-courses-card">
+          <div class="report-card-head">
+            <h2>Assigned courses <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="courses">View all</button>
+          </div>
+          <div class="report-compact-list" id="mentorReportCourses"></div>
+        </section>
+
+        <section class="report-card report-batches-card">
+          <div class="report-card-head">
+            <h2>Batch activity <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="batches">View all</button>
+          </div>
+          <div class="report-compact-list" id="mentorReportBatches"></div>
+        </section>
+
+        <section class="report-card report-attention-card">
+          <div class="report-card-head">
+            <h2>Needs attention <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">Live</button>
+          </div>
+          <div class="report-compact-list" id="mentorReportAttention"></div>
+        </section>
+      </div>
+    `;
+    view.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", () => setView(button.dataset.jump));
+    });
+    wireReportTabs();
+  }
+
+  function renderMentorReportDashboard(summary) {
+    const weekly = mentorWeeklyEventSeries(summary);
+    const activeLearners = mentorActiveLearnerRows(summary.students);
+    const readiness = mentorReadinessMetrics(summary);
+    const workload = mentorWorkloadMetrics(summary);
+    const courseRows = mentorCourseSnapshotRows(summary.courses);
+    const batchRows = mentorBatchSnapshotRows(summary.batches);
+    const attentionRows = mentorAttentionRows(summary);
+    const learningHours = Math.max(summary.courses.length * 8, summary.tasks.length * 2 + summary.chats.length + summary.scoreRows.length);
+
+    renderMentorReportActivity(summary);
+    text("mentorReportTotalLearners", summary.students.length);
+    text("mentorReportLearningTime", learningHours);
+    html("mentorReportBreakdown", [
+      { label: "Students", value: summary.students.length, color: "#12b981" },
+      { label: "Courses", value: summary.courses.length, color: "#4f46e5" },
+      { label: "Batches", value: summary.batches.length, color: "#0ea5e9" },
+      { label: "Tasks", value: summary.tasks.length, color: "#f59e0b" },
+      { label: "Reviews", value: summary.pendingReviews, color: "#ef4444" },
+      { label: "Modules", value: summary.moduleCount, color: "#a855f7" }
+    ].map(reportBreakdownItem).join(""));
+    html("mentorReportSparkline", reportSparklineSvg(weekly.current));
+    html("mentorReportWeeklyChart", reportLineSvg(weekly.labels, weekly.current, weekly.previous));
+    html("mentorReportActiveLearners", activeLearners.length ? activeLearners.map(reportBarRow).join("") : emptyState("Student progress will appear after enrollments."));
+    html("mentorReportReadiness", readiness.map(reportKpiItem).join(""));
+    html("mentorReportWorkload", workload.map(reportKpiItem).join(""));
+    html("mentorReportCourses", courseRows.length ? courseRows.map(reportCompactItem).join("") : emptyState("Assigned courses will appear here."));
+    html("mentorReportBatches", batchRows.length ? batchRows.map(reportCompactItem).join("") : emptyState("Assigned batches will appear here."));
+    html("mentorReportAttention", attentionRows.length ? attentionRows.map(reportCompactItem).join("") : emptyState("No urgent mentor actions right now."));
+  }
+
+  function renderMentorReportActivity(summary = null) {
+    const data = summary || {
+      courses: scopedCourses(),
+      submissions: scopedSubmissions(),
+      projects: scopedProjects(),
+      chats: scopedChats(),
+      announcements: scopedAnnouncements(),
+      scoreRows: dashboardScoreRows(scopedCourses(), scopedStudents())
+    };
+    const activities = mentorActivityRows(data, state.reportActivityFilter);
+    const label = state.reportActivityFilter === "all" ? "Live learner activity" : `${state.reportActivityFilter} activity`;
+    html("mentorReportActivityList", activities.length ? activities.map(reportActivityRow).join("") : emptyState(`${label} will appear here.`));
+  }
+
+  function mentorReadinessMetrics(summary) {
+    const quizzes = summary.courses.reduce((sum, course) => sum + courseQuizzes(course).length, 0);
+    const readyCourses = summary.courses.filter((course) => courseModules(course).length && courseQuizzes(course).length).length;
+    return [
+      { label: "Courses", value: summary.courses.length, tone: "blue" },
+      { label: "Ready", value: readyCourses, tone: "green" },
+      { label: "Modules", value: summary.moduleCount, tone: "violet" },
+      { label: "Quizzes", value: quizzes, tone: "cyan" },
+      { label: "Students", value: summary.students.length, tone: "amber" },
+      { label: "Avg progress", value: `${summary.avgProgress}%`, tone: "rose" }
+    ];
+  }
+
+  function mentorWorkloadMetrics(summary) {
+    const reviewed = [...summary.submissions, ...summary.projects].filter((item) => !isPendingReview(item)).length;
+    const quizMarks = summary.scoreRows.reduce((sum, row) => sum + row.quizScore, 0);
+    const extraMarks = summary.scoreRows.reduce((sum, row) => sum + row.extraMarks, 0);
+    return [
+      { label: "Pending", value: summary.pendingReviews, tone: summary.pendingReviews ? "rose" : "green" },
+      { label: "Reviewed", value: reviewed, tone: "green" },
+      { label: "Tasks", value: summary.tasks.length, tone: "blue" },
+      { label: "Messages", value: summary.chats.length, tone: "violet" },
+      { label: "Quiz marks", value: quizMarks, tone: "cyan" },
+      { label: "Extra marks", value: extraMarks, tone: "amber" }
+    ];
+  }
+
+  function mentorCourseSnapshotRows(courses) {
+    return courses.slice(0, 6).map((course) => {
+      const modules = courseModules(course).length;
+      const quizzes = courseQuizzes(course).length;
+      const enrolled = studentsForCourse(course.id).length;
+      const progressRows = state.data.progress.filter((row) => sameId(row.course_id, course.id));
+      const avg = progressRows.length
+        ? Math.round(progressRows.reduce((sum, row) => sum + progressPercent(row, course), 0) / progressRows.length)
+        : 0;
+      return {
+        badge: "CO",
+        title: course.title || "Untitled course",
+        meta: `${modules} modules - ${quizzes} quizzes - ${enrolled} students`,
+        value: `${avg}%`,
+        progress: avg
+      };
+    });
+  }
+
+  function mentorBatchSnapshotRows(batches) {
+    return batches.slice(0, 6).map((batch) => {
+      const course = courseForBatch(batch);
+      const students = studentsForBatch(batch.id).length;
+      const tasks = tasksForBatch(batch.id).length;
+      const messages = chatsForBatch(batch.id).length;
+      return {
+        badge: "BA",
+        title: batch.name || "Untitled batch",
+        meta: `${course?.title || "No course"} - ${tasks} tasks - ${messages} messages`,
+        value: `${students}/${batch.capacity || "-"}`,
+        progress: Math.min(100, Number(batch.progress || 0))
+      };
+    });
+  }
+
+  function mentorAttentionRows(summary) {
+    const rows = [];
+    if (summary.pendingReviews) rows.push({ badge: "RV", title: "Review pending work", meta: `${summary.pendingReviews} submissions/projects need feedback`, value: "Open" });
+    const noModuleCourses = summary.courses.filter((course) => !courseModules(course).length).length;
+    if (noModuleCourses) rows.push({ badge: "MD", title: "Add modules", meta: `${noModuleCourses} assigned courses need modules`, value: "Build" });
+    const noQuizCourses = summary.courses.filter((course) => !courseQuizzes(course).length).length;
+    if (noQuizCourses) rows.push({ badge: "QZ", title: "Add quizzes", meta: `${noQuizCourses} assigned courses need quizzes`, value: "Build" });
+    const emptyBatches = summary.batches.filter((batch) => !studentsForBatch(batch.id).length).length;
+    if (emptyBatches) rows.push({ badge: "ST", title: "No students in batch", meta: `${emptyBatches} batches have no active students`, value: "Check" });
+    const upcomingTasks = summary.tasks.filter((task) => task.deadline && new Date(task.deadline) >= new Date()).length;
+    if (upcomingTasks) rows.push({ badge: "TS", title: "Upcoming tasks", meta: `${upcomingTasks} tasks are active for learners`, value: "Track" });
+    return rows.slice(0, 5);
+  }
+
+  function mentorActivityRows(summary, filter = "all") {
+    const rows = [
+      ...summary.courses.map((course) => ({
+        name: course.title || "Course",
+        detail: `Course ${course.status || "assigned"}`,
+        time: course.created_at,
+        badge: "CO",
+        type: "courses"
+      })),
+      ...mentorQuizActivityRows(),
+      ...summary.chats.map((chat) => {
+        const user = findById(state.data.users, chat.user_id || chat.sender_id);
+        return {
+          name: user?.name || user?.email || chat.sender_name || "Learner",
+          detail: "Posted in batch chat",
+          time: chat.created_at,
+          badge: "MS",
+          type: "all"
+        };
+      }),
+      ...summary.submissions.map((row) => {
+        const user = findById(state.data.users, row.student_id || row.user_id);
+        const task = findById(state.data.batchTasks, row.task_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Submitted ${task?.title || task?.name || "an assignment"}`,
+          time: row.submitted_at || row.created_at,
+          badge: "TS",
+          type: "assignment"
+        };
+      }),
+      ...summary.projects.map((row) => {
+        const user = findById(state.data.users, row.student_id || row.user_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Uploaded ${row.title || "project work"}`,
+          time: row.submitted_at || row.created_at,
+          badge: "RV",
+          type: "assignment"
+        };
+      }),
+      ...summary.announcements.map((item) => ({
+        name: item.title || "Announcement",
+        detail: "Notice sent to learners",
+        time: item.published_at || item.created_at,
+        badge: "AN",
+        type: "all"
+      }))
+    ].filter((row) => row.time)
+      .filter((row) => filter === "all" || row.type === filter)
+      .sort((a, b) => new Date(b.time) - new Date(a.time))
+      .slice(0, 7);
+    return rows;
+  }
+
+  function mentorQuizActivityRows() {
+    const courseIds = new Set(scopedCourses().map((course) => String(course.id)));
+    const studentIds = new Set(scopedStudents().map((student) => String(student.id)));
+    const quizRows = state.data.quizAttempts
+      .filter((attempt) => courseIds.has(String(attempt.course_id)) && studentIds.has(String(attempt.student_id || attempt.user_id)))
+      .map((attempt) => {
+        const user = findById(state.data.users, attempt.student_id || attempt.user_id);
+        const course = findById(state.data.courses, attempt.course_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Quiz score ${Number(attempt.score || 0)}/${Number(attempt.total || attempt.max_score || 0)} in ${course?.title || "course"}`,
+          time: attempt.submitted_at || attempt.created_at,
+          badge: "QZ",
+          type: "quiz"
+        };
+      });
+    const extraRows = state.data.extraMarks
+      .filter((row) => courseIds.has(String(row.course_id)) && studentIds.has(String(row.student_id || row.user_id)))
+      .map((row) => {
+        const user = findById(state.data.users, row.student_id || row.user_id);
+        const course = findById(state.data.courses, row.course_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Extra marks ${Number(row.marks || row.extra_marks || 0)} in ${course?.title || "course"}`,
+          time: row.updated_at || row.created_at,
+          badge: "EX",
+          type: "quiz"
+        };
+      });
+    return [...quizRows, ...extraRows];
+  }
+
+  function mentorActiveLearnerRows(students) {
+    return students.map((student) => {
+      const progress = progressForStudent(student.id);
+      const submissions = scopedSubmissions().filter((row) => sameId(row.student_id || row.user_id, student.id)).length;
+      const projects = scopedProjects().filter((row) => sameId(row.student_id || row.user_id, student.id)).length;
+      return {
+        name: student.name || student.email || "Learner",
+        value: progress + submissions * 25 + projects * 30,
+        meta: `${progress}%`
+      };
+    }).filter((row) => row.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 5);
+  }
+
+  function mentorWeeklyEventSeries(summary) {
+    const labels = ["M", "T", "W", "T", "F", "S", "S"];
+    const current = Array(7).fill(0);
+    const previous = Array(7).fill(0);
+    const today = new Date();
+    const weekStart = startOfDay(new Date(today));
+    const day = weekStart.getDay() || 7;
+    weekStart.setDate(weekStart.getDate() - day + 1);
+    const prevStart = new Date(weekStart);
+    prevStart.setDate(prevStart.getDate() - 7);
+    const events = [
+      ...summary.chats.map((item) => item.created_at),
+      ...summary.submissions.map((item) => item.submitted_at || item.created_at),
+      ...summary.projects.map((item) => item.submitted_at || item.created_at),
+      ...summary.announcements.map((item) => item.published_at || item.created_at)
+    ].filter(Boolean);
+
+    events.forEach((value) => {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return;
+      const diff = Math.floor((startOfDay(date) - weekStart) / 86400000);
+      const prevDiff = Math.floor((startOfDay(date) - prevStart) / 86400000);
+      if (diff >= 0 && diff < 7) current[diff] += 1;
+      if (prevDiff >= 0 && prevDiff < 7) previous[prevDiff] += 1;
+    });
+    return { labels, current, previous };
+  }
+
+  function reportActivityRow(row) {
+    return `
+      <article class="report-row">
+        <span class="report-avatar">${escapeHtml(row.badge || initials(row.name))}</span>
+        <div>
+          <strong>${escapeHtml(row.name)}</strong>
+          <small>${escapeHtml(row.detail)}</small>
+        </div>
+        <time>${escapeHtml(relativeTime(row.time))}</time>
+      </article>
+    `;
+  }
+
+  function reportBreakdownItem(item) {
+    return `
+      <div class="report-breakdown-item">
+        <span style="--dot:${item.color}"></span>
+        <strong>${escapeHtml(item.label)}</strong>
+        <small>${Number(item.value || 0)}</small>
+      </div>
+    `;
+  }
+
+  function reportBarRow(row) {
+    const width = Math.min(100, Math.max(8, Number(row.value || 0)));
+    return `
+      <div class="report-bar-row">
+        <span class="report-avatar small">${escapeHtml(initials(row.name))}</span>
+        <strong>${escapeHtml(row.name)}</strong>
+        <div class="report-bar-track"><span style="width:${width}%"></span></div>
+        <small>${escapeHtml(row.meta || `${row.value} pts`)}</small>
+      </div>
+    `;
+  }
+
+  function reportKpiItem(item) {
+    return `
+      <article class="report-kpi ${escapeAttr(item.tone || "blue")}">
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${escapeHtml(item.value)}</strong>
+      </article>
+    `;
+  }
+
+  function reportCompactItem(item) {
+    const progress = Number.isFinite(Number(item.progress)) ? Math.max(0, Math.min(100, Number(item.progress))) : null;
+    return `
+      <article class="report-compact-row">
+        <span class="report-avatar small">${escapeHtml(item.badge || initials(item.title))}</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.meta || "")}</small>
+          ${progress === null ? "" : `<div class="report-mini-track"><span style="width:${progress}%"></span></div>`}
+        </div>
+        <b>${escapeHtml(item.value || "")}</b>
+      </article>
+    `;
+  }
+
+  function reportLineSvg(labels, current, previous) {
+    const max = Math.max(1, ...current, ...previous);
+    const points = (values) => values.map((value, index) => {
+      const x = 18 + index * 46;
+      const y = 118 - (Number(value || 0) / max) * 96;
+      return `${x},${y}`;
+    }).join(" ");
+    const labelsSvg = labels.map((label, index) => `<text x="${18 + index * 46}" y="143">${escapeHtml(label)}</text>`).join("");
+    return `
+      <svg viewBox="0 0 320 150" role="img" aria-label="Weekly active learners chart">
+        <line x1="16" y1="118" x2="296" y2="118" class="axis"></line>
+        <line x1="16" y1="72" x2="296" y2="72" class="grid"></line>
+        <line x1="16" y1="26" x2="296" y2="26" class="grid"></line>
+        <polyline points="${points(previous)}" class="previous"></polyline>
+        <polyline points="${points(current)}" class="current"></polyline>
+        ${labelsSvg}
+      </svg>
+    `;
+  }
+
+  function reportSparklineSvg(values) {
+    const max = Math.max(1, ...values);
+    const points = values.map((value, index) => {
+      const x = 4 + index * 22;
+      const y = 44 - (Number(value || 0) / max) * 34;
+      return `${x},${y}`;
+    }).join(" ");
+    return `<svg viewBox="0 0 150 52" role="img" aria-label="Learning trend"><polyline points="${points}" class="current"></polyline></svg>`;
+  }
+
+  function startOfDay(d) {
+    const r = new Date(d);
+    r.setHours(0, 0, 0, 0);
+    return r;
+  }
+
+  function relativeTime(value) {
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return "Now";
+    const diffMinutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
+    if (diffMinutes < 60) return `${diffMinutes || 1}m ago`;
+    const diffHours = Math.round(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return formatDate(value);
+  }
+
+  function liveComparisonLabel(rows, fields, suffix = "this week") {
+    const fieldList = Array.isArray(fields) ? fields : [fields];
+    const { current, previous } = countCurrentAndPreviousWeek(rows, fieldList);
+    if (!current && !previous) return "No recent live records";
+    if (!previous) return `${current} ${suffix}`;
+    const change = Math.round(((current - previous) / previous) * 100);
+    if (!change) return `No change vs last week`;
+    return `${change > 0 ? "+" : ""}${change}% vs last week`;
+  }
+
+  function progressTrendLabel(students) {
+    const studentIds = new Set(students.map((student) => String(student.id)));
+    const rows = state.data.progress.filter((row) => studentIds.has(String(row.student_id)));
+    const updatedThisWeek = countCurrentAndPreviousWeek(rows, ["updated_at"]).current;
+    return updatedThisWeek ? `${updatedThisWeek} progress updates this week` : "Live course progress";
+  }
+
+  function countCurrentAndPreviousWeek(rows, fields) {
+    const now = new Date();
+    const weekStart = startOfDay(new Date(now));
+    const day = weekStart.getDay() || 7;
+    weekStart.setDate(weekStart.getDate() - day + 1);
+    const prevStart = new Date(weekStart);
+    prevStart.setDate(prevStart.getDate() - 7);
+    let current = 0;
+    let previous = 0;
+    rows.forEach((row) => {
+      const value = fields.map((field) => row?.[field]).find(Boolean);
+      if (!value) return;
+      const time = new Date(value).getTime();
+      if (Number.isNaN(time)) return;
+      if (time >= weekStart.getTime()) current += 1;
+      else if (time >= prevStart.getTime() && time < weekStart.getTime()) previous += 1;
+    });
+    return { current, previous };
+  }
+
+  function statusLabel(value) {
+    return String(value || "")
+      .replaceAll("_", " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
   function renderCourses() {
@@ -377,26 +1434,37 @@
       const modules = courseModules(course);
       const quizzes = courseQuizzes(course);
       const enrolled = studentsForCourse(course.id).length;
+      const lessons = modules.reduce((sum, module) => sum + (module.lessons || []).length, 0);
+      const progressRows = state.data.progress.filter((row) => sameId(row.course_id, course.id));
+      const avgProgress = progressRows.length
+        ? Math.round(progressRows.reduce((sum, row) => sum + progressPercent(row, course), 0) / progressRows.length)
+        : 0;
       const status = String(course.status || "Draft");
       return `
-        <article class="course-card">
-          <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.png")}" alt="">
-          <h3>${escapeHtml(course.title || "Untitled Course")}</h3>
-          <p>${escapeHtml(course.description || "No course description.")}</p>
-          <div class="card-meta">
-            <span class="badge ${statusColor(status)}">${escapeHtml(status)}</span>
-            <span class="badge gray">${escapeHtml(course.duration || "No duration")}</span>
-            <span class="badge gray">${Number(course.rating || 0).toFixed(1)} rating</span>
+        <article class="course-card mentor-course-card">
+          <div class="mentor-course-cover">
+            <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.webp")}" alt="">
+            <span class="badge ${statusColor(status)}">${escapeHtml(statusLabel(status))}</span>
+          </div>
+          <div class="mentor-course-body">
+            <div>
+              <h3>${escapeHtml(course.title || "Untitled Course")}</h3>
+              <p>${escapeHtml(truncate(course.description || "No course description.", 110))}</p>
+            </div>
+            <div class="mentor-course-progress">
+              <div><span>Average completion</span><strong>${avgProgress}%</strong></div>
+              <div class="progress-track" aria-label="${avgProgress}% average completion"><span style="--progress:${avgProgress}%"></span></div>
+            </div>
           </div>
           <div class="stat-row">
             <div><span>Students</span><strong>${enrolled}</strong></div>
             <div><span>Modules</span><strong>${modules.length}</strong></div>
+            <div><span>Lessons</span><strong>${lessons}</strong></div>
             <div><span>Quizzes</span><strong>${quizzes.length}</strong></div>
           </div>
           <div class="card-actions">
             <button class="ghost-btn" type="button" data-view-course="${course.id}">View</button>
             <button class="ghost-btn" type="button" data-edit-quiz="${course.id}">Quiz</button>
-            <button class="ghost-btn" type="button" data-open-leaderboard="${course.id}">Leaderboard</button>
             <button class="primary-btn" type="button" data-edit-course="${course.id}">Edit Content</button>
           </div>
         </article>
@@ -440,27 +1508,65 @@
   }
 
   function renderStudents() {
+    renderStudentCourseFilter();
     const query = searchQuery("studentSearch");
-    const rows = scopedStudents().filter((student) => matchesStudent(student, query));
+    const courseId = valueOf("studentCourseFilter");
+    const rows = studentCourseRows()
+      .filter((row) => !courseId || sameId(row.course?.id, courseId))
+      .filter((row) => matchesText(query, row.student?.name, row.student?.email, row.student?.phone, row.batch?.name, row.course?.title, row.student?.username));
 
-    html("studentsTable", rows.length ? rows.map((student) => {
-      const batch = findById(state.data.batches, student.batch_id);
-      const courses = enrolledCoursesForStudent(student.id);
-      const progress = progressForStudent(student.id);
+    html("studentsTable", rows.length ? rows.map((row) => {
+      const { student, course, batch } = row;
+      const marks = marksForStudentCourse(student.id, course?.id);
+      const progress = row.progress;
+      const quizText = marks.quizScore ? String(marks.quizScore) : "No quiz yet";
       return `
         <tr>
           <td><strong>${escapeHtml(student.name || "Student")}</strong><small>${escapeHtml(student.email || "")}</small></td>
-          <td>${escapeHtml(batch?.name || "Unassigned")}</td>
-          <td>${escapeHtml(courses.map((course) => course.title).join(", ") || "No course")}</td>
+          <td><strong>${escapeHtml(student.phone || "No phone")}</strong><small>${escapeHtml(batch?.name || "Unassigned batch")}</small></td>
+          <td><strong>${escapeHtml(course?.title || "Assigned course")}</strong><small>${escapeHtml(course?.category || course?.difficulty || "")}</small></td>
           <td>
             <div class="progress-track" aria-label="${progress}% progress"><span style="--progress:${progress}%"></span></div>
             <small>${progress}% complete</small>
           </td>
-          <td>${Number(student.coins || 0)}</td>
+          <td><strong>${escapeHtml(quizText)}</strong><small>Total marks ${marks.total}</small></td>
           <td>${formatDate(student.last_active_date || student.created_at)}</td>
         </tr>
       `;
     }).join("") : `<tr><td colspan="6">${emptyState(hasQuery(query) ? "No students match this search." : "No students are assigned yet.")}</td></tr>`);
+  }
+
+  function renderStudentCourseFilter() {
+    const select = document.getElementById("studentCourseFilter");
+    if (!select) return;
+    const selected = select.value;
+    select.innerHTML = `<option value="">All assigned courses</option>${scopedCourses().map((course) => option(course.id, selected, course.title || "Untitled Course")).join("")}`;
+  }
+
+  function studentCourseRows() {
+    const rows = [];
+    const seen = new Set();
+    const coursesById = new Map(scopedCourses().map((course) => [String(course.id), course]));
+    scopedStudents().forEach((student) => {
+      const batch = findById(state.data.batches, student.batch_id);
+      const courses = enrolledCoursesForStudent(student.id).filter((course) => coursesById.has(String(course.id)));
+      if (batch?.course_id && coursesById.has(String(batch.course_id)) && !courses.some((course) => sameId(course.id, batch.course_id))) {
+        courses.push(coursesById.get(String(batch.course_id)));
+      }
+      courses.forEach((course) => {
+        const key = `${student.id}:${course.id}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        const progressRow = state.data.progress.find((row) => sameId(row.student_id, student.id) && sameId(row.course_id, course.id));
+        rows.push({
+          student,
+          course,
+          batch,
+          progress: progressRow ? progressPercent(progressRow, course) : progressForStudent(student.id)
+        });
+      });
+    });
+    return rows.sort((a, b) => String(a.course?.title || "").localeCompare(String(b.course?.title || "")) || String(a.student?.name || "").localeCompare(String(b.student?.name || "")));
   }
 
   function renderEnrollments() {
@@ -580,6 +1686,34 @@
     bindDynamicActions();
   }
 
+  function renderQuestions() {
+    const query = state.globalQuery;
+    const questions = scopedQuestions()
+      .filter((question) => matchesText(query, question.title, question.description, question.status, question.review_notes))
+      .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+    html("questionsList", questions.length ? questions.map((question) => {
+      const student = findById(state.data.users, question.student_id || question.user_id);
+      const course = findById(state.data.courses, question.course_id);
+      const answered = !isPendingReview(question) || String(question.status || "").toLowerCase() === "answered";
+      return `
+        <div class="list-row question-management-row">
+          <div>
+            <strong>${escapeHtml(question.title || "Student question")}</strong>
+            <small>${escapeHtml(student?.name || "Student")} - ${escapeHtml(course?.title || "Course")} - ${formatDate(question.created_at)}</small>
+            <p>${escapeHtml(truncate(question.description || "", 180))}</p>
+            ${question.review_notes ? `<small><strong>Reply:</strong> ${escapeHtml(truncate(question.review_notes, 180))}</small>` : ""}
+          </div>
+          <div class="row-actions">
+            <span class="badge ${answered ? "green" : "yellow"}">${answered ? "Answered" : "Pending"}</span>
+            <button class="primary-btn" type="button" data-reply-question="${question.id}">${answered ? "Edit Reply" : "Reply"}</button>
+          </div>
+        </div>
+      `;
+    }).join("") : emptyState(hasQuery(query) ? "No questions match this search." : "No student questions yet."));
+    bindDynamicActions();
+  }
+
   function renderAnnouncements() {
     const query = state.globalQuery;
     const rows = scopedAnnouncements()
@@ -618,6 +1752,215 @@
       ? (messages.length ? messages.map(messageRow).join("") : emptyState(hasQuery(query) ? "No messages match this search." : "No messages yet."))
       : emptyState("Choose a batch to load chat."));
     bindDynamicActions();
+  }
+
+  function renderSupport() {
+    const target = document.getElementById("supportTicketList");
+    if (!target) return;
+    const tickets = supportTicketsForUser();
+    target.innerHTML = tickets.length ? tickets.map(supportTicketCard).join("") : emptyState("No support tickets yet.");
+    target.querySelectorAll("[data-open-support-ticket]").forEach((button) => {
+      button.addEventListener("click", () => openSupportTicketThread(button.dataset.openSupportTicket));
+    });
+  }
+
+  function supportTicketCard(ticket) {
+    const unread = supportUnreadMessages(ticket).length;
+    return `
+      <div class="list-row support-ticket-card">
+        <div>
+          <strong>${escapeHtml(ticket.subject || "Support ticket")}</strong>
+          <small>${escapeHtml(humanizeSupportStatus(ticket.status))} - ${escapeHtml(ticket.category || "general")}${unread ? ` - ${unread} unread` : ""}</small>
+        </div>
+        <button class="ghost-btn" type="button" data-open-support-ticket="${escapeAttr(ticket.id || ticket.ticket_id)}">Open</button>
+      </div>
+    `;
+  }
+
+  async function submitSupportTicket(event) {
+    event.preventDefault();
+    const category = valueOf("supportCategory") || "other";
+    const subject = valueOf("supportSubject");
+    const message = valueOf("supportMessage");
+    const file = document.getElementById("supportAttachment")?.files?.[0] || null;
+    if (!subject || !message) return;
+    try {
+      const attachmentUrl = file ? await uploadSupportAttachment(file) : null;
+      const ticket = await createSupportTicket({ category, subject, message, attachmentUrl });
+      event.target.reset();
+      showAlert("Support ticket submitted. Admin has been notified.");
+      clearQueryCache();
+      await loadAllData({ force: true, silent: true });
+      if (ticket?.id || ticket?.ticket_id) openSupportTicketThread(ticket.id || ticket.ticket_id);
+    } catch (error) {
+      showAlert(error.message || "Unable to submit support ticket.", true);
+    }
+  }
+
+  async function createSupportTicket({ category, subject, message, attachmentUrl }) {
+    if (getClient()?.rpc) {
+      const { data, error } = await getClient().rpc("lms_support_create_ticket", {
+        requester_user_id: state.mentor.id,
+        requester_role: "mentor",
+        ticket_category: category,
+        ticket_subject: subject,
+        ticket_message: message,
+        ticket_attachment_url: attachmentUrl
+      });
+      if (!error) return Array.isArray(data) ? data[0] : data;
+      if (!isMissingRpcError(error)) throw error;
+    }
+    const { data, error } = await getClient().from("support_tickets").insert({
+      user_id: state.mentor.id,
+      user_role: "mentor",
+      category,
+      subject,
+      message,
+      attachment_url: attachmentUrl,
+      status: "open",
+      priority: "normal",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }).select(SELECTS.supportTickets);
+    if (error) throw error;
+    const ticket = Array.isArray(data) ? data[0] : data;
+    await createSupportAdminNotifications(ticket);
+    return ticket;
+  }
+
+  async function createSupportAdminNotifications(ticket) {
+    const admins = state.data.users.filter((user) => String(user.role || "").toLowerCase() === "admin");
+    if (!ticket || !admins.length) return;
+    const rows = admins.map((admin) => ({
+      ticket_id: ticket.id || ticket.ticket_id,
+      recipient_user_id: admin.id,
+      recipient_role: "admin",
+      title: "New Support Ticket",
+      body: `From: ${state.mentor.name || state.mentor.email || "Mentor"} | Role: Mentor | Category: ${ticket.category || "general"} | Subject: ${ticket.subject || "Support ticket"}`,
+      channel: "in_app",
+      is_read: false,
+      created_at: new Date().toISOString()
+    }));
+    const { error } = await getClient().from("support_notifications").insert(rows);
+    if (error && !isSchemaShapeError(error)) throw error;
+  }
+
+  function openSupportTicketThread(ticketId) {
+    const ticket = supportTicketsForUser().find((item) => sameId(item.id || item.ticket_id, ticketId));
+    if (!ticket) return;
+    const messages = supportMessagesForTicket(ticket).sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+    openModal("Support Thread", `
+      <div class="support-thread-modal">
+        <div class="support-thread-summary">
+          <span class="badge ${statusColor(ticket.status || "open")}">${escapeHtml(humanizeSupportStatus(ticket.status))}</span>
+          <h3>${escapeHtml(ticket.subject || "Support ticket")}</h3>
+          <p>${escapeHtml(ticket.message || "")}</p>
+          ${ticket.attachment_url ? `<a class="ghost-btn" href="${escapeAttr(ticket.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+        </div>
+        <div class="support-thread">
+          ${messages.length ? messages.map(supportMessageBubble).join("") : emptyState("No replies yet.")}
+        </div>
+        <form class="form-grid" id="supportReplyForm">
+          <div class="form-row"><label for="supportReplyMessage">Reply</label><textarea id="supportReplyMessage" rows="4"></textarea></div>
+          <div class="form-row"><label for="supportReplyAttachment">Attachment</label><input id="supportReplyAttachment" type="file"></div>
+          <div class="form-actions"><button class="primary-btn" type="submit">Send Reply</button></div>
+        </form>
+      </div>
+    `);
+    document.getElementById("supportReplyForm")?.addEventListener("submit", (event) => replyToSupportTicket(event, ticket));
+    markSupportNotificationsRead(ticket);
+  }
+
+  async function replyToSupportTicket(event, ticket) {
+    event.preventDefault();
+    const message = valueOf("supportReplyMessage");
+    const file = document.getElementById("supportReplyAttachment")?.files?.[0] || null;
+    if (!message && !file) return;
+    try {
+      const attachmentUrl = file ? await uploadSupportAttachment(file) : null;
+      await sendSupportReply(ticket, message, attachmentUrl);
+      showAlert("Support reply sent.");
+      await loadAllData({ force: true, silent: true });
+      openSupportTicketThread(ticket.id || ticket.ticket_id);
+    } catch (error) {
+      showAlert(error.message || "Unable to send support reply.", true);
+    }
+  }
+
+  async function sendSupportReply(ticket, message, attachmentUrl) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    if (getClient()?.rpc) {
+      const { error } = await getClient().rpc("lms_support_reply", {
+        actor_user_id: state.mentor.id,
+        actor_role: "mentor",
+        target_ticket_id: ticketId,
+        reply_message: message || "",
+        reply_attachment_url: attachmentUrl,
+        next_status: null,
+        next_priority: null
+      });
+      if (!error) return;
+      if (!isMissingRpcError(error)) throw error;
+    }
+    const { error } = await getClient().from("support_messages").insert({
+      ticket_id: ticketId,
+      sender_id: state.mentor.id,
+      sender_role: "mentor",
+      message: message || "",
+      attachment_url: attachmentUrl,
+      created_at: new Date().toISOString()
+    });
+    if (error) throw error;
+  }
+
+  async function uploadSupportAttachment(file) {
+    const safeName = String(file.name || "support-file").replace(/[^a-z0-9._-]+/gi, "-");
+    const path = `${state.mentor.id}/${Date.now()}-${safeName}`;
+    const { error } = await getClient().storage.from("support-attachments").upload(path, file, { cacheControl: "3600", upsert: false });
+    if (error) throw error;
+    return `support-attachments:${path}`;
+  }
+
+  function supportTicketsForUser() {
+    return state.data.supportTickets
+      .filter((ticket) => sameId(ticket.user_id, state.mentor.id))
+      .sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+  }
+
+  function supportMessagesForTicket(ticket) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    return state.data.supportMessages.filter((message) => sameId(message.ticket_id, ticketId));
+  }
+
+  function supportUnreadMessages(ticket) {
+    return supportMessagesForTicket(ticket).filter((message) => !message.is_read && String(message.sender_role || "").toLowerCase() === "admin");
+  }
+
+  function supportMessageBubble(message) {
+    const mine = sameId(message.sender_id, state.mentor.id);
+    return `
+      <div class="message-row ${mine ? "mine" : ""}">
+        <strong>${escapeHtml(mine ? "You" : "Admin")}</strong>
+        <p>${escapeHtml(message.message || "")}</p>
+        ${message.attachment_url ? `<a class="ghost-btn" href="${escapeAttr(message.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+        <small>${escapeHtml(formatDateTime(message.created_at))} - ${message.is_read ? "Read" : "Unread"}</small>
+      </div>
+    `;
+  }
+
+  function humanizeSupportStatus(status) {
+    return String(status || "open").replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  async function markSupportNotificationsRead(ticket) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    const unreadIds = state.data.supportNotifications
+      .filter((item) => sameId(item.ticket_id, ticketId) && sameId(item.recipient_user_id, state.mentor.id) && !item.is_read)
+      .map((item) => item.id)
+      .filter(Boolean);
+    if (unreadIds.length) {
+      await getClient().from("support_notifications").update({ is_read: true, read_at: new Date().toISOString() }).in("id", unreadIds);
+    }
   }
 
   function renderProfile() {
@@ -678,6 +2021,9 @@
     document.querySelectorAll("[data-review-project]").forEach((button) => {
       button.addEventListener("click", () => openReviewModal("projects", findById(state.data.projects, button.dataset.reviewProject), "review_notes"));
     });
+    document.querySelectorAll("[data-reply-question]").forEach((button) => {
+      button.addEventListener("click", () => openQuestionReplyModal(findById(state.data.projects, button.dataset.replyQuestion)));
+    });
     document.querySelectorAll("[data-edit-announcement]").forEach((button) => {
       button.addEventListener("click", () => openAnnouncementModal(findById(state.data.announcements, button.dataset.editAnnouncement)));
     });
@@ -726,6 +2072,10 @@
   }
 
   function openCourseEditor(course = null) {
+    if (!course) {
+      showAlert("Mentors can edit content only for assigned courses. Course creation is admin-only.", true);
+      return;
+    }
     const isEdit = Boolean(course);
     course = course || {
       title: "",
@@ -737,9 +2087,12 @@
       thumbnail_url: "",
       modules: []
     };
-    let draftModules = courseModules(course);
-    openModal(isEdit ? "Edit Course Content" : "Create Course", `
+    let draftModules = courseModules(course, true);
+    openModal(isEdit ? "Edit Course Content" : "Course Content", `
       <form class="form-grid" id="courseEditorForm">
+        <div class="import-callout">
+          Course structure: Module -> Video, Study Material, Assignment, Quiz. Add Drive links or upload files inside each module item.
+        </div>
         <div class="course-editor-grid">
           <section class="form-grid">
             <div class="form-row">
@@ -794,13 +2147,14 @@
         </div>
         <div class="form-actions">
           <button class="ghost-btn" type="button" data-close-modal>Cancel</button>
-          <button class="primary-btn" type="submit">${isEdit ? "Save Course" : "Create Course"}</button>
+          <button class="primary-btn" type="submit">Save Course</button>
         </div>
       </form>
     `);
 
     const renderEditor = () => {
-      html("courseModuleList", draftModules.length ? draftModules.map(moduleEditorHtml).join("") : emptyState("No modules yet."));
+      const activeModules = draftModules.filter((module) => !module.deleted_at);
+      html("courseModuleList", activeModules.length ? activeModules.map(moduleEditorHtml).join("") : emptyState("No modules yet."));
       bindCourseEditorEvents();
     };
 
@@ -812,7 +2166,10 @@
       };
       document.querySelectorAll("[data-remove-module]").forEach((button) => {
         button.addEventListener("click", () => {
-          draftModules = syncModulesFromForm(draftModules).filter((module) => module.id !== button.dataset.removeModule);
+          if (!window.confirm("Archive this module? Admins can recover it later.")) return;
+          draftModules = syncModulesFromForm(draftModules).map((module) => (
+            module.id === button.dataset.removeModule ? { ...module, deleted_at: new Date().toISOString() } : module
+          ));
           renderEditor();
         });
       });
@@ -827,11 +2184,31 @@
       });
       document.querySelectorAll("[data-remove-lesson]").forEach((button) => {
         button.addEventListener("click", () => {
+          if (!window.confirm("Archive this module content? Admins can recover it later.")) return;
           draftModules = syncModulesFromForm(draftModules).map((module) => ({
             ...module,
-            lessons: (module.lessons || []).filter((lesson) => lesson.id !== button.dataset.removeLesson)
+            lessons: (module.lessons || []).map((lesson) => (
+              lesson.id === button.dataset.removeLesson ? { ...lesson, deleted_at: new Date().toISOString() } : lesson
+            ))
           }));
           renderEditor();
+        });
+      });
+      document.querySelectorAll("[data-material-upload]").forEach((input) => {
+        input.addEventListener("change", async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+          const urlInput = input.closest("[data-lesson-row]")?.querySelector("[data-lesson-field='video_drive_link']");
+          try {
+            input.disabled = true;
+            const publicUrl = await uploadStudyMaterial(file);
+            if (urlInput) urlInput.value = publicUrl;
+            showAlert("Study material uploaded. Save the course to keep it.");
+          } catch (error) {
+            showAlert(error.message || "Study material upload failed.", true);
+          } finally {
+            input.disabled = false;
+          }
         });
       });
     };
@@ -840,21 +2217,23 @@
 
     document.getElementById("courseEditorForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      draftModules = syncModulesFromForm(draftModules);
-      await saveCourseRecord({
-        title: valueOf("courseTitle"),
-        duration: valueOf("courseDuration") || null,
-        category: valueOf("courseCategory") || null,
-        module_type: valueOf("courseModuleType") || null,
-        status: valueOf("courseStatus") || "Draft",
-        thumbnail_url: valueOf("courseThumbnail") || null,
-        description: valueOf("courseDescription") || "",
-        instructor_name: state.mentor.name || course.instructor_name || null,
-        mentor_id: state.mentor.id,
-        created_by_admin: false,
-        is_my_course: true,
-        modules: draftModules
-      }, isEdit ? course.id : null);
+      await runLockedSubmit(event.currentTarget, event.submitter, "Saving course...", async () => {
+        draftModules = syncModulesFromForm(draftModules);
+        await saveCourseRecord({
+          title: valueOf("courseTitle"),
+          duration: valueOf("courseDuration") || null,
+          category: valueOf("courseCategory") || null,
+          module_type: valueOf("courseModuleType") || null,
+          status: valueOf("courseStatus") || "Draft",
+          thumbnail_url: valueOf("courseThumbnail") || null,
+          description: valueOf("courseDescription") || "",
+          instructor_name: state.mentor.name || course.instructor_name || null,
+          mentor_id: state.mentor.id,
+          created_by_admin: false,
+          is_my_course: true,
+          modules: draftModules
+        }, isEdit ? course.id : null);
+      });
     });
   }
 
@@ -924,8 +2303,10 @@
 
     document.getElementById("quizEditorForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      draftModules = syncQuizModulesFromForm(draftModules);
-      await saveCourseRecord(courseSavePayload(course, draftModules), course.id);
+      await runLockedSubmit(event.currentTarget, event.submitter, "Saving quizzes...", async () => {
+        draftModules = syncQuizModulesFromForm(draftModules);
+        await saveCourseRecord(courseSavePayload(course, draftModules), course.id);
+      });
     });
   }
 
@@ -958,6 +2339,19 @@
           <div>
             <label>Max Attempts</label>
             <input data-quiz-field="max_attempts" type="number" min="0" value="${escapeAttr(quiz.max_attempts || 0)}">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div>
+            <label>Timer (minutes)</label>
+            <input data-quiz-field="timer_minutes" type="number" min="0" value="${escapeAttr(quiz.timer_minutes || 0)}">
+          </div>
+          <div>
+            <label>Publish Status</label>
+            <select data-quiz-field="status">
+              ${option("published", quiz.status || "published", "Published")}
+              ${option("draft", quiz.status || "published", "Draft")}
+            </select>
           </div>
         </div>
         <div class="quiz-question-list">
@@ -1044,6 +2438,8 @@
           title: fieldValue(row, "[data-quiz-field='title']") || `${moduleTitle} Quiz`,
           pass_marks: Number(fieldValue(row, "[data-quiz-field='pass_marks']") || 0),
           max_attempts: Number(fieldValue(row, "[data-quiz-field='max_attempts']") || 0),
+          timer_minutes: Number(fieldValue(row, "[data-quiz-field='timer_minutes']") || 0),
+          status: fieldValue(row, "[data-quiz-field='status']") || "published",
           questions
         } : null
       };
@@ -1168,11 +2564,13 @@
 
     document.getElementById("enrollmentForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      await saveEnrollment({
-        user_id: isEdit ? user?.id : valueOf("enrollmentUser"),
-        course_id: isEdit ? course?.id : valueOf("enrollmentCourse"),
-        status: valueOf("enrollmentStatus") || "active"
-      }, valueOf("enrollmentBatch"), enrollment);
+      await runLockedSubmit(event.currentTarget, event.submitter, isEdit ? "Saving enrollment..." : "Assigning student...", async () => {
+        await saveEnrollment({
+          user_id: isEdit ? user?.id : valueOf("enrollmentUser"),
+          course_id: isEdit ? course?.id : valueOf("enrollmentCourse"),
+          status: valueOf("enrollmentStatus") || "active"
+        }, valueOf("enrollmentBatch"), enrollment);
+      });
     });
   }
 
@@ -1243,6 +2641,10 @@
           <label for="taskFileUrl">File URL</label>
           <input id="taskFileUrl" value="${escapeAttr(task?.file_url || "")}">
         </div>
+        <div class="form-row">
+          <label for="taskTotalMarks">Maximum Marks</label>
+          <input id="taskTotalMarks" type="number" min="0" step="0.01" value="${escapeAttr(task?.total_marks ?? task?.max_marks ?? "")}">
+        </div>
         <div class="form-actions">
           <button class="ghost-btn" type="button" data-close-modal>Cancel</button>
           <button class="primary-btn" type="submit">${isEdit ? "Save" : "Create Task"}</button>
@@ -1252,16 +2654,21 @@
 
     document.getElementById("taskForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      const deadline = valueOf("taskDeadline");
-      await writeRecord("batch_tasks", {
-        batch_id: valueOf("taskBatch"),
-        title: valueOf("taskTitle"),
-        description: valueOf("taskDescription") || null,
-        drive_link: valueOf("taskDriveLink") || null,
-        file_url: valueOf("taskFileUrl") || null,
-        deadline: deadline ? new Date(`${deadline}T23:59:59`).toISOString() : null,
-        created_by: state.mentor.id
-      }, task?.id, ["file_url", "created_by"]);
+      await runLockedSubmit(event.currentTarget, event.submitter, task ? "Saving task..." : "Creating task...", async () => {
+        const deadline = valueOf("taskDeadline");
+        await writeRecord("batch_tasks", {
+          batch_id: valueOf("taskBatch"),
+          title: valueOf("taskTitle"),
+          description: valueOf("taskDescription") || null,
+          drive_link: valueOf("taskDriveLink") || null,
+          file_url: valueOf("taskFileUrl") || null,
+          status: task?.status || "active",
+          total_marks: valueOf("taskTotalMarks") === "" ? null : Number(valueOf("taskTotalMarks")),
+          published_at: task?.published_at || new Date().toISOString(),
+          deadline: deadline ? new Date(`${deadline}T23:59:59`).toISOString() : null,
+          created_by: state.mentor.id
+        }, task?.id, ["file_url", "created_by", "total_marks", "published_at", "status"]);
+      });
     });
   }
 
@@ -1341,33 +2748,35 @@
 
     document.getElementById("announcementForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      const audience = valueOf("announcementAudience") || defaultAudience;
-      const batchId = audience === "batch" ? valueOf("announcementBatch") : "";
-      const courseId = audience === "course" ? valueOf("announcementCourse") : "";
-      if (audience === "batch" && !batchId) {
-        showAlert("Choose a batch for this announcement.", true);
-        return;
-      }
-      if (audience === "course" && !courseId) {
-        showAlert("Choose a course for this announcement.", true);
-        return;
-      }
+      await runLockedSubmit(event.currentTarget, event.submitter, item ? "Saving announcement..." : "Sending announcement...", async () => {
+        const audience = valueOf("announcementAudience") || defaultAudience;
+        const batchId = audience === "batch" ? valueOf("announcementBatch") : "";
+        const courseId = audience === "course" ? valueOf("announcementCourse") : "";
+        if (audience === "batch" && !batchId) {
+          showAlert("Choose a batch for this announcement.", true);
+          return;
+        }
+        if (audience === "course" && !courseId) {
+          showAlert("Choose a course for this announcement.", true);
+          return;
+        }
 
-      const expiry = valueOf("announcementExpiry");
-      await writeRecord("announcements", {
-        title: valueOf("announcementTitle"),
-        message: valueOf("announcementMessage"),
-        audience,
-        priority: valueOf("announcementPriority") || "normal",
-        batch_id: batchId || null,
-        course_id: courseId || null,
-        created_by: item?.created_by || state.mentor?.id || null,
-        created_by_role: item?.created_by_role || "mentor",
-        status: "published",
-        published_at: item?.published_at || new Date().toISOString(),
-        expires_at: expiry ? new Date(`${expiry}T23:59:59`).toISOString() : null,
-        updated_at: new Date().toISOString()
-      }, item?.id);
+        const expiry = valueOf("announcementExpiry");
+        await writeRecord("announcements", {
+          title: valueOf("announcementTitle"),
+          message: valueOf("announcementMessage"),
+          audience,
+          priority: valueOf("announcementPriority") || "normal",
+          batch_id: batchId || null,
+          course_id: courseId || null,
+          created_by: item?.created_by || state.mentor?.id || null,
+          created_by_role: item?.created_by_role || "mentor",
+          status: "published",
+          published_at: item?.published_at || new Date().toISOString(),
+          expires_at: expiry ? new Date(`${expiry}T23:59:59`).toISOString() : null,
+          updated_at: new Date().toISOString()
+        }, item?.id);
+      });
     });
   }
 
@@ -1401,6 +2810,9 @@
 
   function openReviewModal(table, item, noteField) {
     if (!item) return;
+    const task = table === "task_submissions" ? findById(state.data.batchTasks, item.task_id) : null;
+    const existingScore = item.marks_obtained ?? item.score;
+    const existingTotal = item.total_marks ?? item.max_marks ?? task?.total_marks ?? task?.max_marks;
     openModal("Save Review", `
       <form class="form-grid" id="reviewForm">
         <div class="form-row">
@@ -1413,6 +2825,12 @@
           <label for="reviewNotes">Feedback</label>
           <textarea id="reviewNotes">${escapeHtml(item[noteField] || item.feedback || "")}</textarea>
         </div>
+        ${table === "task_submissions" ? `
+          <div class="form-row two">
+            <div><label for="reviewScore">Marks Obtained</label><input id="reviewScore" type="number" min="0" step="0.01" value="${escapeAttr(existingScore ?? "")}"></div>
+            <div><label for="reviewTotalMarks">Maximum Marks</label><input id="reviewTotalMarks" type="number" min="0" step="0.01" value="${escapeAttr(existingTotal ?? "")}"></div>
+          </div>
+        ` : ""}
         <div class="form-actions">
           <button class="ghost-btn" type="button" data-close-modal>Cancel</button>
           <button class="primary-btn" type="submit">Save Review</button>
@@ -1422,14 +2840,70 @@
 
     document.getElementById("reviewForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      await writeRecord(table, {
-        status: valueOf("reviewStatus"),
-        [noteField]: valueOf("reviewNotes"),
-        feedback: valueOf("reviewNotes"),
-        reviewed_by: state.mentor.id,
-        reviewed_at: new Date().toISOString(),
-        reviewed_date: new Date().toISOString()
-      }, item.id, ["feedback", "reviewed_by", "reviewed_at", "reviewed_date"]);
+      await runLockedSubmit(event.currentTarget, event.submitter, "Saving review...", async () => {
+        const score = table === "task_submissions" && valueOf("reviewScore") !== "" ? Number(valueOf("reviewScore")) : null;
+        const totalMarks = table === "task_submissions" && valueOf("reviewTotalMarks") !== "" ? Number(valueOf("reviewTotalMarks")) : null;
+        if (score !== null && (!totalMarks || score > totalMarks)) {
+          showAlert("Marks obtained must not exceed maximum marks.", true);
+          return;
+        }
+        await writeRecord(table, {
+          status: valueOf("reviewStatus"),
+          [noteField]: valueOf("reviewNotes"),
+          feedback: valueOf("reviewNotes"),
+          ...(table === "task_submissions" ? {
+            score,
+            marks_obtained: score,
+            total_marks: totalMarks,
+            graded_at: score === null ? null : new Date().toISOString()
+          } : {}),
+          reviewed_by: state.mentor.id,
+          reviewed_at: new Date().toISOString(),
+          reviewed_date: new Date().toISOString()
+        }, item.id, ["feedback", "reviewed_by", "reviewed_at", "reviewed_date"]);
+      });
+    });
+  }
+
+  function openQuestionReplyModal(question) {
+    if (!question) return;
+    const student = findById(state.data.users, question.student_id || question.user_id);
+    openModal("Reply to Question", `
+      <form class="form-grid" id="questionReplyForm">
+        <div class="form-row">
+          <label>Student Question</label>
+          <textarea disabled>${escapeHtml(`${student?.name || "Student"}: ${question.title || ""}\n\n${question.description || ""}`)}</textarea>
+        </div>
+        <div class="form-row">
+          <label for="questionReplyStatus">Status</label>
+          <select id="questionReplyStatus">
+            ${option("pending", question.status)}
+            ${option("answered", question.status)}
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="questionReplyNotes">Reply</label>
+          <textarea id="questionReplyNotes" required>${escapeHtml(question.review_notes || question.feedback || "")}</textarea>
+        </div>
+        <div class="form-actions">
+          <button class="ghost-btn" type="button" data-close-modal>Cancel</button>
+          <button class="primary-btn" type="submit">Save Reply</button>
+        </div>
+      </form>
+    `);
+
+    document.getElementById("questionReplyForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await runLockedSubmit(event.currentTarget, event.submitter, "Saving reply...", async () => {
+        await writeRecord("projects", {
+          status: valueOf("questionReplyStatus") || "answered",
+          review_notes: valueOf("questionReplyNotes"),
+          feedback: valueOf("questionReplyNotes"),
+          reviewed_by: state.mentor.id,
+          reviewed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }, question.id, ["feedback", "reviewed_by", "reviewed_at", "updated_at"]);
+      });
     });
   }
 
@@ -1455,7 +2929,9 @@
 
     document.getElementById("replyForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      await insertChatMessage(valueOf("replyMessage"), parent.batch_id, parent.id);
+      await runLockedSubmit(event.currentTarget, event.submitter, "Posting reply...", async () => {
+        await insertChatMessage(valueOf("replyMessage"), parent.batch_id, parent.id);
+      });
     });
   }
 
@@ -1509,13 +2985,10 @@
     }
     try {
       const supabaseClient = getClient();
-      const { data, error } = await supabaseClient.rpc("lms_change_legacy_password", {
-        login_email: state.mentor.email,
-        current_password: currentPassword,
-        new_password: newPassword
-      });
+      await window.JenovateAuth.signInWithPassword(state.mentor.email, currentPassword);
+      const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      if (!data) throw new Error("Current password is incorrect.");
+      if (!data?.user) throw new Error("Password update failed.");
       value("currentPassword", "");
       value("newPassword", "");
       value("confirmPassword", "");
@@ -1559,16 +3032,16 @@
           .update({ status: rowPayload.status })
           .eq("user_id", existing.user_id)
           .eq("course_id", existing.course_id)
-          .select();
+          .select(SELECTS.userCourses);
         if (error && /status/i.test(error.message || "") && /column/i.test(error.message || "")) {
           error = null;
         }
         if (error) throw error;
       } else {
-        let { error } = await supabaseClient.from("user_courses").insert(rowPayload).select();
+        let { error } = await supabaseClient.from("user_courses").insert(rowPayload).select(SELECTS.userCourses);
         if (error && /status/i.test(error.message || "") && /column/i.test(error.message || "")) {
           const { status, ...compatiblePayload } = rowPayload;
-          ({ error } = await supabaseClient.from("user_courses").insert(compatiblePayload).select());
+          ({ error } = await supabaseClient.from("user_courses").insert(compatiblePayload).select(SELECTS.userCourses));
         }
         if (error && /duplicate|unique/i.test(error.message || "")) {
           error = null;
@@ -1583,7 +3056,7 @@
       if (userError) throw userError;
 
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert(existing ? "Enrollment updated." : "Student assigned.");
     } catch (error) {
       showAlert(error.message || "Enrollment save failed.", true);
@@ -1602,7 +3075,7 @@
 
       if (error) throw error;
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Saved successfully.");
     } catch (error) {
       showAlert(error.message || "Save failed.", true);
@@ -1611,54 +3084,103 @@
 
   async function saveCourseRecord(payload, id = null) {
     try {
-      const { error } = await getClient().rpc("lms_mentor_save_course", {
-        mentor_user_id: state.mentor?.id,
-        course_id: id || null,
-        course_payload: compactPayload(payload)
-      });
-
-      if (error) {
-        if (/lms_mentor_save_course|schema cache|could not find/i.test(error.message || "")) {
-          throw new Error("Mentor course save is not configured in Supabase. Run supabase-mentor-course-write-fix.sql, then refresh.");
-        }
-        throw error;
-      }
+      const writePayload = compactPayload(payload);
+      await writeCourseRecordDirect(writePayload, id);
 
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Course saved successfully.");
     } catch (error) {
       showAlert(error.message || "Course save failed.", true);
     }
   }
 
+  async function writeCourseRecordDirect(payload, id = null) {
+    const candidates = [
+      payload,
+      stripKeys(payload, ["created_by_admin"]),
+      stripKeys(payload, ["mentor_id"]),
+      stripKeys(payload, ["mentor_id", "created_by_admin"])
+    ];
+    let lastError = null;
+
+    for (const candidate of candidates) {
+      const writePayload = compactPayload(candidate);
+      const request = id
+        ? getClient().from("courses").update(writePayload).eq("id", id).select(SELECTS.courses)
+        : getClient().from("courses").insert(writePayload).select(SELECTS.courses);
+      const { error } = await request;
+      if (!error) return;
+      lastError = error;
+      if (!isSchemaShapeError(error)) break;
+    }
+
+    throw lastError || new Error("Course save failed.");
+  }
+
+  function stripKeys(payload, keys) {
+    const clone = { ...payload };
+    keys.forEach((key) => delete clone[key]);
+    return clone;
+  }
+
+  function isSchemaShapeError(error) {
+    return /column|schema cache|does not exist|could not find/i.test(error?.message || "")
+      || ["PGRST204", "42703"].includes(String(error?.code || ""));
+  }
+
+  function isMissingRpcError(error) {
+    return /function|schema cache|not found|could not find|permission denied/i.test(error?.message || "")
+      || ["PGRST202", "42501"].includes(String(error?.code || ""));
+  }
+
+  function friendlySupabaseError(error) {
+    const message = error?.message || "Unable to fetch";
+    if (/permission|policy|rls/i.test(message)) return "permission/RLS blocked";
+    if (/relation|table|does not exist/i.test(message)) return "table is missing";
+    if (/column|schema cache|could not find/i.test(message)) return "schema cache/column mismatch";
+    return message;
+  }
+
   async function sendWrite(table, payload, id) {
     const supabaseClient = getClient();
+    const returning = selectForTable(table);
     const request = id
-      ? supabaseClient.from(table).update(payload).eq("id", id).select()
-      : supabaseClient.from(table).insert(payload).select();
+      ? supabaseClient.from(table).update(payload).eq("id", id).select(returning)
+      : supabaseClient.from(table).insert(payload).select(returning);
     const { error } = await request;
     return error || null;
   }
 
+  function selectForTable(table) {
+    const spec = TABLE_SPECS.find((item) => item.table === table);
+    return spec?.select || "id,created_at";
+  }
+
   async function deleteRecord(table, id) {
-    if (!id || !window.confirm("Delete this item?")) return;
+    if (!id || !window.confirm("Archive this item? Admins can recover it later.")) return;
     try {
       const supabaseClient = getClient();
-      const { error } = await supabaseClient.from(table).delete().eq("id", id);
+      const request = supabaseClient.from(table).update(softDeletePayload(table)).eq("id", id);
+      const { error } = await request;
       if (error) throw error;
-      await loadAllData();
-      showAlert("Deleted successfully.");
+      await loadAllData({ force: true });
+      showAlert("Archived successfully.");
     } catch (error) {
-      showAlert(error.message || "Delete failed.", true);
+      showAlert(error.message || "Archive failed.", true);
     }
   }
 
+  function softDeletePayload(table) {
+    const now = new Date().toISOString();
+    if (table === "batch_tasks") return { status: "archived", deleted_at: now };
+    return { status: "archived", deleted_at: now };
+  }
+
   async function logout() {
-    clearStoredSessions();
-    const supabaseClient = getClient();
-    await supabaseClient?.auth?.signOut?.();
-    window.location.replace("login.html");
+    if (window.JenovateAuth?.signOut) await window.JenovateAuth.signOut();
+    else clearStoredSessions();
+    window.location.replace("login.html?from=logout");
   }
 
   function clearStoredSessions() {
@@ -1668,18 +3190,42 @@
     sessionStorage.removeItem("jenovateStudentSession");
   }
 
-  function setView(view) {
+  function initializeHistoryNavigation() {
+    if (!history.state?.mentorView || !views[history.state.mentorView]) {
+      history.replaceState({ mentorView: "dashboard" }, "", window.location.href);
+    }
+    history.pushState({ mentorView: "dashboard", mentorGuard: true }, "", window.location.href);
+    window.addEventListener("popstate", () => {
+      if (state.activeView !== "dashboard") {
+        setView("dashboard", { historyMode: "none" });
+        history.pushState({ mentorView: "dashboard", mentorGuard: true }, "", window.location.href);
+      } else if (window.confirm("Go back to the login page?")) {
+        window.location.replace("login.html?from=back");
+      } else {
+        history.pushState({ mentorView: "dashboard", mentorGuard: true }, "", window.location.href);
+      }
+    });
+  }
+
+  function setView(view, options = {}) {
     if (!views[view]) view = "dashboard";
+    const previousView = state.activeView;
     state.activeView = view;
     document.body.dataset.mentorView = view;
     Object.entries(views).forEach(([key, element]) => {
-      element?.classList.toggle("active", key === view);
+      if (!element) return;
+      const isActive = key === view;
+      element.classList.toggle("active", isActive);
+      element.hidden = !isActive;
     });
-    document.querySelectorAll(".nav-item").forEach((button) => {
+    document.querySelectorAll(".mentor-nav .nav-item, .lms-mobile-nav .nav-item").forEach((button) => {
       button.classList.toggle("active", button.dataset.view === view);
     });
     viewTitle.textContent = views[view]?.dataset.title || "Dashboard";
     renderActiveView();
+    if (options.historyMode !== "none" && previousView !== view) {
+      history.pushState({ mentorView: view }, "", window.location.href);
+    }
   }
 
   function renderActiveView() {
@@ -1705,12 +3251,18 @@
       case "reviews":
         renderReviews();
         break;
+      case "questions":
+        renderQuestions();
+        break;
       case "announcements":
         renderAnnouncements();
         break;
       case "chat":
         renderChatBatches();
         renderChat();
+        break;
+      case "support":
+        renderSupport();
         break;
       case "profile":
         renderProfile();
@@ -1739,8 +3291,7 @@
 
     return state.data.users.filter((user) => {
       if (String(user.role).toLowerCase() !== "student") return false;
-      if (String(user.email).toLowerCase() === "adolf@gmail.com") return false;
-      if (sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7")) return false;
+      if (!isActiveLmsRow(user)) return false;
       return batchIds.has(String(user.batch_id)) || enrollmentStudentIds.has(String(user.id));
     });
   }
@@ -1750,8 +3301,7 @@
     const studentIds = new Set(state.data.users
       .filter((user) => (
         String(user.role).toLowerCase() === "student"
-        && String(user.email).toLowerCase() !== "adolf@gmail.com"
-        && !sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7")
+        && isActiveLmsRow(user)
       ))
       .map((user) => String(user.id)));
     return state.data.userCourses
@@ -1768,7 +3318,7 @@
   function availableStudentsForEnrollment(selectedUserId = "") {
     return state.data.users
       .filter((user) => (
-        (String(user.role).toLowerCase() === "student" && String(user.email).toLowerCase() !== "adolf@gmail.com" && !sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7"))
+        (String(user.role).toLowerCase() === "student" && isActiveLmsRow(user))
         || sameId(user.id, selectedUserId)
       ))
       .sort((a, b) => String(a.name || a.email).localeCompare(String(b.name || b.email)));
@@ -1776,7 +3326,10 @@
 
   function scopedTasks() {
     const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
-    return state.data.batchTasks.filter((task) => batchIds.has(String(task.batch_id)));
+    return state.data.batchTasks.filter((task) => (
+      batchIds.has(String(task.batch_id))
+      && String(task.status || "active").toLowerCase() !== "archived"
+    ));
   }
 
   function scopedChats() {
@@ -1814,16 +3367,39 @@
     const courseIds = mentorCourseIds();
     const studentIds = new Set(scopedStudents().map((student) => String(student.id)));
     return state.data.projects.filter((project) => {
+      if (isQuestionProject(project)) return false;
       return batchIds.has(String(project.batch_id)) ||
         courseIds.has(String(project.course_id)) ||
         studentIds.has(String(project.student_id || project.user_id));
     });
   }
 
+  function scopedQuestions() {
+    const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
+    const courseIds = mentorCourseIds();
+    const studentIds = new Set(scopedStudents().map((student) => String(student.id)));
+    return state.data.projects.filter((project) => {
+      if (!isQuestionProject(project)) return false;
+      return batchIds.has(String(project.batch_id)) ||
+        courseIds.has(String(project.course_id)) ||
+        studentIds.has(String(project.student_id || project.user_id));
+    });
+  }
+
+  function isQuestionProject(project) {
+    const type = String(project?.type || "").toLowerCase();
+    if (type) return type === "question";
+    const status = String(project?.status || "").toLowerCase();
+    return Boolean(project?.course_id && (project?.student_id || project?.user_id))
+      && ["pending", "answered", "resolved"].includes(status);
+  }
+
   function mentorCourseIds() {
     const ids = new Set();
     const mentorId = String(state.mentor?.id || "");
     const mentorName = String(state.mentor?.name || state.mentor?.username || "").toLowerCase();
+
+    parseIdList(state.mentor?.course_ids).forEach((id) => ids.add(String(id)));
 
     state.data.courses.forEach((course) => {
       const instructor = String(course.instructor_name || "").toLowerCase();
@@ -1832,9 +3408,11 @@
       }
     });
 
-    // NOTE: We intentionally do NOT add courses from the mentor's own user_courses rows.
-    // A mentor enrolled as a learner should not cause those courses to appear in
     // the mentor's scoped course list — only owned/assigned courses count.
+
+    state.data.userCourses
+      .filter((enrollment) => sameId(enrollment.user_id || enrollment.student_id || enrollment.learner_id, mentorId))
+      .forEach((enrollment) => enrollment.course_id && ids.add(String(enrollment.course_id)));
 
     state.data.batches.forEach((batch) => {
       if (sameId(batch.mentor_id, mentorId) && batch.course_id) ids.add(String(batch.course_id));
@@ -1899,6 +3477,10 @@
 
   function submissionsForTask(taskId) {
     return state.data.taskSubmissions.filter((submission) => sameId(submission.task_id, taskId));
+  }
+
+  function taskSubmissionLink(submission) {
+    return String(submission?.drive_link || submission?.submission_url || submission?.file_url || "").trim();
   }
 
   function progressForStudent(studentId) {
@@ -1970,12 +3552,34 @@
     ].map((item) => String(item || "").trim()).find(Boolean) || "";
   }
 
-  function courseModules(course) {
+  async function uploadStudyMaterial(file) {
+    const client = getClient();
+    if (!client?.storage) throw new Error("File storage is not available.");
+    const safeName = String(file.name || "material").replace(/[^a-z0-9._-]+/gi, "-");
+    const path = `${state.mentor.id}/${Date.now()}-${safeName}`;
+    const { error } = await client.storage.from("study-materials").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+    if (error) throw error;
+    return `study-materials:${path}`;
+  }
+
+  function courseModules(course, includeDeleted = false) {
     const raw = parseJsonValue(course?.modules, []);
-    if (Array.isArray(raw)) return raw.map(normalizeModule);
-    if (Array.isArray(raw?.modules)) return raw.modules.map(normalizeModule);
-    if (raw && typeof raw === "object") return Object.values(raw).map(normalizeModule);
-    return [];
+    const modules = Array.isArray(raw)
+      ? raw.map(normalizeModule)
+      : Array.isArray(raw?.modules)
+        ? raw.modules.map(normalizeModule)
+        : raw && typeof raw === "object"
+          ? Object.values(raw).map(normalizeModule)
+          : [];
+    return includeDeleted
+      ? modules
+      : modules.filter((module) => !module.deleted_at).map((module) => ({
+        ...module,
+        lessons: (module.lessons || []).filter((lesson) => !lesson.deleted_at)
+      }));
   }
 
   function normalizeModule(module, index = 0) {
@@ -1988,6 +3592,7 @@
       type: module.type || module.module_type || "Self-paced",
       order_index: Number(module.order_index || module.order || index + 1),
       reward_coins: Number(module.reward_coins || module.reward || 0),
+      deleted_at: module.deleted_at || null,
       quiz: normalizeQuiz(module.quiz || module.module_quiz || module.quizQuestions || module.questions, { ...module, id: moduleId, title: moduleTitle }),
       lessons: Array.isArray(module.lessons) ? module.lessons.map(normalizeLesson) : []
     };
@@ -2040,6 +3645,8 @@
       pass_marks: Number(source.pass_marks || source.passMarks || source.passing_score || Math.ceil(totalMarks * 0.6) || 0),
       random_count: Number(source.random_count || source.randomQuestions || source.random_questions || 0),
       max_attempts: Number(source.max_attempts || source.maxAttempts || 0),
+      timer_minutes: Number(source.timer_minutes || source.timerMinutes || source.duration_minutes || source.durationMinutes || 0),
+      status: String(source.status || source.publish_status || (source.is_published === false ? "draft" : "published")).toLowerCase(),
       questions
     };
   }
@@ -2164,6 +3771,8 @@
     return {
       id: lesson.id || lesson.lesson_id || randomId(),
       title: lesson.title || lesson.name || "",
+      content_type: lesson.content_type || lesson.contentType || lesson.type || (lesson.material_url ? "study_material" : "video"),
+      deleted_at: lesson.deleted_at || null,
       order_index: Number(lesson.order_index || lesson.order || index + 1),
       video_drive_link: mediaUrl,
       video_url: lesson.video_url || "",
@@ -2193,6 +3802,7 @@
     return {
       id: randomId(),
       title: "",
+      content_type: "video",
       order_index: orderIndex,
       video_drive_link: "",
       drive_link: "",
@@ -2209,6 +3819,8 @@
       pass_marks: 0,
       random_count: 0,
       max_attempts: 0,
+      timer_minutes: 0,
+      status: "published",
       questions: []
     };
   }
@@ -2350,13 +3962,13 @@
         <div class="editor-toolbar">
           <strong>Module ${index + 1}</strong>
           <div class="row-actions">
-            <button class="ghost-btn" type="button" data-add-lesson="${escapeAttr(module.id)}">Add Lesson</button>
-            <button class="danger-btn" type="button" data-remove-module="${escapeAttr(module.id)}">Remove</button>
+            <button class="ghost-btn" type="button" data-add-lesson="${escapeAttr(module.id)}">Add Content</button>
+            <button class="danger-btn" type="button" data-remove-module="${escapeAttr(module.id)}">Remove Playlist</button>
           </div>
         </div>
         <div class="form-row two">
           <div>
-            <label>Module Title</label>
+            <label>Playlist Title</label>
             <input data-module-field="title" value="${escapeAttr(module.title)}">
           </div>
           <div>
@@ -2366,7 +3978,7 @@
         </div>
         <div class="form-row two">
           <div>
-            <label>Module Type</label>
+            <label>Playlist Type</label>
             <select data-module-field="type">
               ${option("Self-paced", module.type)}
               ${option("Live", module.type)}
@@ -2382,7 +3994,7 @@
           <label>Description</label>
           <textarea data-module-field="description">${escapeHtml(module.description || "")}</textarea>
         </div>
-        ${(module.lessons || []).map(lessonEditorHtml).join("")}
+        ${(module.lessons || []).filter((lesson) => !lesson.deleted_at).map(lessonEditorHtml).join("")}
       </div>
     `;
   }
@@ -2391,28 +4003,42 @@
     return `
       <div class="lesson-editor" data-lesson-row data-lesson-id="${escapeAttr(lesson.id)}">
         <div class="editor-toolbar">
-          <strong>Lesson</strong>
-          <button class="danger-btn" type="button" data-remove-lesson="${escapeAttr(lesson.id)}">Remove Lesson</button>
+          <strong>Playlist Content</strong>
+          <button class="danger-btn" type="button" data-remove-lesson="${escapeAttr(lesson.id)}">Delete Content</button>
         </div>
         <div class="form-row two">
           <div>
-            <label>Lesson Title</label>
+            <label>Content Title</label>
             <input data-lesson-field="title" value="${escapeAttr(lesson.title)}">
+          </div>
+          <div>
+            <label>Content Type</label>
+            <select data-lesson-field="content_type">
+              ${option("video", lesson.content_type, "Video")}
+              ${option("assignment", lesson.content_type, "Assignment")}
+              ${option("study_material", lesson.content_type, "Study Material")}
+              ${option("quiz", lesson.content_type, "Quiz")}
+            </select>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div>
+            <label>Content File / Drive Link</label>
+            <input data-lesson-field="video_drive_link" value="${escapeAttr(lessonMediaUrl(lesson))}" placeholder="Video, assignment, PDF, document, or Drive URL">
           </div>
           <div>
             <label>Order Index</label>
             <input data-lesson-field="order_index" type="number" min="1" value="${escapeAttr(lesson.order_index || 1)}">
           </div>
         </div>
-        <div class="form-row two">
-          <div>
-            <label>Lesson Video / Drive Link</label>
-            <input data-lesson-field="video_drive_link" value="${escapeAttr(lessonMediaUrl(lesson))}" placeholder="Google Drive, YouTube, Vimeo, or MP4 URL">
-          </div>
-          <div>
-            <label>Duration</label>
-            <input data-lesson-field="duration" value="${escapeAttr(lesson.duration)}">
-          </div>
+        <div class="form-row">
+          <label>Duration or Notes</label>
+          <input data-lesson-field="duration" value="${escapeAttr(lesson.duration)}">
+        </div>
+        <div class="form-row mentor-study-material-row">
+          <label>Study Material (Optional)</label>
+          <input data-material-upload type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*">
+          <small>Optional PDF, document, image, or zip. Uploading fills the content link above; save the course to publish it.</small>
         </div>
         <div class="form-row">
           <label>Transcript</label>
@@ -2438,14 +4064,18 @@
           ...priorLesson,
           id: lessonId,
           title: fieldValue(lessonRow, "[data-lesson-field='title']"),
+          content_type: fieldValue(lessonRow, "[data-lesson-field='content_type']") || "video",
           order_index: Number(fieldValue(lessonRow, "[data-lesson-field='order_index']") || lessonIndex + 1),
           video_drive_link: mediaUrl,
           drive_link: mediaUrl,
           video_url: mediaUrl,
+          material_url: mediaUrl,
+          file_url: mediaUrl,
           duration: fieldValue(lessonRow, "[data-lesson-field='duration']"),
           transcript: fieldValue(lessonRow, "[data-lesson-field='transcript']")
         };
       }).filter((lesson) => lesson.title || lessonMediaUrl(lesson));
+      const archivedLessons = (priorModule.lessons || []).filter((lesson) => lesson.deleted_at);
 
       return {
         ...priorModule,
@@ -2455,9 +4085,10 @@
         type: fieldValue(row, "[data-module-field='type']") || "Self-paced",
         order_index: Number(fieldValue(row, "[data-module-field='order_index']") || index + 1),
         reward_coins: Number(fieldValue(row, "[data-module-field='reward_coins']") || 0),
-        lessons
+        lessons: [...lessons, ...archivedLessons]
       };
-    }).filter((module) => module.title || module.description || module.lessons.length);
+    }).filter((module) => module.title || module.description || module.lessons.length)
+      .concat(existingModules.filter((module) => module.deleted_at));
   }
 
   function courseRow(course) {
@@ -2605,6 +4236,11 @@
   function isPendingReview(item) {
     const status = String(item.status || "pending").toLowerCase();
     return ["", "pending", "submitted", "review_pending"].includes(status);
+  }
+
+  function isActiveLmsRow(row) {
+    const status = String(row?.status || "active").toLowerCase();
+    return !row?.deleted_at && !["archived", "deleted", "disabled", "inactive", "blocked", "suspended"].includes(status);
   }
 
   function isPast(value) {
@@ -2833,6 +4469,14 @@
     }
   }
 
+  function parseIdList(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    const parsed = parseJsonValue(value, null);
+    if (Array.isArray(parsed)) return parsed;
+    return String(value).split(",").map((item) => item.trim()).filter(Boolean);
+  }
+
   function compactPayload(payload) {
     return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
   }
@@ -2857,6 +4501,14 @@
   function text(id, value) {
     const element = document.getElementById(id);
     if (element) element.textContent = value ?? "";
+  }
+
+  function setBadge(id, count) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    const value = Number(count) || 0;
+    element.textContent = value > 0 ? String(value) : "";
+    element.hidden = value <= 0;
   }
 
   function html(id, value) {
@@ -2901,6 +4553,64 @@
     document.body.classList.remove("modal-lock");
   }
 
+  function readMentorSidebarCollapsed() {
+    try {
+      return localStorage.getItem("jenovateMentorSidebarCollapsed") === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function applyMentorSidebarState(collapsed) {
+    document.body.classList.toggle("mentor-sidebar-collapsed", collapsed);
+    const button = document.getElementById("mentorSidebarToggle");
+    button?.setAttribute("aria-pressed", String(collapsed));
+    button?.setAttribute("aria-expanded", String(!collapsed));
+    button?.setAttribute("aria-label", collapsed ? "Open navigation" : "Close navigation");
+    try {
+      localStorage.setItem("jenovateMentorSidebarCollapsed", collapsed ? "1" : "0");
+    } catch {
+      // The navigation still works when storage is unavailable.
+    }
+  }
+
+  async function runLockedSubmit(form, submitter, loadingLabel, action) {
+    if (!form || form.dataset.submitting === "true") return;
+    if (typeof form.checkValidity === "function" && !form.checkValidity()) {
+      form.reportValidity?.();
+      form.querySelector(":invalid")?.focus?.();
+      return;
+    }
+
+    form.dataset.submitting = "true";
+    form.setAttribute("aria-busy", "true");
+    const controls = Array.from(form.querySelectorAll("input, select, textarea, button"));
+    const primary = submitter || form.querySelector("button[type='submit']");
+    const originalText = primary?.textContent || "";
+
+    controls.forEach((control) => {
+      control.dataset.wasDisabled = control.disabled ? "true" : "false";
+      control.disabled = true;
+      if (control instanceof HTMLButtonElement) control.setAttribute("aria-busy", "true");
+    });
+    if (primary && loadingLabel) primary.textContent = loadingLabel;
+
+    try {
+      await action();
+    } finally {
+      if (document.body.contains(form)) {
+        form.dataset.submitting = "false";
+        form.removeAttribute("aria-busy");
+        controls.forEach((control) => {
+          control.disabled = control.dataset.wasDisabled === "true";
+          delete control.dataset.wasDisabled;
+          control.removeAttribute("aria-busy");
+        });
+        if (primary) primary.textContent = originalText;
+      }
+    }
+  }
+
   function setLoading(visible) {
     loadingPanel?.classList.toggle("show", visible);
   }
@@ -2920,8 +4630,8 @@
   }
 
   function setSyncStatus(message) {
-    if (syncStatus) syncStatus.textContent = message;
-    if (syncStatusMeta) syncStatusMeta.textContent = message;
+    if (syncStatus) syncStatus.textContent = "";
+    if (syncStatusMeta) syncStatusMeta.textContent = "";
   }
 
   function emptyState(message) {
@@ -2951,6 +4661,11 @@
     return date.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
   }
 
+  function truncate(value, length = 120) {
+    const text = String(value || "");
+    return text.length > length ? `${text.slice(0, Math.max(0, length - 3))}...` : text;
+  }
+
   function dateInputValue(value) {
     if (!value) return "";
     const date = new Date(value);
@@ -2963,6 +4678,7 @@
   }
 
   function escapeHtml(value) {
+    if (window.JenovateDom?.escapeHtml) return window.JenovateDom.escapeHtml(value);
     return String(value ?? "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
@@ -2972,6 +4688,7 @@
   }
 
   function escapeAttr(value) {
+    if (window.JenovateDom?.escapeAttr) return window.JenovateDom.escapeAttr(value);
     return escapeHtml(value);
   }
 })();

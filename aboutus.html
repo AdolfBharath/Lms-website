@@ -1,267 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Us | Jenovate</title>
-    <link rel="icon" href="/logos/logooo2.png" type="image/png" />
-    <link rel="stylesheet" href="colours.css" />
-    <link rel="stylesheet" href="aboutus.css" />
-    <script src="session-router.js?v=20260519-role-redirect" data-redirect-active-session="true"></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jenovate - Built for Gen Z. Designed for Growth</title>
+  <meta name="description" content="Jenovate is built for Gen Z learners with guided courses, mentors, projects, and career-ready growth.">
+  <link rel="icon" type="image/png" href="assets/img/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260617-about-links">
+  <link rel="stylesheet" href="public-mobile-comfort.css?v=20260720-mobile-visibility2">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html#home" aria-label="Jenovate home">
+      <img src="image/logo/logonew.png" alt="Jenovate">
+    </a>
+    <nav class="nav">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#courses">Courses</a>
+      <a href="launchpad-detail.html?plan=advanced">Launchpad</a>
+      <a href="campus-ambassador.html">Campus Ambassador</a>
+      <a href="index.html#testimonials">Testimonials</a>
+      <a class="active" href="about-us.html">About Us</a>
+    </nav>
 
-  <body>
-    <!-- NAVBAR -->
-    <header class="navbar">
-      <div class="container nav-flex">
-        <div class="logo">
-          <img src="/logos/favicon.png" alt="Jenovate" />
-        </div>
+    <div class="header-actions">
+      <form class="search" id="courseSearch">
+        <button class="category-btn" id="categoryButton" type="button" aria-expanded="false">
+          <span class="grid-dot" aria-hidden="true"></span>
+          Categories
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <label class="sr-only" for="searchInput">Search for course</label>
+        <input id="searchInput" type="search" placeholder="Search For Course . . .">
+        <button class="search-btn" type="submit" aria-label="Search"><span aria-hidden="true"></span></button>
+      </form>
+      <button class="login" type="button">Log in</button>
+      <button class="join-us" type="button">Join Us</button>
+    </div>
+  </header>
 
-        <nav class="nav-links">
-          <a href="#">Explore Courses</a>
-          <a href="#">Testimonials</a>
-          <a href="campus-ambassador.html">Campus Ambassador</a>
-          <a href="aboutus.html">About Us</a>
-        </nav>
-
-        <div class="nav-actions">
-          <a href="#" class="login-btn">Login</a>
-        </div>
-      </div>
-    </header>
-
-    <!-- ABOUT HERO SECTION -->
-    <section class="about-hero">
-      <div class="about-hero-container">
-        <h1 class="about-hero-title">
-          Turning Curiosity<br />
-          Into Capability<br />
-          <span>TOGETHER</span>
-        </h1>
-
-        <p class="about-hero-subtitle">
-          With a relentless pursuit of learning excellence, we design immersive experiences that educate, empower, and create lasting impact.
-        </p>
-
-        <button class="about-hero-arrow" aria-label="Scroll down">↓</button>
-      </div>
+  <main class="about-page">
+    <section class="about-landing">
+      <span class="pill">About Jenovate</span>
+      <h1>Turning Curiosity<br>Into Capability<br><em>Together</em></h1>
+      <p>We create practical learning experiences that help students build confidence, portfolio-ready skills, and a clearer path into the work they want.</p>
+      <a class="about-scroll" href="#infiniteMenu" aria-label="Explore the infinite menu"></a>
     </section>
 
-    <!-- ABOUT STORY SECTION -->
-    <section class="about-story" id="aboutStory">
-      <div class="about-story-sticky">
-        <!-- FIXED LOGO -->
-        <div class="about-story-logo">
-          <img src="/logos/logooo2.png" alt="Jenovate Logo" />
-        </div>
-
-        <!-- MOVING IMAGES -->
-        <div class="about-story-images">
-          <button class="slider-btn prev" aria-label="Previous image">‹</button>
-
-          <div class="slider-viewport">
-            <div class="slider-track">
-              <img src="img/img1.jpg" class="story-img" />
-              <img src="img/img2.jpg" class="story-img" />
-              <img src="img/img3.jpg" class="story-img" />
-              <img src="img/img4.jpg" class="story-img" />
-              <img src="img/img5.jpg" class="story-img" />
-              <img src="img/img6.jpg" class="story-img" />
-            </div>
-          </div>
-
-          <button class="slider-btn next" aria-label="Next image">›</button>
-        </div>
-
-        <!-- TEXT (APPEARS LAST) -->
-         <div class="about-story-text">
-          <p>
-            At <strong>Jenovate</strong>, we craft digital experiences that
-            bring your vision to life with purpose and precision. From a humble
-            studio to a global partner, our growth is fueled by creativity,
-            curiosity, and collaboration. We’re agile, intentional, and always
-            building something meaningful.
-          </p>
+    <section class="infinite-menu-section" id="infiniteMenu">
+      <div class="section-title">
+        <span class="pill">Our Learning Universe</span>
+        <h2>Explore What We Build</h2>
+        <p>Drag the globe, let it spin, and open the paths that shape the Jenovate experience.</p>
+      </div>
+      <div class="infinite-menu-shell" data-infinite-menu>
+        <div class="infinite-stage" aria-label="Interactive infinite menu"></div>
+        <div class="infinite-info">
+          <h3>Career Programs</h3>
+          <p>Structured learning paths built around real skills, projects, and mentor guidance.</p>
+          <a href="index.html#courses" aria-label="Open selected about item"></a>
         </div>
       </div>
     </section>
 
-    <!--FOUNDER SECTION-->
-    <section class="about-leadership">
-      <div class="about-leadership-container">
-        <!-- TOP TEXT BLOCK -->
-        <div class="about-leadership-intro">
-          <h2>
-            From Vision to Impact
-            <span>Shantanu Hadge's Journey</span>
-          </h2>
-
-          <div class="about-leadership-text">
-            <div>
-              <p>
-                Meet Shantanu — the founder and driving force behind Jenovate.
-                Fueled by a deep curiosity for learning, growth, and human potential, Shantanu set out with a simple yet powerful vision: to reshape how students prepare for the real world. His journey has always been rooted in one belief , education should empower, not overwhelm.
-              </p>
-
-              <p>
-               With a strong foundation in understanding student psychology, skill gaps, and evolving industry demands, Shantanu recognized that traditional learning models often fall short. Through hands-on experience working with students, mentors, and institutions, he realized that true impact lies not just in teaching concepts, but in building confidence, clarity, and capability.
-              </p>
-            </div>
-
-            <div>
-              <p>
-               This realization led to the birth of Jenovate  an upskilling platform designed with purpose at its core. Built alongside a team of passionate educators, creators, and innovators, Jenovate bridges the gap between academic learning and real-world skills through practical, application-driven experiences.
-              </p>
-
-              <p>
-                For Shantanu, meaningful education is human-centered, future-focused, and deeply transformative. His work reflects a commitment to helping students grow not just into skilled professionals, but into thoughtful, adaptable individuals ready to navigate an ever-changing world.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- FOUNDER BLOCK -->
-        <div class="about-founder">
-          <div class="about-founder-image">
-            <img src="img/shantanu.png" alt="Shantanu Hadge" />
-          </div>
-
-          <div class="about-founder-quote">
-            <p class="quote-text">
-              “In a world that is constantly changing, students don’t just need information , they need direction. Jenovate was built as an upskilling platform to help learners find their path, develop meaningful skills, and grow into the individuals they are meant to become.”
-            </p>
-
-            <div class="quote-author">
-              <h3>Shantanu Hadge</h3>
-              <span>Founder & CEO</span>
-            </div>
-          </div>
-        </div>
+    <section class="about-feature-strip" id="features">
+      <div class="about-feature-track">
+        <article class="about-feature-card mentor">
+          <h2>Expert Mentors With Doubt Support</h2>
+          <p>Learn directly from experienced industry professionals who share real-world insights and help you gain practical, career-ready skills.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
+        <article class="about-feature-card project">
+          <h2>Portfolio-Worthy Projects</h2>
+          <p>Work on industry-focused projects that strengthen your portfolio and showcase your skills to recruiters with confidence.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
+        <article class="about-feature-card simulation">
+          <h2>Simulations &amp; Real-Time Case Studies</h2>
+          <p>Experience workplace scenarios through interactive simulations that build practical skills and sharper decision-making.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
+        <article class="about-feature-card certificate">
+          <h2>Certificates &amp; Letter of Recommendation</h2>
+          <p>Earn recognized certificates and strong recommendations to support your academic and career growth journey.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
+        <article class="about-feature-card live">
+          <h2>On Demand Live &amp; Self Paced Classes</h2>
+          <p>Attend live sessions, learn at your own pace, and revisit class resources whenever your schedule needs flexibility.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
+        <article class="about-feature-card community">
+          <h2>Community Access With Peers</h2>
+          <p>Join a supportive learning community where you can connect, collaborate, and grow with like-minded learners.</p>
+          <a href="form-engine/index.html?category=student_registration">Get Started</a>
+        </article>
       </div>
     </section>
 
-    <!-- CLIENT TESTIMONIALS SECTION -->
-    <section class="client-testimonials">
-      <div class="client-testimonials-container">
-        <h2 class="client-title">Know It From <span>Our Clients</span></h2>
-
-        <p class="client-subtitle">
-          We Make No Tall Claims, But Our Clients Vouch For Us.
-        </p>
-
-        <div class="client-cards">
-          <div class="client-card">
-            <img src="img/client1.png" alt="Client 1" />
-          </div>
-          <div class="client-card">
-            <img src="img/client2.png" alt="Client 2" />
-          </div>
-          <div class="client-card">
-            <img src="img/client3.png" alt="Client 3" />
-          </div>
-          <div class="client-card">
-            <img src="img/client4.png" alt="Client 4" />
-          </div>
+    <section class="founder-story">
+      <div class="story-heading">
+        <span class="pill">Our Story</span>
+        <h2>From Vision to Impact<br><em>Jenovate's Journey</em></h2>
+      </div>
+      <div class="story-grid">
+        <div>
+          <p>Jenovate began with a simple belief: education should empower, not overwhelm. Our team saw students working hard but still struggling to connect learning with real career confidence.</p>
+          <p>So we shaped a platform around practical learning, guided mentorship, and projects that help learners prove what they can do, not just what they know.</p>
         </div>
+        <div>
+          <p>Today, Jenovate bridges the gap between academic learning and application-driven growth. Every course, mentor session, and community experience is designed to create clarity.</p>
+          <p>Our goal is to help students become adaptable professionals who are ready to navigate an ever-changing world with confidence.</p>
+        </div>
+      </div>
+      <div class="story-media">
+        <img src="assets/img/others/about_img.png" alt="">
+        <blockquote>In a world that keeps changing, students need direction, confidence, and real opportunities to practice.</blockquote>
       </div>
     </section>
 
-    <!-- CAREERS SECTION -->
-    <section class="careers-section">
-      <div class="beam-card" id="beamCard">
-        <div class="beam-card-inner">
-          <p>
-            Build the future with 
-            <strong>Jenovate</strong>, We’re growing fast and looking for curious minds, creative builders, and problem-solvers who are ready to learn, innovate, and make real impact. If you’re passionate about growth and purpose-driven work, this is your place.
-          </p>
-
-          <button class="career-btn">CAREERS <span>↗</span></button>
-        </div>
+    <section class="about-careers">
+      <div>
+        <p>Build the future with <strong>Jenovate.</strong> We're growing fast and looking for curious minds, creative builders, and problem-solvers who are ready to learn, innovate, and make real impact.</p>
+        <a class="btn primary" href="form-engine/index.html?category=hiring_application">Careers <span></span></a>
       </div>
     </section>
 
-    <!-- CALL TO ACTION SECTION -->
-    <section class="cta-wings">
-      <div class="cta-wings-inner">
-        <div class="cta-text left">Let’s Give Wings</div>
-
-        <div class="cta-logo">
-          <img src="/logos/logooo2.png" alt="jenovate logo" />
-        </div>
-
-        <div class="cta-text right">To Your <span>Dream!</span></div>
-      </div>
-
-      <p class="cta-subtext">Need more clarity? Let our team help you.</p>
-
-      <a href="#" class="cta-btn"> BOOK A FREE CONSULTATION → </a>
+    <section class="dream-cta">
+      <h2>Let's Give Wings <span>To Your <em>Dream!</em></span></h2>
+      <p>Need more clarity? Let our team help you.</p>
+      <a class="btn primary" href="form-engine/index.html?category=student_registration">Book A Free Consultation <span></span></a>
     </section>
+  </main>
 
-    <!-- FOOTER -->
-     <footer class="simple-footer">
-      <div class="footer-inner">
-        <div class="footer-left">
-          <div class="footer-brand">
-            <img src="/logos/logooo2.png" alt="Jenovate Logo">
-            <span>Jenovate</span>
-          </div>
-          <p class="footer-address">
-            233,Koramangala, Banglore Urban,<br />
-            Bengaluru, Karnataka, India<br />
-            © 2026 Jenovate. All rights reserved.
-          </p>
-        </div>
-        <div class="footer-right">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Contact Us</a>
+  <footer class="footer">
+    <div class="footer-main">
+      <div>
+        <a class="footer-brand" href="index.html#home">
+          <img src="assets/img/logo/favicon.png" alt="">
+        </a>
+        <h3>Quick Pages</h3>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#courses">Courses</a>
+        <a href="launchpad-detail.html?plan=advanced">Launchpad</a>
+        <a href="campus-ambassador.html">Campus Ambassador</a>
+        <a href="index.html#mentors">Mentors</a>
+        <a href="about-us.html">About Us</a>
       </div>
-     </footer>
-
-
-    <!-- LOGIN MODAL -->
-    <div class="login-modal" id="loginModal">
-      <div class="login-backdrop"></div>
-
-      <div class="login-box">
-        <button class="login-close" id="closeLogin">×</button>
-
-        <div class="login-left">
-          <h2>You Dream It,<br /><span>We Build It</span></h2>
-          <p>Connect quickly with:</p>
-
-          <div class="login-icons">
-            <img src="/logos/whatsapp-logo.png" />
-            <img src="/logos/letter.png" />
-            <img src="/logos/Instagram.png" />
-            <img src="/logos/Linkedin.png" />
-          </div>
-
-          <div class="login-stats">
-            <div><b>100+</b><span>Projects</span></div>
-            <div><b>700+</b><span>Happy Customers</span></div>
-            <div><b>98%</b><span>Satisfaction Rate</span></div>
-            <div><b>17+</b><span>Expert Mentors </span></div>
-          </div>
-        </div>
-
-        <div class="login-right">
-          <h3>Got the vision? We’ve got the expertise.</h3>
-          <p>Tell us more about yourself and what you’re got in mind.</p>
-
-          <input type="text" placeholder="Your full name" />
-          <input type="text" placeholder="Your College name" />
-          <input type="email" placeholder="Your feild of studies" />
-          <textarea
-            placeholder="Which Program are you looking for..."
-          ></textarea>
-
-          <button class="login-submit">Submit →</button>
-        </div>
+      <div>
+        <h3>Our Company</h3>
+        <a href="#">Contact Us</a>
+        <a href="#">Become Teacher</a>
+        <a href="#">Blog</a>
+        <a href="#">Instructor</a>
+        <a href="#">Events</a>
+      </div>
+      <div>
+        <h3>Get In Touch</h3>
+        <p>when an unknown printer took<br>galley type and scrambled</p>
+        <div class="socials"><span>f</span><span>t</span><span>o</span><span>p</span></div>
+        <div class="stores"><img src="assets/img/others/google-play.svg" alt="Google Play"><img src="assets/img/others/apple-store.svg" alt="Apple Store"></div>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>© 2025 jenovate.com. All rights reserved.</p>
+      <p><a href="terms-of-service.html">Terms of Service</a> <span>|</span> <a href="privacy-policy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
 
-    <script src="aboutus.js"></script>
-  </body>
+  <script src="splash-cursor.js"></script>
+  <script src="script.js"></script>
+  <script src="about-menu.js"></script>
+</body>
 </html>

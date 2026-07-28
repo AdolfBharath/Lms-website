@@ -1,0 +1,2 @@
+[functions.admin-save-user]
+verify_jwt = false

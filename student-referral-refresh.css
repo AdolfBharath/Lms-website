@@ -1,0 +1,89 @@
+/* Final loaded student referral refresh. Separate file guarantees visible UI change. */
+body[data-ui-build] #referralView {
+  background: #f7f8fc !important;
+}
+
+body[data-ui-build] #referralView .referral-hero {
+  min-height: 190px !important;
+  margin-bottom: 22px !important;
+  padding: clamp(24px, 3vw, 36px) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 86% 14%, rgba(255, 255, 255, 0.20), transparent 22rem),
+    linear-gradient(135deg, #315ee6 0%, #4773f7 58%, #28b7a5 100%) !important;
+  box-shadow: 0 18px 48px rgba(49, 94, 230, 0.22) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero::after {
+  display: none !important;
+}
+
+body[data-ui-build] #referralView .referral-hero h2 {
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  grid-template-columns: minmax(320px, 430px) minmax(0, 1fr) !important;
+  gap: 22px !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-form-card,
+body[data-ui-build] #referralView .referral-guide-card,
+body[data-ui-build] #referralView .referral-stats-card {
+  border: 1px solid #dfe6f2 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 38px rgba(30, 41, 59, 0.07) !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card {
+  min-height: 330px !important;
+  padding: clamp(20px, 2vw, 28px) !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row {
+  border: 1px solid #dfe6f2 !important;
+  border-radius: 14px !important;
+  background: #f8faff !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  border: 1px dashed #b7c5ff !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%) !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box.is-pending {
+  border-color: #f6bf5f !important;
+  background: #fff9ed !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  color: #315ee6 !important;
+  font-size: clamp(28px, 2.4vw, 42px) !important;
+  letter-spacing: 0.04em !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  border: 1px solid #dbe3f1 !important;
+  border-radius: 14px !important;
+  background: #fbfcfe !important;
+  color: #1f2937 !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions .primary-btn,
+body[data-ui-build] #referralView .referral-action-strip .primary-btn {
+  background: linear-gradient(135deg, #315ee6, #4773f7) !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: 1fr !important;
+  }
+}

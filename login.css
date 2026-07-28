@@ -2,27 +2,47 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
 }
 
 body {
-  background-color: #ffffff;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  padding: 0 !important;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #0b1226;
+  overflow: hidden;
 }
 
 .login-container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
+  display: grid !important;
+  grid-template-columns: minmax(0, 58%) minmax(380px, 42%);
+  width: 100vw !important;
+  min-width: 100vw !important;
+  max-width: none !important;
+  flex: 0 0 100vw;
+  min-height: 100vh;
+  background: #ffffff !important;
+}
+
+.login-container > * {
+  min-width: 0;
 }
 
 .login-left {
-  width: 50%;
+  width: 100%;
+  min-width: 0;
   position: relative;
-  background: #ffffff;
+  min-height: 100vh;
+  background: #ffffff !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,65 +52,83 @@ body {
 
 .logo-container {
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 15px;
+  left: 30px;
   z-index: 10;
 }
 
 .logo-img {
-  height: 45px;
+  height: 70px;
+  width: auto;
   object-fit: contain;
 }
 
 .illustration-img {
-  position: absolute;
-  top: 0;
-  left: -5%; /* Moved slightly left */
-  width: 105%; /* Increased width to prevent blank space on the right */
-  height: 100%;
-  object-fit: cover;
-  object-position: left center;
+  position: absolute !important;
+  top: -46px !important;
+  left: -36px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: calc(100% + 128px) !important;
+  height: calc(100% + 92px) !important;
+  object-fit: cover !important;
+  object-position: left top !important;
   z-index: 0;
+  display: block;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .login-right {
-  width: 50%;
+  width: 100%;
+  min-width: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
+  padding: 42px clamp(32px, 5vw, 72px);
 }
 
 .login-form-container {
   width: 100%;
-  max-width: 420px;
-  padding: 20px;
+  max-width: 500px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.login-form {
+  width: 100%;
 }
 
 .welcome-title {
-  font-size: 38px;
+  font-size: clamp(38px, 3.4vw, 48px) !important;
+  line-height: 1.04;
   font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 12px;
+  color: #0b1226 !important;
+  margin-bottom: 16px;
+  letter-spacing: 0 !important;
 }
 
 .welcome-subtitle {
-  font-size: 16px;
-  color: #475569;
-  margin-bottom: 45px;
+  font-size: 20px;
+  color: #263b5c !important;
+  margin-bottom: 48px;
   font-weight: 500;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 label {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #071022;
+  margin-bottom: 10px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -102,8 +140,8 @@ label {
 }
 
 .forgot-password {
-  font-size: 13px;
-  color: #2563eb;
+  font-size: 16px;
+  color: #0758df;
   text-decoration: none;
   font-weight: 500;
   text-transform: none;
@@ -121,18 +159,34 @@ label {
 
 .input-icon {
   position: absolute;
-  left: 16px;
-  color: #64748b;
-  font-size: 16px;
+  left: 20px;
+  color: #5f789a;
+  font-size: 18px;
+  z-index: 1;
+}
+
+.input-icon svg,
+.toggle-password svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .toggle-password {
   position: absolute;
-  right: 16px;
-  color: #64748b;
-  font-size: 16px;
+  right: 20px;
+  color: #5f789a;
+  font-size: 20px;
   cursor: pointer;
   transition: color 0.2s;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .toggle-password:hover {
@@ -141,43 +195,46 @@ label {
 
 input {
   width: 100%;
-  padding: 16px 45px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #f8fafc;
-  font-size: 15px;
-  color: #0f172a;
+  min-height: 60px;
+  padding: 0 56px;
+  border: 1px solid #d7e3f3;
+  border-radius: 12px;
+  background-color: #f7faff;
+  font-size: 18px;
+  color: #071022;
   transition: all 0.2s ease;
   outline: none;
 }
 
 input:focus {
-  border-color: #2563eb;
+  border-color: #8fb3ff;
   background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 4px rgba(7, 88, 223, 0.1);
 }
 
 input::placeholder {
-  color: #94a3b8;
+  color: #8ba0bd;
   font-weight: 400;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 16px;
-  background-color: #2563eb;
+  min-height: 58px;
+  padding: 0 18px;
+  background: #2f66ea !important;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 19px;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 24px;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 14px 28px rgba(47, 102, 234, .22) !important;
 }
 
 .submit-btn:hover {
-  background-color: #1d4ed8;
+  background-color: #0758df !important;
 }
 
 .submit-btn:active {
@@ -185,35 +242,151 @@ input::placeholder {
 }
 
 .login-error {
-  min-height: 22px;
-  margin-top: 14px;
+  min-height: 24px;
+  margin-top: 16px;
   color: #dc2626;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.join-account {
+  margin-top: 18px;
+  color: #53627a;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.join-account a {
+  color: #0758df;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.join-account a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+  .login-container {
+    grid-template-columns: minmax(0, 56%) minmax(360px, 44%);
+  }
+
+  .login-right {
+    padding: 44px 5vw;
+  }
+
+  .illustration-img {
+    position: absolute !important;
+    top: -34px !important;
+    left: -24px !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: calc(100% + 88px) !important;
+    height: calc(100% + 68px) !important;
+  }
 }
 
 @media (max-width: 900px) {
+  body {
+    overflow: auto;
+  }
+
   .login-container {
     flex-direction: column;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
   }
+
   .login-left {
     width: 100%;
-    height: auto;
-    min-height: 40vh;
-    padding: 30px;
+    min-height: 44vh;
   }
+
   .logo-container {
-    top: 20px;
+    top: 16px;
     left: 20px;
-    position: relative;
-    top: auto;
-    left: auto;
-    align-self: flex-start;
-    margin-bottom: 20px;
   }
+
+  .logo-img {
+    height: 48px;
+  }
+
+  .illustration-img {
+    position: absolute !important;
+    top: -18px !important;
+    left: -8px !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: calc(100% + 36px) !important;
+    height: calc(100% + 36px) !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+  }
+
   .login-right {
     width: 100%;
     height: auto;
-    padding: 40px 20px;
+    padding: 44px 22px 52px;
+  }
+
+  .login-form-container {
+    max-width: 520px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .login-left {
+    min-height: 34vh;
+  }
+
+  .welcome-title {
+    font-size: 38px !important;
+  }
+
+  .welcome-subtitle {
+    margin-bottom: 34px;
+    font-size: 17px;
+  }
+
+  .label-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .forgot-password {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  input,
+  .submit-btn {
+    min-height: 56px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-right {
+    padding: 32px 16px 44px;
+  }
+
+  .login-left {
+    min-height: 28vh;
+  }
+
+  .welcome-title {
+    font-size: 32px !important;
+  }
+
+  .welcome-subtitle,
+  .join-account {
+    font-size: 14px;
+  }
+
+  input {
+    padding-left: 48px;
+    padding-right: 48px;
   }
 }

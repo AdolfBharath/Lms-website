@@ -1,0 +1,366 @@
+/* Real-data, course-scoped dashboard leaderboard. */
+
+@media (min-width: 1181px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(340px, .72fr) !important;
+    grid-template-areas:
+      "hero hero streak"
+      "courses courses inbox"
+      "leader leader leader"
+      "assignment assignment deadlines" !important;
+  }
+}
+
+body[data-ui-build] #dashboardView .dashboard-widget-card.dashboard-leaderboard-card {
+  grid-area: leader !important;
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 430px !important;
+  margin: 0 !important;
+  padding: 28px !important;
+  overflow: hidden !important;
+  border: 1px solid #e1e5f3 !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  box-shadow: 0 16px 42px rgba(54, 64, 111, .08) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  min-width: 230px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-icon {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 56px !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  color: #4166ed !important;
+  background: #f0f3ff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-icon svg {
+  width: 31px !important;
+  height: 31px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.7 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-heading h2 {
+  margin: 0 !important;
+  color: #131b37 !important;
+  font-size: 1.28rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-heading p {
+  margin: 4px 0 0 !important;
+  color: #747f98 !important;
+  font-size: .72rem !important;
+  line-height: 1.3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-controls > label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  box-sizing: border-box !important;
+  min-height: 42px !important;
+  padding: 7px 10px !important;
+  border: 1px solid #e3e7f2 !important;
+  border-radius: 8px !important;
+  color: #717c95 !important;
+  background: #fbfcff !important;
+  font-size: .66rem !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-controls select {
+  max-width: 180px !important;
+  min-width: 112px !important;
+  height: 28px !important;
+  padding: 0 24px 0 4px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  color: #26304d !important;
+  background-color: transparent !important;
+  font: inherit !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-search {
+  width: min(230px, 24vw) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-search > svg {
+  flex: 0 0 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  fill: none !important;
+  stroke: #74809a !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-search input {
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  color: #26304d !important;
+  background: transparent !important;
+  font-size: .69rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border: 1px solid #e2e6f2 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table {
+  width: 100% !important;
+  min-width: 920px !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+  color: #27314e !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table th {
+  height: 52px !important;
+  padding: 10px 13px !important;
+  border-bottom: 1px solid #e2e6f2 !important;
+  color: #66718c !important;
+  background: #f7f8fd !important;
+  font-size: .65rem !important;
+  font-weight: 800 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table th:nth-child(1) { width: 64px !important; }
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table th:nth-child(2) { width: 190px !important; }
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table th:nth-child(3) { width: 150px !important; }
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table th:nth-child(4) { width: 130px !important; }
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table td {
+  height: 76px !important;
+  padding: 12px 13px !important;
+  border-bottom: 1px solid #e8ebf3 !important;
+  color: #34405d !important;
+  font-size: .69rem !important;
+  vertical-align: middle !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-table tr.current-student td {
+  background: #fafbff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-rank-medal {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  color: #5f6a82 !important;
+  background: #edf0f7 !important;
+  font-size: .75rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-rank-medal.top-1 {
+  color: #9a6500 !important;
+  background: #ffe9a9 !important;
+  box-shadow: 0 7px 16px rgba(222, 160, 24, .2) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-rank-medal.top-2 {
+  color: #58677a !important;
+  background: #e6edf5 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-rank-medal.top-3 {
+  color: #8c4d25 !important;
+  background: #f5c9a9 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity > span {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  color: #3f59d8 !important;
+  background: #e8edff !important;
+  font-size: .68rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity div {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity strong,
+body[data-ui-build] #dashboardView .dashboard-leader-identity small {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity strong {
+  color: #18213d !important;
+  font-size: .73rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-identity small {
+  margin-top: 3px !important;
+  color: #8590a7 !important;
+  font-size: .59rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-course {
+  display: inline-block !important;
+  max-width: 135px !important;
+  overflow: hidden !important;
+  padding: 7px 9px !important;
+  border-radius: 7px !important;
+  color: #275d9d !important;
+  background: #e9f2ff !important;
+  font-size: .62rem !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-progress {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-progress > span {
+  display: block !important;
+  width: 70px !important;
+  height: 6px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  background: #e7eaf2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-progress i {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  background: #5d63e8 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-progress b {
+  font-size: .65rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-score {
+  color: #3159e8 !important;
+  font-size: .78rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-empty {
+  height: 130px !important;
+  color: #7b859d !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-note {
+  margin: 12px 2px 0 !important;
+  color: #7d879e !important;
+  font-size: .61rem !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas:
+      "hero"
+      "streak"
+      "courses"
+      "inbox"
+      "leader"
+      "assignment"
+      "deadlines" !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-controls {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-search {
+    width: min(100%, 260px) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-ui-build] #dashboardView .dashboard-widget-card.dashboard-leaderboard-card {
+    padding: 20px 16px !important;
+    border-radius: 12px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-controls > label {
+    width: 100% !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-controls select,
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-search {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}

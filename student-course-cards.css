@@ -1,0 +1,340 @@
+/* Active course cards matching the dashboard reference. */
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  width: 100% !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course.dashboard-reference-course {
+  position: relative !important;
+  display: grid !important;
+  grid-template-rows: 174px minmax(0, 1fr) !important;
+  min-width: 0 !important;
+  min-height: 382px !important;
+  height: auto !important;
+  overflow: hidden !important;
+  border: 1px solid #e1e5f2 !important;
+  border-radius: 12px !important;
+  color: #111936 !important;
+  background: #fff !important;
+  box-shadow: 0 12px 30px rgba(47, 58, 105, .08) !important;
+  cursor: pointer !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course.dashboard-reference-course:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 18px 38px rgba(47, 58, 105, .13) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course.dashboard-reference-course::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-media {
+  position: relative !important;
+  min-width: 0 !important;
+  height: 174px !important;
+  overflow: visible !important;
+  background: #eef1f8 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-media > img,
+body[data-ui-build] #dashboardView .dashboard-overview-course.dashboard-reference-course > img {
+  display: block !important;
+  width: 100% !important;
+  height: 174px !important;
+  object-fit: cover !important;
+  filter: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-status {
+  position: absolute !important;
+  z-index: 2 !important;
+  top: 13px !important;
+  left: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-height: 25px !important;
+  padding: 4px 10px !important;
+  border: 1px solid rgba(255, 255, 255, .8) !important;
+  border-radius: 999px !important;
+  color: #16764b !important;
+  background: rgba(239, 255, 246, .94) !important;
+  box-shadow: 0 5px 14px rgba(29, 70, 55, .1) !important;
+  font-size: .65rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-status i {
+  display: block !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-status.ready {
+  color: #315ed1 !important;
+  background: rgba(239, 244, 255, .95) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-status.completed {
+  color: #73510a !important;
+  background: rgba(255, 248, 221, .96) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-progress {
+  position: absolute !important;
+  z-index: 3 !important;
+  left: 18px !important;
+  bottom: -24px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  background: conic-gradient(#6357f0 var(--course-progress), #e7e9f4 0) !important;
+  box-shadow: 0 7px 18px rgba(63, 67, 122, .16) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-progress::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 43px !important;
+  height: 43px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-progress b {
+  position: relative !important;
+  z-index: 1 !important;
+  color: #303955 !important;
+  font-size: .68rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-body {
+  position: static !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  padding: 34px 18px 16px !important;
+  color: #111936 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-kicker {
+  display: block !important;
+  color: #5b59e8 !important;
+  font-size: .61rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course h3 {
+  display: -webkit-box !important;
+  max-width: 100% !important;
+  margin: 6px 0 6px !important;
+  overflow: hidden !important;
+  color: #111936 !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-body > p {
+  display: -webkit-box !important;
+  min-height: 38px !important;
+  margin: 0 0 14px !important;
+  overflow: hidden !important;
+  color: #68738d !important;
+  font-size: .72rem !important;
+  line-height: 1.45 !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-footer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-meta > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  color: #68738d !important;
+  font-size: .64rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-meta svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: none !important;
+  stroke: #6258ed !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-action.primary-btn {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: auto !important;
+  min-width: 132px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 7px 8px 7px 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: #6758ee !important;
+  box-shadow: 0 8px 16px rgba(83, 68, 224, .2) !important;
+  font-size: .66rem !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-action.primary-btn::before {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-action > span {
+  display: grid !important;
+  place-items: center !important;
+  width: 19px !important;
+  height: 19px !important;
+  border-radius: 50% !important;
+  color: #6758ee !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-action svg {
+  width: 12px !important;
+  height: 12px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-course-footer {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-course-action.primary-btn {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course.dashboard-reference-course {
+    grid-template-rows: 164px minmax(0, 1fr) !important;
+    min-height: 370px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-course-media,
+  body[data-ui-build] #dashboardView .dashboard-reference-course-media > img {
+    height: 164px !important;
+  }
+}
+
+/* Beat legacy generic child rules without changing cards elsewhere. */
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course > .dashboard-reference-course-media {
+  position: relative !important;
+  display: block !important;
+  grid-area: auto !important;
+  grid-row: 1 !important;
+  grid-column: 1 !important;
+  width: 100% !important;
+  height: 174px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course > .dashboard-reference-course-media > img {
+  display: block !important;
+  width: 100% !important;
+  height: 174px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course .dashboard-reference-course-status {
+  display: inline-flex !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course .dashboard-reference-course-progress {
+  display: grid !important;
+  width: 54px !important;
+  height: 54px !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course > .dashboard-reference-course-body {
+  position: static !important;
+  display: flex !important;
+  grid-area: auto !important;
+  grid-row: 2 !important;
+  grid-column: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 34px 18px 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course .dashboard-reference-course-kicker {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #5b59e8 !important;
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course > .dashboard-reference-course-media,
+  body[data-ui-build] #dashboardView .dashboard-course-overview > .dashboard-overview-course.dashboard-reference-course > .dashboard-reference-course-media > img {
+    height: 164px !important;
+  }
+}

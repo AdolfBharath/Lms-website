@@ -1,0 +1,322 @@
+/* Time-aware student welcome hero. Loaded after the legacy dashboard styles. */
+
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  isolation: isolate !important;
+  height: 430px !important;
+  min-height: 430px !important;
+  background: #fbfcff !important;
+  border-color: #e2e6f7 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 48px rgba(49, 61, 111, .09) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  background: linear-gradient(90deg, #fbfcff 0%, rgba(251, 252, 255, .97) 47%, rgba(251, 252, 255, .12) 70%, transparent 100%) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card .dashboard-hero-copy {
+  z-index: 4 !important;
+  top: 30px !important;
+  width: 55% !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  margin: 16px 0 10px !important;
+  font-size: clamp(2.25rem, 2.8vw, 2.75rem) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #dashboardView .hero-greeting-person {
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy > p {
+  font-size: .94rem !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-panel {
+  display: grid !important;
+  grid-template-columns: 68px minmax(0, 1fr) 142px !important;
+  align-items: center !important;
+  gap: 16px !important;
+  box-sizing: border-box !important;
+  width: min(680px, 134%) !important;
+  min-height: 112px !important;
+  margin-top: 18px !important;
+  padding: 14px 16px !important;
+  border: 1px solid rgba(224, 226, 245, .96) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, .88) !important;
+  box-shadow: 0 12px 30px rgba(55, 62, 111, .09) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-art {
+  display: grid !important;
+  place-items: center !important;
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: linear-gradient(145deg, #7759ee, #9f65e9 58%, #f0bd5b) !important;
+  box-shadow: 0 10px 22px rgba(109, 78, 219, .22) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-art svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-copy,
+body[data-ui-build] #dashboardView .dashboard-vibe-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-copy {
+  gap: 5px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-copy small,
+body[data-ui-build] #dashboardView .dashboard-vibe-copy small {
+  color: #4d5cf2 !important;
+  font-size: .64rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-copy strong {
+  color: #141b38 !important;
+  font-size: .9rem !important;
+  line-height: 1.35 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-copy > span,
+body[data-ui-build] #dashboardView .dashboard-vibe-copy > span:last-child {
+  color: #6b7691 !important;
+  font-size: .69rem !important;
+  line-height: 1.3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-vibe-copy {
+  align-items: center !important;
+  gap: 3px !important;
+  padding-left: 16px !important;
+  border-left: 1px solid #e4e6f2 !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-vibe-face {
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  margin: 2px 0 !important;
+  border-radius: 50% !important;
+  background: #e5dbff !important;
+  font-size: 1.3rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-vibe-copy strong {
+  color: #171e3b !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-visual {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100% !important;
+  margin: 0 !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-visual > img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: right center !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-note {
+  position: absolute !important;
+  z-index: 5 !important;
+  top: 112px !important;
+  right: 18% !important;
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  grid-template-areas: "icon title" "icon text" !important;
+  gap: 3px 10px !important;
+  box-sizing: border-box !important;
+  width: 170px !important;
+  min-height: 82px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(226, 228, 243, .92) !important;
+  border-radius: 14px !important;
+  color: #141b38 !important;
+  background: rgba(255, 255, 255, .9) !important;
+  box-shadow: 0 12px 28px rgba(52, 60, 105, .12) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-note-icon {
+  grid-area: icon !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: #7569ed !important;
+  box-shadow: 0 8px 16px rgba(84, 72, 221, .22) !important;
+  font-size: .9rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-note strong {
+  grid-area: title !important;
+  align-self: end !important;
+  font-size: .8rem !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-note > span:last-child {
+  grid-area: text !important;
+  color: #66718c !important;
+  font-size: .7rem !important;
+  line-height: 1.35 !important;
+}
+
+body[data-ui-build] #dashboardView .hero-session-pill {
+  border: 1px solid rgba(101, 100, 232, .08) !important;
+  background: rgba(237, 239, 255, .88) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="morning"] .hero-session-pill,
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="morning"] .dashboard-session-note-icon {
+  color: #92530b !important;
+  background: #fff0c8 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="afternoon"] .hero-session-pill,
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="afternoon"] .dashboard-session-note-icon {
+  color: #087c78 !important;
+  background: #dff8f3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="evening"] .hero-session-pill,
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="evening"] .dashboard-session-note-icon {
+  color: #fff !important;
+  background: #685cec !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="night"] .hero-session-pill,
+body[data-ui-build] #dashboardView .dashboard-hero-card[data-session="night"] .dashboard-session-note-icon {
+  color: #fff !important;
+  background: #263d98 !important;
+}
+
+@media (max-width: 1240px) {
+  body[data-ui-build] #dashboardView .dashboard-session-note {
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #dashboardView .dashboard-hero-card::after {
+    background: linear-gradient(90deg, #fbfcff 0%, rgba(251, 252, 255, .98) 53%, rgba(251, 252, 255, .25) 78%, transparent 100%) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card .dashboard-hero-copy {
+    width: 57% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-ui-build] #dashboardView .dashboard-hero-card {
+    min-height: 520px !important;
+    height: 520px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card::after {
+    background: linear-gradient(180deg, #fbfcff 0%, #fbfcff 60%, rgba(251, 252, 255, .78) 71%, rgba(251, 252, 255, .06) 100%) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card .dashboard-hero-copy {
+    top: 24px !important;
+    left: 22px !important;
+    width: calc(100% - 44px) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+    margin-top: 16px !important;
+    font-size: 2rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-copy > p {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    font-size: .88rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-panel {
+    grid-template-columns: 46px minmax(0, 1fr) 82px !important;
+    gap: 9px !important;
+    width: 100% !important;
+    min-height: 98px !important;
+    margin-top: 14px !important;
+    padding: 10px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-art {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-art svg {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-copy strong {
+    font-size: .72rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-copy > span,
+  body[data-ui-build] #dashboardView .dashboard-vibe-copy > span:last-child {
+    font-size: .58rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-vibe-copy {
+    padding-left: 8px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-vibe-face {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-session-visual {
+    top: auto !important;
+    bottom: 0 !important;
+    height: 46% !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-session-visual > img {
+    object-fit: cover !important;
+    object-position: 72% center !important;
+  }
+}

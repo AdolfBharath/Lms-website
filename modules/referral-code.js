@@ -1,36 +1,43 @@
 export const REFERRAL_FORM_URL = "https://forms.gle/RGxPJsL4fcWsSBJp6";
 
-export function createReferralCode(profile = {}) {
-  const seed = [
-    profile.id,
-    profile.email,
-    profile.username,
-    profile.name,
-    profile.created_at
-  ].filter(Boolean).join("|") || "student";
+const REFERRAL_FIELDS = [
+  "referral_code",
+  "referralCode",
+  "referral",
+  "referral_key",
+  "referralKey",
+  "invite_code",
+  "inviteCode"
+];
 
-  const hash = fnv1a(seed).toString(36).toUpperCase().padStart(7, "0").slice(-7);
-  const tail = sanitize(seed).slice(-3).padStart(3, "X");
-  return `JNV-${hash}${tail}`;
+export function createReferralCode(profile = {}) {
+  const storedCode = REFERRAL_FIELDS
+    .map((field) => cleanCode(profile?.[field]))
+    .find(Boolean);
+  if (storedCode) return storedCode;
+
+  const seed = cleanCode(profile?.id || profile?.email || profile?.username || profile?.name);
+  if (!seed) return "JNV-PENDING";
+
+  const compact = seed.replace(/[^a-z0-9]/gi, "").toUpperCase();
+  return `JNV-${compact.slice(-8).padStart(8, "0")}`;
 }
 
 export function createReferralText(profile = {}) {
-  const name = profile.name || profile.username || "A Jenovate student";
   const code = createReferralCode(profile);
-  return `${name} invited you to Jenovate LMS. Use referral code ${code}.`;
+  const name = profile?.name || profile?.username || "I";
+  return [
+    `Hi, ${name} invited you to join Jenovate LMS.`,
+    `Use referral code ${code} in the official enrollment form: ${REFERRAL_FORM_URL}`
+  ].join("\n");
 }
 
-function sanitize(value) {
-  return String(value || "")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "");
+export function referralCodeFromProfile(profile = {}) {
+  return createReferralCode(profile);
 }
 
-function fnv1a(value) {
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return hash >>> 0;
+function cleanCode(value) {
+  const code = String(value || "").trim();
+  if (!code || /^jnv-?0+$/i.test(code)) return "";
+  return code.toUpperCase();
 }

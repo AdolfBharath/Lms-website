@@ -1,0 +1,1110 @@
+/* Reference-style student tasks page. Loaded after legacy student styles. */
+
+body[data-ui-build] #tasksView.student-view.active {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: calc(100vh - 68px) !important;
+  min-height: 640px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  color: #0f1734 !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #tasksView .tasks-shell {
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  gap: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #tasksView .tasks-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 18px 18px 22px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 1px solid #e7ebf3 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #tasksView .tasks-sidebar-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+  min-height: 56px !important;
+  padding: 0 !important;
+  margin: 0 0 10px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #tasksView .tasks-title {
+  display: block !important;
+  margin: 0 0 6px !important;
+  color: #111936 !important;
+  font-size: .9rem !important;
+  font-weight: 850 !important;
+  line-height: 1.1 !important;
+}
+
+body[data-ui-build] #tasksView .tasks-header-actions { display: contents !important; }
+
+body[data-ui-build] #tasksView .tasks-batch-select {
+  grid-column: 1 !important;
+  width: 100% !important;
+  max-width: 190px !important;
+  height: 24px !important;
+  padding: 0 20px 0 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #20304f !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: .68rem !important;
+  font-weight: 650 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .tasks-refresh-btn {
+  grid-column: 2 !important;
+  grid-row: 1 / span 2 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  color: #10203e !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #tasksView .tasks-refresh-btn::before {
+  content: "" !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: currentColor !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  min-height: 38px !important;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e5eaf3 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tab-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  padding: 0 4px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: #3e4d6b !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: .66rem !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tab-btn.active {
+  color: #1168ef !important;
+  border-bottom-color: #1168ef !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tab-badge {
+  display: inline !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+}
+
+body[data-ui-build] #tasksView .tasks-list {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+  padding: 0 2px 18px 0 !important;
+  overflow: auto !important;
+}
+
+body[data-ui-build] #tasksView .task-card {
+  display: grid !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 112px !important;
+  padding: 14px 15px !important;
+  border: 1px solid #e2e7f0 !important;
+  border-radius: 16px !important;
+  color: #12203b !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(29, 42, 72, .035) !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #tasksView .task-card.active,
+body[data-ui-build] #tasksView .task-card:hover {
+  border-color: #d7def0 !important;
+  border-left: 1px solid #d7def0 !important;
+  padding-left: 15px !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(29, 42, 72, .055) !important;
+}
+
+body[data-ui-build] #tasksView .task-card-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 18px !important;
+  padding: 3px 10px !important;
+  border-radius: 999px !important;
+  color: #0aa461 !important;
+  background: #e8fff3 !important;
+  font-size: .48rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-status-badge.pending { color: #626d80 !important; background: #f1f4f8 !important; }
+body[data-ui-build] #tasksView .task-status-badge.in-progress { color: #5c39df !important; background: #f0ebff !important; }
+body[data-ui-build] #tasksView .task-status-badge.upcoming { color: #b57008 !important; background: #fff5df !important; }
+body[data-ui-build] #tasksView .task-status-badge.overdue { color: #c93434 !important; background: #fff0f0 !important; }
+body[data-ui-build] #tasksView .task-status-badge.submitted { color: #0aa461 !important; background: #e8fff3 !important; }
+body[data-ui-build] #tasksView .task-status-badge.reviewed { color: #4d5be8 !important; background: #eef1ff !important; }
+
+body[data-ui-build] #tasksView .task-due-text {
+  color: #364667 !important;
+  font-size: .58rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .task-card-content h3 {
+  margin: 0 0 4px !important;
+  overflow: hidden !important;
+  color: #14213d !important;
+  font-size: .75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .task-card-content p {
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: #43516d !important;
+  font-size: .58rem !important;
+  font-weight: 650 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .task-card-footer {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 24px !important;
+  margin: 4px 0 0 !important;
+  padding: 9px 0 0 !important;
+  border-top: 1px solid #e8edf4 !important;
+}
+
+body[data-ui-build] #tasksView .task-calendar-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 14px !important;
+  height: 14px !important;
+  overflow: hidden !important;
+  color: #5c39df !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-calendar-icon::before {
+  content: "" !important;
+  width: 13px !important;
+  height: 13px !important;
+  background: currentColor !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .task-card-footer small {
+  color: #43516d !important;
+  font-size: .58rem !important;
+  font-weight: 650 !important;
+}
+
+body[data-ui-build] #tasksView .tasks-main {
+  display: block !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 20px 36px 44px !important;
+  overflow: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-module-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 18px !important;
+  max-width: 190px !important;
+  padding: 3px 11px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: #5d28d9 !important;
+  font-size: .53rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-overflow: ellipsis !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .task-read-time,
+body[data-ui-build] #tasksView .task-points-display {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: #334360 !important;
+  font-size: .62rem !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .task-read-time::before {
+  content: "" !important;
+  width: 14px !important;
+  height: 14px !important;
+  border: 1.8px solid #52617c !important;
+  border-radius: 50% !important;
+}
+
+body[data-ui-build] #tasksView .task-points-display {
+  flex-direction: row !important;
+  color: #57400b !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #tasksView .task-points-display::before {
+  content: "" !important;
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 50% !important;
+  background: #d69a0b !important;
+}
+
+body[data-ui-build] #tasksView .task-points-display small { display: none !important; }
+
+body[data-ui-build] #tasksView .task-points-display strong {
+  color: #57400b !important;
+  font-size: .62rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-title {
+  margin: 0 0 20px !important;
+  color: #16213c !important;
+  font-size: .78rem !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section {
+  display: block !important;
+  margin: 0 0 24px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section h3 {
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: #0d1830 !important;
+  font-size: .6rem !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section:first-of-type {
+  max-width: 860px !important;
+  padding: 16px 20px !important;
+  border: 1px solid #eceff6 !important;
+  border-left: 3px solid #5d28d9 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section:first-of-type h3 { color: #5d28d9 !important; }
+
+body[data-ui-build] #tasksView .task-detail-section p {
+  margin: 0 !important;
+  color: #2b3c59 !important;
+  font-size: .66rem !important;
+  font-weight: 550 !important;
+  line-height: 1.6 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section ul {
+  display: grid !important;
+  gap: 11px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section li {
+  position: relative !important;
+  min-height: 18px !important;
+  padding-left: 26px !important;
+  color: #2f405e !important;
+  font-size: .66rem !important;
+  font-weight: 550 !important;
+  line-height: 1.5 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section li::before {
+  content: "\\2713" !important;
+  position: absolute !important;
+  top: -1px !important;
+  left: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  color: #1b70e8 !important;
+  background: #eef5ff !important;
+  font-size: .56rem !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #tasksView .task-resources-list {
+  display: block !important;
+  max-width: 860px !important;
+}
+
+body[data-ui-build] #tasksView .resource-card {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) 28px !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 68px !important;
+  padding: 13px 16px !important;
+  border: 1px solid #e5eaf2 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(29, 42, 72, .035) !important;
+}
+
+body[data-ui-build] #tasksView .resource-icon-container {
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  color: #1c65db !important;
+  background: #f0f5ff !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #tasksView .resource-icon-container::before {
+  content: "" !important;
+  width: 18px !important;
+  height: 18px !important;
+  background: currentColor !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M9 15h6M9 11h2'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .resource-info { min-width: 0 !important; }
+
+body[data-ui-build] #tasksView .resource-info strong {
+  display: block !important;
+  max-width: 320px !important;
+  overflow: hidden !important;
+  color: #17213c !important;
+  font-size: .66rem !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #tasksView .resource-info small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #40516e !important;
+  font-size: .5rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #tasksView .resource-download-btn {
+  display: grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: 0 !important;
+  color: #1c65db !important;
+  background: transparent !important;
+  font-size: 0 !important;
+  text-decoration: none !important;
+}
+
+body[data-ui-build] #tasksView .resource-download-btn::before {
+  content: "" !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: currentColor !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .task-no-resources,
+body[data-ui-build] #tasksView .task-submit-card {
+  max-width: 860px !important;
+  border: 1px solid #e5eaf2 !important;
+  border-radius: 16px !important;
+  background: #fbfcff !important;
+}
+
+body[data-ui-build] #tasksView .task-no-resources {
+  display: block !important;
+  padding: 14px 16px !important;
+  color: #52617b !important;
+  font-size: .66rem !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-card {
+  margin-top: 10px !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-header {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-header strong {
+  display: block !important;
+  color: #14213d !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-header small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #52617b !important;
+  font-size: .6rem !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-input-group {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-input-group input {
+  min-width: 0 !important;
+  height: 38px !important;
+  padding: 0 12px !important;
+  border: 1px solid #dce4ef !important;
+  border-radius: 8px !important;
+  font-size: .68rem !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-input-group .primary-btn,
+body[data-ui-build] #tasksView .task-submit-actions .primary-btn {
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 8px !important;
+  font-size: .66rem !important;
+}
+
+body[data-ui-build] #tasksView .task-empty-state {
+  display: grid !important;
+  place-items: center !important;
+  min-height: 360px !important;
+  color: #52617b !important;
+  text-align: center !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #tasksView.student-view.active {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    height: auto !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar {
+    max-height: 360px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #e7ebf3 !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-main {
+    height: auto !important;
+    min-height: 520px !important;
+    padding: 22px 18px 34px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body[data-ui-build] #tasksView .tasks-sidebar {
+    padding: 16px 14px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar-head,
+  body[data-ui-build] #tasksView .task-detail-header,
+  body[data-ui-build] #tasksView .task-submit-input-group {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-refresh-btn {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    justify-self: start !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-tab-btn {
+    font-size: .6rem !important;
+  }
+}
+
+/* v2 viewport-fit task workspace: stable desktop split, readable detail width, no broken glyphs. */
+body[data-ui-build] #tasksView.student-view.active {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #tasksView .tasks-shell {
+  display: grid !important;
+  grid-template-columns: clamp(300px, 24vw, 340px) minmax(0, 1fr) !important;
+  width: min(100%, 1360px) !important;
+  min-height: min(760px, calc(100vh - 88px)) !important;
+  height: calc(100vh - 88px) !important;
+  max-height: 860px !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  border: 1px solid #e6ebf3 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, .055) !important;
+}
+
+body[data-ui-build] #tasksView .tasks-sidebar {
+  height: 100% !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  border-right: 1px solid #e6ebf3 !important;
+  background: #fbfcff !important;
+}
+
+body[data-ui-build] #tasksView .tasks-sidebar-head {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  min-height: 40px !important;
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] #tasksView .tasks-title {
+  font-size: 1rem !important;
+}
+
+body[data-ui-build] #tasksView .tasks-batch-select {
+  max-width: 172px !important;
+  height: 30px !important;
+  padding: 0 24px 0 8px !important;
+  border: 1px solid #dde5f0 !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #tasksView .tasks-refresh-btn {
+  width: 30px !important;
+  height: 30px !important;
+  border: 1px solid #dde5f0 !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] #tasksView .tasks-tab-btn {
+  min-width: 0 !important;
+  height: 40px !important;
+  padding: 0 6px !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #tasksView .tasks-list {
+  gap: 12px !important;
+  padding: 0 2px 18px 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+body[data-ui-build] #tasksView .task-card {
+  min-height: 116px !important;
+  padding: 14px !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #tasksView .task-card.active {
+  border-color: #cfd9f7 !important;
+  border-left: 4px solid #4f46e5 !important;
+  padding-left: 11px !important;
+  box-shadow: 0 12px 28px rgba(79, 70, 229, .08) !important;
+}
+
+body[data-ui-build] #tasksView .task-card-content h3 {
+  font-size: .86rem !important;
+  white-space: normal !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+body[data-ui-build] #tasksView .task-card-content p,
+body[data-ui-build] #tasksView .task-card-footer small {
+  font-size: .68rem !important;
+}
+
+body[data-ui-build] #tasksView .tasks-main {
+  display: block !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: clamp(22px, 2.4vw, 34px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-header,
+body[data-ui-build] #tasksView .task-detail-title,
+body[data-ui-build] #tasksView .task-detail-section,
+body[data-ui-build] #tasksView .task-resources-list,
+body[data-ui-build] #tasksView .task-no-resources,
+body[data-ui-build] #tasksView .task-submit-card {
+  width: min(100%, 920px) !important;
+  max-width: 920px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-header {
+  align-items: flex-start !important;
+  margin-bottom: 16px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-title {
+  margin-bottom: 20px !important;
+  font-size: clamp(1.15rem, 1.55vw, 1.55rem) !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section {
+  margin-bottom: 22px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section:first-of-type {
+  padding: 18px 20px !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section h3 {
+  margin-bottom: 10px !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section p,
+body[data-ui-build] #tasksView .task-detail-section li {
+  font-size: .82rem !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section ul {
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section li {
+  padding-left: 30px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section li::before {
+  content: "" !important;
+  top: 2px !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background-color: #1b70e8 !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m5 12 4 4L19 6'/%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .resource-card {
+  grid-template-columns: 42px minmax(0, 1fr) 34px !important;
+  min-height: 72px !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] #tasksView .resource-info strong {
+  max-width: none !important;
+  font-size: .82rem !important;
+}
+
+body[data-ui-build] #tasksView .resource-info small {
+  font-size: .62rem !important;
+}
+
+body[data-ui-build] #tasksView .resource-icon,
+body[data-ui-build] #tasksView .resource-download-btn span,
+body[data-ui-build] #tasksView .task-calendar-icon,
+body[data-ui-build] #tasksView .task-submit-icon,
+body[data-ui-build] #tasksView .task-empty-state > span {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-icon,
+body[data-ui-build] #tasksView .task-empty-state > span {
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  background: #eef2ff !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-icon::before,
+body[data-ui-build] #tasksView .task-empty-state > span::before {
+  content: "" !important;
+  width: 18px !important;
+  height: 18px !important;
+  background: #4f46e5 !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-card.submitted .task-submit-icon::before {
+  background: #10b981 !important;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m5 12 4 4L19 6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-card:not(.submitted) .task-submit-icon::before {
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M12 16V4m0 0L7 9m5-5 5 5M5 20h14'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .task-empty-state > span::before {
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' d='M9 11l2 2 4-5M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-card {
+  padding: 18px !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-actions .primary-btn {
+  width: 100% !important;
+}
+
+@media (min-width: 1500px) {
+  body[data-ui-build] #tasksView .tasks-shell {
+    width: min(100%, 1420px) !important;
+    grid-template-columns: 340px minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #tasksView .tasks-shell {
+    grid-template-columns: 300px minmax(0, 1fr) !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 640px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #tasksView .tasks-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar {
+    height: auto !important;
+    max-height: none !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #e6ebf3 !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-list {
+    max-height: 360px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-main {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body[data-ui-build] #tasksView .tasks-shell {
+    border-radius: 10px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar,
+  body[data-ui-build] #tasksView .tasks-main {
+    padding: 16px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar-head,
+  body[data-ui-build] #tasksView .task-detail-header,
+  body[data-ui-build] #tasksView .task-submit-input-group {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-header-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 34px !important;
+    gap: 8px !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-batch-select {
+    max-width: none !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-tab-btn {
+    font-size: .66rem !important;
+  }
+
+  body[data-ui-build] #tasksView .task-detail-title {
+    font-size: 1.08rem !important;
+  }
+}
+
+/* v3 true page-fit pass: fill the available student workspace instead of floating in it. */
+body[data-ui-build] #tasksView.student-view.active {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: calc(100vh - 74px) !important;
+  min-height: 620px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #tasksView .tasks-shell {
+  grid-template-columns: clamp(320px, 22vw, 390px) minmax(0, 1fr) !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #tasksView .tasks-sidebar {
+  width: auto !important;
+  height: 100% !important;
+  padding: 20px !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #tasksView .tasks-main {
+  width: 100% !important;
+  height: 100% !important;
+  padding: clamp(24px, 2vw, 36px) !important;
+  overflow-y: auto !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-header,
+body[data-ui-build] #tasksView .task-detail-title,
+body[data-ui-build] #tasksView .task-detail-section,
+body[data-ui-build] #tasksView .task-resources-list,
+body[data-ui-build] #tasksView .task-no-resources,
+body[data-ui-build] #tasksView .task-submit-card {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section:first-of-type,
+body[data-ui-build] #tasksView .resource-card,
+body[data-ui-build] #tasksView .task-submit-card {
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-section p,
+body[data-ui-build] #tasksView .task-detail-section li {
+  max-width: 92ch !important;
+}
+
+body[data-ui-build] #tasksView .resource-info strong {
+  max-width: 100% !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-actions .primary-btn {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+@media (max-width: 1100px) {
+  body[data-ui-build] #tasksView.student-view.active {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body[data-ui-build] #tasksView .tasks-sidebar,
+  body[data-ui-build] #tasksView .tasks-main {
+    height: auto !important;
+  }
+}
+
+/* v4 detail coverage: make the selected task document fill the right pane. */
+body[data-ui-build] #tasksView .tasks-main {
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-document {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100% !important;
+  width: 100% !important;
+  padding: clamp(22px, 2vw, 34px) !important;
+  box-sizing: border-box !important;
+  border: 1px solid #edf1f7 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%) !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-body {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-document .task-submit-card {
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-document .task-submit-card.submitted {
+  background: #f6fffc !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-document .task-detail-section:last-child {
+  margin-bottom: clamp(24px, 5vh, 52px) !important;
+}
+
+@media (max-width: 1100px) {
+  body[data-ui-build] #tasksView .task-detail-document {
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  body[data-ui-build] #tasksView .task-detail-document .task-submit-card {
+    margin-top: 18px !important;
+  }
+}

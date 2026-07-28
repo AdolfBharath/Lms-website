@@ -1,0 +1,607 @@
+{
+  "settings": {
+    "brandName": "Jenovate",
+    "defaultCategory": "train_deploy_enquiry",
+    "submitMode": "supabase",
+    "uploadDir": "data/uploads"
+  },
+  "categories": {
+    "train_deploy_enquiry": {
+      "title": "ZeAI Soft - Train and Deploy Enquiry Form",
+      "description": "Please complete all fields to submit your enquiry request",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_train_deploy_enquiries",
+        "fieldMap": {
+          "full_name": "full_name",
+          "email": "email",
+          "phone": "phone",
+          "designation": "designation",
+          "college": "college",
+          "placement_challenges": "placement_challenges",
+          "collaboration_timeline": "collaboration_timeline",
+          "students_count": "students_count",
+          "preferred_program": "preferred_program",
+          "message": "message"
+        }
+      },
+      "fields": [
+        {
+          "type": "text",
+          "name": "full_name",
+          "label": "Full Name",
+          "required": true,
+          "placeholder": "Enter your full name"
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Email Address",
+          "required": true,
+          "placeholder": "you@example.com"
+        },
+        {
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true,
+          "placeholder": "+91 xxxxxxxxxx"
+        },
+        {
+          "type": "text",
+          "name": "designation",
+          "label": "Designation",
+          "required": true,
+          "placeholder": "Your position"
+        },
+        {
+          "type": "text",
+          "name": "college",
+          "label": "College / University",
+          "required": true,
+          "placeholder": "Institution name"
+        },
+        {
+          "type": "textarea",
+          "name": "placement_challenges",
+          "label": "Challenges in Placements",
+          "required": true,
+          "placeholder": "Describe the key challenges your institution faces in student placements..."
+        },
+        {
+          "type": "radio",
+          "name": "collaboration_timeline",
+          "label": "Looking to collaborate?",
+          "required": true,
+          "options": [
+            "Yes, Immediately",
+            "Yes, this academic year",
+            "Considering soon",
+            "Exploring options"
+          ]
+        },
+        {
+          "type": "number",
+          "name": "students_count",
+          "label": "Approx. Students to Train",
+          "required": false,
+          "placeholder": "e.g. 250",
+          "min": 1
+        },
+        {
+          "type": "select",
+          "name": "preferred_program",
+          "label": "Preferred Program",
+          "required": false,
+          "options": [
+            "Train and Deploy",
+            "Placement Training",
+            "Industry Bootcamp",
+            "Custom Partnership"
+          ]
+        },
+        {
+          "type": "textarea",
+          "name": "message",
+          "label": "Additional Message",
+          "required": false,
+          "placeholder": "Share anything else our team should know..."
+        }
+      ]
+    },
+    "student_registration": {
+      "title": "Student Registration",
+      "description": "Tell us about your learning goals and our team will guide you to the right program.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_student_registrations",
+        "fieldMap": {
+          "full_name": "full_name",
+          "email": "email",
+          "phone": "phone",
+          "gender": "gender",
+          "college": "college",
+          "course_interest": "course_interest",
+          "goal": "goal",
+          "reference_id": "reference_id"
+        }
+      },
+      "steps": [
+        {
+          "title": "Basic Details",
+          "fields": [
+            {
+              "type": "text",
+              "name": "full_name",
+              "label": "Full Name",
+              "required": true
+            },
+            {
+              "type": "email",
+              "name": "email",
+              "label": "Email",
+              "required": true
+            },
+            {
+              "type": "phone",
+              "name": "phone",
+              "label": "Phone Number",
+              "required": true
+            },
+            {
+              "type": "radio",
+              "name": "gender",
+              "label": "Gender",
+              "required": true,
+              "options": [
+                "Woman",
+                "Man",
+                "Prefer not to say"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Learning Goal",
+          "fields": [
+            {
+              "type": "text",
+              "name": "college",
+              "label": "College Name",
+              "required": true
+            },
+            {
+              "type": "select",
+              "name": "course_interest",
+              "label": "Course Interest",
+              "required": true,
+              "options": [
+                "Technology & Software Development",
+                "Artificial Intelligence & Data",
+                "Business, Management & Finance",
+                "Design & Creative Arts",
+                "Healthcare & Human Sciences",
+                "Not Sure Yet"
+              ]
+            },
+            {
+              "type": "textarea",
+              "name": "goal",
+              "label": "What do you want to achieve?",
+              "required": false
+            },
+            {
+              "type": "text",
+              "name": "reference_id",
+              "label": "Reference ID",
+              "required": false,
+              "placeholder": "Optional referral/reference code"
+            }
+          ]
+        }
+      ]
+    },
+    "mentor_registration": {
+      "title": "Become a Mentor",
+      "description": "Apply to mentor Jenovate learners through practical projects and career-focused guidance.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_mentor_registrations",
+        "fieldMap": {
+          "full_name": "full_name",
+          "email": "email",
+          "phone": "phone",
+          "expertise": "expertise",
+          "experience_years": "experience_years",
+          "availability": "availability"
+        }
+      },
+      "fields": [
+        {
+          "type": "text",
+          "name": "full_name",
+          "label": "Full Name",
+          "required": true,
+          "placeholder": "Enter your full name"
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Email",
+          "required": true,
+          "placeholder": "Enter your email"
+        },
+        {
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true,
+          "placeholder": "Enter your phone number"
+        },
+        {
+          "type": "text",
+          "name": "expertise",
+          "label": "Expertise",
+          "required": true,
+          "placeholder": "e.g. AI, Web Development, Marketing"
+        },
+        {
+          "type": "number",
+          "name": "experience_years",
+          "label": "Years of Experience",
+          "required": true,
+          "min": 0,
+          "placeholder": "Enter years of experience"
+        },
+        {
+          "type": "select",
+          "name": "availability",
+          "label": "Weekly Availability",
+          "required": true,
+          "options": [
+            "1-2 hours",
+            "3-5 hours",
+            "6+ hours"
+          ]
+        }
+      ]
+    },
+    "launchpad_purchase": {
+      "title": "Launchpad Purchase",
+      "description": "Select your Launchpad plan and share your details. Our team will confirm the next step.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_launchpad_purchases",
+        "fieldMap": {
+          "student_name": "student_name",
+          "email": "email",
+          "phone": "phone",
+          "plan": "plan",
+          "payment_mode": "payment_mode"
+        }
+      },
+      "fields": [
+        {
+          "type": "text",
+          "name": "student_name",
+          "label": "Student Name",
+          "required": true,
+          "placeholder": "Enter student name"
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Email",
+          "required": true,
+          "placeholder": "Enter your email"
+        },
+        {
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true,
+          "placeholder": "Enter your phone number"
+        },
+        {
+          "type": "select",
+          "name": "plan",
+          "label": "Plan",
+          "required": true,
+          "options": [
+            "Basics",
+            "Pro",
+            "Advanced"
+          ]
+        },
+        {
+          "type": "radio",
+          "name": "payment_mode",
+          "label": "Preferred Payment Mode",
+          "required": true,
+          "options": [
+            "UPI",
+            "Card",
+            "Bank Transfer"
+          ]
+        }
+      ]
+    },
+    "hiring_application": {
+      "title": "Hire Our Students",
+      "description": "Share hiring requirements and we will connect you with project-ready Jenovate learners.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_hiring_applications",
+        "fieldMap": {
+          "company_name": "company_name",
+          "contact_name": "contact_name",
+          "email": "email",
+          "phone": "phone",
+          "hiring_type": "hiring_type",
+          "skills": "skills",
+          "openings": "openings",
+          "start_date": "start_date",
+          "job_summary": "job_summary"
+        }
+      },
+      "fields": [
+        {
+          "type": "text",
+          "name": "company_name",
+          "label": "Company Name",
+          "required": true,
+          "placeholder": "Enter company name"
+        },
+        {
+          "type": "text",
+          "name": "contact_name",
+          "label": "Contact Person",
+          "required": true,
+          "placeholder": "Enter contact person name"
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Work Email",
+          "required": true,
+          "placeholder": "Enter work email"
+        },
+        {
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true,
+          "placeholder": "Enter phone number"
+        },
+        {
+          "type": "select",
+          "name": "hiring_type",
+          "label": "Hiring Type",
+          "required": true,
+          "options": [
+            "Internship",
+            "Full-time",
+            "Freelance Project"
+          ]
+        },
+        {
+          "type": "checkbox",
+          "name": "skills",
+          "label": "Skills Needed",
+          "required": true,
+          "options": [
+            "Web Development",
+            "Data Science",
+            "AI Tools",
+            "UI/UX",
+            "Digital Marketing",
+            "Finance"
+          ]
+        },
+        {
+          "type": "number",
+          "name": "openings",
+          "label": "Number of Openings",
+          "required": true,
+          "min": 1,
+          "placeholder": "Enter number of openings"
+        },
+        {
+          "type": "date",
+          "name": "start_date",
+          "label": "Expected Start Date",
+          "required": false
+        },
+        {
+          "type": "textarea",
+          "name": "job_summary",
+          "label": "Brief Role Description",
+          "required": true,
+          "placeholder": "Tell us about the role, skills, and hiring timeline"
+        }
+      ]
+    },
+    "event_registration": {
+      "title": "Event Registration",
+      "description": "Register for upcoming Jenovate events, workshops, and community sessions.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_event_registrations",
+        "fieldMap": {
+          "full_name": "full_name",
+          "email": "email",
+          "phone": "phone",
+          "event": "event",
+          "attendance_mode": "attendance_mode",
+          "city": "city"
+        }
+      },
+      "fields": [
+        {
+          "type": "text",
+          "name": "full_name",
+          "label": "Full Name",
+          "required": true
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Email",
+          "required": true
+        },
+        {
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true
+        },
+        {
+          "type": "select",
+          "name": "event",
+          "label": "Event",
+          "required": true,
+          "options": [
+            "Career Launch Webinar",
+            "AI Tools Workshop",
+            "Portfolio Review Day"
+          ]
+        },
+        {
+          "type": "radio",
+          "name": "attendance_mode",
+          "label": "Attendance Mode",
+          "required": true,
+          "options": [
+            "Online",
+            "In Person"
+          ]
+        },
+        {
+          "type": "text",
+          "name": "city",
+          "label": "City",
+          "required": true,
+          "showIf": {
+            "field": "attendance_mode",
+            "equals": "In Person"
+          }
+        }
+      ]
+    },
+    "campus_ambassador": {
+      "title": "Campus Ambassador Application",
+      "description": "Apply to represent Jenovate on your campus and help students discover practical learning opportunities.",
+      "endpoint": {
+        "type": "supabase",
+        "table": "form_campus_ambassadors",
+        "fieldMap": {
+          "full_name": "full_name",
+          "email": "email",
+          "phone": "phone",
+          "college": "college",
+          "city": "city",
+          "year_of_study": "year_of_study",
+          "social_profile": "social_profile",
+          "campus_reach": "campus_reach",
+          "why_join": "why_join",
+          "reference_id": "reference_id"
+        }
+      },
+      "steps": [
+        {
+          "title": "Your Details",
+          "fields": [
+            {
+              "type": "text",
+              "name": "full_name",
+              "label": "Full Name",
+              "required": true,
+              "placeholder": "Enter your full name"
+            },
+            {
+              "type": "email",
+              "name": "email",
+              "label": "Email",
+              "required": true,
+              "placeholder": "you@example.com"
+            },
+            {
+              "type": "phone",
+              "name": "phone",
+              "label": "Phone Number",
+              "required": true,
+              "placeholder": "+91 xxxxxxxxxx"
+            },
+            {
+              "type": "text",
+              "name": "college",
+              "label": "College / University",
+              "required": true,
+              "placeholder": "Institution name"
+            }
+          ]
+        },
+        {
+          "title": "Campus Reach",
+          "fields": [
+            {
+              "type": "text",
+              "name": "city",
+              "label": "City",
+              "required": true,
+              "placeholder": "Your city"
+            },
+            {
+              "type": "select",
+              "name": "year_of_study",
+              "label": "Year of Study",
+              "required": true,
+              "options": [
+                "1st Year",
+                "2nd Year",
+                "3rd Year",
+                "4th Year",
+                "Graduate",
+                "Other"
+              ]
+            },
+            {
+              "type": "text",
+              "name": "social_profile",
+              "label": "Instagram / LinkedIn Profile",
+              "required": false,
+              "placeholder": "Optional profile link"
+            },
+            {
+              "type": "number",
+              "name": "campus_reach",
+              "label": "Approx. Campus Reach",
+              "required": false,
+              "min": 0,
+              "placeholder": "e.g. 500"
+            }
+          ]
+        },
+        {
+          "title": "Motivation",
+          "fields": [
+            {
+              "type": "textarea",
+              "name": "why_join",
+              "label": "Why do you want to become a Campus Ambassador?",
+              "required": true,
+              "placeholder": "Tell us how you will promote Jenovate on campus..."
+            },
+            {
+              "type": "text",
+              "name": "reference_id",
+              "label": "Reference ID",
+              "required": false,
+              "placeholder": "Optional referral/reference code"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

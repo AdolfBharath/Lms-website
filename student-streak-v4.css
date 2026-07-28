@@ -1,0 +1,468 @@
+/* Isolated streak component matching the supplied references. */
+
+body[data-ui-build] #dashboardView .student-streak-card {
+  grid-area: streak !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 410px !important;
+  min-height: 410px !important;
+  margin: 0 !important;
+  padding: 28px !important;
+  overflow: hidden !important;
+  border: 1px solid #dedffc !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(circle at 100% 100%, rgba(112, 88, 255, .14), transparent 38%),
+    linear-gradient(145deg, #fff 0%, #fdfcff 100%) !important;
+  box-shadow: 0 18px 44px rgba(63, 68, 122, .08) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card .dashboard-hero-copy > .hero-session-pill::before {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-goal-copy #overallProgressMeta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+body[data-ui-build] #dashboardView .goal-course-icon {
+  width: 20px !important;
+  height: 20px !important;
+  fill: none !important;
+  stroke: #4d82f6 !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-header {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  grid-template-columns: 56px minmax(0, 1fr) 62px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-main-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 56px !important;
+  height: 56px !important;
+  border: 1px solid #d9dbff !important;
+  border-radius: 50% !important;
+  color: #5146e8 !important;
+  background: #f0f1ff !important;
+  box-shadow: 0 8px 18px rgba(81, 70, 232, .13) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-main-icon svg {
+  width: 32px !important;
+  height: 32px !important;
+  fill: currentColor !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-heading {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-heading #streakTitle {
+  display: block !important;
+  margin: 0 !important;
+  color: #111936 !important;
+  max-width: 100% !important;
+  font-size: 1.42rem !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  letter-spacing: 0 !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-heading > span {
+  color: #68738d !important;
+  font-size: .77rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 62px !important;
+  height: 66px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at center bottom, rgba(105, 86, 247, .24), transparent 68%) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art svg {
+  width: 46px !important;
+  height: 46px !important;
+  fill: #6556f2 !important;
+  filter: drop-shadow(0 12px 14px rgba(93, 74, 230, .22)) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art i {
+  position: absolute !important;
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  background: #765ef5 !important;
+  transform: rotate(45deg) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art i:nth-of-type(1) {
+  top: 6px !important;
+  left: 1px !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art i:nth-of-type(2) {
+  top: 0 !important;
+  right: 2px !important;
+  background: #f5b83f !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-art i:nth-of-type(3) {
+  right: 0 !important;
+  bottom: 9px !important;
+  background: #7297ff !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-week {
+  position: absolute !important;
+  z-index: 2 !important;
+  top: 122px !important;
+  right: 28px !important;
+  left: 28px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  align-items: center !important;
+  gap: 5px !important;
+  width: auto !important;
+  min-height: 104px !important;
+  margin: 0 !important;
+  padding: 15px 12px !important;
+  overflow: visible !important;
+  border: 1px solid #e8e8f7 !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, .9) !important;
+  box-shadow: 0 12px 26px rgba(69, 70, 115, .06) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day {
+  position: static !important;
+  display: grid !important;
+  grid-template-rows: 38px 16px !important;
+  justify-items: center !important;
+  align-items: center !important;
+  gap: 7px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 62px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day::before,
+body[data-ui-build] #dashboardView .student-streak-day::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day-dot {
+  position: static !important;
+  display: grid !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  color: #4d42d3 !important;
+  background: #f0f0ff !important;
+  box-shadow: none !important;
+  font-size: .82rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day.active .student-streak-day-dot {
+  color: #315cf5 !important;
+  background: #e8efff !important;
+  box-shadow: 0 7px 16px rgba(49, 92, 245, .2) !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day.today .student-streak-day-dot {
+  box-shadow: inset 0 0 0 2px #7b70f8 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day-dot .streak-day-flame {
+  display: block !important;
+  width: 25px !important;
+  height: 25px !important;
+  color: #315cf5 !important;
+  fill: #315cf5 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-day-label {
+  position: static !important;
+  display: block !important;
+  margin: 0 !important;
+  color: #747c93 !important;
+  font-size: .7rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress {
+  position: absolute !important;
+  z-index: 2 !important;
+  right: 28px !important;
+  bottom: 24px !important;
+  left: 28px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) 116px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 94px !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  border: 1px solid #e4e3fa !important;
+  border-radius: 18px !important;
+  background: rgba(251, 249, 255, .94) !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  color: #5a49e8 !important;
+  background: #efedff !important;
+  font-size: 1.45rem !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress-icon svg {
+  width: 23px !important;
+  height: 23px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress-copy {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress-copy strong {
+  display: block !important;
+  margin: 0 !important;
+  color: #5142e3 !important;
+  font-size: .92rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-progress-copy p {
+  margin: 5px 0 0 !important;
+  color: #68738d !important;
+  font-size: .72rem !important;
+  line-height: 1.35 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-record {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-height: 54px !important;
+  padding: 8px 10px !important;
+  border-radius: 13px !important;
+  color: #5142e3 !important;
+  background: #eeebff !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-record span {
+  font-size: 1.05rem !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-record span svg {
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-record b {
+  font-size: .64rem !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #dashboardView .student-streak-record.record-achieved {
+  color: #126b4b !important;
+  background: #dcf7ea !important;
+}
+
+@media (max-width: 1240px) {
+  body[data-ui-build] #dashboardView .student-streak-card {
+    padding: 22px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-header {
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-main-icon {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-art,
+  body[data-ui-build] #dashboardView .student-streak-record {
+    display: none !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-week {
+    right: 22px !important;
+    left: 22px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+    gap: 2px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-day-dot {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-progress {
+    right: 22px !important;
+    left: 22px !important;
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #dashboardView .student-streak-card {
+    height: 390px !important;
+    min-height: 390px !important;
+    padding: 26px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-header {
+    grid-template-columns: 56px minmax(0, 1fr) 62px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-art,
+  body[data-ui-build] #dashboardView .student-streak-record {
+    display: flex !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-art {
+    display: grid !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-week,
+  body[data-ui-build] #dashboardView .student-streak-progress {
+    right: 26px !important;
+    left: 26px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-progress {
+    grid-template-columns: 42px minmax(0, 1fr) 116px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body[data-ui-build] #dashboardView .student-streak-card {
+    height: 382px !important;
+    min-height: 382px !important;
+    padding: 20px !important;
+    border-radius: 22px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-header {
+    grid-template-columns: 50px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-main-icon {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-art,
+  body[data-ui-build] #dashboardView .student-streak-record {
+    display: none !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-heading #streakTitle {
+    font-size: 1.4rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-heading > span {
+    font-size: .69rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-week {
+    top: 108px !important;
+    right: 20px !important;
+    left: 20px !important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-day-dot {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+  }
+
+  body[data-ui-build] #dashboardView .student-streak-progress {
+    right: 20px !important;
+    bottom: 20px !important;
+    left: 20px !important;
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+    min-height: 88px !important;
+  }
+}

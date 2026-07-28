@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Access Restricted - Jenovate LMS</title>
+  <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
+  <link rel="stylesheet" href="login.css?v=20260623-login-image-right-nudge" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="logo-container">
+        <a href="index.html"><img src="image/logo/logonew.png" alt="Jenovate Logo" class="logo-img" /></a>
+      </div>
+      <img src="image/login/loginimg.webp" alt="Learn Engage Succeed" class="illustration-img" />
+    </div>
+    <div class="login-right">
+      <div class="login-form-container">
+        <h1 class="welcome-title">Access Restricted</h1>
+        <p class="welcome-subtitle" id="accessMessage">Your current role cannot open this workspace.</p>
+        <button class="submit-btn" id="continueBtn" type="button">CONTINUE</button>
+        <p class="join-account"><a href="login.html?from=unauthorized">Use another account</a></p>
+      </div>
+    </div>
+  </div>
+  <script src="session-router.js?v=20260615-auth"></script>
+  <script>
+    const profile = window.JenovateSessionRouter?.activeSession?.();
+    const target = window.JenovateSessionRouter?.routeFor?.(profile) || "login.html";
+    if (profile?.role) {
+      document.getElementById("accessMessage").textContent = `You are signed in as ${profile.role}. Continue to your assigned workspace.`;
+    }
+    document.getElementById("continueBtn").addEventListener("click", () => window.location.replace(target));
+  </script>
+</body>
+</html>

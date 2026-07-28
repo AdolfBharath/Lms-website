@@ -7,22 +7,18 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Login - Jenovate</title>
-  <link rel="stylesheet" href="login.css?v=20260520" />
   <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css?v=20260723-login-layout" />
 </head>
 <body>
   <div class="login-container">
     <div class="login-left">
       <div class="logo-container">
         <a href="index.html">
-          <img src="image/logo/logo new.png" alt="Jenovate Logo" class="logo-img" />
+          <img src="image/logo/logonew.png" alt="Jenovate Logo" class="logo-img" />
         </a>
       </div>
-      <img src="image/login/loginimg.png" alt="Learn Engage Succeed" class="illustration-img" />
+      <img src="image/login/loginimg.webp" alt="Learn Engage Succeed" class="illustration-img" />
     </div>
     <div class="login-right">
       <div class="login-form-container">
@@ -33,7 +29,7 @@
           <div class="form-group">
             <label for="email">EMAIL</label>
             <div class="input-wrapper">
-              <i class="fa-regular fa-envelope input-icon"></i>
+              <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
               <input type="email" id="email" placeholder="you@example.com" required />
             </div>
           </div>
@@ -44,22 +40,27 @@
               <a href="#" class="forgot-password">Forgot your password?</a>
             </div>
             <div class="input-wrapper">
-              <i class="fa-solid fa-lock input-icon"></i>
+              <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
               <input type="password" id="password" placeholder="Password" required />
-              <i class="fa-regular fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+              <button class="toggle-password" type="button" onclick="togglePasswordVisibility()" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
             </div>
           </div>
           
           <button type="submit" class="submit-btn">LOGIN</button>
           <p class="login-error" id="loginError" role="alert"></p>
+          <p class="join-account">
+            Don't have an account?
+            <a href="form-engine/index.html?category=student_registration">Join Now</a>
+          </p>
         </form>
       </div>
     </div>
   </div>
 
   <!-- Supabase CDN and Config -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260519-legacy-login"></script>
+  <script src="assets/vendor/supabase-2.49.4.js"></script>
+  <script src="supabase-config.js?v=20260618-signed-storage"></script>
+  <script src="auth-session.js?v=20260715-fast-auth"></script>
   
   <script>
     const APP_SESSION_KEY = 'jenovateCurrentUser';
@@ -69,7 +70,7 @@
     const PREV_PAGE_KEY = 'jenovatePrevPage';
 
     document.addEventListener('DOMContentLoaded', () => {
-      clearExistingSession();
+      initializeLoginBackNavigation();
     });
 
     function togglePasswordVisibility() {
@@ -77,12 +78,10 @@
       const toggleIcon = document.querySelector('.toggle-password');
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
+        toggleIcon.setAttribute('aria-label', 'Hide password');
       } else {
         passwordInput.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
+        toggleIcon.setAttribute('aria-label', 'Show password');
       }
     }
 
@@ -99,7 +98,7 @@
       submitBtn.disabled = true;
 
       try {
-        const profile = await verifyLogin(email, password);
+        let profile = await verifyLogin(email, password);
         if (!profile) {
           throw new Error('Invalid email or password.');
         }
@@ -116,7 +115,7 @@
           coins: profile.coins || 0,
           streak_count: profile.streak_count || 0,
           last_active_date: profile.last_active_date || '',
-          auth_mode: 'users_table'
+          auth_mode: 'supabase_auth'
         };
 
         // Use sessionStorage so the session stays in this browser tab until logout or tab close.
@@ -125,18 +124,18 @@
         sessionStorage.removeItem(MENTOR_SESSION_KEY);
         sessionStorage.removeItem(STUDENT_SESSION_KEY);
 
-        if (sessionProfile.role === 'admin') {
-          sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionProfile));
-          window.location.replace('admin.html');
-        } else if (sessionProfile.role === 'mentor') {
-          sessionStorage.setItem(MENTOR_SESSION_KEY, JSON.stringify(sessionProfile));
-          window.location.replace('mentor.html');
-        } else if (sessionProfile.role === 'student') {
-          sessionStorage.setItem(STUDENT_SESSION_KEY, JSON.stringify(sessionProfile));
-          window.location.replace('student.html');
-        } else {
-          window.location.replace('index.html');
+        const roleSessionKey = {
+          admin: ADMIN_SESSION_KEY,
+          mentor: MENTOR_SESSION_KEY,
+          student: STUDENT_SESSION_KEY
+        }[sessionProfile.role];
+        if (roleSessionKey) {
+          sessionStorage.setItem(roleSessionKey, JSON.stringify(sessionProfile));
         }
+
+        const requestedRoute = window.JenovateAuth?.requestedRoute?.();
+        const roleRoute = window.JenovateAuth?.routeFor?.(sessionProfile);
+        window.location.replace(requestedRoute && requestedRoute === roleRoute ? requestedRoute : roleRoute || 'index.html');
       } catch (error) {
         errorBox.textContent = error.message || 'Login failed. Please try again.';
         submitBtn.textContent = 'LOGIN';
@@ -145,46 +144,34 @@
     });
 
     async function verifyLogin(email, password) {
-      const supabaseClient = window.getSupabaseClient?.();
-
-      if (!supabaseClient?.rpc) {
-        throw new Error('Supabase library did not load. Check your internet connection and refresh.');
-      }
-
-      const { data, error } = await supabaseClient.rpc('lms_password_login', {
-        login_email: email,
-        login_password: password
-      });
-
-      if (error) {
-        if (/function .*lms_password_login/i.test(error.message || '') || /could not find/i.test(error.message || '')) {
-          throw new Error('Login is not configured in Supabase yet. Run the latest database update.');
-        }
-        throw error;
-      }
-
-      const profile = Array.isArray(data) ? data[0] : data;
-      if (!profile?.email) {
-        throw new Error('Incorrect email or password. Please check your credentials and try again.');
-      }
-
-      return profile;
+      return window.JenovateAuth.signInWithPassword(email, password);
     }
 
-    function clearExistingSession() {
-      const hadSession = Boolean(
-        sessionStorage.getItem(APP_SESSION_KEY) ||
-        sessionStorage.getItem(ADMIN_SESSION_KEY) ||
-        sessionStorage.getItem(MENTOR_SESSION_KEY) ||
-        sessionStorage.getItem(STUDENT_SESSION_KEY)
-      );
-      sessionStorage.removeItem(APP_SESSION_KEY);
-      sessionStorage.removeItem(ADMIN_SESSION_KEY);
-      sessionStorage.removeItem(MENTOR_SESSION_KEY);
-      sessionStorage.removeItem(STUDENT_SESSION_KEY);
-      if (hadSession) {
-        document.getElementById('loginError').textContent = 'Session ended. Login again to continue.';
+    document.querySelector('.forgot-password')?.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const errorBox = document.getElementById('loginError');
+      if (!email) {
+        errorBox.textContent = 'Enter your email first, then request a password reset.';
+        return;
       }
+      try {
+        const redirectTo = `${window.location.origin}${window.location.pathname.replace(/login\.html$/i, 'reset-password.html')}`;
+        const { error } = await window.getSupabaseClient().auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+        errorBox.textContent = 'Password reset link sent. Please check your email.';
+      } catch (error) {
+        errorBox.textContent = error.message || 'Unable to send reset email.';
+      }
+    });
+
+    function initializeLoginBackNavigation() {
+      if (!window.history?.pushState) return;
+      history.replaceState({ loginView: true }, '', window.location.href);
+      history.pushState({ loginGuard: true }, '', window.location.href);
+      window.addEventListener('popstate', () => {
+        window.location.replace('index.html');
+      });
     }
   </script>
 </body>

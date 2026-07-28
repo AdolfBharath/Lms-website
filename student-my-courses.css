@@ -1,0 +1,1425 @@
+/* Scalable My Courses library. */
+
+body[data-ui-build] #coursesView {
+  min-width: 0;
+  padding-bottom: 36px;
+}
+
+body[data-ui-build] #coursesView .my-courses-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+body[data-ui-build] #coursesView .my-courses-header h2 {
+  margin: 0 0 7px;
+  color: #111936;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+body[data-ui-build] #coursesView .my-courses-header p {
+  max-width: 650px;
+  margin: 0;
+  color: #68738d;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+body[data-ui-build] #coursesView .my-courses-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+body[data-ui-build] #coursesView .course-library-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: clamp(210px, 24vw, 300px);
+  height: 40px;
+  padding: 0 13px;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  background: #fff;
+}
+
+body[data-ui-build] #coursesView .course-library-search:focus-within {
+  border-color: #3f70ef;
+  box-shadow: 0 0 0 3px rgba(63, 112, 239, .1);
+}
+
+body[data-ui-build] #coursesView .course-library-search svg {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #66718c;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+body[data-ui-build] #coursesView .course-library-search input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: #111936;
+  background: transparent;
+  font: inherit;
+  font-size: .75rem;
+}
+
+body[data-ui-build] #coursesView .course-category-control {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+body[data-ui-build] #coursesView .course-icon-button,
+body[data-ui-build] #coursesView .course-view-toggle button,
+body[data-ui-build] #coursesView .course-card-menu {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  color: #52607d;
+  background: #fff;
+  cursor: pointer;
+}
+
+body[data-ui-build] #coursesView .course-icon-button.active,
+body[data-ui-build] #coursesView .course-icon-button:hover,
+body[data-ui-build] #coursesView .course-view-toggle button.active {
+  color: #1768f2;
+  border-color: #cbd9ff;
+  background: #eef4ff;
+}
+
+body[data-ui-build] #coursesView .course-icon-button svg,
+body[data-ui-build] #coursesView .course-view-toggle svg,
+body[data-ui-build] #coursesView .course-card-menu svg,
+body[data-ui-build] #coursesView .browse-courses-button svg,
+body[data-ui-build] #coursesView .course-load-more svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body[data-ui-build] #coursesView .course-category-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  max-height: 280px;
+  padding: 6px;
+  overflow-y: auto;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 16px 35px rgba(35, 48, 85, .14);
+}
+
+body[data-ui-build] #coursesView .course-category-menu[hidden] {
+  display: none;
+}
+
+body[data-ui-build] #coursesView .course-category-menu button {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 5px;
+  color: #4d5975;
+  background: transparent;
+  font-size: .72rem;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+body[data-ui-build] #coursesView .course-category-menu button:hover,
+body[data-ui-build] #coursesView .course-category-menu button.active {
+  color: #135ee8;
+  background: #eef4ff;
+}
+
+body[data-ui-build] #coursesView .browse-courses-button.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-width: 142px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid #1768f2;
+  border-radius: 7px;
+  color: #fff;
+  background: #1768f2;
+  box-shadow: 0 7px 16px rgba(23, 104, 242, .2);
+  font-size: .72rem;
+}
+
+body[data-ui-build] #coursesView .my-courses-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  background: #fff;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button {
+  position: relative;
+  min-width: 100px;
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-right: 1px solid #e7eaf2;
+  border-radius: 0;
+  color: #58637e;
+  background: transparent;
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button:last-child {
+  border-right: 0;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button.active {
+  color: #1768f2;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button.active::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: -1px;
+  left: 16px;
+  height: 2px;
+  background: #1768f2;
+}
+
+body[data-ui-build] #coursesView .course-layout-controls,
+body[data-ui-build] #coursesView .course-view-toggle {
+  display: flex;
+  align-items: center;
+}
+
+body[data-ui-build] #coursesView .course-layout-controls {
+  gap: 14px;
+}
+
+body[data-ui-build] #coursesView .course-sort-control {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px 0 14px;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  color: #65708a;
+  background: #fff;
+  font-size: .72rem;
+}
+
+body[data-ui-build] #coursesView .course-sort-control select {
+  max-width: 158px;
+  height: 36px;
+  padding: 0 24px 0 6px;
+  border: 0;
+  outline: 0;
+  color: #18213f;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body[data-ui-build] #coursesView .course-view-toggle {
+  overflow: hidden;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+}
+
+body[data-ui-build] #coursesView .course-view-toggle button {
+  width: 40px;
+  border: 0;
+  border-radius: 0;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.course-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 22px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+}
+
+body[data-ui-build] #coursesView #coursesGrid > .scalable-course-card.my-course-card {
+  display: grid !important;
+  grid-template-rows: 142px minmax(0, 1fr) !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  min-height: 326px !important;
+  height: 326px !important;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #dfe4f0;
+  border-radius: 7px;
+  color: #111936;
+  background: #fff;
+  box-shadow: 0 5px 14px rgba(39, 51, 89, .06);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+body[data-ui-build] #coursesView #coursesGrid > .scalable-course-card.my-course-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd8f6;
+  box-shadow: 0 12px 24px rgba(39, 51, 89, .11);
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-card-media {
+  position: relative;
+  display: block !important;
+  width: 100% !important;
+  height: 142px !important;
+  min-height: 142px !important;
+  overflow: visible;
+  background: #eaf0fb;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-card-media > img.course-thumb {
+  display: block !important;
+  width: 100% !important;
+  height: 142px !important;
+  margin: 0;
+  object-fit: cover;
+}
+
+body[data-ui-build] #coursesView .course-category-badge {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: block;
+  max-width: calc(100% - 76px);
+  padding: 5px 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  color: #fff;
+  background: #1768f2;
+  font-size: .58rem;
+  font-weight: 700;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-ui-build] #coursesView .course-tone-1 .course-category-badge { background: #7853d6; }
+body[data-ui-build] #coursesView .course-tone-2 .course-category-badge { background: #12805c; }
+body[data-ui-build] #coursesView .course-tone-3 .course-category-badge { background: #d87608; }
+body[data-ui-build] #coursesView .course-tone-4 .course-category-badge { background: #bd2e68; }
+body[data-ui-build] #coursesView .course-tone-5 .course-category-badge { background: #6532b4; }
+
+body[data-ui-build] #coursesView .course-progress-ring {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  bottom: -21px;
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: conic-gradient(#1768f2 var(--course-progress), #e5eaf4 0);
+  box-shadow: 0 5px 12px rgba(30, 45, 84, .16);
+}
+
+body[data-ui-build] #coursesView .course-progress-ring::before {
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+body[data-ui-build] #coursesView .course-progress-ring b {
+  position: relative;
+  z-index: 1;
+  color: #17213f;
+  font-size: .6rem;
+  font-weight: 800;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-card-body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0;
+  min-height: 184px !important;
+  padding: 17px 14px 13px !important;
+  color: #111936;
+  background: #fff;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card h3 {
+  display: -webkit-box;
+  min-height: 38px;
+  margin: 0 54px 5px 0;
+  overflow: hidden;
+  color: #111936;
+  font-size: .88rem;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-mentor-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-mentor-row .student-avatar.small {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 19px;
+  height: 19px;
+  min-height: 19px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #20367e;
+  font-size: .48rem;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-mentor-row small {
+  overflow: hidden;
+  color: #606c87;
+  font-size: .61rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-mentor-row svg {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  fill: #1768f2;
+  stroke: #fff;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .card-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 16px;
+  margin: 0 0 9px;
+  color: #5f6b85;
+  font-size: .61rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .card-meta i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #9ca6ba;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .mini-progress {
+  width: 100%;
+  height: 4px;
+  min-height: 4px;
+  margin: 0 0 10px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e8ecf3;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .mini-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #1768f2;
+}
+
+body[data-ui-build] #coursesView .course-tone-1 .mini-progress span { background: #7853d6; }
+body[data-ui-build] #coursesView .course-tone-2 .mini-progress span { background: #16a36d; }
+body[data-ui-build] #coursesView .course-tone-3 .mini-progress span { background: #e59212; }
+body[data-ui-build] #coursesView .course-tone-4 .mini-progress span { background: #d93d77; }
+body[data-ui-build] #coursesView .course-tone-5 .mini-progress span { background: #6532b4; }
+
+body[data-ui-build] #coursesView .scalable-course-card .card-footer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  margin-top: auto;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-continue-button.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 112px;
+  height: 30px;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #cfd9ec;
+  border-radius: 5px;
+  color: #1768f2;
+  background: #fff;
+  box-shadow: none;
+  font-size: .61rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+body[data-ui-build] #coursesView .course-review-link {
+  height: 28px;
+  padding: 0 4px;
+  border: 0;
+  color: #5f55c8;
+  background: transparent;
+  font-size: .59rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body[data-ui-build] #coursesView .scalable-course-card .course-card-menu {
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  border: 0;
+  color: #304264;
+  background: transparent;
+}
+
+body[data-ui-build] #coursesView .course-load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+body[data-ui-build] #coursesView .course-load-more-wrap[hidden] {
+  display: none;
+}
+
+body[data-ui-build] #coursesView .course-load-more.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  min-width: 166px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid #d5deef;
+  border-radius: 6px;
+  color: #1768f2;
+  background: #fff;
+  box-shadow: none;
+  font-size: .68rem;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout > .scalable-course-card {
+  grid-template-columns: 220px minmax(0, 1fr) !important;
+  grid-template-rows: 160px !important;
+  min-height: 160px !important;
+  height: 160px !important;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout .course-card-media,
+body[data-ui-build] #coursesView #coursesGrid.list-layout .course-card-media > img.course-thumb {
+  height: 160px;
+  min-height: 160px;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout .course-card-body {
+  min-height: 160px;
+  padding: 17px 20px 14px;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout .course-progress-ring {
+  right: -24px;
+  bottom: 18px;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.list-layout h3 {
+  min-height: 22px;
+  margin-right: 0;
+  font-size: 1rem;
+  -webkit-line-clamp: 1;
+}
+
+@media (max-width: 1240px) {
+  body[data-ui-build] #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  body[data-ui-build] #coursesView .my-courses-header {
+    flex-direction: column;
+  }
+
+  body[data-ui-build] #coursesView .my-courses-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  body[data-ui-build] #coursesView .course-library-search {
+    flex: 1 1 auto;
+    width: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body[data-ui-build] #coursesView .my-courses-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  body[data-ui-build] #coursesView .course-layout-controls {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] #coursesView .my-courses-header h2 {
+    font-size: 1.4rem;
+  }
+
+  body[data-ui-build] #coursesView .my-courses-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px;
+  }
+
+  body[data-ui-build] #coursesView .browse-courses-button.primary-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  body[data-ui-build] #coursesView #courseFilterTabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  body[data-ui-build] #coursesView #courseFilterTabs button {
+    min-width: 0;
+    padding: 0 8px;
+  }
+
+  body[data-ui-build] #coursesView .course-layout-controls {
+    gap: 8px;
+  }
+
+  body[data-ui-build] #coursesView .course-sort-control {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  body[data-ui-build] #coursesView .course-sort-control select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid.course-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid > .scalable-course-card.my-course-card {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid.list-layout > .scalable-course-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 142px minmax(0, 1fr) !important;
+    min-height: 326px !important;
+    height: 326px !important;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid.list-layout .course-card-media,
+  body[data-ui-build] #coursesView #coursesGrid.list-layout .course-card-media > img.course-thumb {
+    height: 142px;
+    min-height: 142px;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid.list-layout .course-progress-ring {
+    right: 12px;
+    bottom: -21px;
+  }
+}
+
+/* Final reference-fidelity overrides for legacy course rules. */
+body[data-ui-build] main.student-main #coursesView.student-view {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: clamp(20px, 2.4vw, 30px) 10px 38px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fbfcff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-header,
+body[data-ui-build] main.student-main #coursesView .my-courses-toolbar,
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+  width: 100% !important;
+  max-width: none !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-auto-columns: auto !important;
+  gap: 22px 24px !important;
+  justify-content: stretch !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid > article.scalable-course-card.my-course-card {
+  justify-self: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 326px !important;
+  min-height: 326px !important;
+  max-height: 326px !important;
+  border: 1px solid #dfe4ee !important;
+  border-radius: 7px !important;
+  box-shadow: 0 5px 14px rgba(34, 48, 87, .06) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout > article.scalable-course-card.my-course-card {
+  grid-template-columns: 230px minmax(0, 1fr) !important;
+  grid-template-rows: 180px !important;
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media,
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media > img.course-thumb {
+  height: 142px !important;
+  min-height: 142px !important;
+  max-height: 142px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-body {
+  min-height: 184px !important;
+  padding: 15px 13px 12px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media,
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media > img.course-thumb {
+  width: 230px !important;
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-body {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 180px !important;
+  min-height: 0 !important;
+  max-height: 180px !important;
+  padding: 16px 20px 14px 24px !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card h3 {
+  min-height: 22px !important;
+  max-height: 42px !important;
+  margin: 0 52px 4px 0 !important;
+  font-size: .98rem !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-mentor-row {
+  margin-bottom: 8px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .card-meta {
+  margin-bottom: 8px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .mini-progress {
+  margin-bottom: 9px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-progress-ring {
+  right: -24px !important;
+  bottom: 18px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .card-footer {
+  min-height: 30px !important;
+  margin-top: auto !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card h3 {
+  min-height: 36px !important;
+  max-height: 36px !important;
+  margin: 0 50px 4px 0 !important;
+  color: #111936 !important;
+  font-size: .84rem !important;
+  line-height: 1.3 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-continue-button.secondary-btn {
+  width: auto !important;
+  min-width: 112px !important;
+  max-width: 150px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border: 1px solid #cfd9ec !important;
+  border-radius: 5px !important;
+  color: #0867f2 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  font-size: .61rem !important;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button > svg {
+  width: 15px !important;
+  height: 15px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+@media (max-width: 1240px) {
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] main.student-main #coursesView.student-view {
+    padding-right: 14px !important;
+    padding-left: 14px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid > article.scalable-course-card.my-course-card {
+    width: 100% !important;
+    max-width: 420px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout > article.scalable-course-card.my-course-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 142px minmax(0, 1fr) !important;
+    height: 326px !important;
+    min-height: 326px !important;
+    max-height: 326px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media,
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media > img.course-thumb {
+    width: 100% !important;
+    height: 142px !important;
+    min-height: 142px !important;
+    max-height: 142px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-body {
+    height: 184px !important;
+    min-height: 184px !important;
+    max-height: 184px !important;
+    padding: 15px 13px 12px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-progress-ring {
+    right: 12px !important;
+    bottom: -21px !important;
+  }
+}
+
+/* 2026-07-25 My Courses reference screen. */
+body[data-ui-build] main.student-main #coursesView.student-view {
+  --course-blue: #0d6bff;
+  --course-ink: #0f1734;
+  --course-muted: #53617f;
+  --course-line: #dce4f2;
+  box-sizing: border-box !important;
+  min-height: 100% !important;
+  padding: 22px 10px 42px !important;
+  color: var(--course-ink) !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 22px !important;
+  margin: 0 0 40px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-header h2 {
+  margin: 0 0 9px !important;
+  color: var(--course-ink) !important;
+  font-size: 1.72rem !important;
+  font-weight: 850 !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-header p {
+  max-width: 650px !important;
+  margin: 0 !important;
+  color: #34415e !important;
+  font-size: .78rem !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-actions {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 320px) 44px auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: auto !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-library-search {
+  width: 320px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--course-line) !important;
+  border-radius: 7px !important;
+  background: #ffffff !important;
+  box-shadow: 0 3px 9px rgba(35, 47, 81, .035) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-library-search input {
+  color: #182340 !important;
+  font-size: .76rem !important;
+  font-weight: 600 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-icon-button,
+body[data-ui-build] main.student-main #coursesView .course-view-toggle button {
+  width: 42px !important;
+  height: 42px !important;
+  border: 1px solid var(--course-line) !important;
+  border-radius: 7px !important;
+  color: #394766 !important;
+  background: #ffffff !important;
+  box-shadow: 0 3px 9px rgba(35, 47, 81, .035) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-icon-button:hover,
+body[data-ui-build] main.student-main #coursesView .course-icon-button.active,
+body[data-ui-build] main.student-main #coursesView .course-view-toggle button.active {
+  color: var(--course-blue) !important;
+  border-color: #cfe0ff !important;
+  background: #f4f8ff !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .browse-courses-button.primary-btn {
+  min-width: 152px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 17px !important;
+  border: 1px solid var(--course-blue) !important;
+  border-radius: 7px !important;
+  color: #ffffff !important;
+  background: var(--course-blue) !important;
+  box-shadow: 0 9px 18px rgba(13, 107, 255, .2) !important;
+  font-size: .76rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .my-courses-toolbar {
+  display: grid !important;
+  grid-template-columns: auto auto !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  margin: 0 0 32px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #courseFilterTabs {
+  display: inline-grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  align-items: center !important;
+  width: 452px !important;
+  min-height: 46px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--course-line) !important;
+  border-radius: 7px !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(35, 47, 81, .035) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #courseFilterTabs button {
+  position: relative !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 44px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-right: 1px solid #e6ebf4 !important;
+  border-radius: 0 !important;
+  color: #42506f !important;
+  background: transparent !important;
+  font-size: .73rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #courseFilterTabs button:last-child {
+  border-right: 0 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #courseFilterTabs button.active {
+  color: var(--course-blue) !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #courseFilterTabs button.active::after {
+  right: 38px !important;
+  bottom: 0 !important;
+  left: 38px !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  background: var(--course-blue) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-layout-controls {
+  gap: 36px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-sort-control {
+  height: 44px !important;
+  padding: 0 13px 0 16px !important;
+  border: 1px solid var(--course-line) !important;
+  border-radius: 7px !important;
+  color: #52607d !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(35, 47, 81, .035) !important;
+  font-size: .74rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-sort-control select {
+  max-width: 130px !important;
+  height: 40px !important;
+  color: #192440 !important;
+  font-size: .74rem !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-view-toggle {
+  display: grid !important;
+  grid-template-columns: repeat(2, 42px) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--course-line) !important;
+  border-radius: 7px !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(35, 47, 81, .035) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-view-toggle button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 28px 30px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid > article.scalable-course-card.my-course-card {
+  display: grid !important;
+  grid-template-rows: 154px minmax(0, 1fr) !important;
+  height: 342px !important;
+  min-height: 342px !important;
+  max-height: 342px !important;
+  overflow: hidden !important;
+  border: 1px solid #dfe5f0 !important;
+  border-radius: 7px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(33, 45, 78, .065) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid > article.scalable-course-card.my-course-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: #cbd8ee !important;
+  box-shadow: 0 14px 28px rgba(33, 45, 78, .105) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media,
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media > img.course-thumb {
+  width: 100% !important;
+  height: 154px !important;
+  min-height: 154px !important;
+  max-height: 154px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media {
+  overflow: visible !important;
+  background: #0f2c5f !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-media > img.course-thumb {
+  display: block !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-category-badge {
+  top: 18px !important;
+  left: 18px !important;
+  max-width: calc(100% - 96px) !important;
+  padding: 7px 10px !important;
+  border-radius: 5px !important;
+  color: #ffffff !important;
+  background: var(--course-blue) !important;
+  font-size: .6rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-progress-ring {
+  right: 18px !important;
+  bottom: -25px !important;
+  width: 57px !important;
+  height: 57px !important;
+  border: 5px solid #ffffff !important;
+  background: conic-gradient(var(--course-blue) var(--course-progress), #e7ebf3 0) !important;
+  box-shadow: 0 8px 18px rgba(31, 43, 77, .16) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-progress-ring::before {
+  width: 42px !important;
+  height: 42px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-progress-ring b {
+  color: #1a243f !important;
+  font-size: .62rem !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-card-body {
+  min-height: 188px !important;
+  padding: 20px 17px 15px !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card h3 {
+  min-height: 40px !important;
+  max-height: 40px !important;
+  margin: 0 54px 12px 0 !important;
+  color: var(--course-ink) !important;
+  font-size: .95rem !important;
+  font-weight: 850 !important;
+  line-height: 1.24 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-mentor-row {
+  gap: 7px !important;
+  min-height: 21px !important;
+  margin: 0 0 13px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-mentor-row .student-avatar.small {
+  width: 20px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  background: #26378f !important;
+  font-size: .5rem !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-mentor-row small {
+  color: #52617d !important;
+  font-size: .62rem !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-mentor-row svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: var(--course-blue) !important;
+  stroke: #ffffff !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .card-meta {
+  gap: 11px !important;
+  min-height: 18px !important;
+  margin: 0 0 13px !important;
+  color: #56627d !important;
+  font-size: .66rem !important;
+  font-weight: 600 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .card-meta i {
+  width: 3px !important;
+  height: 3px !important;
+  background: #9aa6ba !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .mini-progress {
+  height: 5px !important;
+  min-height: 5px !important;
+  margin: 0 0 16px !important;
+  border-radius: 999px !important;
+  background: #e6ebf3 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .card-footer {
+  min-height: 34px !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .scalable-course-card .course-continue-button.secondary-btn {
+  min-width: 142px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 17px !important;
+  border: 1px solid #d1dbeb !important;
+  border-radius: 5px !important;
+  color: var(--course-blue) !important;
+  background: #ffffff !important;
+  font-size: .68rem !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-card-menu {
+  width: 30px !important;
+  height: 30px !important;
+  margin-left: auto !important;
+  color: #213b66 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-load-more-wrap {
+  margin-top: 34px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView .course-load-more.secondary-btn {
+  min-width: 194px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  border: 1px solid #dbe3f0 !important;
+  border-radius: 7px !important;
+  color: var(--course-blue) !important;
+  background: #ffffff !important;
+  font-size: .74rem !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout > article.scalable-course-card.my-course-card {
+  grid-template-columns: 250px minmax(0, 1fr) !important;
+  grid-template-rows: 172px !important;
+  height: 172px !important;
+  min-height: 172px !important;
+  max-height: 172px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media,
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media > img.course-thumb {
+  width: 250px !important;
+  height: 172px !important;
+  min-height: 172px !important;
+  max-height: 172px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .course-progress-ring {
+  right: -27px !important;
+  bottom: 20px !important;
+}
+
+body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-body {
+  height: 172px !important;
+  min-height: 172px !important;
+  max-height: 172px !important;
+  padding: 18px 22px 16px !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] main.student-main #coursesView .my-courses-header {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .my-courses-actions {
+    grid-template-columns: minmax(0, 1fr) 44px auto !important;
+    width: 100% !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .course-library-search {
+    width: 100% !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] main.student-main #coursesView .my-courses-toolbar {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #courseFilterTabs {
+    width: 100% !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .course-layout-controls {
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] main.student-main #coursesView.student-view {
+    padding: 18px 14px 32px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .my-courses-header {
+    gap: 18px !important;
+    margin-bottom: 26px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .my-courses-actions {
+    grid-template-columns: minmax(0, 1fr) 44px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView .browse-courses-button.primary-btn {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #courseFilterTabs button {
+    padding: 0 8px !important;
+    font-size: .68rem !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 18px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid > article.scalable-course-card.my-course-card {
+    max-width: 430px !important;
+    margin: 0 auto !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout > article.scalable-course-card.my-course-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 154px minmax(0, 1fr) !important;
+    height: 342px !important;
+    min-height: 342px !important;
+    max-height: 342px !important;
+  }
+
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media,
+  body[data-ui-build] main.student-main #coursesView #coursesGrid.course-grid.list-layout .scalable-course-card .course-card-media > img.course-thumb {
+    width: 100% !important;
+    height: 154px !important;
+    min-height: 154px !important;
+    max-height: 154px !important;
+  }
+}

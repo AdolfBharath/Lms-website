@@ -1,0 +1,310 @@
+/* Reference-style live inbox card. */
+
+body[data-ui-build] #dashboardView .dashboard-widget-card.dashboard-inbox-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 430px !important;
+  margin: 0 !important;
+  padding: 26px !important;
+  overflow: hidden !important;
+  border: 1px solid #e0e4f5 !important;
+  border-radius: 22px !important;
+  background: linear-gradient(150deg, #fff 0%, #fdfdff 68%, #faf9ff 100%) !important;
+  box-shadow: 0 18px 44px rgba(53, 63, 112, .09) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-header {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin: 0 0 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-main-icon {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 54px !important;
+  width: 54px !important;
+  height: 54px !important;
+  border: 1px solid #e5e8fb !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: #eef2ff !important;
+  box-shadow: 0 10px 24px rgba(70, 83, 194, .13) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-main-icon svg {
+  width: 30px !important;
+  height: 30px !important;
+  fill: #5671f2 !important;
+  stroke: #5671f2 !important;
+  stroke-width: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-main-icon circle {
+  fill: #fff !important;
+  stroke: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-heading h2 {
+  margin: 0 !important;
+  color: #121a37 !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-heading p {
+  margin: 4px 0 0 !important;
+  color: #737e98 !important;
+  font-size: .74rem !important;
+  line-height: 1.3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-view-all.text-btn {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  flex: 0 0 auto !important;
+  min-width: 92px !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 8px 13px !important;
+  border: 1px solid #e5e8f4 !important;
+  border-radius: 12px !important;
+  color: #3156df !important;
+  background: #fff !important;
+  box-shadow: 0 8px 18px rgba(55, 66, 130, .08) !important;
+  font-size: .72rem !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-view-all svg {
+  width: 16px !important;
+  height: 16px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-list {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message {
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  min-height: 100px !important;
+  padding: 14px 16px !important;
+  border: 1px solid #e1e6fb !important;
+  border-radius: 14px !important;
+  background: #f8faff !important;
+  box-shadow: 0 8px 22px rgba(59, 75, 145, .06) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-avatar {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-right: 1px solid #dfe4f4 !important;
+  border-radius: 50% !important;
+  color: #3655d6 !important;
+  background: linear-gradient(145deg, #f3f7ff, #dedaff) !important;
+  box-shadow: 0 8px 18px rgba(73, 76, 185, .12) !important;
+  font-size: .8rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-avatar.unread::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -2px !important;
+  bottom: 2px !important;
+  width: 9px !important;
+  height: 9px !important;
+  border: 2px solid #fff !important;
+  border-radius: 50% !important;
+  background: #2f58e8 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-copy {
+  min-width: 0 !important;
+  padding-left: 12px !important;
+  border-left: 1px solid #e1e5f2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-copy strong {
+  display: block !important;
+  overflow: hidden !important;
+  color: #151d39 !important;
+  font-size: .83rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-copy p {
+  margin: 7px 0 0 !important;
+  overflow: hidden !important;
+  color: #737d95 !important;
+  font-size: .7rem !important;
+  line-height: 1.3 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 10px !important;
+  min-width: 74px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-meta time {
+  color: #3155df !important;
+  font-size: .65rem !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-message-meta span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 24px !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  color: #3455de !important;
+  background: #e8edff !important;
+  font-size: .64rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-caught-up {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 185px !important;
+  padding: 18px 0 30px !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-envelope {
+  display: grid !important;
+  place-items: center !important;
+  width: 76px !important;
+  height: 70px !important;
+  margin-bottom: 8px !important;
+  color: #8097f5 !important;
+  filter: drop-shadow(0 10px 12px rgba(75, 89, 185, .17)) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-envelope svg {
+  width: 72px !important;
+  height: 66px !important;
+  fill: #aabaf8 !important;
+  stroke: #7890ee !important;
+  stroke-width: 1.6 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-envelope rect {
+  fill: #f7f8ff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-caught-up strong {
+  color: #17203d !important;
+  font-size: .93rem !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-caught-up p {
+  margin: 5px 0 0 !important;
+  color: #74809a !important;
+  font-size: .72rem !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-wave {
+  position: absolute !important;
+  z-index: 1 !important;
+  right: -8% !important;
+  bottom: -52px !important;
+  left: -8% !important;
+  height: 86px !important;
+  border-radius: 50% 48% 0 0 !important;
+  background: rgba(119, 104, 242, .08) !important;
+  transform: rotate(-3deg) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-wave::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -8% !important;
+  bottom: 13px !important;
+  left: -8% !important;
+  height: 68px !important;
+  border-radius: 48% 52% 0 0 !important;
+  background: rgba(89, 110, 244, .09) !important;
+  transform: rotate(6deg) !important;
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #dashboardView .dashboard-widget-card.dashboard-inbox-card {
+    min-height: 460px !important;
+    padding: 20px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-inbox-main-icon {
+    flex-basis: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-inbox-heading p {
+    display: none !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-inbox-message {
+    grid-template-columns: 46px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-inbox-message-meta {
+    grid-column: 2 !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+}

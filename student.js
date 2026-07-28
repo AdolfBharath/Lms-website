@@ -4,47 +4,110 @@
   const ADMIN_SESSION_KEY = "jenovateAdminSession";
   const MENTOR_SESSION_KEY = "jenovateMentorSession";
   const getClient = () => window.getSupabaseClient?.();
+  const PAGE_SIZE = 20;
+  const CHAT_PAGE_SIZE = 30;
+  const QUERY_CACHE_TTL = 45_000;
+  const QUERY_CACHE_PREFIX = "jenovate:lms:student:v3:";
+  const SELECTS = {
+    users: "id,name,email,role,username,phone,batch_id,course_ids,coins,streak_count,last_active_date,last_login_reward_date,reward_history,status,deleted_at,created_at,referral,referral_key",
+    courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
+    batches: "id,name,course_id,mentor_id,capacity,enroll_limit,smart_waitlist,status,start_date,end_date,progress,enrolled_count,created_at",
+    userCourses: "id,user_id,student_id,learner_id,course_id,batch_id,created_at,status,deleted_at",
+    progress: "student_id,course_id,completed_lessons,completed_modules,rewarded_modules,quiz_completed,quiz_score,updated_at,quiz_attempts,quiz_failed_attempts,quiz_locked,quiz_rewatch_required,quiz_last_score,quiz_last_total,quiz_best_score,module_quiz_state",
+    shopItems: "id,name,price,image_url,stock,status,deleted_at,created_at",
+    purchases: "id,user_id,item_id,purchased_at",
+    projects: "id,title,description,status,student_id,user_id,batch_id,course_id,type,drive_link,file_url,file_urls,review_notes,feedback,reviewed_at,created_at,updated_at",
+    batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,max_marks,published_at,deleted_at,created_by,created_at",
+    taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,max_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
+    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at,deleted_at",
+    academicActivity: "id,student_id,batch_id,course_id,activity_type,points,max_points,occurred_at,metadata,created_at",
+    chats: "id,batch_id,user_id,message,parent_id,created_at",
+    announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
+    supportTickets: "id,ticket_id,user_id,user_role,category,subject,message,attachment_url,status,priority,created_at,updated_at",
+    supportMessages: "id,ticket_id,sender_id,sender_role,message,attachment_url,is_read,read_at,created_at",
+    supportNotifications: "id,ticket_id,recipient_user_id,recipient_role,title,body,channel,is_read,read_at,created_at"
+  };
 
   const TABLE_SPECS = [
     {
       key: "users",
       table: "users",
-      select: "id,name,email,role,username,phone,batch_id,course_ids,coins,streak_count,last_active_date,created_at,referral,referral_key",
-      limit: 500
+      select: SELECTS.users,
+      fallbackSelect: "id,name,email,role,username,phone,batch_id,course_ids,coins,streak_count,last_active_date,created_at,referral,referral_key",
+      limit: 500,
+      scope: "studentUsers"
     },
-    { key: "courses", table: "courses", select: "*", limit: 200 },
-    { key: "batches", table: "batches", select: "*", limit: 200 },
-    { key: "userCourses", table: "user_courses", select: "*", limit: 1000 },
-    { key: "progress", table: "student_course_progress", select: "*", limit: 1000 },
-    { key: "shopItems", table: "shop_items", select: "*", limit: 100 },
-    { key: "purchases", table: "shop_purchases", select: "*", optional: true, limit: 200 },
-    { key: "studentShopPurchases", table: "student_shop_purchases", select: "*", optional: true, limit: 200 },
-    { key: "projects", table: "projects", select: "*", limit: 500 },
-    { key: "batchTasks", table: "batch_tasks", select: "*", limit: 500 },
-    { key: "taskSubmissions", table: "task_submissions", select: "*", limit: 500 },
-    { key: "quizAttempts", table: "student_quiz_attempts", select: "*", optional: true, limit: 1000 },
-    { key: "chats", table: "batch_chats", select: "*", limit: 200 },
-    { key: "announcements", table: "announcements", select: "*", limit: 100 }
+    { key: "courses", table: "courses", select: SELECTS.courses, limit: 200, scope: "courseCatalog" },
+    { key: "catalogCourses", table: "courses", select: SELECTS.courses, limit: 200, scope: "courseCatalog" },
+    { key: "batches", table: "batches", select: SELECTS.batches, limit: PAGE_SIZE, scope: "studentBatches" },
+    { key: "userCourses", table: "user_courses", select: SELECTS.userCourses, fallbackSelect: "user_id,course_id,created_at,status", limit: 200, scope: "studentUserCourses" },
+    { key: "progress", table: "student_course_progress", select: SELECTS.progress, limit: 200, scope: "studentOnlyRows" },
+    { key: "shopItems", table: "shop_items", select: SELECTS.shopItems, fallbackSelect: "id,name,price,image_url,created_at", limit: PAGE_SIZE },
+    { key: "purchases", table: "shop_purchases", select: SELECTS.purchases, optional: true, limit: 30, scope: "studentPurchaseRows" },
+    { key: "studentShopPurchases", table: "student_shop_purchases", select: SELECTS.purchases, optional: true, limit: 30, scope: "studentPurchaseRows" },
+    { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,user_id,batch_id,course_id,type,file_urls,review_notes,feedback,created_at", limit: 100, scope: "studentProjectRows", order: "created_at.desc" },
+    { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, scope: "studentBatchRows" },
+    { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 200, scope: "studentOnlyRows", order: "submitted_at.desc" },
+    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, optional: true, limit: 200, scope: "studentOnlyRows", order: "submitted_at.desc" },
+    { key: "academicActivity", table: "student_academic_activity", select: SELECTS.academicActivity, optional: true, limit: 300, scope: "studentOnlyRows", order: "occurred_at.desc" },
+    { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "studentBatchRows", order: "created_at.desc" },
+    { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, order: "published_at.desc" },
+    { key: "supportTickets", table: "support_tickets", select: SELECTS.supportTickets, optional: true, limit: 30, scope: "supportOwnerRows", order: "updated_at.desc" },
+    { key: "supportMessages", table: "support_messages", select: SELECTS.supportMessages, optional: true, limit: 120, order: "created_at.desc" },
+    { key: "supportNotifications", table: "support_notifications", select: SELECTS.supportNotifications, optional: true, limit: 30, scope: "supportNotificationRows", order: "created_at.desc" }
   ];
+
+  const DASHBOARD_INITIAL_TABLE_KEYS = new Set([
+    "users",
+    "courses",
+    "batches",
+    "userCourses",
+    "progress",
+    "batchTasks",
+    "taskSubmissions",
+    "quizAttempts",
+    "academicActivity",
+    "announcements"
+  ]);
 
   const state = {
     student: null,
     activeView: "dashboard",
-    courseFilter: "all",
+    courseFilter: "active",
+    courseSearch: "",
+    courseSort: "recent",
+    courseCategory: "all",
+    courseLayout: "grid",
+    courseVisibleCount: 8,
+    catalogCategory: "all",
+    catalogFilter: "all",
+    catalogFiltersOpen: false,
+    taskFilter: "pending",
     query: "",
     selectedCourseId: "",
     selectedLessonKey: "",
     selectedBatchId: "",
+    selectedTaskId: "",
+    questionsFilter: "all",
+    discQuery: "",
+    selectedQuestionId: null,
+    leaderboardCourseId: "",
+    leaderboardSort: "rank",
+    leaderboardSearch: "",
+    academicPeriod: "all",
     replyToChatId: null,
     lessonTrackerCleanup: null,
+    courseAccessTimes: null,
     videoProgressLastSaved: {},
     videoProgressSaveInFlight: {},
     realtimeChannel: null,
     refreshTimer: null,
+    searchTimer: null,
     tableErrors: {},
     data: {
       users: [],
       courses: [],
+      catalogCourses: [],
       batches: [],
       userCourses: [],
       progress: [],
@@ -55,21 +118,48 @@
       batchTasks: [],
       taskSubmissions: [],
       quizAttempts: [],
+      academicActivity: [],
       chats: [],
-      announcements: []
-    }
+      announcements: [],
+      supportTickets: [],
+      supportMessages: [],
+      supportNotifications: [],
+      leaderboard: []
+    },
+    queryCache: new Map(),
+    inFlightRequests: new Map()
   };
+
+  const tableClient = window.JenovatePortalData.createTableClient({
+    applyScopedFilters,
+    cachePrefix: QUERY_CACHE_PREFIX,
+    cacheTtl: QUERY_CACHE_TTL,
+    defaultOrderTables: ["batch_chats", "announcements", "batch_tasks"],
+    getCacheScope: () => [
+      state.student?.id || "",
+      state.student?.batch_id || "",
+      parseIdList(state.student?.course_ids).join("|")
+    ].join(":"),
+    getClient,
+    onFetchError: (spec, error) => {
+      if (!spec.optional) console.error(`Supabase fetch failed for ${spec.table}`, error);
+    },
+    pageSize: PAGE_SIZE,
+    runSpecialQuery: runStudentSpecialQuery,
+    state
+  });
 
   const views = {
     dashboard: document.getElementById("dashboardView"),
+    catalog: document.getElementById("catalogView"),
     courses: document.getElementById("coursesView"),
     learn: document.getElementById("learnView"),
     tasks: document.getElementById("tasksView"),
     batch: document.getElementById("batchView"),
     announcements: document.getElementById("announcementsView"),
     questions: document.getElementById("questionsView"),
+    support: document.getElementById("supportView"),
     shop: document.getElementById("shopView"),
-    rewards: document.getElementById("rewardsView"),
     referral: document.getElementById("referralView"),
     profile: document.getElementById("profileView")
   };
@@ -83,18 +173,25 @@
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
   async function init() {
     wireNavigation();
     wireActions();
+    initializeHistoryNavigation();
+    document.body.dataset.studentView = state.activeView;
 
     if (!getClient()) {
-      showAlert("Supabase library did not load. Check your internet connection and refresh the page.", true);
+      showAlert("Learning data could not load. Check your internet connection and refresh the page.", true);
       return;
     }
 
-    const student = await resolveStudentSession();
+    const cachedStudent = window.JenovateAuth?.readStoredSession?.("student");
+    const student = cachedStudent ? normalizeUser(cachedStudent) : await resolveStudentSession();
     if (!student) {
       if (redirectToActiveSession("student")) return;
       clearStoredSessions();
@@ -111,22 +208,130 @@
     // NOTE: pagehide/beforeunload session clear removed — caused session loss
     // on in-tab navigation. Session is cleared only on explicit logout.
 
+    recordLocalStreakVisit();
+    setupDailyStreakRefresh();
     renderIdentity();
-    console.log("Jenovate LMS: 5-Question Quiz Randomizer (Fisher-Yates) is ACTIVE.");
-    await loadAllData();
+    notifyDailyLoginReward();
+    renderAll();
+    void finishStudentBootstrap(!cachedStudent);
+  }
+
+  async function finishStudentBootstrap(sessionAlreadyVerified) {
+    if (!sessionAlreadyVerified) {
+      const liveStudent = await resolveStudentSession();
+      if (!liveStudent) {
+        clearStoredSessions();
+        window.location.replace("login.html?next=student");
+        return;
+      }
+      state.student = liveStudent;
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(liveStudent));
+      sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(liveStudent));
+      renderIdentity();
+    }
+
+    void syncDailyStreak({ render: true, notify: true });
+    await loadAllData({ initial: true, force: true });
     setupRealtime();
+    window.setTimeout(() => void loadAllData({ silent: true }), 0);
+  }
+
+  function withStudentTimeout(value, timeoutMs, message) {
+    if (window.JenovateAuth?.withTimeout) {
+      return window.JenovateAuth.withTimeout(value, timeoutMs, message);
+    }
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = window.setTimeout(() => reject(new Error(message)), timeoutMs);
+    });
+    return Promise.race([Promise.resolve(value), timeout]).finally(() => window.clearTimeout(timer));
+  }
+
+  async function syncDailyStreak(options = {}) {
+    recordLocalStreakVisit();
+    const client = getClient();
+    if (!client?.rpc || !state.student?.id) return false;
+
+    let response;
+    try {
+      response = await withStudentTimeout(
+        client.rpc("lms_claim_daily_login_reward", { target_user_id: state.student.id }),
+        4_000,
+        "Daily streak sync timed out."
+      );
+    } catch (error) {
+      console.warn("Daily streak sync skipped", error.message || error);
+      return false;
+    }
+    const { data, error } = response;
+    if (error) {
+      console.warn("Daily streak sync failed", friendlySupabaseError(error));
+      return false;
+    }
+
+    const result = Array.isArray(data) ? data[0] : data;
+    if (!result) return false;
+
+    state.student = normalizeUser({
+      ...state.student,
+      coins: Number(result.coins ?? state.student.coins ?? 0),
+      streak_count: Number(result.streak_count ?? state.student.streak_count ?? 0),
+      last_active_date: result.last_active_date || state.student.last_active_date || "",
+      last_login_reward_date: result.last_login_reward_date || state.student.last_login_reward_date || ""
+    });
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student));
+    sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
+
+    if (result.claimed && options.notify === true) {
+      showAlert(`Daily login reward claimed! +${Number(result.reward_amount || 10)} Coins`);
+    }
+    if (options.render === true) {
+      renderIdentity();
+      renderStreakCard();
+    }
+    return true;
+  }
+
+  function setupDailyStreakRefresh() {
+    const scheduleMidnightRefresh = () => {
+      window.clearTimeout(state.streakRolloverTimer);
+      const now = new Date();
+      const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      state.streakRolloverTimer = window.setTimeout(async () => {
+        await syncDailyStreak({ render: true, notify: true });
+        scheduleMidnightRefresh();
+      }, Math.max(1_000, nextDay.getTime() - now.getTime() + 1_000));
+    };
+
+    scheduleMidnightRefresh();
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && !isActiveToday()) {
+        void syncDailyStreak({ render: true, notify: true });
+      }
+    });
   }
 
   function wireNavigation() {
     document.querySelectorAll(".nav-item").forEach((button) => {
       button.addEventListener("click", () => {
+        openLearningPanel();
         setView(button.dataset.view);
         closeMobileMenu();
       });
     });
 
-    document.querySelectorAll("[data-jump]").forEach((button) => {
+    document.querySelectorAll("[data-panel-view]").forEach((button) => {
       button.addEventListener("click", () => {
+        setView(button.dataset.panelView);
+        closeMobileMenu();
+      });
+    });
+
+    on("studentSidePanelClose", "click", closeLearningPanel);
+
+    document.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
         setView(button.dataset.jump);
         closeMobileMenu();
       });
@@ -140,52 +345,254 @@
       if (event.key === "Escape") {
         closeModal();
         closeMobileMenu();
+        closeLearningPanel();
       }
     });
   }
 
   function wireActions() {
-    on("refreshBtn", "click", () => loadAllData());
-    on("reloadTasksBtn", "click", () => loadAllData());
-    on("reloadChatBtn", "click", () => loadAllData());
-    on("reloadAnnouncementsBtn", "click", () => loadAllData());
-    on("homeBtn", "click", () => {
-      closeModal();
-      closeMobileMenu();
-      setView("dashboard");
-      document.querySelector(".student-main")?.scrollTo({ top: 0, behavior: "smooth" });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    on("refreshBtn", "click", () => loadAllData({ force: true }));
+    on("reloadTasksBtn", "click", () => loadAllData({ force: true }));
+    on("reloadChatBtn", "click", () => loadAllData({ force: true }));
+    on("reloadAnnouncementsBtn", "click", () => loadAllData({ force: true }));
+    on("refreshSupportBtn", "click", () => loadAllData({ force: true }));
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("#logoutBtn")) {
+        event.preventDefault();
+        logout();
+      }
     });
-    on("logoutBtn", "click", logout);
-    on("themeToggle", "click", toggleTheme);
     on("studentMenuBtn", "click", openMobileMenu);
     on("studentSidebarScrim", "click", closeMobileMenu);
-    on("globalSearch", "input", (event) => {
-      state.query = event.target.value.trim().toLowerCase();
-      renderActiveView();
+    on("topSearchInput", "input", handleTopSearch);
+    on("courseLibrarySearch", "input", (event) => {
+      state.courseSearch = String(event.target.value || "").trim().toLowerCase();
+      state.courseVisibleCount = 8;
+      renderCourses();
+    });
+    on("courseSortSelect", "change", (event) => {
+      state.courseSort = event.target.value || "recent";
+      state.courseVisibleCount = 8;
+      renderCourses();
+    });
+    on("courseCategoryToggle", "click", () => {
+      const menu = document.getElementById("courseCategoryMenu");
+      const toggle = document.getElementById("courseCategoryToggle");
+      if (!menu || !toggle) return;
+      menu.hidden = !menu.hidden;
+      toggle.setAttribute("aria-expanded", String(!menu.hidden));
+    });
+    document.getElementById("courseCategoryMenu")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-course-category]");
+      if (!button) return;
+      state.courseCategory = button.dataset.courseCategory || "all";
+      state.courseVisibleCount = 8;
+      document.getElementById("courseCategoryMenu").hidden = true;
+      document.getElementById("courseCategoryToggle")?.setAttribute("aria-expanded", "false");
+      renderCourses();
+    });
+    document.querySelector(".course-view-toggle")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-course-layout]");
+      if (!button) return;
+      state.courseLayout = button.dataset.courseLayout || "grid";
+      document.querySelectorAll("[data-course-layout]").forEach((item) => item.classList.toggle("active", item === button));
+      renderCourses();
+    });
+    on("courseLoadMore", "click", () => {
+      state.courseVisibleCount += 8;
+      renderCourses();
+    });
+    on("leaderboardCourseFilter", "change", (event) => {
+      state.leaderboardCourseId = event.target.value;
+      renderDashboardLeaderboard();
+    });
+    on("leaderboardSort", "change", (event) => {
+      state.leaderboardSort = event.target.value;
+      renderDashboardLeaderboard();
+    });
+    on("academicPeriodFilter", "change", (event) => {
+      state.academicPeriod = event.target.value || "all";
+      renderDashboardAssignmentStats(scopedTasks());
+    });
+    on("leaderboardSearch", "input", (event) => {
+      state.leaderboardSearch = event.target.value.trim().toLowerCase();
+      renderDashboardLeaderboard();
+    });
+    document.getElementById("dashboardAssignmentStats")?.addEventListener("click", (event) => {
+      const jump = event.target.closest("[data-jump]");
+      if (!jump) return;
+      setView(jump.dataset.jump);
     });
     on("taskBatchFilter", "change", (event) => {
       state.selectedBatchId = event.target.value;
       renderTasks();
     });
+    on("chatBatchSelect", "change", (event) => {
+      state.selectedBatchId = event.target.value;
+      state.replyToChatId = null;
+      renderBatch();
+      renderAnnouncements();
+    });
     on("chatComposer", "submit", postChatMessage);
     on("questionForm", "submit", submitQuestion);
+
+    // Discussions UI actions
+    on("discAskBtn", "click", () => {
+      document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "false");
+    });
+    on("discAskBtnAlt", "click", () => {
+      document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "false");
+    });
+    on("discAskClose", "click", () => {
+      document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "true");
+    });
+
+    // Close overlay on background click
+    const askOverlay = document.getElementById("discAskOverlay");
+    askOverlay?.addEventListener("click", (event) => {
+      if (event.target === askOverlay) {
+        askOverlay.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // Discussion sidebar filter tabs
+    const filterTabs = document.querySelector(".disc-filter-tabs");
+    filterTabs?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-disc-filter]");
+      if (!button) return;
+      state.questionsFilter = button.dataset.discFilter || "all";
+      renderQuestions();
+    });
+
+    // Question card selection click
+    const questionListEl = document.getElementById("questionList");
+    questionListEl?.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-question-id]");
+      if (!card) return;
+      // Skip click handling if clicking on a button or link inside card
+      if (event.target.closest("button, a, input, select")) return;
+      state.selectedQuestionId = card.dataset.questionId;
+      renderQuestions();
+    });
+
+    // Search input listener
+    on("discSearchInput", "input", (event) => {
+      state.discQuery = event.target.value.trim().toLowerCase();
+      renderQuestions();
+    });
+
+    on("supportTicketForm", "submit", submitSupportTicket);
     on("profileForm", "submit", saveProfile);
     on("passwordForm", "submit", updatePassword);
+
+    // Profile page interactive UI toggles
+    on("profileEditToggleBtn", "click", () => {
+      const inputs = ["profileName", "profileUsername", "profilePhone"].map(id => document.getElementById(id));
+      const isDisabled = inputs[0] ? inputs[0].disabled : true;
+      inputs.forEach(input => { if (input) input.disabled = !isDisabled; });
+      const actions = document.getElementById("profileFormActions");
+      if (actions) actions.style.display = isDisabled ? "flex" : "none";
+      const btnText = document.getElementById("profileEditToggleBtn");
+      if (btnText) btnText.innerHTML = isDisabled ? "Cancel" : `<span class="edit-icon">✎</span> Edit Details`;
+    });
+
+    on("profileCancelBtn", "click", () => {
+      const inputs = ["profileName", "profileUsername", "profilePhone"].map(id => document.getElementById(id));
+      inputs.forEach(input => { if (input) input.disabled = true; });
+      const actions = document.getElementById("profileFormActions");
+      if (actions) actions.style.display = "none";
+      const btnText = document.getElementById("profileEditToggleBtn");
+      if (btnText) btnText.innerHTML = `<span class="edit-icon">✎</span> Edit Details`;
+      renderIdentity();
+    });
+
+    on("passwordToggleBtn", "click", () => {
+      const form = document.getElementById("passwordForm");
+      if (form) {
+        const isHidden = form.style.display === "none";
+        form.style.display = isHidden ? "block" : "none";
+      }
+    });
+
+    on("passwordCancelBtn", "click", () => {
+      const form = document.getElementById("passwordForm");
+      if (form) form.style.display = "none";
+    });
 
     document.getElementById("courseFilterTabs")?.addEventListener("click", (event) => {
       const button = event.target.closest("[data-course-filter]");
       if (!button) return;
       state.courseFilter = button.dataset.courseFilter;
+      state.courseVisibleCount = 8;
       document.querySelectorAll("[data-course-filter]").forEach((tab) => tab.classList.toggle("active", tab === button));
       renderCourses();
     });
 
+    document.getElementById("catalogCoursesGrid")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-catalog-category]");
+      if (button) {
+        state.catalogCategory = button.dataset.catalogCategory || "all";
+        renderCatalog();
+        return;
+      }
+
+      const filterButton = event.target.closest("[data-catalog-filter]");
+      if (filterButton) {
+        state.catalogFilter = filterButton.dataset.catalogFilter || "all";
+        state.catalogFiltersOpen = false;
+        renderCatalog();
+        return;
+      }
+
+      const filterToggle = event.target.closest("[data-catalog-filter-toggle]");
+      if (filterToggle) {
+        state.catalogFiltersOpen = !state.catalogFiltersOpen;
+        renderCatalog();
+      }
+    });
+
     document.addEventListener("click", (event) => {
+      if (!event.target.closest(".course-category-control")) {
+        const categoryMenu = document.getElementById("courseCategoryMenu");
+        if (categoryMenu && !categoryMenu.hidden) {
+          categoryMenu.hidden = true;
+          document.getElementById("courseCategoryToggle")?.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      const reviewCourse = event.target.closest("[data-review-course]");
+      if (reviewCourse) {
+        openCourseReview(reviewCourse.dataset.reviewCourse);
+        return;
+      }
+
       const openCourse = event.target.closest("[data-open-course]");
       if (openCourse) {
         state.selectedCourseId = openCourse.dataset.openCourse;
         state.selectedLessonKey = "";
+        recordCourseAccess(state.selectedCourseId);
+        setView("learn");
+        return;
+      }
+
+      const detailCourse = event.target.closest("[data-course-detail]");
+      if (detailCourse) {
+        openCourseDetailModal(detailCourse.dataset.courseDetail);
+        return;
+      }
+
+      const catalogCard = event.target.closest("[data-catalog-course-card]");
+      if (catalogCard && !event.target.closest("button,a,input,select,textarea,label")) {
+        openCourseDetailModal(catalogCard.dataset.catalogCourseCard);
+        return;
+      }
+
+      const courseCard = event.target.closest("[data-course-card-open]");
+      if (courseCard && !event.target.closest("button,a,input,select,textarea,label")) {
+        state.selectedCourseId = courseCard.dataset.courseCardOpen;
+        state.selectedLessonKey = "";
+        recordCourseAccess(state.selectedCourseId);
         setView("learn");
         return;
       }
@@ -209,6 +616,21 @@
         return;
       }
 
+      const taskFilter = event.target.closest("[data-task-filter]");
+      if (taskFilter) {
+        state.taskFilter = taskFilter.dataset.taskFilter || "pending";
+        state.selectedTaskId = "";
+        renderTasks();
+        return;
+      }
+
+      const taskCard = event.target.closest("[data-select-task]");
+      if (taskCard) {
+        state.selectedTaskId = taskCard.dataset.selectTask;
+        renderTasks();
+        return;
+      }
+
       const quizButton = event.target.closest("[data-start-quiz]");
       if (quizButton) {
         openStudentQuiz(quizButton.dataset.courseId, Number(quizButton.dataset.moduleIndex || 0));
@@ -218,31 +640,37 @@
       const replyButton = event.target.closest("[data-reply-chat]");
       if (replyButton) {
         prepareChatReply(replyButton.dataset.replyChat);
+        return;
+      }
+
+      const focusChatButton = event.target.closest("[data-focus-chat]");
+      if (focusChatButton) {
+        document.getElementById("chatMessage")?.focus();
+        return;
+      }
+
+      const cancelReplyButton = event.target.closest("[data-cancel-chat-reply]");
+      if (cancelReplyButton) {
+        state.replyToChatId = null;
+        renderChatReplyBar();
+        const chatInput = document.getElementById("chatMessage");
+        if (chatInput) chatInput.placeholder = "Write a message to your batch...";
       }
     });
   }
 
   async function resolveStudentSession() {
-    return readStoredRoleSession("student");
-  }
-
-  function readStoredRoleSession(expectedRole) {
-    for (const key of [SESSION_KEY, APP_SESSION_KEY]) {
-      try {
-        const profile = JSON.parse(sessionStorage.getItem(key) || "null");
-        const role = String(profile?.role || "").toLowerCase();
-        if (profile?.email && role === expectedRole) {
-          return normalizeUser({ ...profile, role });
-        }
-      } catch (error) {
-        sessionStorage.removeItem(key);
-      }
+    try {
+      const profile = await window.JenovateAuth?.requireRole?.("student");
+      if (profile) return normalizeUser(profile);
+    } catch (error) {
+      console.warn("Student auth check failed", error);
     }
     return null;
   }
 
-  function enforceLiveSession() {
-    if (!readStoredRoleSession("student")) {
+  async function enforceLiveSession() {
+    if (!(await resolveStudentSession())) {
       if (redirectToActiveSession("student")) return;
       window.location.replace("login.html?next=student");
     }
@@ -252,82 +680,249 @@
     const profile = window.JenovateSessionRouter?.activeSession?.();
     const target = window.JenovateSessionRouter?.routeFor?.(profile);
     if (!profile?.role || profile.role === expectedRole || !target) return false;
-    window.location.replace(target);
+    window.location.replace(`unauthorized.html?expected=${encodeURIComponent(expectedRole)}&role=${encodeURIComponent(profile.role)}`);
     return true;
   }
 
   async function loadAllData(options = {}) {
     const silent = options.silent === true;
+    if (options.force === true) clearQueryCache();
     setLoading(!silent);
-    setSyncStatus("Connecting to Supabase...");
+    setSyncStatus("");
 
     try {
-      const results = await Promise.all(TABLE_SPECS.map(fetchTableSafe));
+      const requestedSpecs = options.initial
+        ? TABLE_SPECS.filter((spec) => DASHBOARD_INITIAL_TABLE_KEYS.has(spec.key))
+        : TABLE_SPECS;
+      const results = await Promise.all(requestedSpecs.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
+      await window.resolveSupabaseAssetsDeep?.(rows);
       const failed = results.filter((result) => result.error && !result.optional);
 
       state.tableErrors = Object.fromEntries(failed.map((result) => [result.table, result.error.message || "Unable to fetch"]));
-      state.data.users = rows.users.map(normalizeUser);
-      state.data.courses = rows.courses;
-      state.data.batches = rows.batches;
-      state.data.userCourses = rows.userCourses.map(normalizeEnrollment);
-      state.data.progress = rows.progress;
-      state.data.shopItems = rows.shopItems;
-      state.data.studentShopPurchases = rows.studentShopPurchases;
-      state.data.purchases = mergePurchaseRows(rows.purchases, rows.studentShopPurchases);
-      state.data.projects = rows.projects;
-      state.data.batchTasks = rows.batchTasks;
-      state.data.taskSubmissions = rows.taskSubmissions;
-      state.data.quizAttempts = rows.quizAttempts || [];
-      state.data.chats = rows.chats;
-      state.data.announcements = rows.announcements;
+      state.data.users = (rows.users || state.data.users).map(normalizeUser);
+      state.data.courses = (rows.courses || state.data.courses).map(normalizeCourse);
+      state.data.catalogCourses = (rows.catalogCourses || state.data.catalogCourses).map(normalizeCourse);
+      state.data.batches = rows.batches || state.data.batches;
+      state.data.userCourses = (rows.userCourses || state.data.userCourses).map(normalizeEnrollment);
+      state.data.progress = rows.progress || state.data.progress;
+      state.data.shopItems = rows.shopItems || state.data.shopItems;
+      state.data.studentShopPurchases = rows.studentShopPurchases || state.data.studentShopPurchases;
+      state.data.purchases = mergePurchaseRows(rows.purchases || state.data.purchases, rows.studentShopPurchases || state.data.studentShopPurchases);
+      state.data.projects = rows.projects || state.data.projects;
+      state.data.batchTasks = rows.batchTasks || state.data.batchTasks;
+      state.data.taskSubmissions = rows.taskSubmissions || state.data.taskSubmissions;
+      state.data.quizAttempts = rows.quizAttempts || state.data.quizAttempts || [];
+      state.data.academicActivity = rows.academicActivity || state.data.academicActivity || [];
+      state.data.chats = rows.chats || state.data.chats;
+      state.data.announcements = rows.announcements || state.data.announcements;
+      state.data.supportTickets = rows.supportTickets || state.data.supportTickets || [];
+      state.data.supportMessages = rows.supportMessages || state.data.supportMessages || [];
+      state.data.supportNotifications = rows.supportNotifications || state.data.supportNotifications || [];
+      notifyUnreadSupportReplies();
 
       const refreshedProfile = state.data.users.find((user) => sameId(user.id, state.student.id));
       if (refreshedProfile) {
         state.student = normalizeUser({ ...state.student, ...refreshedProfile });
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student));
         sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
+        window.renderStudentReferral?.(state.student);
       }
 
-      await syncDailyStreak({ silent: true });
+      if (!options.initial) {
+        await Promise.all([loadSupplementalCourses(), loadSupplementalBatches()]);
+        await loadSupplementalBatchRows();
+      }
+
       ensureSelections();
+      await loadLeaderboardData();
       renderAll();
 
       const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
       if (failed.length) {
-        const failedTables = failed.map((item) => item.table).join(", ");
-        showAlert(`Some data couldn't load (${failedTables}). Refresh to try again.`, true);
-        setSyncStatus(`Synced with warnings at ${stamp}`);
+        console.warn("Student background data loaded with warnings", failed.map((item) => ({ table: item.table, error: friendlySupabaseError(item.error) })));
+        setSyncStatus("");
       } else {
-        if (!silent) showAlert("Student data synced from Supabase.");
-        setSyncStatus(`Live Supabase data synced ${stamp}`);
+        setSyncStatus("");
       }
     } catch (error) {
       const errorMsg = error.message || "Unable to load student data.";
-      showAlert(`${errorMsg} Check your connection and try refreshing.`, true);
-      setSyncStatus("Sync needs attention");
+      console.error("Student background data sync failed", errorMsg);
+      setSyncStatus("");
     } finally {
       setLoading(false);
     }
   }
 
-  async function fetchTableSafe(spec) {
+  async function loadSupplementalBatchRows() {
+    const batchIds = scopedBatches().map((batch) => String(batch.id)).filter(Boolean);
+    const missingBatchIds = batchIds.filter((id) => !sameId(id, state.student?.batch_id));
+    if (!missingBatchIds.length) return;
+
+    const client = getClient();
     try {
-      const rows = await fetchTable(spec.table, spec.select, spec.limit);
-      return { ...spec, rows, error: null };
+      const [chatResult, taskResult, userResult] = await Promise.all([
+        client.from("batch_chats").select(SELECTS.chats).in("batch_id", missingBatchIds).order("created_at", { ascending: false }).limit(CHAT_PAGE_SIZE),
+        client.from("batch_tasks").select(SELECTS.batchTasks).in("batch_id", missingBatchIds).order("created_at", { ascending: false }).limit(PAGE_SIZE),
+        client.from("users").select(SELECTS.users).in("batch_id", missingBatchIds).limit(PAGE_SIZE)
+      ]);
+      if (!chatResult.error) state.data.chats = mergeRowsById(state.data.chats, chatResult.data || []);
+      if (!taskResult.error) state.data.batchTasks = mergeRowsById(state.data.batchTasks, taskResult.data || []);
+      if (!userResult.error) state.data.users = mergeRowsById(state.data.users, (userResult.data || []).map(normalizeUser));
     } catch (error) {
-      if (!spec.optional) {
-        console.error(`Supabase fetch failed for ${spec.table}`, error);
-      }
-      return { ...spec, rows: [], error };
+      console.warn("Unable to load supplemental batch rows", error);
     }
   }
 
-  async function fetchTable(table, select, limit = 500) {
-    const supabaseClient = getClient();
-    const { data, error } = await supabaseClient.from(table).select(select).limit(limit);
-    if (error) throw error;
-    return data || [];
+  async function loadSupplementalBatches() {
+    const courseIds = Array.from(studentCourseIds()).map(String).filter(Boolean);
+    if (!courseIds.length) return;
+    try {
+      const { data, error } = await getClient()
+        .from("batches")
+        .select(SELECTS.batches)
+        .in("course_id", courseIds)
+        .neq("status", "archived")
+        .limit(PAGE_SIZE);
+      if (!error) state.data.batches = mergeRowsById(state.data.batches, data || []);
+    } catch (error) {
+      console.warn("Unable to load supplemental batches", error);
+    }
+  }
+
+  function mergeRowsById(existing = [], incoming = []) {
+    const rows = new Map();
+    [...existing, ...incoming].forEach((row) => {
+      const key = String(row?.id || row?.task_id || row?.created_at || Math.random());
+      rows.set(key, row);
+    });
+    return Array.from(rows.values());
+  }
+
+  async function fetchTableSafe(spec, options = {}) {
+    return tableClient.fetchTableSafe(spec, {
+      ...options,
+      timeoutMs: 8_000,
+      withTimeout: withStudentTimeout
+    });
+  }
+
+  function isMissingColumnError(error) {
+    return window.JenovatePortalData.isMissingColumnError(error);
+  }
+
+  async function fetchTable(spec, options = {}) {
+    return tableClient.fetchTable(spec, options);
+  }
+
+  async function runSupabaseQuery(supabaseClient, spec, limit) {
+    return tableClient.runSupabaseQuery(supabaseClient, spec, limit);
+  }
+
+  async function runStudentSpecialQuery(supabaseClient, spec, limit) {
+    if (spec.scope === "studentUsers") {
+      const [profileResult, directoryResult] = await Promise.all([
+        supabaseClient.from("users").select(spec.select).eq("id", state.student.id).maybeSingle(),
+        supabaseClient.rpc("lms_student_directory")
+      ]);
+      const profileRows = profileResult.error
+        ? [state.student].filter(Boolean)
+        : (profileResult.data ? [profileResult.data] : [state.student].filter(Boolean));
+      const directoryRows = directoryResult.error ? [] : (directoryResult.data || []);
+      if (directoryResult.error) {
+        console.warn("Student directory is unavailable; showing the signed-in student profile only.", directoryResult.error);
+      }
+      if (profileResult.error && !profileRows.length) throw profileResult.error;
+      return mergeRowsById(profileRows, directoryRows).slice(0, limit);
+    }
+    return null;
+  }
+
+  function applyScopedFiltersToRows(rows, spec) {
+    if (spec.scope !== "studentUsers") return rows;
+    const studentId = String(state.student?.id || "");
+    const batchId = String(state.student?.batch_id || "");
+    return rows.filter((user) => (
+      String(user.id) === studentId
+      || (batchId && String(user.batch_id || "") === batchId)
+      || String(user.role || "").toLowerCase() === "mentor"
+    ));
+  }
+
+  function applyScopedFilters(query, spec) {
+    const studentId = state.student?.id;
+    const batchId = state.student?.batch_id;
+    const courseIds = parseIdList(state.student?.course_ids).map(String);
+    switch (spec.scope) {
+      case "studentOnlyRows":
+        return studentId ? query.eq("student_id", studentId) : query;
+      case "studentUserCourses": {
+        if (!studentId) return query;
+        const selectable = String(spec.select || "");
+        const clauses = ["user_id.eq." + studentId];
+        if (selectable.includes("student_id")) clauses.push("student_id.eq." + studentId);
+        if (selectable.includes("learner_id")) clauses.push("learner_id.eq." + studentId);
+        return query.or(clauses.join(","));
+      }
+      case "studentPurchaseRows":
+        return studentId ? query.eq("user_id", studentId) : query;
+      case "studentProjectRows":
+        return studentId ? query.eq("student_id", studentId) : query;
+      case "studentBatchRows":
+        return batchId ? query.eq("batch_id", batchId) : query;
+      case "supportOwnerRows":
+        return studentId ? query.eq("user_id", studentId) : query;
+      case "supportMessageRows": {
+        const ticketIds = state.data.supportTickets.map((ticket) => String(ticket.id || ticket.ticket_id)).filter(Boolean);
+        return ticketIds.length ? query.in("ticket_id", ticketIds) : query.eq("ticket_id", "00000000-0000-0000-0000-000000000000");
+      }
+      case "supportNotificationRows":
+        return studentId ? query.eq("recipient_user_id", studentId) : query;
+      case "studentBatches":
+        if (batchId && courseIds.length) return query.or(`id.eq.${batchId},course_id.in.(${courseIds.join(",")})`);
+        if (courseIds.length) return query.in("course_id", courseIds);
+        return batchId ? query.eq("id", batchId) : query;
+      case "studentCourses":
+        return courseIds.length ? query.in("id", courseIds) : query.in("status", ["Published", "published", "Active", "active"]);
+      case "courseCatalog":
+        return query;
+      case "studentUsers":
+        return batchId
+          ? query.or(`id.eq.${studentId},batch_id.eq.${batchId},role.eq.mentor`)
+          : studentId ? query.eq("id", studentId) : query;
+      case "studentAnnouncementRows": {
+        const clauses = ["audience.in.(all,students)"];
+        if (batchId) clauses.push(`batch_id.eq.${batchId}`);
+        if (courseIds.length) clauses.push(`course_id.in.(${courseIds.join(",")})`);
+        return query.or(clauses.join(","));
+      }
+      default:
+        return query;
+    }
+  }
+
+  function normalizeLimit(limit = PAGE_SIZE) {
+    return tableClient.normalizeLimit(limit);
+  }
+
+  function queryCacheKey(spec, limit) {
+    return tableClient.queryCacheKey(spec, limit);
+  }
+
+  function readCachedRows(cacheKey) {
+    return tableClient.readCachedRows(cacheKey);
+  }
+
+  function writeCachedRows(cacheKey, rows) {
+    return tableClient.writeCachedRows(cacheKey, rows);
+  }
+
+  function revalidateTable(spec, limit, cacheKey) {
+    return tableClient.revalidateTable(spec, limit, cacheKey);
+  }
+
+  function clearQueryCache() {
+    return tableClient.clearQueryCache();
   }
 
   function mergePurchaseRows(...sources) {
@@ -348,22 +943,7 @@
     const supabaseClient = getClient();
     if (!supabaseClient?.channel || state.realtimeChannel) return;
 
-    const liveTables = [
-      "users",
-      "courses",
-      "batches",
-      "user_courses",
-      "student_course_progress",
-      "shop_items",
-      "shop_purchases",
-      "student_shop_purchases",
-      "projects",
-      "batch_tasks",
-      "task_submissions",
-      "student_quiz_attempts",
-      "batch_chats",
-      "announcements"
-    ];
+    const liveTables = ["projects", "batch_chats", "announcements", "support_tickets", "support_messages", "support_notifications"];
 
     const channel = supabaseClient.channel("student-lms-realtime");
     liveTables.forEach((table) => {
@@ -371,33 +951,42 @@
     });
 
     channel.subscribe((status) => {
-      if (status === "SUBSCRIBED") {
-        setSyncStatus("Realtime connected");
-      } else if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
-        setSyncStatus("Realtime reconnecting");
+      if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
+        console.warn("Student realtime status", status);
       }
     });
 
     state.realtimeChannel = channel;
+    window.addEventListener("pagehide", cleanupRealtime, { once: true });
+    window.addEventListener("beforeunload", cleanupRealtime, { once: true });
   }
 
   function queueRealtimeRefresh(table) {
-    setSyncStatus(`Live update from ${formatTableName(table)}`);
+    setSyncStatus("");
     window.clearTimeout(state.refreshTimer);
-    state.refreshTimer = window.setTimeout(() => loadAllData({ silent: true }), 650);
+    state.refreshTimer = window.setTimeout(() => loadAllData({ silent: true, force: true }), 900);
+  }
+
+  async function cleanupRealtime() {
+    window.clearTimeout(state.refreshTimer);
+    if (state.realtimeChannel && getClient()?.removeChannel) {
+      await getClient().removeChannel(state.realtimeChannel);
+    }
+    state.realtimeChannel = null;
   }
 
   function renderAll() {
     renderIdentity();
     renderDashboard();
+    renderCatalog();
     renderCourses();
     renderLearn();
     renderTasks();
     renderBatch();
     renderAnnouncements();
     renderQuestions();
+    renderSupport();
     renderShop();
-    renderRewards();
     renderReferral();
     renderProfile();
   }
@@ -405,18 +994,27 @@
   function renderActiveView() {
     const renderers = {
       dashboard: renderDashboard,
+      catalog: renderCatalog,
       courses: renderCourses,
       learn: renderLearn,
       tasks: renderTasks,
       batch: renderBatch,
       announcements: renderAnnouncements,
       questions: renderQuestions,
+      support: renderSupport,
       shop: renderShop,
-      rewards: renderRewards,
       referral: renderReferral,
       profile: renderProfile
     };
-    renderers[state.activeView]?.();
+    try {
+      renderers[state.activeView]?.();
+    } catch (error) {
+      console.error(`Unable to render ${state.activeView} view`, error);
+      if (state.activeView === "learn") {
+        renderLearnFallback(error);
+      }
+      showAlert("This page could not render completely. Refresh data and try again.", true);
+    }
   }
 
   function renderIdentity() {
@@ -426,72 +1024,1038 @@
     setText("sidebarStudentName", student.name || "Student");
     setText("sidebarStudentEmail", student.email || "");
     setText("sidebarStudentAvatar", initials);
+    setText("panelStudentName", student.name || firstName(student.email || "Student"));
     setText("topbarStudentAvatar", initials);
+    setText("topbarStudentName", firstName(student.name || student.email || "Student"));
+    setText("sidebarBatchName", `Batch: ${currentBatch()?.name || "Alpha-2024"}`);
     setText("coinBalance", formatNumber(student.coins));
     setText("shopCoinBalance", formatNumber(student.coins));
     renderStreakCard();
     setValue("profileName", student.name || "");
     setValue("profileUsername", student.username || "");
     setValue("profilePhone", student.phone || "");
+    setValue("profileEmail", student.email || "");
   }
 
   function renderDashboard() {
     const courses = filteredCourses(enrolledCourses());
+    const activeDashboardCourses = courses.filter((course) => !isArchivedCourse(course) && courseProgress(course).percent < 100);
     const batches = scopedBatches();
     const tasks = scopedTasks();
     const pendingTasks = tasks.filter((task) => !submissionForTask(task.id));
     const purchases = state.data.purchases.filter((purchase) => sameId(purchase.user_id, state.student.id));
-    const avgProgress = averageCourseProgress(courses);
     const primaryBatch = currentBatch();
+    const overallProgress = averageCourseProgress(courses);
+    const completedCourses = courses.filter((course) => courseProgress(course).percent >= 100).length;
+    const completionRate = courses.length ? Math.round((completedCourses / courses.length) * 100) : 0;
+    const recentCourses = recentDashboardCourses(activeDashboardCourses);
+    const activeCourse = recentCourses[0] || preferredLearningCourse(activeDashboardCourses) || activeDashboardCourses[0] || null;
+    const session = dashboardSession();
 
-    setText("heroBatchName", primaryBatch ? primaryBatch.name : "Your learning workspace");
-    setText("heroGreeting", `Welcome back, ${state.student.name || "Student"}.`);
-    setText("heroSummary", courses.length
-      ? `You have ${courses.length} course${courses.length === 1 ? "" : "s"} active and ${pendingTasks.length} task${pendingTasks.length === 1 ? "" : "s"} waiting.`
-      : "Your courses will appear here as soon as admin enrolls you.");
+    // Set time-of-day theme attribute on hero card
+    const heroCard = document.querySelector("#dashboardView .dashboard-hero-card");
+    if (heroCard) heroCard.setAttribute("data-session", session.type);
+
+    setText("sidebarBatchName", `Batch: ${primaryBatch?.name || "Alpha-2024"}`);
+    setText("panelBatchName", primaryBatch?.name || "Batch");
+    setText("panelCourseCount", String(enrolledCourses().length));
+    setText("heroBatchName", primaryBatch ? `Welcome back, ${primaryBatch.name}` : "Welcome back");
+
+    // Update session pill icon and text
+    const heroSessionIconEl = document.getElementById("heroSessionIcon");
+    if (heroSessionIconEl) heroSessionIconEl.textContent = session.icon;
+    const heroSessionTextEl = document.getElementById("heroSessionText");
+    if (heroSessionTextEl) heroSessionTextEl.textContent = session.label;
+    const heroSessionArtwork = document.getElementById("heroSessionArtwork");
+    if (heroSessionArtwork && heroSessionArtwork.getAttribute("src") !== session.artwork) {
+      heroSessionArtwork.setAttribute("src", session.artwork);
+    }
+
+    // Update hero greeting with name and wave emoji inline
+    const heroGreeting = document.getElementById("heroGreeting");
+    if (heroGreeting) {
+      const studentFirstName = firstName(state.student.name || state.student.email || "ajay");
+      heroGreeting.innerHTML = `${escapeHtml(session.greeting)}, <span class="hero-greeting-person"><span class="hero-name">${escapeHtml(studentFirstName)}</span>! <span class="hero-wave">${escapeHtml(session.accent)}</span></span>`;
+    }
+
+    // Keep the welcome message motivational without exposing a course fallback.
+    const heroSummaryEl = document.getElementById("heroSummary");
+    if (heroSummaryEl) {
+      heroSummaryEl.textContent = session.summary(overallProgress);
+    }
+
+    setText("heroSessionNoteTitle", session.noteTitle);
+    setText("heroSessionNoteText", session.noteText);
     setText("metricCourses", courses.length);
+    setText("metricCompletedCourses", completedCourses);
+    setText("dashboardCompletionRate", `${completionRate}% rate`);
     setText("metricTasks", pendingTasks.length);
     setText("metricTasksMeta", pendingTasks.length === 1 ? "pending submission" : "pending submissions");
     setText("metricStreak", currentStreak());
     setText("metricStreakMeta", isActiveToday() ? "active today" : "start today to save it");
     setText("metricRewards", purchases.length);
-    setText("overallProgressLabel", `${avgProgress}%`);
-    setText("overallProgressMeta", courses.length ? `${courses.length} active course${courses.length === 1 ? "" : "s"}` : "No progress recorded yet");
-    setProgress("overallProgressBar", avgProgress);
+    setStyleWidth("dashboardCourseMetricBar", overallProgress);
+    renderDashboardActiveCourse(activeCourse);
+    renderDashboardQuizMetric();
+    renderDashboardCourseOverview(recentCourses);
     renderStreakCard();
+    renderDashboardLeaderboard();
+    renderDashboardAssignmentStats(tasks);
+    renderDashboardDeadlines(tasks.slice(0, 3));
 
-    renderCourseCards("dashboardCourses", courses.slice(0, 3), { compact: true });
-    renderCompactTasks("dashboardTasks", tasks.slice(0, 4));
-    renderCompactChats("dashboardChats", scopedChats().slice(-4).reverse());
-    renderCompactAnnouncements("dashboardAnnouncements", scopedAnnouncements().slice(0, 4));
-    renderDashboardAchievements();
+    renderRailTasks(pendingTasks.slice(0, 4));
+    renderRailAnnouncements(scopedAnnouncements().slice(0, 3));
+  }
+
+  async function loadSupplementalCourses() {
+    const ids = new Set(Array.from(studentCourseIds()).map(String).filter(Boolean));
+    state.data.batches.forEach((batch) => {
+      if (batch?.course_id) ids.add(String(batch.course_id));
+    });
+    const missingIds = Array.from(ids).filter((id) => !state.data.courses.some((course) => sameId(course.id, id))
+      && !state.data.catalogCourses.some((course) => sameId(course.id, id)));
+    if (!missingIds.length) return;
+    try {
+      const { data, error } = await getClient()
+        .from("courses")
+        .select(SELECTS.courses)
+        .in("id", missingIds)
+        .limit(Math.max(missingIds.length, PAGE_SIZE));
+      if (!error) {
+        const rows = (data || []).map(normalizeCourse);
+        state.data.courses = mergeRowsById(state.data.courses, rows);
+        state.data.catalogCourses = mergeRowsById(state.data.catalogCourses, rows);
+      }
+    } catch (error) {
+      console.warn("Unable to load supplemental courses", error);
+    }
+  }
+
+  function dashboardGreeting() {
+    return dashboardSession().greeting;
+  }
+
+  function dashboardSession() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      return {
+        type: "morning",
+        artwork: "assets/student-sessions/morning.webp",
+        label: "MORNING SESSION",
+        greeting: "Good Morning",
+        accent: "☀️",
+        icon: "☀️",
+        noteTitle: "Fresh start",
+        noteText: "Begin with one lesson.",
+        summary: () => "A fresh start is a chance to learn something meaningful today."
+      };
+    }
+    if (hour >= 12 && hour < 17) {
+      return {
+        type: "afternoon",
+        artwork: "assets/student-sessions/afternoon.webp",
+        label: "AFTERNOON SESSION",
+        greeting: "Good Afternoon",
+        accent: "✨",
+        icon: "🌤️",
+        noteTitle: "Keep moving",
+        noteText: "Your progress is building.",
+        summary: () => "Keep your momentum going and turn today's effort into progress."
+      };
+    }
+    if (hour >= 17 && hour < 22) {
+      return {
+        type: "evening",
+        artwork: "assets/student-sessions/evening.webp",
+        label: "EVENING SESSION",
+        greeting: "Good Evening",
+        accent: "👋",
+        icon: "🌙",
+        noteTitle: "Keep it up!",
+        noteText: "You're doing great today.",
+        summary: () => "The best time for learning is now. Let's keep building your knowledge and confidence."
+      };
+    }
+    return {
+      type: "night",
+      artwork: "assets/student-sessions/night.webp",
+      label: "LATE NIGHT FOCUS",
+      greeting: "Good Night",
+      accent: "🌙",
+      icon: "🌌",
+      noteTitle: "Easy pace",
+      noteText: "A short session is enough.",
+      summary: () => "Quiet hours are perfect for one focused step forward."
+    };
+  }
+
+  function renderDashboardActiveCourse(course) {
+    const titleTarget = document.getElementById("dashboardActiveCourseTitle");
+    if (!titleTarget) return;
+    if (!course) {
+      setText("dashboardActiveCourseTitle", "No active course yet");
+      setText("dashboardActiveCourseInitial", "J");
+      setText("dashboardActiveCourseChapter", "Enrollment pending");
+      setText("dashboardActiveCoursePercent", "0%");
+      setText("dashboardActiveCourseTime", "Your active course will appear here after enrollment.");
+      setStyleWidth("dashboardActiveCourseBar", 0);
+      return;
+    }
+    const progress = courseProgress(course);
+    const modules = parseModules(course.modules);
+    const currentModule = modules[Math.max(0, Math.min(modules.length - 1, Math.floor((progress.percent / 100) * Math.max(modules.length, 1))))];
+    setText("dashboardActiveCourseTitle", course.title || "Active course");
+    setText("dashboardActiveCourseInitial", initialsFor(course.title || "J"));
+    setText("dashboardActiveCourseChapter", currentModule?.title ? `Chapter: ${currentModule.title}` : `${modules.length || 1} learning modules`);
+    setText("dashboardActiveCoursePercent", `${progress.percent}%`);
+    setText("dashboardActiveCourseTime", progress.percent ? "Resume from your last saved module" : "Start your first module today");
+    setStyleWidth("dashboardActiveCourseBar", progress.percent);
+  }
+
+  function renderDashboardQuizMetric() {
+    const attempts = state.data.quizAttempts.filter((attempt) => sameId(attempt.student_id || attempt.user_id, state.student.id));
+    const scored = attempts
+      .map((attempt) => {
+        const score = Number(attempt.score || attempt.quiz_score || 0);
+        const total = Number(attempt.max_score || attempt.total || 0);
+        return total ? Math.round((score / total) * 100) : Number(attempt.quiz_score || 0);
+      })
+      .filter((value) => Number.isFinite(value) && value >= 0);
+    const average = scored.length ? Math.round(scored.reduce((sum, value) => sum + value, 0) / scored.length) : 0;
+    setText("dashboardAvgQuizScore", `${average}%`);
+    setText("dashboardQuizMeta", scored.length ? "+4% from last week" : "No quiz attempts yet");
+  }
+
+  function renderDashboardResume(course) {
+    const target = document.getElementById("dashboardResumeCard");
+    if (!target) return;
+    if (!course) {
+      target.innerHTML = emptyState("No active course", "Your current course will appear here after enrollment.");
+      return;
+    }
+    const progress = courseProgress(course);
+    const modules = parseModules(course.modules);
+    target.innerHTML = `
+      <img src="${escapeAttr(courseDisplayImage(course, 2))}" alt="">
+      <div class="dashboard-resume-copy">
+        <div><span>Most Recent</span><small>Module ${Math.max(1, Math.min(modules.length || 1, Math.ceil((progress.percent || 1) / Math.max(100 / Math.max(modules.length || 1, 1), 1))))} of ${Math.max(modules.length, 1)}</small></div>
+        <h3>${escapeHtml(course.title || "Current Course")}</h3>
+        <p>${escapeHtml(truncate(course.description || "Master the art of creating seamless user experiences through consistent design.", 92))}</p>
+        <div class="dashboard-resume-progress"><span>Progress</span><b>${progress.percent}%</b></div>
+        <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
+        <button class="primary-btn" type="button" data-open-course="${escapeAttr(course.id)}">Resume <span aria-hidden="true">›</span></button>
+      </div>
+    `;
+  }
+
+  function renderDashboardCourseOverview(courses) {
+    const target = document.getElementById("dashboardCourseOverview");
+    if (!target) return;
+    const overviewCourses = courses.slice(0, 2);
+    target.innerHTML = overviewCourses.length ? overviewCourses.map((course, index) => {
+      const progress = courseProgress(course);
+      const modules = parseModules(course.modules);
+      const lessons = flattenCourseLessons(course, modules);
+      const statusLabel = progress.percent >= 100 ? "Completed" : progress.percent > 0 ? "In Progress" : "Ready to Start";
+      const statusTone = progress.percent >= 100 ? "completed" : progress.percent > 0 ? "in-progress" : "ready";
+      const actionLabel = progress.percent >= 100 ? "Review Course" : progress.percent > 0 ? "Continue Learning" : "Start Learning";
+      const lessonLabel = `${lessons.length || modules.length || 0} ${lessons.length === 1 ? "Lesson" : "Lessons"}`;
+      const durationSeconds = lessonDurationSeconds({ duration: course.duration })
+        || lessons.reduce((sum, item) => sum + lessonDurationSeconds(item.lesson), 0);
+      const remainingSeconds = Math.max(0, Math.round(durationSeconds * (1 - (progress.percent / 100))));
+      const timeLabel = remainingSeconds ? compactCourseDuration(remainingSeconds) : progress.percent >= 100 ? "Completed" : "Self paced";
+      return `
+        <article class="dashboard-overview-course dashboard-reference-course" data-open-course="${escapeAttr(course.id)}">
+          <div class="dashboard-reference-course-media">
+            <img src="${escapeAttr(courseDisplayImage(course, index + 5))}" alt="${escapeAttr(course.title || "Course")}">
+            <span class="dashboard-reference-course-status ${statusTone}"><i></i>${statusLabel}</span>
+            <span class="dashboard-reference-course-progress" style="--course-progress:${progress.percent * 3.6}deg"><b>${progress.percent}%</b></span>
+          </div>
+          <div class="dashboard-reference-course-body">
+            <small class="dashboard-reference-course-kicker">ASSIGNED BATCH</small>
+            <h3>${escapeHtml(course.title || "Course")}</h3>
+            <p>${escapeHtml(truncate(course.description || "Build practical skills through guided lessons and hands-on learning.", 96))}</p>
+            <div class="dashboard-reference-course-footer">
+              <div class="dashboard-reference-course-meta">
+                <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a3 3 0 0 1 3 3v14a3 3 0 0 0-3-3H4V5.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H14v17a3 3 0 0 1 3-3h3V5.5Z"/></svg>${escapeHtml(lessonLabel)}</span>
+                <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${escapeHtml(timeLabel)}</span>
+              </div>
+              <button class="primary-btn dashboard-reference-course-action" type="button" data-open-course="${escapeAttr(course.id)}">
+                ${escapeHtml(actionLabel)}
+                <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("") : emptyState("No courses yet", "Your enrolled courses will appear here.");
+  }
+
+  function compactCourseDuration(seconds) {
+    const totalMinutes = Math.max(1, Math.ceil(Number(seconds || 0) / 60));
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (!hours) return `${minutes}m left`;
+    return `${hours}h${minutes ? ` ${minutes}m` : ""} left`;
+  }
+
+  async function loadLeaderboardData() {
+    try {
+      const { data, error } = await getClient().rpc("lms_student_leaderboard");
+      if (error) throw error;
+      state.data.leaderboard = (data || []).map(normalizeLeaderboardRow);
+    } catch (error) {
+      console.warn("Unable to load the shared leaderboard; using verified personal metrics.", error);
+      state.data.leaderboard = buildPersonalLeaderboardRows();
+    }
+  }
+
+  function normalizeLeaderboardRow(row) {
+    return {
+      ...row,
+      user_id: String(row?.user_id || ""),
+      course_id: String(row?.course_id || ""),
+      progress_percent: clamp(Math.round(Number(row?.progress_percent || 0)), 0, 100),
+      tasks_completed: Math.max(0, Math.floor(Number(row?.tasks_completed || 0))),
+      quizzes_completed: Math.max(0, Math.floor(Number(row?.quizzes_completed || 0))),
+      quiz_average: clamp(Math.round(Number(row?.quiz_average || 0)), 0, 100),
+      achievements: Math.max(0, Math.floor(Number(row?.achievements || 0))),
+      total_score: Math.max(0, Math.floor(Number(row?.total_score || 0))),
+      course_rank: Math.max(1, Math.floor(Number(row?.course_rank || 1)))
+    };
+  }
+
+  function buildPersonalLeaderboardRows() {
+    return enrolledCourses().map((course) => {
+      const progress = courseProgress(course);
+      const courseBatchIds = new Set(scopedBatches()
+        .filter((batch) => sameId(batch.course_id, course.id))
+        .map((batch) => String(batch.id)));
+      const taskIds = new Set(state.data.batchTasks
+        .filter((task) => courseBatchIds.has(String(task.batch_id || "")))
+        .map((task) => String(task.id)));
+      const submissions = state.data.taskSubmissions.filter((submission) => (
+        sameId(submission.student_id || submission.user_id, state.student.id)
+        && (sameId(submission.course_id, course.id) || taskIds.has(String(submission.task_id || "")))
+        && !["draft", "rejected", "cancelled"].includes(String(submission.status || "submitted").toLowerCase())
+      ));
+      const attempts = state.data.quizAttempts.filter((attempt) => (
+        sameId(attempt.student_id, state.student.id) && sameId(attempt.course_id, course.id)
+      ));
+      const quizScores = attempts.map((attempt) => {
+        const total = Number(attempt.total || attempt.max_score || 0);
+        return total > 0 ? (Number(attempt.score || 0) / total) * 100 : 0;
+      });
+      const quizAverage = quizScores.length
+        ? Math.round(quizScores.reduce((sum, score) => sum + score, 0) / quizScores.length)
+        : 0;
+      const passedQuizzes = new Set(attempts
+        .filter((attempt) => attempt.passed)
+        .map((attempt) => String(attempt.quiz_id || attempt.module_id || attempt.module_order || ""))
+        .filter(Boolean)).size;
+      const achievements = progress.completedModules + submissions.length + passedQuizzes;
+      return normalizeLeaderboardRow({
+        user_id: state.student.id,
+        learner_name: state.student.name || state.student.username || "Student",
+        username: state.student.username || "",
+        batch_id: state.student.batch_id || "",
+        course_id: course.id,
+        course_title: course.title || "Course",
+        progress_percent: progress.percent,
+        tasks_completed: new Set(submissions.map((submission) => String(submission.task_id))).size,
+        quizzes_completed: attempts.length,
+        quiz_average: quizAverage,
+        achievements,
+        total_score: progress.percent * 10 + submissions.length * 100 + quizAverage * 5 + (progress.completedModules + passedQuizzes) * 25,
+        course_rank: 1
+      });
+    });
+  }
+
+  function renderDashboardLeaderboard() {
+    const target = document.getElementById("dashboardLeaderboard");
+    if (!target) return;
+    const courses = enrolledCourses();
+    const courseFilter = document.getElementById("leaderboardCourseFilter");
+    const availableCourseIds = new Set(courses.map((course) => String(course.id)));
+    if (!state.leaderboardCourseId || !availableCourseIds.has(String(state.leaderboardCourseId))) {
+      state.leaderboardCourseId = courses[0]?.id ? String(courses[0].id) : "";
+    }
+    if (courseFilter) {
+      courseFilter.innerHTML = courses.length
+        ? courses.map((course) => `<option value="${escapeAttr(course.id)}">${escapeHtml(course.title || "Course")}</option>`).join("")
+        : '<option value="">No enrolled courses</option>';
+      courseFilter.value = state.leaderboardCourseId;
+    }
+    const sortSelect = document.getElementById("leaderboardSort");
+    if (sortSelect) sortSelect.value = state.leaderboardSort;
+    const searchInput = document.getElementById("leaderboardSearch");
+    if (searchInput && document.activeElement !== searchInput) searchInput.value = state.leaderboardSearch;
+
+    const query = state.leaderboardSearch;
+    const rows = state.data.leaderboard
+      .filter((row) => !state.leaderboardCourseId || sameId(row.course_id, state.leaderboardCourseId))
+      .filter((row) => !query || String(row.learner_name || row.username || "").toLowerCase().includes(query))
+      .slice();
+    const byName = (a, b) => String(a.learner_name || "").localeCompare(String(b.learner_name || ""));
+    const sorters = {
+      rank: (a, b) => a.course_rank - b.course_rank || b.total_score - a.total_score || byName(a, b),
+      score: (a, b) => b.total_score - a.total_score || byName(a, b),
+      "name-asc": byName,
+      "name-desc": (a, b) => byName(b, a),
+      progress: (a, b) => b.progress_percent - a.progress_percent || byName(a, b),
+      tasks: (a, b) => b.tasks_completed - a.tasks_completed || byName(a, b),
+      quiz: (a, b) => b.quiz_average - a.quiz_average || byName(a, b)
+    };
+    rows.sort(sorters[state.leaderboardSort] || sorters.rank);
+
+    target.innerHTML = rows.length ? rows.slice(0, 20).map((row) => {
+      const rank = row.course_rank;
+      const rankClass = rank <= 3 ? `top-${rank}` : "";
+      const isCurrentStudent = sameId(row.user_id, state.student.id);
+      return `
+        <tr class="${isCurrentStudent ? "current-student" : ""}">
+          <td><span class="dashboard-rank-medal ${rankClass}">${rank}</span></td>
+          <td><div class="dashboard-leader-identity"><span>${escapeHtml(initialsFor(row.learner_name || row.username || "S"))}</span><div><strong>${escapeHtml(row.learner_name || "Student")}${isCurrentStudent ? " (You)" : ""}</strong><small>${row.username ? `@${escapeHtml(row.username)}` : "Learner"}</small></div></div></td>
+          <td><span class="dashboard-leader-course">${escapeHtml(row.course_title || "Course")}</span></td>
+          <td><div class="dashboard-leader-progress"><span><i style="width:${row.progress_percent}%"></i></span><b>${row.progress_percent}%</b></div></td>
+          <td>${formatNumber(row.tasks_completed)}</td>
+          <td>${row.quiz_average}%</td>
+          <td>${formatNumber(row.achievements)}</td>
+          <td><strong class="dashboard-leader-score">${formatNumber(row.total_score)}</strong></td>
+        </tr>
+      `;
+    }).join("") : '<tr><td class="dashboard-leaderboard-empty" colspan="8">No verified leaderboard entries match these filters.</td></tr>';
+  }
+
+  function renderDashboardAssignmentStatsLegacy(tasks) {
+    const target = document.getElementById("dashboardAssignmentStats");
+    if (!target) return;
+    const submissions = state.data.taskSubmissions.filter((item) => sameId(item.student_id || item.user_id, state.student.id));
+    const attempts = state.data.quizAttempts.filter((attempt) => sameId(attempt.student_id || attempt.user_id, state.student.id));
+    const totalTasks = tasks.length;
+    const totalQuizzes = enrolledCourses().reduce((sum, course) => (
+      sum + parseModules(course.modules).filter((module) => Boolean(moduleQuiz(module))).length
+    ), 0);
+    const bestScores = new Map();
+    attempts.forEach((attempt, index) => {
+      const total = Number(attempt.total || attempt.max_score || 0);
+      const percent = total > 0
+        ? clamp(Math.round((Number(attempt.score || 0) / total) * 100), 0, 100)
+        : clamp(Math.round(Number(attempt.quiz_score || 0)), 0, 100);
+      const key = String(attempt.quiz_id || `${attempt.course_id || "course"}:${attempt.module_id || attempt.module_order || index}`);
+      bestScores.set(key, Math.max(bestScores.get(key) || 0, percent));
+    });
+    const scores = Array.from(bestScores.values());
+    const averageScore = scores.length ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+    const highestScore = scores.length ? Math.max(...scores) : 0;
+
+    const latestSubmission = submissions.slice().sort((a, b) => (
+      new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0)
+    ))[0];
+    const latestAttempt = attempts.slice().sort((a, b) => (
+      new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0)
+    ))[0];
+    const submissionDate = latestSubmission?.submitted_at || latestSubmission?.created_at;
+    const attemptDate = latestAttempt?.submitted_at || latestAttempt?.created_at;
+    const recentIsQuiz = latestAttempt && (!latestSubmission || new Date(attemptDate || 0) >= new Date(submissionDate || 0));
+    const recentTask = latestSubmission
+      ? tasks.find((task) => sameId(task.id, latestSubmission.task_id))
+      : null;
+    const recentCourse = latestAttempt
+      ? state.data.courses.find((course) => sameId(course.id, latestAttempt.course_id))
+      : null;
+    const recentTitle = recentIsQuiz
+      ? latestAttempt.module_title || `${recentCourse?.title || "Course"} Quiz`
+      : recentTask?.title || (latestSubmission ? "Assignment Submission" : "No recent activity");
+    const recentMeta = recentIsQuiz
+      ? `Completed · ${relativeActivityTime(attemptDate)}`
+      : latestSubmission
+        ? `Submitted · ${relativeActivityTime(submissionDate)}`
+        : "Complete an assignment or quiz to begin";
+
+    const tiles = [
+      { label: "Total Assignments", value: totalTasks, tone: "blue", icon: '<svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7V3Z"/><path d="M15 3v5h5M10 12h6M10 16h6"/></svg>' },
+      { label: "Total Quizzes", value: totalQuizzes, tone: "purple", icon: '<svg viewBox="0 0 24 24"><path d="M5 4h14v14H9l-4 3V4Z"/><path d="M9.5 9a2.5 2.5 0 1 1 3.8 2.1c-.8.5-1.3 1-1.3 1.9M12 16h.01"/></svg>' },
+      { label: "Average Score", value: `${averageScore}%`, tone: "green", icon: '<svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>' },
+      { label: "Highest Score", value: `${highestScore}%`, tone: "gold", icon: '<svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6"/></svg>' }
+    ];
+    target.innerHTML = `
+      <div class="dashboard-assignment-metrics">
+        ${tiles.map((tile) => `
+          <article class="dashboard-assignment-metric ${tile.tone}">
+            <span aria-hidden="true">${tile.icon}</span>
+            <div><small>${escapeHtml(tile.label)}</small><strong>${escapeHtml(tile.value)}</strong></div>
+          </article>
+        `).join("")}
+      </div>
+      <footer class="dashboard-assignment-recent">
+        <span class="dashboard-assignment-clock" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span>
+        <div><small>Recent Activity</small><strong>${escapeHtml(recentTitle)}</strong><p>${escapeHtml(recentMeta)}</p></div>
+        <button type="button" data-jump="tasks">View All <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <span class="dashboard-assignment-book" aria-hidden="true"><svg viewBox="0 0 90 72"><path d="M17 15h49a8 8 0 0 1 8 8v39H25a8 8 0 0 1-8-8V15Z"/><path d="M25 8h49v47H25a8 8 0 0 0-8 8V16a8 8 0 0 1 8-8Z"/><path d="M35 21h25M35 29h19M33 62v8l7-4 7 4v-8"/></svg></span>
+      </footer>
+    `;
+  }
+
+  function academicPeriodRange(period = "all", now = new Date()) {
+    const end = new Date(now);
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+    if (period === "today") return { start, end };
+    if (period === "week") {
+      start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+      return { start, end };
+    }
+    if (period === "month") {
+      start.setDate(1);
+      return { start, end };
+    }
+    if (period === "year") {
+      start.setMonth(0, 1);
+      return { start, end };
+    }
+    return { start: null, end };
+  }
+
+  function dateInAcademicPeriod(value, range) {
+    if (!range.start) return true;
+    const date = new Date(value || 0);
+    return Number.isFinite(date.getTime()) && date >= range.start && date <= range.end;
+  }
+
+  function assessmentPercent(score, total) {
+    if (window.JenovateAcademicMetrics) return window.JenovateAcademicMetrics.percentage(score, total);
+    const earned = numberFrom(score);
+    const maximum = numberFrom(total);
+    return earned !== null && maximum !== null && maximum > 0
+      ? clamp((earned / maximum) * 100, 0, 100)
+      : null;
+  }
+
+  function courseQuizCatalog(course) {
+    return parseModules(course?.modules).flatMap((module, moduleIndex) => {
+      const quiz = moduleQuiz(module);
+      const status = String(quiz?.status || "published").toLowerCase();
+      if (!quiz?.questions?.length || ["draft", "unpublished", "archived"].includes(status)) return [];
+      return [{
+        key: `${course.id}:${String(quiz.id || module.id || moduleIndex)}`,
+        id: quiz.id,
+        courseId: course.id,
+        courseTitle: course.title || "Course",
+        moduleId: module.id || moduleIndex,
+        moduleOrder: moduleIndex + 1,
+        title: quiz.title || `${module.title || "Module"} Quiz`,
+        maximum: quizTotalMarks(quiz),
+        passRatio: quizTotalMarks(quiz) > 0
+          ? clamp(Number(quiz.pass_marks || quiz.pass_score || Math.ceil(quizTotalMarks(quiz) * 0.6)) / quizTotalMarks(quiz), 0, 1)
+          : 0.6
+      }];
+    });
+  }
+
+  function quizAttemptKey(attempt, quizzes = []) {
+    const courseId = String(attempt.course_id || "");
+    const courseQuizzes = quizzes.filter((quiz) => sameId(quiz.courseId, courseId));
+    if (attempt.quiz_id) {
+      const matched = courseQuizzes.find((quiz) => sameId(quiz.id, attempt.quiz_id));
+      return matched?.key || "";
+    }
+    if (attempt.module_id !== undefined && attempt.module_id !== null) {
+      const matched = courseQuizzes.find((quiz) => sameId(quiz.moduleId, attempt.module_id));
+      if (matched) return matched.key;
+    }
+    if (attempt.module_order !== undefined && attempt.module_order !== null) {
+      const matched = courseQuizzes.find((quiz) => Number(quiz.moduleOrder) === Number(attempt.module_order));
+      if (matched) return matched.key;
+    }
+    return courseQuizzes.length === 1 ? courseQuizzes[0].key : "";
+  }
+
+  function isSubmittedAssignment(submission) {
+    return ["submitted", "graded", "approved", "completed", "reviewed"]
+      .includes(String(submission?.status || "submitted").toLowerCase());
+  }
+
+  function quizAttemptPassMarks(quiz, attemptMaximum) {
+    const configuredMaximum = quizTotalMarks(quiz);
+    if (window.JenovateAcademicMetrics) {
+      return window.JenovateAcademicMetrics.scaledPassMark(quiz?.pass_marks ?? quiz?.pass_score, configuredMaximum, attemptMaximum);
+    }
+    const ratio = configuredMaximum > 0 && Number(quiz?.pass_marks || quiz?.pass_score) > 0
+      ? Number(quiz.pass_marks || quiz.pass_score) / configuredMaximum
+      : 0.6;
+    return Math.ceil(Number(attemptMaximum || 0) * clamp(ratio, 0, 1));
+  }
+
+  function buildAcademicMetrics(tasks, period = state.academicPeriod) {
+    const range = academicPeriodRange(period);
+    const publishedTasks = tasks.filter((task) => (
+      !task.deleted_at
+      && !["draft", "unpublished", "archived", "deleted", "cancelled"].includes(String(task.status || "published").toLowerCase())
+      && dateInAcademicPeriod(task.published_at || task.created_at, range)
+    ));
+    const taskById = new Map(tasks.map((task) => [String(task.id), task]));
+    const publishedTaskIds = new Set(publishedTasks.map((task) => String(task.id)));
+    const submissions = state.data.taskSubmissions.filter((item) => (
+      sameId(item.student_id || item.user_id, state.student.id)
+      && !item.deleted_at
+      && publishedTaskIds.has(String(item.task_id || ""))
+      && isSubmittedAssignment(item)
+      && dateInAcademicPeriod(item.submitted_at || item.created_at, range)
+    ));
+    const latestSubmissions = new Map();
+    submissions.forEach((submission) => {
+      const key = String(submission.task_id || submission.id);
+      const previous = latestSubmissions.get(key);
+      if (!previous || new Date(submission.submitted_at || submission.created_at || 0) > new Date(previous.submitted_at || previous.created_at || 0)) {
+        latestSubmissions.set(key, submission);
+      }
+    });
+
+    const quizzes = enrolledCourses().flatMap(courseQuizCatalog);
+    const quizByKey = new Map(quizzes.map((quiz) => [quiz.key, quiz]));
+    const attempts = state.data.quizAttempts.filter((attempt) => (
+      sameId(attempt.student_id || attempt.user_id, state.student.id)
+      && !attempt.deleted_at
+      && dateInAcademicPeriod(attempt.submitted_at || attempt.created_at, range)
+    ));
+    const bestAttempts = new Map();
+    attempts.forEach((attempt) => {
+      const key = quizAttemptKey(attempt, quizzes);
+      if (!key) return;
+      const percent = assessmentPercent(attempt.score ?? attempt.quiz_score, attempt.total ?? attempt.max_score)
+        ?? clamp(Number(attempt.quiz_score || 0), 0, 100);
+      const previous = bestAttempts.get(key);
+      if (!previous || percent > previous.percent) bestAttempts.set(key, { ...attempt, key, percent });
+    });
+
+    const assignmentResults = [...latestSubmissions.values()].map((submission) => {
+      const task = taskById.get(String(submission.task_id));
+      const earned = numberFrom(submission.marks_obtained ?? submission.score);
+      const maximum = numberFrom(submission.total_marks ?? submission.max_marks ?? task?.total_marks ?? task?.max_marks);
+      return { submission, task, earned, maximum, percent: assessmentPercent(earned, maximum) };
+    }).filter((result) => result.percent !== null);
+    const quizResults = [...bestAttempts.values()].map((attempt) => ({
+      attempt,
+      earned: numberFrom(attempt.score ?? attempt.quiz_score),
+      maximum: numberFrom(attempt.total ?? attempt.max_score),
+      percent: attempt.percent
+    })).filter((result) => result.percent !== null);
+    const allResults = [...assignmentResults, ...quizResults];
+    const averageScore = window.JenovateAcademicMetrics
+      ? window.JenovateAcademicMetrics.averagePercent(allResults.map((item) => item.percent))
+      : allResults.length ? allResults.reduce((sum, item) => sum + item.percent, 0) / allResults.length : 0;
+    const highestScore = allResults.length ? Math.max(...allResults.map((item) => item.percent)) : 0;
+    const pooledPercent = (rows) => {
+      if (window.JenovateAcademicMetrics) return window.JenovateAcademicMetrics.pooledPerformance(rows);
+      const valid = rows.filter((row) => row.earned !== null && row.maximum !== null && row.maximum > 0);
+      const maximum = valid.reduce((sum, row) => sum + row.maximum, 0);
+      return maximum > 0 ? clamp((valid.reduce((sum, row) => sum + row.earned, 0) / maximum) * 100, 0, 100) : 0;
+    };
+    const assignmentPerformance = pooledPercent(assignmentResults);
+    const quizPerformance = pooledPercent(quizResults);
+
+    const activityWeights = { attendance: 30, live_session: 20, discussion: 20, assignment_on_time: 20, daily_login: 10 };
+    const activityRows = state.data.academicActivity.filter((activity) => (
+      sameId(activity.student_id, state.student.id)
+      && dateInAcademicPeriod(activity.occurred_at || activity.created_at, range)
+    ));
+    const participationByType = new Map();
+    activityRows.forEach((activity) => {
+      const type = String(activity.activity_type || "").toLowerCase();
+      if (!(type in activityWeights)) return;
+      const current = participationByType.get(type) || { earned: 0, maximum: 0 };
+      current.earned += Math.max(0, Number(activity.points || 0));
+      current.maximum += Math.max(0, Number(activity.max_points || 0));
+      participationByType.set(type, current);
+    });
+    let participation = 0;
+    ["attendance", "live_session", "discussion"].forEach((type) => {
+      const weight = activityWeights[type];
+      const component = participationByType.get(type);
+      if (component?.maximum > 0) participation += clamp(component.earned / component.maximum, 0, 1) * weight;
+    });
+    if (latestSubmissions.size) {
+      const onTime = [...latestSubmissions.values()].filter((submission) => {
+        if (submission.is_on_time === true) return true;
+        const deadline = taskById.get(String(submission.task_id))?.deadline;
+        return deadline && new Date(submission.submitted_at || 0) <= new Date(deadline);
+      }).length;
+      participation += (onTime / latestSubmissions.size) * activityWeights.assignment_on_time;
+    }
+    const loginRows = activityRows.filter((activity) => String(activity.activity_type || "").toLowerCase() === "daily_login");
+    if (loginRows.length) {
+      const loginDates = new Set(loginRows.map((activity) => dateKeyFromValue(activity.occurred_at || activity.created_at)).filter(Boolean));
+      const firstLogin = [...loginRows].sort((a, b) => new Date(a.occurred_at || a.created_at) - new Date(b.occurred_at || b.created_at))[0];
+      const earliest = range.start || new Date(firstLogin.occurred_at || firstLogin.created_at);
+      const expectedDays = Math.max(1, daysBetween(dateKeyFromDate(earliest), todayKey()) + 1);
+      participation += clamp(loginDates.size / expectedDays, 0, 1) * activityWeights.daily_login;
+    }
+    const overall = window.JenovateAcademicMetrics
+      ? window.JenovateAcademicMetrics.weightedScore([
+        { value: assignmentPerformance, weight: 40 },
+        { value: quizPerformance, weight: 40 },
+        { value: participation, weight: 20 }
+      ])
+      : assignmentPerformance * 0.4 + quizPerformance * 0.4 + participation * 0.2;
+
+    const recent = [
+      ...submissions.map((submission) => ({
+        type: "assignment",
+        title: taskById.get(String(submission.task_id))?.title || "Assignment submitted",
+        meta: `Submitted - ${relativeActivityTime(submission.submitted_at || submission.created_at)}`,
+        date: submission.submitted_at || submission.created_at,
+        value: assignmentResults.find((item) => item.submission === submission)?.percent
+      })),
+      ...attempts.map((attempt) => ({
+        type: "quiz",
+        title: attempt.module_title || quizByKey.get(quizAttemptKey(attempt, quizzes))?.title || "Quiz completed",
+        meta: `Completed - ${relativeActivityTime(attempt.submitted_at || attempt.created_at)}`,
+        date: attempt.submitted_at || attempt.created_at,
+        value: assessmentPercent(attempt.score ?? attempt.quiz_score, attempt.total ?? attempt.max_score)
+      }))
+    ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)).slice(0, 5);
+
+    return {
+      totalAssignments: publishedTasks.length,
+      submittedAssignments: latestSubmissions.size,
+      totalQuizzes: quizzes.length,
+      attemptedQuizzes: bestAttempts.size,
+      averageScore: Math.round(averageScore * 10) / 10,
+      highestScore: Math.round(highestScore * 10) / 10,
+      assignmentPerformance: Math.round(assignmentPerformance * 10) / 10,
+      quizPerformance: Math.round(quizPerformance * 10) / 10,
+      participation: Math.round(participation * 10) / 10,
+      overall: Math.round(overall),
+      recent
+    };
+  }
+
+  function renderDashboardAssignmentStats(tasks) {
+    const target = document.getElementById("dashboardAssignmentStats");
+    if (!target) return;
+    const metrics = buildAcademicMetrics(tasks);
+    const tiles = [
+      { label: "Total Assignments", value: metrics.totalAssignments, detail: `${metrics.submittedAssignments} submitted`, tone: "blue", symbol: "=" },
+      { label: "Total Quizzes", value: metrics.totalQuizzes, detail: `${metrics.attemptedQuizzes} attempted`, tone: "purple", symbol: "?" },
+      { label: "Average Score", value: `${metrics.averageScore}%`, detail: "Completed assessments", tone: "green", symbol: "+" },
+      { label: "Highest Score", value: `${metrics.highestScore}%`, detail: "Best performance", tone: "gold", symbol: "*" }
+    ];
+    const recentMarkup = metrics.recent.length ? metrics.recent.map((activity) => `
+      <article class="academic-activity-row ${activity.type}">
+        <span aria-hidden="true">${activity.type === "quiz" ? "?" : "="}</span>
+        <div><strong>${escapeHtml(activity.title)}</strong><small>${escapeHtml(activity.meta)}</small></div>
+        ${activity.value !== null && activity.value !== undefined ? `<b>${Math.round(activity.value * 10) / 10}%</b>` : '<b>Submitted</b>'}
+      </article>
+    `).join("") : '<p class="academic-empty">No completed assessments in this period.</p>';
+    const periodLabel = document.getElementById("academicPeriodFilter")?.selectedOptions?.[0]?.textContent || "All Time";
+
+    target.innerHTML = `
+      <div class="dashboard-assignment-metrics">
+        ${tiles.map((tile) => `
+          <article class="dashboard-assignment-metric ${tile.tone}">
+            <span class="academic-metric-icon" aria-hidden="true">${tile.symbol}</span>
+            <div><small>${escapeHtml(tile.label)}</small><strong>${escapeHtml(tile.value)}</strong><p>${escapeHtml(tile.detail)}</p></div>
+          </article>
+        `).join("")}
+      </div>
+      <div class="academic-dashboard-lower">
+        <section class="academic-recent-panel">
+          <header><h3>Recent Activity</h3><button type="button" data-jump="tasks">View All</button></header>
+          <div>${recentMarkup}</div>
+        </section>
+        <section class="academic-performance-panel">
+          <header><h3>Performance Overview</h3><span>${escapeHtml(periodLabel)}</span></header>
+          <div class="academic-performance-body">
+            <div class="academic-overall-ring" style="--academic-score:${metrics.overall * 3.6}deg"><strong>${metrics.overall}%</strong><small>Overall</small></div>
+            <dl>
+              <div><dt><i class="blue"></i>Assignments</dt><dd>${metrics.assignmentPerformance}%</dd></div>
+              <div><dt><i class="purple"></i>Quizzes</dt><dd>${metrics.quizPerformance}%</dd></div>
+              <div><dt><i class="green"></i>Participation</dt><dd>${metrics.participation}%</dd></div>
+            </dl>
+          </div>
+          <p class="academic-performance-note">Performance uses verified marks and recorded participation only.</p>
+        </section>
+      </div>
+    `;
+  }
+
+  function renderDashboardDeadlines(tasks) {
+    const target = document.getElementById("dashboardDeadlineList");
+    if (!target) return;
+    const upcoming = tasks
+      .filter((task) => !submissionForTask(task.id))
+      .sort((a, b) => new Date(a.deadline || a.created_at || 0) - new Date(b.deadline || b.created_at || 0))
+      .slice(0, 3);
+    target.innerHTML = upcoming.length ? upcoming.map((task, index) => `
+      <article class="deadline-chip-row ${index === 0 ? "urgent" : ""}">
+        <span class="deadline-dot" aria-hidden="true"></span>
+        <div>
+          <strong>${escapeHtml(task.title || "Assignment")}</strong>
+          <small>${escapeHtml(formatDate(task.deadline || task.created_at))}</small>
+        </div>
+        <button class="${index === 0 ? "primary-btn" : "secondary-btn"}" type="button" data-jump="tasks">${index === 0 ? "Submit Now" : "View Details"}</button>
+      </article>
+    `).join("") : emptyState("No upcoming deadlines", "Assigned tasks will appear here.");
+  }
+
+  function renderCatalog() {
+    const target = document.getElementById("catalogCoursesGrid");
+    if (!target) return;
+    const enrolledIds = studentCourseIds();
+    const catalog = filteredCourses(catalogCourses())
+      .filter((course) => !enrolledIds.has(String(course.id)))
+      .sort((a, b) => String(a.title || "").localeCompare(String(b.title || "")));
+    const categories = [...new Set(catalog
+      .map((course) => String(course.category || course.difficulty || "").trim())
+      .filter(Boolean))]
+      .slice(0, 5);
+    const activeCategory = state.catalogCategory || "all";
+    const categoryCatalog = activeCategory === "all"
+      ? catalog
+      : catalog.filter((course) => String(course.category || course.difficulty || "").trim().toLowerCase() === activeCategory.toLowerCase());
+    const activeFilter = state.catalogFilter || "all";
+    const visibleCatalog = categoryCatalog.filter((course) => {
+      const modules = parseModules(course.modules);
+      if (activeFilter === "quiz") return modules.some((module) => moduleQuiz(module));
+      if (activeFilter === "modules") return modules.length > 0;
+      return true;
+    });
+    const totalModules = visibleCatalog.reduce((sum, course) => sum + parseModules(course.modules).length, 0);
+    const enrolledCount = enrolledCourses().length;
+    const filterLabels = {
+      all: "Filters",
+      quiz: "Has Quiz",
+      modules: "Has Modules"
+    };
+    target.innerHTML = `
+      <section class="course-discovery-hero">
+        <div>
+          <span>Premium learning collection</span>
+          <h2>Master New Skills Today.</h2>
+          <p>Explore ${visibleCatalog.length || 0} courses with ${totalModules || 0} modules. Course access starts after admin assignment.</p>
+          <div class="catalog-hero-actions">
+            <div class="catalog-search-pill">Search for courses, tools, or mentors...</div>
+            <button class="primary-btn" type="button">Explore All</button>
+          </div>
+        </div>
+        <aside class="catalog-hero-stat">
+          <strong>${visibleCatalog.length || 0}</strong>
+          <span>Available courses</span>
+          <small>${enrolledCount} assigned in My Courses</small>
+        </aside>
+      </section>
+      <div class="catalog-control-row">
+        <div class="catalog-chip-row">
+          <button class="${activeCategory === "all" ? "active" : ""}" type="button" data-catalog-category="all">All Courses</button>
+          ${categories.map((category) => `<button class="${activeCategory.toLowerCase() === category.toLowerCase() ? "active" : ""}" type="button" data-catalog-category="${escapeAttr(category)}">${escapeHtml(category)}</button>`).join("")}
+        </div>
+        <div class="catalog-actions">
+          <button type="button">Sort: Featured</button>
+          <button class="${activeFilter !== "all" || state.catalogFiltersOpen ? "active" : ""}" type="button" data-catalog-filter-toggle aria-expanded="${state.catalogFiltersOpen ? "true" : "false"}">${escapeHtml(activeFilter === "all" ? "Filters" : filterLabels[activeFilter] || "Filters")}</button>
+        </div>
+      </div>
+      <div class="catalog-filter-row ${state.catalogFiltersOpen ? "open" : ""}" aria-label="Course filters" ${state.catalogFiltersOpen ? "" : "hidden"}>
+        <button class="${activeFilter === "all" ? "active" : ""}" type="button" data-catalog-filter="all">All</button>
+        <button class="${activeFilter === "quiz" ? "active" : ""}" type="button" data-catalog-filter="quiz">Has Quiz</button>
+        <button class="${activeFilter === "modules" ? "active" : ""}" type="button" data-catalog-filter="modules">Has Modules</button>
+      </div>
+      <div class="catalog-card-grid">
+        ${visibleCatalog.length
+        ? visibleCatalog.map((course) => courseCatalogCard(course)).join("")
+        : emptyState("No courses available", "Unassigned published courses will appear here when they are ready.")}
+      </div>
+      <section class="catalog-accelerator-card">
+        <div>
+          <span>Exclusive Opportunity</span>
+          <h2>The Developer's Career Accelerator Pack</h2>
+          <p>Accelerate your roadmap with mentor-led course resources, project practice, and the next best track from your learning catalog.</p>
+          <button class="primary-btn" type="button">Unlock Next Track</button>
+          <button class="secondary-btn" type="button">Learn More</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function courseCatalogCard(course) {
+    const modules = parseModules(course.modules);
+    const quizCount = modules.filter((module) => moduleQuiz(module)).length;
+    const thumbnail = escapeAttr(courseDisplayImage(course, modules.length));
+    const title = escapeHtml(course.title || "Untitled course");
+    const category = escapeHtml(course.category || course.difficulty || "Learning");
+    const instructor = escapeHtml(course.instructor_name || course.mentor_name || "Jenovate Mentor");
+    const tag = modules.length >= 3 ? "Hot" : "New";
+    const duration = escapeHtml(course.duration || `${modules.length || 1} modules`);
+    const rawPrice = String(course.price || "").trim();
+    const price = rawPrice ? escapeHtml(rawPrice) : "Included";
+    return `
+      <article class="discovery-course-card" data-catalog-course-card="${escapeAttr(course.id)}">
+        <div class="discovery-media">
+          <img src="${thumbnail}" alt="">
+          <span class="discovery-status">${escapeHtml(tag)}</span>
+          <b class="discovery-price">${price}</b>
+        </div>
+        <div class="discovery-body">
+          <div class="discovery-kicker"><span class="course-category-label">${category}</span><small>${duration}</small></div>
+          <h3>${title}</h3>
+          <div class="discovery-rating">★★★★★ <small>${escapeHtml(instructor)}</small></div>
+          <div class="discovery-meta"><span>${modules.length || 1} Modules</span><span>${quizCount} Quizzes</span></div>
+          <div class="discovery-actions">
+            <button class="secondary-btn" type="button" data-course-detail="${escapeAttr(course.id)}">View Details</button>
+            <button class="primary-btn" type="button" data-course-detail="${escapeAttr(course.id)}">Preview</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderRailTasks(tasks) {
+    const target = document.getElementById("dashboardRailTasks");
+    if (!target) return;
+    const quiz = state.data.quizAttempts
+      .filter((attempt) => sameId(attempt.student_id || attempt.user_id, state.student.id))
+      .sort((a, b) => new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0))[0];
+    const activities = [];
+    if (quiz) {
+      const course = state.data.courses.find((item) => sameId(item.id, quiz.course_id));
+      activities.push({
+        icon: "QZ",
+        title: "Quiz Completed",
+        body: `${course?.title || quiz.module_title || "Course quiz"} ${quiz.score !== undefined ? `- ${quiz.score}/${quiz.total || quiz.max_score || "?"}` : ""}`,
+        date: quiz.submitted_at || quiz.created_at
+      });
+    }
+    tasks.slice(0, 2).forEach((task) => activities.push({
+      icon: "TS",
+      title: submissionForTask(task.id) ? "Task Submitted" : "Task Pending",
+      body: task.title || "Assignment task",
+      date: task.deadline || task.created_at
+    }));
+    const announcements = scopedAnnouncements().slice(0, 1);
+    announcements.forEach((item) => activities.push({
+      icon: "AN",
+      title: "New Milestone",
+      body: item.title || "Announcement",
+      date: item.published_at || item.created_at
+    }));
+    if (!activities.length) {
+      activities.push({
+        icon: "ST",
+        title: "Learning Workspace Ready",
+        body: "Your activity will appear here as you learn.",
+        date: new Date().toISOString()
+      });
+    }
+    target.innerHTML = activities.slice(0, 4).map((item) => `
+      <article class="rail-event deadline-event dashboard-activity-row">
+        <span class="rail-avatar">${escapeHtml(item.icon)}</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.body)}</small>
+          <time>${escapeHtml(formatDateTime(item.date))}</time>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  function renderRailAnnouncements(items) {
+    const target = document.getElementById("dashboardRailAnnouncements");
+    if (!target) return;
+    const latest = items[0] || null;
+    if (!latest) {
+      target.innerHTML = "";
+      setText("dashboardInboxFooterTitle", "All caught up!");
+      setText("dashboardInboxFooterText", "You have no new messages");
+      return;
+    }
+
+    const publishedAt = latest.published_at || latest.created_at;
+    const publishedTime = new Date(publishedAt || 0).getTime();
+    const isRecent = Number.isFinite(publishedTime) && publishedTime > 0
+      && Date.now() - publishedTime <= 7 * 24 * 60 * 60 * 1000;
+    const senderLabel = humanizeStatus(latest.created_by_role || "Announcement");
+    const senderInitials = latest.created_by_role ? initialsFor(senderLabel) : "AN";
+    const statusLabel = String(latest.priority || "").toLowerCase() === "high" ? "Important" : isRecent ? "New" : "";
+
+    target.innerHTML = `
+      <article class="dashboard-inbox-message">
+        <span class="dashboard-inbox-avatar ${isRecent ? "unread" : ""}" aria-label="From ${escapeAttr(senderLabel)}">${escapeHtml(senderInitials)}</span>
+        <div class="dashboard-inbox-message-copy">
+          <strong>${escapeHtml(latest.title || "Announcement")}</strong>
+          <p>${escapeHtml(truncate(latest.message || "A new update is available in your learning workspace.", 76))}</p>
+        </div>
+        <div class="dashboard-inbox-message-meta">
+          <time datetime="${escapeAttr(publishedAt || "")}">${escapeHtml(formatDate(publishedAt))}</time>
+          ${statusLabel ? `<span>${escapeHtml(statusLabel)}</span>` : ""}
+        </div>
+      </article>
+    `;
+
+    const remaining = Math.max(0, items.length - 1);
+    setText("dashboardInboxFooterTitle", remaining ? `${remaining} more update${remaining === 1 ? "" : "s"}` : "All caught up!");
+    setText("dashboardInboxFooterText", remaining ? "Open View All to read every message" : "You have no more messages");
   }
 
   function renderStreakCard() {
     if (!state.student) return;
     const studentName = firstName(state.student.name || state.student.email || "Student");
-    const streak = currentStreak();
     const activeDays = weeklyActiveDateKeys();
+    const streak = activeDays.size;
     const today = todayKey();
 
     setText("streakAvatar", initialsFor(state.student.name || state.student.email));
     setText("streakStudentName", studentName);
     setText("streakCoinBalance", formatNumber(state.student.coins));
     setText("streakTitle", `${streak} Day${streak === 1 ? "" : "s"} Streak`);
+    setText("dashboardMonthlyStreak", `${streak} Day${streak === 1 ? "" : "s"}`);
     setText("weeklyActivityLabel", `${activeDays.size}/7`);
     setText("streakStatusText", isActiveToday()
       ? "Today is locked in. Keep learning."
       : "Complete one activity to protect your streak.");
 
+    const weeklyRecord = 7;
+    const remainingDays = Math.max(0, weeklyRecord - streak);
+    const trackerTitle = streak >= weeklyRecord
+      ? "Perfect week!"
+      : streak >= 5
+        ? "Amazing progress!"
+        : streak >= 2
+          ? "Building momentum!"
+          : streak === 1
+            ? "Great start!"
+            : "Start your streak!";
+    const trackerMessage = streak >= weeklyRecord
+      ? "You reached all 7 active days this week."
+      : isActiveToday()
+        ? "Consistency is the secret to mastery."
+        : "Complete an activity today to move forward.";
+    const recordText = remainingDays === 0
+      ? "Weekly record<br>achieved!"
+      : `${remainingDays} day${remainingDays === 1 ? "" : "s"} more<br>to a record!`;
+
+    setText("studentStreakProgressTitle", trackerTitle);
+    setText("studentStreakProgressMessage", trackerMessage);
+    const recordTextTarget = document.getElementById("studentStreakRecordText");
+    if (recordTextTarget) recordTextTarget.innerHTML = recordText;
+    const recordTarget = document.getElementById("studentStreakRecord");
+    if (recordTarget) {
+      recordTarget.classList.toggle("record-achieved", remainingDays === 0);
+      recordTarget.setAttribute("aria-label", remainingDays === 0
+        ? "Seven day weekly record achieved"
+        : `${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining to the seven day weekly record`);
+    }
+
     const weekTarget = document.getElementById("dashboardStreakWeek");
     if (!weekTarget) return;
+    const flameIcon = `<svg class="streak-day-flame" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12.4 2.3c.3 2.9-1.1 4.5-2.4 5.9-1.2 1.3-2.3 2.5-2.3 4.5 0 1.3.6 2.4 1.6 3.1-.1-.4-.2-.8-.2-1.2 0-1.6.9-2.8 2.1-3.9.1 1.5.9 2.2 1.7 2.9.8.7 1.5 1.4 1.5 2.7 0 .7-.2 1.4-.6 1.9 1.9-.7 3.3-2.6 3.3-4.8 0-2.8-1.6-5.5-4.7-8.2.1 1.7-.4 2.8-1 3.6.2-2.3-.4-4.4 1-6.5Z"/></svg>`;
     weekTarget.innerHTML = weekDays().map((day) => {
       const active = activeDays.has(day.key);
       const isToday = day.key === today;
       return `
-        <div class="streak-day ${active ? "active" : ""} ${isToday ? "today" : ""}" title="${escapeAttr(day.fullLabel)} - ${active ? "Active" : "Open"}">
-          <span class="streak-day-dot" aria-hidden="true"></span>
-          <span class="streak-day-label">${escapeHtml(day.shortLabel)}</span>
+        <div class="student-streak-day ${active ? "active" : ""} ${isToday ? "today" : ""}" title="${escapeAttr(day.fullLabel)} - ${active ? "Active" : "Open"}">
+          <span class="student-streak-day-dot" aria-hidden="true">${active ? flameIcon : escapeHtml(day.shortLabel)}</span>
+          <span class="student-streak-day-label">${escapeHtml(day.shortLabel)}</span>
         </div>
       `;
     }).join("");
@@ -501,61 +2065,296 @@
     const allCourses = enrolledCourses();
     let courses = filteredCourses(allCourses);
     if (state.courseFilter === "active") {
-      courses = courses.filter((course) => courseProgress(course).percent < 100);
+      courses = courses.filter((course) => !isArchivedCourse(course) && courseProgress(course).percent < 100);
     } else if (state.courseFilter === "completed") {
       courses = courses.filter((course) => courseProgress(course).percent >= 100);
+    } else if (state.courseFilter === "wishlist") {
+      courses = [];
     }
 
-    renderCourseCards("coursesGrid", courses, { compact: false });
+    const categories = [...new Set(allCourses.map((course) => String(course.category || "General").trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b));
+    if (state.courseCategory !== "all" && !categories.includes(state.courseCategory)) state.courseCategory = "all";
+    const categoryMenu = document.getElementById("courseCategoryMenu");
+    if (categoryMenu) {
+      categoryMenu.innerHTML = ["all", ...categories].map((category) => `
+        <button class="${state.courseCategory === category ? "active" : ""}" type="button" data-course-category="${escapeAttr(category)}">
+          ${escapeHtml(category === "all" ? "All categories" : category)}
+        </button>
+      `).join("");
+    }
+    document.getElementById("courseCategoryToggle")?.classList.toggle("active", state.courseCategory !== "all");
+
+    if (state.courseCategory !== "all") {
+      courses = courses.filter((course) => String(course.category || "General") === state.courseCategory);
+    }
+    if (state.courseSearch) {
+      courses = courses.filter((course) => [course.title, course.name, course.description, course.category, course.instructor_name, course.mentor_name]
+        .some((value) => String(value || "").toLowerCase().includes(state.courseSearch)));
+    }
+    courses = [...courses].sort((a, b) => {
+      if (state.courseSort === "title") return String(a.title || a.name || "").localeCompare(String(b.title || b.name || ""));
+      if (state.courseSort === "progress-desc") return courseProgress(b).percent - courseProgress(a).percent;
+      if (state.courseSort === "progress-asc") return courseProgress(a).percent - courseProgress(b).percent;
+      return courseEnrollmentTime(b) - courseEnrollmentTime(a);
+    });
+
+    const visibleCourses = courses.slice(0, state.courseVisibleCount);
+    const target = document.getElementById("coursesGrid");
+    target?.classList.toggle("list-layout", state.courseLayout === "list");
+    const loadMoreWrap = document.getElementById("courseLoadMoreWrap");
+    if (loadMoreWrap) loadMoreWrap.hidden = visibleCourses.length >= courses.length;
+    if (state.courseFilter === "wishlist" && !courses.length) {
+      if (target) target.innerHTML = emptyState("No wishlist courses yet", "Courses you save for later will appear here.");
+      if (loadMoreWrap) loadMoreWrap.hidden = true;
+      return;
+    }
+    renderCourseCards("coursesGrid", visibleCourses, { compact: false });
+  }
+
+  function courseEnrollmentTime(course) {
+    const enrollment = state.data.userCourses.find((item) => (
+      sameId(item.course_id, course.id)
+      && sameId(item.user_id || item.student_id || item.learner_id, state.student.id)
+      && !item.deleted_at
+    ));
+    return new Date(enrollment?.created_at || course.created_at || 0).getTime() || 0;
+  }
+
+  function recentDashboardCourses(courses) {
+    return [...courses]
+      .sort((a, b) => courseRecentActivityTime(b) - courseRecentActivityTime(a)
+        || courseProgress(b).percent - courseProgress(a).percent
+        || String(a.title || a.name || "").localeCompare(String(b.title || b.name || "")))
+      .slice(0, 2);
+  }
+
+  function courseRecentActivityTime(course) {
+    const courseId = String(course?.id || "");
+    const accessTimes = storedCourseAccessTimes();
+    const times = [
+      accessTimes[courseId],
+      courseProgress(course).row?.updated_at,
+      latestQuizTimeForCourse(course),
+      latestSubmissionTimeForCourse(course),
+      latestAcademicActivityTimeForCourse(course),
+      courseEnrollmentTime(course)
+    ].map(timestampValue).filter(Boolean);
+    return times.length ? Math.max(...times) : 0;
+  }
+
+  function latestQuizTimeForCourse(course) {
+    return state.data.quizAttempts
+      .filter((attempt) => sameId(attempt.student_id || attempt.user_id, state.student.id) && sameId(attempt.course_id, course.id))
+      .reduce((latest, attempt) => Math.max(latest, timestampValue(attempt.submitted_at || attempt.created_at)), 0);
+  }
+
+  function latestSubmissionTimeForCourse(course) {
+    return state.data.taskSubmissions
+      .filter((submission) => (
+        sameId(submission.student_id || submission.user_id, state.student.id)
+        && !submission.deleted_at
+        && sameId(submissionCourseId(submission), course.id)
+      ))
+      .reduce((latest, submission) => Math.max(latest, timestampValue(submission.submitted_at || submission.created_at)), 0);
+  }
+
+  function submissionCourseId(submission) {
+    if (submission?.course_id) return submission.course_id;
+    const task = state.data.batchTasks.find((item) => sameId(item.id, submission?.task_id));
+    if (task?.course_id) return task.course_id;
+    const batch = state.data.batches.find((item) => sameId(item.id, submission?.batch_id || task?.batch_id));
+    return batch?.course_id || "";
+  }
+
+  function latestAcademicActivityTimeForCourse(course) {
+    return state.data.academicActivity
+      .filter((activity) => sameId(activity.student_id, state.student.id) && sameId(activity.course_id, course.id))
+      .reduce((latest, activity) => Math.max(latest, timestampValue(activity.occurred_at || activity.created_at)), 0);
+  }
+
+  function recordCourseAccess(courseId) {
+    if (!courseId) return;
+    const times = storedCourseAccessTimes();
+    times[String(courseId)] = Date.now();
+    state.courseAccessTimes = times;
+    try {
+      localStorage.setItem(courseAccessStorageKey(), JSON.stringify(times));
+    } catch (error) {
+      console.warn("Unable to save recent course access locally.", error);
+    }
+  }
+
+  function storedCourseAccessTimes() {
+    if (state.courseAccessTimes) return state.courseAccessTimes;
+    try {
+      const parsed = JSON.parse(localStorage.getItem(courseAccessStorageKey()) || "{}");
+      state.courseAccessTimes = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch (error) {
+      state.courseAccessTimes = {};
+    }
+    return state.courseAccessTimes;
+  }
+
+  function courseAccessStorageKey() {
+    return `jenovate:student:course-access:${state.student?.id || state.student?.email || "guest"}`;
+  }
+
+  function timestampValue(value) {
+    if (!value) return 0;
+    if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+    const time = new Date(value).getTime();
+    return Number.isFinite(time) ? time : 0;
   }
 
   function renderCourseCards(targetId, courses, options = {}) {
     const target = document.getElementById(targetId);
     if (!target) return;
     if (!courses.length) {
-      target.innerHTML = emptyState("No courses found", "Your enrolled courses will appear here from Supabase.");
+      target.innerHTML = emptyState("No courses found", "Your enrolled courses will appear here when they are assigned.");
       return;
     }
 
-    target.innerHTML = courses.map((course) => {
+    const cards = courses.map((course, index) => {
       const progress = courseProgress(course);
       const modules = parseModules(course.modules);
+      const lessons = flattenCourseLessons(course, modules);
       const title = escapeHtml(course.title || course.name || "Untitled course");
-      const description = escapeHtml(truncate(course.description || "No course description available.", options.compact ? 110 : 160));
-      const status = progress.percent >= 100 ? "Completed" : "Active";
-      const thumbnail = escapeAttr(course.thumbnail_url || "image/login/loginimg.png");
+      const thumbnail = escapeAttr(courseDisplayImage(course, index));
+      const instructor = escapeHtml(course.instructor_name || course.mentor_name || "Jenovate Mentor");
+      const category = escapeHtml(course.category || course.difficulty || "Learning");
+      const reviewUrl = String(course.google_form_url || course.review_url || "").trim();
+      const actionLabel = progress.percent >= 100 ? "Watch Again" : "Continue Learning";
       return `
-        <article class="course-card">
-          <img class="course-thumb" src="${thumbnail}" alt="">
-          <span class="pill ${progress.percent >= 100 ? "success" : ""}">${escapeHtml(status)}</span>
-          <h3>${title}</h3>
-          <p>${description}</p>
-          <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
-          <div class="card-footer">
-            <small class="card-meta">${modules.length} module${modules.length === 1 ? "" : "s"} - ${progress.percent}% complete</small>
-            <button class="primary-btn" type="button" data-open-course="${escapeAttr(course.id)}">Start Learning</button>
+        <article class="my-course-card scalable-course-card course-tone-${index % 6} ${options.compact ? "compact-course-card" : ""}" data-course-card-open="${escapeAttr(course.id)}">
+          <div class="course-card-media">
+            <img class="course-thumb" src="${thumbnail}" alt="">
+            <span class="course-category-badge">${category}</span>
+            <span class="course-progress-ring" style="--course-progress:${progress.percent * 3.6}deg" aria-label="${progress.percent}% complete"><b>${progress.percent}%</b></span>
+          </div>
+          <div class="course-card-body">
+            <h3>${title}</h3>
+            <div class="course-mentor-row"><span class="student-avatar small">${escapeHtml(initialsFor(instructor))}</span><small>${instructor}</small><svg viewBox="0 0 24 24" aria-label="Verified mentor"><path d="m9 12 2 2 4-5"></path><path d="M12 3.5 14.2 5l2.7-.1.8 2.6 2.2 1.6-.9 2.6.9 2.6-2.2 1.6-.8 2.6-2.7-.1L12 20l-2.2-1.6-2.7.1-.8-2.6-2.2-1.6.9-2.6-.9-2.6 2.2-1.6.8-2.6 2.7.1Z"></path></svg></div>
+            <small class="card-meta"><span>${modules.length || 0} Modules</span><i></i><span>${lessons.length || 0} Lessons</span></small>
+            <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
+            <div class="card-footer">
+              <button class="secondary-btn course-continue-button" type="button" data-open-course="${escapeAttr(course.id)}">${actionLabel}</button>
+              ${progress.percent >= 100 && reviewUrl ? `<button class="course-review-link" type="button" data-review-course="${escapeAttr(course.id)}">Review</button>` : ""}
+              <button class="course-card-menu" type="button" data-course-detail="${escapeAttr(course.id)}" aria-label="View ${title} details" title="Course details">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+              </button>
+            </div>
           </div>
         </article>
       `;
-    }).join("");
+    });
+    target.innerHTML = cards.join("");
+  }
+
+  function openCourseDetailModal(courseId) {
+    const course = catalogCourses().find((item) => sameId(item.id, courseId))
+      || state.data.courses.find((item) => sameId(item.id, courseId));
+    if (!course) return;
+    const modules = parseModules(course.modules);
+    const enrolled = studentCourseIds().has(String(course.id));
+    const thumbnail = courseDisplayImage(course, modules.length);
+    openModal("Course Details", `
+      <div class="course-detail-modal">
+        <div class="course-detail-head">
+          <img src="${escapeAttr(thumbnail)}" alt="${escapeAttr(course.title || "Course")}">
+          <div>
+            <span class="pill">${escapeHtml(course.category || course.difficulty || "Course")}</span>
+            <h3>${escapeHtml(course.title || "Course")}</h3>
+            <p>${escapeHtml(course.description || "No course description available.")}</p>
+          </div>
+        </div>
+        <div class="course-meta-row detail">
+          <span>${modules.length} modules</span>
+          <span>${modules.filter((module) => moduleQuiz(module)).length} quizzes</span>
+          <span>${escapeHtml(course.duration || "Self paced")}</span>
+        </div>
+        <div class="module-preview-list">
+          ${modules.length ? modules.slice(0, 6).map((module, index) => `
+            <div>
+              <strong>Module ${index + 1}: ${escapeHtml(module.title || module.name || "Lesson module")}</strong>
+              <small>${moduleLessons(module).length} lessons${moduleQuiz(module) ? " - includes quiz" : ""}</small>
+            </div>
+          `).join("") : emptyState("No module preview", "This course has no module data yet.")}
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal>Close</button>
+          ${enrolled
+            ? `<button class="primary-btn" type="button" data-open-course="${escapeAttr(course.id)}">Start Learning</button>`
+            : '<button class="primary-btn" type="button" disabled title="Admin assignment required">Assignment Required</button>'}
+        </div>
+      </div>
+    `);
+  }
+
+  function openCourseReview(courseId) {
+    const course = enrolledCourses().find((item) => sameId(item.id, courseId))
+      || state.data.courses.find((item) => sameId(item.id, courseId));
+    const reviewUrl = String(course?.google_form_url || course?.review_url || "").trim();
+    if (!reviewUrl) {
+      showAlert("Review form is not available for this course yet.", true);
+      return;
+    }
+    window.open(reviewUrl, "_blank", "noopener");
+  }
+
+  function mergeLocalEnrollment(enrollment) {
+    const normalized = normalizeEnrollment(enrollment);
+    const index = state.data.userCourses.findIndex((item) => (
+      sameId(item.user_id || item.student_id || item.learner_id, normalized.user_id)
+      && sameId(item.course_id, normalized.course_id)
+    ));
+    if (index >= 0) {
+      state.data.userCourses[index] = { ...state.data.userCourses[index], ...normalized };
+    } else {
+      state.data.userCourses.push(normalized);
+    }
+  }
+
+  function courseStudyResources(course, modules = parseModules(course?.modules)) {
+    const resources = [];
+    modules.forEach((module, moduleIndex) => {
+      (module.lessons || []).forEach((lesson, lessonIndex) => {
+        const url = lessonMaterialUrl(lesson);
+        const type = String(lesson.content_type || "").toLowerCase();
+        const looksLikeMaterial = type.includes("material")
+          || /\.(pdf|docx?|pptx?|xlsx?|zip|txt)(?:$|\?)/i.test(url);
+        if (!url || !looksLikeMaterial) return;
+        const ext = (url.match(/\.([a-z0-9]+)(?:$|\?)/i)?.[1] || "file").toUpperCase();
+        resources.push({
+          url,
+          title: lesson.title || `${module.title || `Module ${moduleIndex + 1}`} Material`,
+          meta: `${module.title || `Module ${moduleIndex + 1}`} - ${lesson.duration || `Item ${lessonIndex + 1}`}`,
+          label: ext.slice(0, 3),
+          kind: ext.toLowerCase().includes("pdf") ? "pdf" : "file"
+        });
+      });
+    });
+    return resources;
   }
 
   function renderLearn() {
+    const surface = document.getElementById("learnSurface");
     const courses = filteredCourses(enrolledCourses());
-    const list = document.getElementById("learnCourseList");
-    if (list) {
-      list.innerHTML = courses.length ? courses.map((course) => {
-        const progress = courseProgress(course);
-        return `
-          <button class="course-pick ${sameId(course.id, state.selectedCourseId) ? "active" : ""}" type="button" data-open-course="${escapeAttr(course.id)}">
-            <strong>${escapeHtml(course.title || course.name || "Untitled course")}</strong>
-            <span class="muted">${progress.percent}% complete</span>
-            <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
-          </button>
-        `;
-      }).join("") : emptyState("No courses", "You are not enrolled in a course yet.");
+    if (!surface) return;
+
+    if (!courses.length) {
+      cleanupLessonTracker();
+      surface.innerHTML = `
+        <article class="panel learn-empty-card">
+          ${emptyState("No courses yet", "Your enrolled courses will appear here as soon as admin adds you.")}
+        </article>
+      `;
+      return;
     }
 
+    if (!state.selectedCourseId || !courses.some((item) => sameId(item.id, state.selectedCourseId))) {
+      state.selectedCourseId = preferredLearningCourse(courses)?.id || courses[0]?.id || "";
+    }
     const course = selectedCourse();
     const modules = course ? parseModules(course.modules) : [];
     const lessons = course ? flattenCourseLessons(course, modules) : [];
@@ -565,13 +2364,118 @@
     const selectedLesson = lessons.find((item) => item.key === state.selectedLessonKey) || lessons[0] || null;
     const selectedModuleNumber = selectedLesson ? selectedLesson.moduleIndex + 1 : 0;
     const selectedLessonNumber = selectedLesson ? selectedLesson.lessonIndex + 1 : 0;
-    setText("lessonCourseMeta", course
-      ? `${course.category || course.difficulty || "Course"} - ${modules.length} module${modules.length === 1 ? "" : "s"}`
-      : "No course selected");
-    setText("lessonTitle", selectedLesson?.lesson?.title || course?.title || course?.name || "Choose a course");
-    setText("lessonDescription", selectedLesson
-      ? `Module ${selectedModuleNumber}: ${selectedLesson.module.title || "Untitled module"} - Lesson ${selectedLessonNumber}`
-      : course?.description || "Your course modules and lessons will appear here.");
+    const progress = courseProgress(course);
+    const quizCount = modules.filter((module) => moduleQuiz(module)?.questions?.length).length;
+    const cover = courseDisplayImage(course, modules.length);
+    const category = course?.category || course?.difficulty || "Development";
+    const title = course?.title || course?.name || "Untitled course";
+    const description = course?.description || "Study the lessons, complete each module quiz, and keep your progress moving.";
+    const activeModule = selectedLesson?.module || modules[0] || null;
+    const resources = courseStudyResources(course, modules);
+    const selectedTitle = selectedLesson?.lesson?.title || title;
+    const instructor = course?.instructor_name || course?.mentor_name || "Jenovate Mentor";
+
+    surface.innerHTML = `
+      <section class="stitch-learn-main learn-reference-main">
+        <header class="stitch-lesson-header">
+          <div>
+            <span class="learn-kicker">Module ${selectedModuleNumber || 1} - Lesson ${selectedLessonNumber || 1}</span>
+            <h2>${escapeHtml(selectedLesson?.lesson?.title || title)}</h2>
+            <div class="stitch-lesson-meta">
+              <span>${escapeHtml(course?.instructor_name || course?.mentor_name || "Jenovate Mentor")}</span>
+              <span>${escapeHtml(course?.difficulty || "Intermediate")}</span>
+              <span>${escapeHtml(course?.duration || `${lessons.length || 1} lessons`)}</span>
+            </div>
+          </div>
+          <button class="primary-btn mark-complete-btn" type="button" data-select-lesson="${escapeAttr((selectedLesson || lessons[0])?.key || "")}">
+            Mark Complete
+          </button>
+        </header>
+
+        <div class="lesson-player stitch-video-player reference-video-player" id="lessonPlayer"></div>
+
+        <nav class="lesson-tabs reference-lesson-tabs" aria-label="Lesson tabs">
+          <button class="active" type="button">Overview</button>
+          <button type="button">Notes</button>
+          <button type="button">Resources</button>
+          <button type="button" data-jump="questions">Discussion</button>
+        </nav>
+
+        <section class="lesson-body-grid lesson-reference-body">
+          <article class="lesson-about-card reference-overview-card">
+            <h3>${escapeHtml(selectedTitle)}</h3>
+            <div class="lesson-facts">
+              <span>${escapeHtml(selectedLesson?.lesson?.duration || course?.duration || "Self paced")}</span>
+              <span>${escapeHtml(course?.difficulty || "Intermediate")}</span>
+              <span>${escapeHtml(category)}</span>
+            </div>
+            <p>${escapeHtml(selectedLesson?.lesson?.description || description)}</p>
+            <div class="learning-outcomes-card">
+              <span>WHAT YOU'LL LEARN</span>
+              <ul>
+                <li>Complete the active lesson in this module.</li>
+                <li>Practice with module resources and study material.</li>
+                <li>Track progress through course content and quizzes.</li>
+                <li>Ask questions when you need mentor support.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="lesson-mentor-card">
+            <span class="student-avatar">${escapeHtml(initialsFor(instructor))}</span>
+            <div>
+              <strong>${escapeHtml(instructor)}</strong>
+              <small>${escapeHtml(course?.category || "Course Mentor")}</small>
+              <p>Helping you move through the course with practical lessons, materials, and project guidance.</p>
+            </div>
+            <button class="secondary-btn" type="button" data-jump="questions">Ask</button>
+          </article>
+          <aside class="lesson-resource-card reference-resource-card">
+            <div class="resource-card-head">
+              <div>
+                <h3>Curated Course Materials</h3>
+                <p>Download assets and study files shared for this course.</p>
+              </div>
+              ${resources.length ? `<a class="primary-btn" href="${escapeAttr(resources[0].url)}" target="_blank" rel="noopener">Open First</a>` : ""}
+            </div>
+            <div class="resource-grid">
+              ${resources.length ? resources.slice(0, 4).map((resource) => `
+                <a class="resource-download-card" href="${escapeAttr(resource.url)}" target="_blank" rel="noopener">
+                  <span class="resource-icon ${escapeAttr(resource.kind)}">${escapeHtml(resource.label)}</span>
+                  <strong>${escapeHtml(resource.title)}</strong>
+                  <small>${escapeHtml(resource.meta)}</small>
+                  <em>Download</em>
+                </a>
+              `).join("") : emptyState("No study materials yet", "Optional PDFs and materials added by your mentor will appear here.")}
+            </div>
+          </aside>
+        </section>
+      </section>
+
+      <aside class="stitch-course-rail reference-course-rail">
+        <div class="rail-progress-card">
+          <div>
+            <strong>Course Content</strong>
+            <span>${progress.percent}% Complete</span>
+          </div>
+          <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
+          <button class="primary-btn mark-complete-btn" type="button" data-select-lesson="${escapeAttr((selectedLesson || lessons[0])?.key || "")}">
+            Mark as Complete
+          </button>
+        </div>
+        <div class="course-rail-scroll">
+          <div class="module-list udemy-modules" id="moduleList"></div>
+        </div>
+        <footer class="course-rail-footer">
+          <div class="circle-progress">${progress.percent}%</div>
+          <div>
+            <strong>${Math.max(lessons.length - Number(progress.completedLessons || 0), 0)} Lessons Left</strong>
+            <small>${progress.percent}% complete</small>
+          </div>
+          <button class="secondary-btn" type="button" aria-label="More learning actions">⋮</button>
+        </footer>
+      </aside>
+    `;
+
     renderLessonPlayer(course, selectedLesson);
 
     const moduleList = document.getElementById("moduleList");
@@ -585,78 +2489,71 @@
       return;
     }
 
-    const progress = courseProgress(course);
     moduleList.innerHTML = modules.map((module, index) => {
-      const moduleLessons = module.lessons.length ? module.lessons : [{ title: module.title || `Module ${index + 1}`, duration: course.duration || "" }];
+      const moduleLessons = module.lessons;
       const moduleStart = lessonsBefore(modules, index);
       const moduleStats = moduleProgressFromState(course, modules, index, progress.row);
-      const completedInModule = moduleLessons.filter((lesson, lessonIndex) => {
-        const item = {
-          key: lessonKey(course.id, index, lessonIndex, lesson),
+      const modulePercent = moduleStats.percent;
+      const moduleSelected = selectedLesson?.moduleIndex === index;
+      return `
+        <details class="module-card udemy-module ${moduleSelected ? "active" : ""}" ${moduleSelected || index === 0 ? "open" : ""}>
+          <summary class="module-summary">
+            <span class="module-summary-main">
+              <small>Module ${String(index + 1).padStart(2, "0")}</small>
+              <strong>${escapeHtml(module.title || `Module ${index + 1}`)}</strong>
+            </span>
+            <span class="rail-chevron">⌄</span>
+          </summary>
+          <div class="module-progress">
+            <span style="width:${modulePercent}%"></span>
+          </div>
+          ${moduleLessons.length ? `<ul class="lesson-list">
+            ${moduleLessons.map((lesson, lessonIndex) => {
+        const order = moduleStart + lessonIndex + 1;
+        const key = lessonKey(course.id, index, lessonIndex, lesson);
+        const mediaUrl = lessonMediaUrl(lesson);
+        const isSelected = key === state.selectedLessonKey;
+        const lessonStats = lessonProgressFromState(progress.row, {
+          key,
           course,
           module,
           moduleIndex: index,
           lesson,
           lessonIndex,
-          order: moduleStart + lessonIndex + 1,
-          mediaUrl: lessonMediaUrl(lesson)
-        };
-        return lessonProgressFromState(progress.row, item).completed || legacyOrderCompleted(progress.row?.completed_lessons, item.order);
-      }).length;
-      const modulePercent = moduleStats.percent;
-      const moduleSelected = selectedLesson?.moduleIndex === index;
-      return `
-        <details class="module-card ${moduleSelected ? "active" : ""}" ${moduleSelected || index === 0 ? "open" : ""}>
-          <summary class="module-summary">
-            <span class="module-number">Module ${index + 1}</span>
-            <span class="module-summary-main">
-              <strong>${escapeHtml(module.title || `Module ${index + 1}`)}</strong>
-              ${module.description ? `<small>${escapeHtml(module.description)}</small>` : ""}
-            </span>
-            <span class="module-summary-meta">
-              <b>${completedInModule}/${moduleLessons.length}</b>
-              <small>lessons</small>
-            </span>
-          </summary>
-          <div class="module-progress">
-            <span style="width:${modulePercent}%"></span>
-          </div>
-          <ul class="lesson-list">
-            ${moduleLessons.map((lesson, lessonIndex) => {
-              const order = moduleStart + lessonIndex + 1;
-              const key = lessonKey(course.id, index, lessonIndex, lesson);
-              const mediaUrl = lessonMediaUrl(lesson);
-              const isSelected = key === state.selectedLessonKey;
-              const lessonStats = lessonProgressFromState(progress.row, {
-                key,
-                course,
-                module,
-                moduleIndex: index,
-                lesson,
-                lessonIndex,
-                order,
-                mediaUrl
-              });
-              const done = lessonStats.completed || legacyOrderCompleted(progress.row?.completed_lessons, order);
-              return `
+          order,
+          mediaUrl
+        });
+        const done = lessonStats.completed || legacyOrderCompleted(progress.row?.completed_lessons, order);
+        return `
                 <li class="${isSelected ? "active" : ""}">
+                  <button class="lesson-play-dot ${done ? "done" : ""}" type="button" data-select-lesson="${escapeAttr(key)}" aria-label="Open lesson ${escapeAttr(lesson.title || lessonIndex + 1)}">
+                    ${done ? "✓" : mediaUrl ? "▶" : "○"}
+                  </button>
                   <span>
-                    <strong>${escapeHtml(lesson.title || `Lesson ${lessonIndex + 1}`)}</strong>
-                    <small>${escapeHtml(`Module ${index + 1} - Lesson ${lessonIndex + 1}${lesson.duration ? ` - ${lesson.duration}` : ""}`)}</small>
-                    ${lesson.description || lesson.transcript || mediaUrl ? `<small>${escapeHtml(lesson.description || lesson.transcript || mediaUrl)}</small>` : ""}
+                    <strong>${lessonIndex + 1}. ${escapeHtml(lesson.title || `Lesson ${lessonIndex + 1}`)}</strong>
+                    <small>${escapeHtml(lesson.duration || "08:15")}</small>
                   </span>
                   <span class="lesson-actions">
-                    <span class="pill ${done ? "success" : mediaUrl ? "" : "warning"}">${done ? "Done" : mediaUrl ? `${lessonStats.percent}%` : escapeHtml(lesson.duration || "Pending")}</span>
-                    <button class="${mediaUrl ? "primary-btn" : "secondary-btn"}" type="button" data-select-lesson="${escapeAttr(key)}">${mediaUrl ? "Play" : "Open"}</button>
                   </span>
                 </li>
               `;
-            }).join("")}
-          </ul>
+      }).join("")}
+          </ul>` : emptyState("No lessons yet", "This module has been created, but no lesson content is attached yet.")}
           ${moduleQuizBlock(course, module, index)}
         </details>
       `;
     }).join("");
+  }
+
+  function renderLearnFallback(error) {
+    const surface = document.getElementById("learnSurface");
+    if (!surface) return;
+    cleanupLessonTracker();
+    surface.innerHTML = `
+      <article class="panel learn-empty-card">
+        ${emptyState("Learning player needs attention", escapeHtml(error?.message || "Refresh data to load the course player again."))}
+      </article>
+    `;
   }
 
   function renderLessonPlayer(course, lessonItem) {
@@ -668,6 +2565,10 @@
       target.innerHTML = emptyState("Choose a course", "Select an enrolled course to open its lessons.");
       return;
     }
+    if (!parseModules(course.modules).length) {
+      target.innerHTML = emptyState("No modules yet", "Admin or mentor has not added module content for this course.");
+      return;
+    }
     if (!lessonItem) {
       target.innerHTML = emptyState("No lessons yet", "Lessons and videos added by your mentor will appear here.");
       return;
@@ -675,8 +2576,13 @@
 
     const lesson = lessonItem.lesson;
     const mediaUrl = lessonItem.mediaUrl;
+    const contentType = String(lesson.content_type || "video").toLowerCase();
+    const contentLabel = contentType === "study_material" ? "Study Material"
+      : contentType === "assignment" ? "Assignment"
+        : contentType === "quiz" ? "Quiz"
+          : "Video";
     const embedUrl = mediaEmbedUrl(mediaUrl);
-    const directVideo = mediaUrl && isDirectVideoUrl(mediaUrl);
+    const directVideo = contentType === "video" && mediaUrl && isDirectVideoUrl(mediaUrl);
     const description = lesson.description || lesson.transcript || lessonItem.module.description || course.description || "";
     const moduleLabel = `Module ${lessonItem.moduleIndex + 1}: ${lessonItem.module.title || "Untitled module"}`;
     const lessonLabel = `Lesson ${lessonItem.lessonIndex + 1}`;
@@ -684,10 +2590,10 @@
     target.innerHTML = `
       <div class="player-header">
         <div>
-          <span>${escapeHtml(`${moduleLabel} - ${lessonLabel}`)}</span>
+          <span>${escapeHtml(`${moduleLabel} - ${contentLabel} ${lessonItem.lessonIndex + 1}`)}</span>
           <h3>${escapeHtml(lesson.title || "Lesson")}</h3>
         </div>
-        ${mediaUrl ? `<a class="secondary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open Source</a>` : ""}
+        ${mediaUrl ? `<a class="secondary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open ${escapeHtml(contentLabel)}</a>` : ""}
       </div>
       <div class="media-frame">
         ${directVideo ? `
@@ -696,9 +2602,9 @@
           <iframe src="${escapeAttr(embedUrl)}" title="${escapeAttr(lesson.title || "Lesson video")}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         ` : `
           <div class="media-empty">
-            <strong>${mediaUrl ? "Open the lesson resource" : "No video attached"}</strong>
-            <p>${escapeHtml(mediaUrl ? "This lesson uses an external resource that opens in a new tab." : "Add a video or Drive link in the mentor course editor.")}</p>
-            ${mediaUrl ? `<a class="primary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open Lesson</a>` : ""}
+            <strong>${mediaUrl ? `Open the ${escapeHtml(contentLabel.toLowerCase())}` : `No ${escapeHtml(contentLabel.toLowerCase())} attached`}</strong>
+            <p>${escapeHtml(mediaUrl ? "This content opens in a new tab." : "Your mentor has not attached a file or link yet.")}</p>
+            ${mediaUrl ? `<a class="primary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open ${escapeHtml(contentLabel)}</a>` : ""}
           </div>
         `}
       </div>
@@ -713,17 +2619,17 @@
   }
 
   function moduleQuizBlock(course, module, moduleIndex) {
-    const quiz = normalizeQuiz(module.quiz || module.quizQuestions || module.questions, module);
+    const quiz = moduleQuiz(module);
     if (!quiz || !quiz.questions.length) return "";
     const best = bestQuizAttempt(course.id, module.id, quiz.id);
     const attemptQuestionsCount = Math.min(5, quiz.questions.length);
     const sampleQuestions = quiz.questions.slice(0, attemptQuestionsCount);
     const totalMarks = sampleQuestions.reduce((sum, q) => sum + Number(q.marks || 1), 0);
-    const passMarks = Math.ceil(totalMarks * 0.6);
+    const passMarks = quizAttemptPassMarks(quiz, totalMarks);
     return `
       <div class="module-quiz-card">
+        <span class="quiz-icon">QZ</span>
         <div>
-          <span class="pill">Quiz</span>
           <strong>${escapeHtml(quiz.title || "Module Quiz")}</strong>
           <small>${attemptQuestionsCount} questions - ${totalMarks} marks${passMarks ? ` - Pass ${passMarks}` : ""}</small>
           ${best ? `<small>Best score: ${Number(best.score || 0)}/${Number(best.max_score || best.total || totalMarks)}</small>` : ""}
@@ -739,9 +2645,19 @@
     const course = state.data.courses.find((item) => sameId(item.id, courseId));
     const modules = parseModules(course?.modules);
     const module = modules[moduleIndex];
-    const quiz = normalizeQuiz(module?.quiz || module?.quizQuestions || module?.questions, module);
+    const quiz = moduleQuiz(module);
     if (!course || !module || !quiz || !quiz.questions.length) {
       showAlert("This module does not have a quiz yet.", true);
+      return;
+    }
+    if (String(quiz.status || "published").toLowerCase() !== "published") {
+      showAlert("This quiz is not published yet.", true);
+      return;
+    }
+    const priorAttempts = quizAttemptsFor(course.id, module.id, quiz.id);
+    const maxAttempts = Number(quiz.max_attempts || 0);
+    if (maxAttempts > 0 && priorAttempts.length >= maxAttempts) {
+      showAlert(`You have used all ${maxAttempts} allowed attempt${maxAttempts === 1 ? "" : "s"} for this quiz.`, true);
       return;
     }
 
@@ -752,52 +2668,139 @@
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     const attemptQuestions = shuffled.slice(0, 5);
-    console.log(`[Quiz Randomizer] Pool has ${quiz.questions.length} questions. Sliced to exactly ${attemptQuestions.length} random questions.`);
     const totalMarks = attemptQuestions.reduce((sum, q) => sum + Number(q.marks || 1), 0);
-    const passMarks = Math.ceil(totalMarks * 0.6);
+    const passMarks = quizAttemptPassMarks(quiz, totalMarks);
     const best = bestQuizAttempt(course.id, module.id, quiz.id);
-    openModal("Module Quiz", `
-      <form class="quiz-attempt-form" id="quizAttemptForm">
-        <div class="quiz-attempt-hero">
-          <div>
-            <span>${escapeHtml(module.title || "Module")}</span>
-            <h3>${escapeHtml(quiz.title || "Module Quiz")}</h3>
-            <p>${attemptQuestions.length} questions - ${totalMarks} marks - Pass ${passMarks}</p>
+    const timerSeconds = Math.max(0, Number(quiz.timer_minutes || 0)) * 60;
+    openModal(quiz.title || `${course.title || "Course"} Quiz`, `
+      <form class="quiz-attempt-form stitch-quiz-screen" id="quizAttemptForm">
+        <div class="quiz-progress-strip">
+          <span>Question 01 of ${String(attemptQuestions.length).padStart(2, "0")}</span>
+          <div><i style="width:${Math.max(1, Math.round(100 / Math.max(attemptQuestions.length, 1)))}%"></i></div>
+          <small>${timerSeconds ? formatQuizTime(timerSeconds) : `${Math.round(100 / Math.max(attemptQuestions.length, 1))}% Completed`}</small>
+        </div>
+        <section class="quiz-main-card">
+          ${attemptQuestions.map((question, index) => `
+            <fieldset class="quiz-question ${index === 0 ? "active" : ""}">
+              <span class="quiz-topic">${escapeHtml(module.title || "Architecture Design")}</span>
+              <legend>${escapeHtml(question.text)}</legend>
+              ${["A", "B", "C", "D"].map((key) => {
+      const text = question[`option_${key.toLowerCase()}`];
+      if (!text) return "";
+      return `
+                  <label class="quiz-option">
+                    <input type="radio" name="quiz_${index}" value="${key}">
+                    <span></span>
+                    <strong>${escapeHtml(text)}</strong>
+                  </label>
+                `;
+    }).join("")}
+            </fieldset>
+          `).join("")}
+          <div class="modal-actions quiz-actions">
+            <button class="secondary-btn" type="button" data-quiz-prev>&lsaquo; Previous</button>
+            <button class="primary-btn" type="button" data-quiz-next>Next Question &rsaquo;</button>
           </div>
-          <strong>Best ${Number(best?.score || 0)}</strong>
-        </div>
-        ${attemptQuestions.map((question, index) => `
-          <fieldset class="quiz-question">
-            <legend>Q${index + 1}. ${escapeHtml(question.text)}</legend>
-            ${["A", "B", "C", "D"].map((key) => {
-              const text = question[`option_${key.toLowerCase()}`];
-              if (!text) return "";
-              return `
-                <label class="quiz-option">
-                  <input type="radio" name="quiz_${index}" value="${key}" required>
-                  <span>${key}</span>
-                  <strong>${escapeHtml(text)}</strong>
-                </label>
-              `;
-            }).join("")}
-            <small>${Number(question.marks || 1)} mark${Number(question.marks || 1) === 1 ? "" : "s"}</small>
-          </fieldset>
-        `).join("")}
-        <div class="modal-actions">
-          <button class="secondary-btn" type="button" data-close-modal>Cancel</button>
-          <button class="primary-btn" type="submit">Submit Quiz</button>
-        </div>
+        </section>
+        <aside class="quiz-overview-panel">
+          <h3>Quiz Overview</h3>
+          <div class="quiz-legend">
+            <span>Answered</span><span>Unanswered</span><span>Current</span><span>Flagged</span>
+          </div>
+          <div class="quiz-number-grid">
+            ${Array.from({ length: attemptQuestions.length }, (_, index) => `
+              <button type="button" data-quiz-jump="${index}" class="${index === 0 ? "current" : ""}">${index + 1}</button>
+            `).join("")}
+          </div>
+          <div class="quiz-help-card">
+            <strong>Need assistance?</strong>
+            <p>${timerSeconds ? "This quiz will auto-submit when the timer ends." : "If you experience technical issues, contact the system administrator immediately."}</p>
+          </div>
+          <div class="quiz-help-card">
+            <strong>Attempts</strong>
+            <p>${priorAttempts.length}${maxAttempts ? ` / ${maxAttempts}` : ""} used. Pass marks: ${passMarks}/${totalMarks}.</p>
+          </div>
+        </aside>
+        <button class="submit-quiz-btn" type="submit">Submit Quiz</button>
       </form>
     `);
 
     const form = document.getElementById("quizAttemptForm");
     if (form) {
       form._attemptQuestions = attemptQuestions;
+      wireQuizAttemptControls(form, attemptQuestions.length, timerSeconds);
       form.addEventListener("submit", (event) => {
         event.preventDefault();
+        const unansweredIndex = attemptQuestions.findIndex((_, index) => !form.querySelector(`[name="quiz_${index}"]:checked`));
+        if (unansweredIndex !== -1) {
+          form._setQuizIndex?.(unansweredIndex);
+          showAlert(`Answer question ${unansweredIndex + 1} before submitting.`, true);
+          return;
+        }
         submitQuizAttempt(course, module, quiz, form);
       });
     }
+  }
+
+  function wireQuizAttemptControls(form, totalQuestions, timerSeconds = 0) {
+    const questions = Array.from(form.querySelectorAll(".quiz-question"));
+    const overviewButtons = Array.from(form.querySelectorAll("[data-quiz-jump]"));
+    const progressLabel = form.querySelector(".quiz-progress-strip span");
+    const progressBar = form.querySelector(".quiz-progress-strip i");
+    const progressPercent = form.querySelector(".quiz-progress-strip small");
+    const previousButton = form.querySelector("[data-quiz-prev]");
+    const nextButton = form.querySelector("[data-quiz-next]");
+    let currentIndex = 0;
+
+    const isAnswered = (index) => Boolean(form.querySelector(`[name="quiz_${index}"]:checked`));
+    const render = () => {
+      const answeredCount = questions.filter((_, index) => isAnswered(index)).length;
+      const percent = totalQuestions ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+
+      questions.forEach((question, index) => {
+        question.classList.toggle("active", index === currentIndex);
+      });
+      overviewButtons.forEach((button, index) => {
+        button.classList.toggle("current", index === currentIndex);
+        button.classList.toggle("answered", isAnswered(index));
+      });
+      if (progressLabel) progressLabel.textContent = `Question ${String(currentIndex + 1).padStart(2, "0")} of ${String(totalQuestions).padStart(2, "0")}`;
+      if (progressBar) progressBar.style.width = `${Math.max(percent, 1)}%`;
+      if (progressPercent && !timerSeconds) progressPercent.textContent = `${percent}% Completed`;
+      if (previousButton) previousButton.disabled = currentIndex === 0;
+      if (nextButton) nextButton.disabled = currentIndex === totalQuestions - 1;
+    };
+
+    form._setQuizIndex = (index) => {
+      currentIndex = Math.min(Math.max(Number(index) || 0, 0), Math.max(totalQuestions - 1, 0));
+      render();
+    };
+
+    previousButton?.addEventListener("click", () => form._setQuizIndex(currentIndex - 1));
+    nextButton?.addEventListener("click", () => form._setQuizIndex(currentIndex + 1));
+    overviewButtons.forEach((button) => {
+      button.addEventListener("click", () => form._setQuizIndex(button.dataset.quizJump));
+    });
+    form.addEventListener("change", (event) => {
+      if (event.target?.matches?.('input[type="radio"][name^="quiz_"]')) render();
+    });
+    if (timerSeconds && progressPercent) {
+      const endsAt = Date.now() + timerSeconds * 1000;
+      const timer = window.setInterval(() => {
+        const remaining = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+        progressPercent.textContent = formatQuizTime(remaining);
+        if (remaining <= 0) {
+          window.clearInterval(timer);
+          if (document.body.contains(form)) {
+            showAlert("Quiz time is up. Submitting your answers now.", true);
+            form.requestSubmit();
+          }
+        }
+      }, 1000);
+      form.addEventListener("submit", () => window.clearInterval(timer), { once: true });
+    }
+
+    render();
   }
 
   async function submitQuizAttempt(course, module, quiz, form) {
@@ -811,8 +2814,9 @@
       return { question, answer, correct, earned };
     });
     const score = results.reduce((sum, result) => sum + result.earned, 0);
-    const maxScore = questionsToEvaluate.reduce((sum, question) => sum + Number(question.marks || 0), 0);
-    const passed = score >= Math.ceil(maxScore * 0.6);
+    const maxScore = questionsToEvaluate.reduce((sum, question) => sum + Number(question.marks || 1), 0);
+    const passMarks = quizAttemptPassMarks(quiz, maxScore);
+    const passed = score >= passMarks;
 
     let saveMessage = "";
     try {
@@ -830,7 +2834,7 @@
       <div class="quiz-result-card ${passed ? "passed" : "failed"}">
         <span class="pill ${passed ? "success" : "warning"}">${passed ? "Passed" : "Needs Practice"}</span>
         <h3>${escapeHtml(quiz.title || "Module Quiz")}</h3>
-        <p>Score ${score}/${maxScore}. Passing score is ${Math.ceil(maxScore * 0.6)}/${maxScore}.</p>
+        <p>Score ${score}/${maxScore}. Passing score is ${passMarks}/${maxScore}.</p>
         ${saveMessage ? `<p class="quiz-save-warning">${escapeHtml(saveMessage)}</p>` : ""}
         <div class="quiz-review-list">
           ${results.map((result, index) => `
@@ -852,15 +2856,18 @@
       && sameId(attempt.course_id, course.id)
       && sameId(attempt.module_id, module.id)
     ));
-    const passScore = Number(quiz.pass_marks || Math.ceil(result.maxScore * 0.6));
+    const passScore = quizAttemptPassMarks(quiz, result.maxScore);
     const fullPayload = {
       student_id: state.student.id,
       course_id: course.id,
       module_id: module.id,
       quiz_id: quiz.id,
       score: result.score,
+      total: result.maxScore,
+      pass_score: passScore,
       max_score: result.maxScore,
       passed: result.passed,
+      attempt_number: attempts.length + 1,
       answers: result.answers,
       submitted_at: new Date().toISOString()
     };
@@ -888,6 +2895,14 @@
       created_at: new Date().toISOString()
     };
     await insertFirstWorking("student_quiz_attempts", [fullPayload, legacyPayload, compactLegacyPayload]);
+    state.data.quizAttempts = mergeRowsById(state.data.quizAttempts, [{
+      id: `local-quiz-${Date.now()}`,
+      ...fullPayload,
+      total: result.maxScore,
+      pass_score: passScore,
+      attempt_number: attempts.length + 1,
+      created_at: fullPayload.submitted_at
+    }]);
   }
 
   async function saveQuizProgress(course, score, maxScore, passed) {
@@ -921,71 +2936,445 @@
     }
     tasks = filteredRecords(tasks, ["title", "description"]);
 
-    const target = document.getElementById("tasksGrid");
-    if (!target) return;
-    if (!tasks.length) {
-      target.innerHTML = emptyState("No tasks", "Assignments from your mentor or admin will appear here.");
-      return;
+    const taskListEl = document.getElementById("taskList");
+    const taskMainEl = document.getElementById("taskMain");
+    if (!taskListEl || !taskMainEl) return;
+
+    const taskBuckets = {
+      pending: tasks.filter((task) => !submissionForTask(task.id)),
+      submitted: tasks.filter((task) => {
+        const submission = submissionForTask(task.id);
+        return submission && !isReviewedSubmission(submission);
+      }),
+      reviewed: tasks.filter((task) => {
+        const submission = submissionForTask(task.id);
+        return submission && isReviewedSubmission(submission);
+      })
+    };
+
+    if (!taskBuckets[state.taskFilter]?.length) {
+      state.taskFilter = taskBuckets.pending.length ? "pending"
+        : taskBuckets.submitted.length ? "submitted"
+          : taskBuckets.reviewed.length ? "reviewed"
+            : "pending";
+      state.selectedTaskId = "";
     }
 
-    target.innerHTML = tasks.map((task) => {
-      const submission = submissionForTask(task.id);
-      const due = task.deadline ? formatDate(task.deadline) : "No deadline";
-      const batch = state.data.batches.find((item) => sameId(item.id, task.batch_id));
-      const status = submission ? submission.status || "Submitted" : "Pending";
-      return `
-        <article class="task-card ${submission ? "is-submitted" : ""}">
-          <div class="card-topline">
-            <span class="pill ${statusTone(status)}">${escapeHtml(humanizeStatus(status))}</span>
-            <small>${escapeHtml(due)}</small>
+    // Update tab active classes
+    document.querySelectorAll("#tasksView [data-task-filter]").forEach((btn) => {
+      const active = btn.dataset.taskFilter === state.taskFilter;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+
+    const pendingCount = taskBuckets.pending.length;
+    const pendingBadge = document.getElementById("tasksTabBadgePending");
+    if (pendingBadge) {
+      pendingBadge.textContent = pendingCount;
+    }
+
+    const visibleTasks = taskBuckets[state.taskFilter] || taskBuckets.pending;
+    const activeTask = visibleTasks.find((task) => sameId(task.id, state.selectedTaskId)) || visibleTasks[0] || tasks[0];
+    state.selectedTaskId = activeTask?.id || "";
+
+    // Render left task cards list
+    if (!visibleTasks.length) {
+      taskListEl.innerHTML = emptyState("No tasks in this tab", "Switch tabs to view other assigned or submitted work.");
+    } else {
+      taskListEl.innerHTML = visibleTasks.map((task) => {
+        const submission = submissionForTask(task.id);
+        const batch = state.data.batches.find((item) => sameId(item.id, task.batch_id));
+        const selected = sameId(task.id, activeTask?.id);
+
+        let statusLabel = "PENDING";
+        let statusClass = "pending";
+        let dueLabel = "";
+
+        if (submission) {
+          if (isReviewedSubmission(submission)) {
+            statusLabel = "REVIEWED";
+            statusClass = "reviewed";
+          } else {
+            statusLabel = "SUBMITTED";
+            statusClass = "submitted";
+          }
+          dueLabel = formatDate(submission.submitted_at || submission.created_at);
+        } else {
+          if (task.deadline) {
+            const deadlineDate = new Date(task.deadline);
+            const today = new Date();
+            const diffTime = deadlineDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+              statusLabel = "OVERDUE";
+              statusClass = "overdue";
+              dueLabel = "LATE";
+            } else if (diffDays <= 3) {
+              statusLabel = "IN PROGRESS";
+              statusClass = "in-progress";
+              dueLabel = `Due: ${diffDays} Day${diffDays === 1 ? "" : "s"}`;
+            } else if (diffDays <= 10) {
+              statusLabel = "UPCOMING";
+              statusClass = "upcoming";
+              dueLabel = `Due: ${diffDays} Days`;
+            } else {
+              statusLabel = "PENDING";
+              statusClass = "pending";
+              dueLabel = `Due: ${diffDays} Days`;
+            }
+          } else {
+            statusLabel = "PENDING";
+            statusClass = "pending";
+            dueLabel = "No deadline";
+          }
+        }
+
+        const assignedDateStr = task.created_at ? formatDate(task.created_at) : "Not scheduled";
+
+        return `
+          <article class="task-card ${selected ? "active" : ""}" data-select-task="${escapeAttr(task.id)}" tabindex="0">
+            <div class="task-card-top">
+              <span class="task-status-badge ${statusClass}">${escapeHtml(statusLabel)}</span>
+              <span class="task-due-text ${statusClass === "overdue" ? "late" : ""}">${escapeHtml(dueLabel)}</span>
+            </div>
+            <div class="task-card-content">
+              <h3>${escapeHtml(task.title || "Untitled task")}</h3>
+              <p>Module: ${escapeHtml(batch?.name || "Assigned batch")}</p>
+            </div>
+            <div class="task-card-footer">
+              <span class="task-calendar-icon">📅</span>
+              <small>Assigned ${escapeHtml(assignedDateStr)}</small>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    // Render right details main pane
+    if (!activeTask) {
+      taskMainEl.innerHTML = `
+        <div class="task-empty-state">
+          <span>📋</span>
+          <strong>Select a task</strong>
+          <p>Pick an assignment from the left to view requirements and submit.</p>
+        </div>
+      `;
+    } else {
+      const activeSubmission = submissionForTask(activeTask.id);
+      const activeBatch = state.data.batches.find((item) => sameId(item.id, activeTask.batch_id));
+      const activeResource = taskResourceLink(activeTask);
+      const taskCourse = courseForBatch(activeBatch);
+
+      let resourceCardsHtml = "";
+      if (activeResource) {
+        const isPdf = activeResource.toLowerCase().endsWith(".pdf");
+        const title = activeResource.split("/").pop() || "Assignment resource";
+        resourceCardsHtml = `
+          <div class="task-resources-list">
+            <div class="resource-card ${isPdf ? "pdf" : "figma"}">
+              <div class="resource-icon-container">
+                <span class="resource-icon">${isPdf ? "📄" : "❖"}</span>
+              </div>
+              <div class="resource-info">
+                <strong>${escapeHtml(title)}</strong>
+                <small>${isPdf ? "PDF" : "RESOURCE"} • External Link</small>
+              </div>
+              <a class="resource-download-btn" href="${escapeAttr(activeResource)}" target="_blank" rel="noopener" title="Open Resource">
+                <span>↗</span>
+              </a>
+            </div>
           </div>
-          <div class="card-copy">
-            <h3>${escapeHtml(task.title || "Untitled task")}</h3>
-            <p>${escapeHtml(truncate(task.description || "No task details available.", 150))}</p>
+        `;
+      } else {
+        resourceCardsHtml = `<p class="task-no-resources">No downloadable resources added</p>`;
+      }
+
+      const marks = Number(activeTask.total_marks ?? activeTask.max_marks ?? 100);
+      const pointsLabel = Number.isFinite(marks) && marks > 0 ? `${Math.round(marks)} XP` : "XP";
+      const requirementItems = taskRequirements(activeTask);
+
+      let submitBoxHtml = "";
+      if (activeSubmission) {
+        const feedbackHtml = activeSubmission.feedback
+          ? `<div class="task-feedback-box">
+               <strong>Mentor Feedback</strong>
+               <p>${escapeHtml(activeSubmission.feedback)}</p>
+             </div>`
+          : "";
+        submitBoxHtml = `
+          <div class="task-submit-card submitted">
+            <div class="task-submit-header">
+              <span class="task-submit-icon">✅</span>
+              <div>
+                <strong>Submission Saved Successfully</strong>
+                <small>Submitted on ${escapeHtml(formatDate(activeSubmission.submitted_at || activeSubmission.created_at))}</small>
+              </div>
+            </div>
+            ${feedbackHtml}
+            <div class="task-submit-actions">
+              <a class="primary-btn text-center" href="${escapeAttr(taskSubmissionLink(activeSubmission))}" target="_blank" rel="noopener">
+                View Your Submission ↗
+              </a>
+            </div>
           </div>
-          <div class="card-footer">
-            <small class="card-meta">${escapeHtml(batch?.name || "Batch")}</small>
-            <button class="primary-btn" type="button" data-open-task="${escapeAttr(task.id)}">${submission ? "Update" : "Submit"}</button>
+        `;
+      } else {
+        submitBoxHtml = `
+          <div class="task-submit-card">
+            <div class="task-submit-header">
+              <span class="task-submit-icon">📤</span>
+              <div>
+                <strong>Submit Your Work</strong>
+                <small>Paste a Google Drive link containing your Figma file or document.</small>
+              </div>
+            </div>
+            <form id="taskSubmitForm" class="task-submit-form">
+              <div class="task-submit-input-group">
+                <input id="taskSubmissionDriveLink" type="url" placeholder="https://drive.google.com/..." required />
+                <button class="primary-btn" type="submit">Submit Task</button>
+              </div>
+            </form>
           </div>
+        `;
+      }
+
+      taskMainEl.innerHTML = `
+        <article class="task-detail-document">
+          <div class="task-detail-body">
+            <div class="task-detail-header">
+              <div class="task-detail-meta">
+                <span class="task-module-pill">${escapeHtml(taskCourse?.title || activeBatch?.name || "Assignment")}</span>
+                <span class="task-read-time">45 mins read</span>
+              </div>
+              <div class="task-points-display">
+                <small>Points Possible</small>
+                <strong>${escapeHtml(pointsLabel)}</strong>
+              </div>
+            </div>
+
+            <h2 class="task-detail-title">${escapeHtml(activeTask.title || "Selected Task")}</h2>
+
+            <section class="task-detail-section">
+              <h3>Assignment Overview</h3>
+              <p>${escapeHtml(activeTask.description || "No assignment overview has been added yet.")}</p>
+            </section>
+
+            <section class="task-detail-section">
+              <h3>Submission Requirements</h3>
+              <ul>
+                ${requirementItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+              </ul>
+            </section>
+
+            <section class="task-detail-section">
+              <h3>Downloadable Resources</h3>
+              ${resourceCardsHtml}
+            </section>
+          </div>
+
+          ${submitBoxHtml}
         </article>
       `;
-    }).join("");
+
+      if (!activeSubmission) {
+        document.getElementById("taskSubmitForm")?.addEventListener("submit", (event) => submitTask(event, activeTask));
+      }
+    }
+  }
+
+  function taskRequirements(task) {
+    const raw = task?.requirements || task?.submission_requirements || task?.instructions;
+    const parsed = parseJsonDeep(raw);
+    if (Array.isArray(parsed)) {
+      const items = parsed.map((item) => String(item?.title || item?.text || item || "").trim()).filter(Boolean);
+      if (items.length) return items;
+    }
+    if (typeof parsed === "string" && parsed.trim()) {
+      const items = parsed.split(/\r?\n|;/).map((item) => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
+      if (items.length) return items;
+    }
+    return [
+      "Review the assignment overview before starting your work.",
+      "Complete the task using the format requested by your mentor.",
+      "Keep your file accessible through a shareable Google Drive link.",
+      "Submit the final link before the deadline."
+    ];
   }
 
   function renderBatch() {
     const batch = currentBatch();
-    const batchInfo = document.getElementById("batchInfo");
-    const classmates = document.getElementById("classmateList");
+    const sidebar = document.getElementById("batchSidebar");
+    const chatBatchSelect = document.getElementById("chatBatchSelect");
+    const batches = scopedBatches();
+    const course = batch ? state.data.courses.find((item) => sameId(item.id, batch.course_id)) : null;
+    const mentor = mentorForBatch(batch);
 
-    if (batchInfo) {
+    if (chatBatchSelect) {
+      chatBatchSelect.innerHTML = batches.length ? batches.map((item) => {
+        const batchCourse = courseForBatch(item);
+        const label = [item.name || "Batch", batchCourse?.title || batchCourse?.name].filter(Boolean).join(" - ");
+        return `<option value="${escapeAttr(item.id)}" ${sameId(item.id, batch?.id) ? "selected" : ""}>${escapeHtml(label)}</option>`;
+      }).join("") : `<option value="">No batch assigned</option>`;
+      chatBatchSelect.disabled = batches.length <= 1;
+    }
+
+    if (sidebar) {
       if (!batch) {
-        batchInfo.innerHTML = emptyState("No batch assigned", "Your batch appears here after admin enrollment.");
+        sidebar.innerHTML = emptyState("No batch assigned", "Your batch details will appear here.");
       } else {
-        const course = state.data.courses.find((item) => sameId(item.id, batch.course_id));
-        const mentor = mentorForBatch(batch);
-        batchInfo.innerHTML = `
-          <div class="profile-meta">
-            <div><small class="muted">Batch</small><strong>${escapeHtml(batch.name || "Batch")}</strong></div>
-            <div><small class="muted">Course</small><strong>${escapeHtml(course?.title || "Course")}</strong></div>
-            <div><small class="muted">Mentor</small><strong>${escapeHtml(mentor?.name || "Not assigned")}</strong></div>
-            <div><small class="muted">Period</small><strong>${escapeHtml(batchPeriod(batch))}</strong></div>
-            <div><small class="muted">Status</small><strong>${escapeHtml(batch.status || "Active")}</strong></div>
+        const students = classmatesForBatch(batch);
+        const mentorName = mentor?.name || "Not assigned";
+        const courseTitle = course?.title || course?.name || "PYTHON";
+        const batchPeriodStr = batchPeriod(batch) || "14 May 2026";
+        const statusLabel = batch.status && batch.status.toLowerCase() !== "draft" ? batch.status.toUpperCase() : "";
+
+        // Filter classmates list to render instructors
+        const instructors = [mentor].filter(Boolean);
+        const instructorsHtml = instructors.length ? instructors.map((user) => `
+          <div class="batch-instructor-row">
+            <span class="student-avatar small">${escapeHtml(initialsFor(user.name || user.email || "U"))}</span>
+            <span>
+              <strong>${escapeHtml(user.name || user.email || "Instructor")}</strong>
+              <small>Lead Instructor</small>
+            </span>
+          </div>
+        `).join("") : `
+          <div class="batch-instructor-row">
+            <span class="student-avatar small">M</span>
+            <span>
+              <strong>Not assigned</strong>
+              <small>Lead Mentor</small>
+            </span>
           </div>
         `;
+
+        sidebar.innerHTML = `
+          <div class="batch-sidebar-header">
+            <span class="sidebar-eyebrow">LEARNING HUB</span>
+            <h2 class="sidebar-title">${escapeHtml(batch.name || "Your Batch")}</h2>
+            ${statusLabel ? `<span class="sidebar-status-badge">• ${escapeHtml(statusLabel)}</span>` : ""}
+          </div>
+
+          <div class="batch-sidebar-cards">
+            <div class="sidebar-card">
+              <div class="sidebar-card-icon">👤</div>
+              <div class="sidebar-card-info">
+                <small>MENTOR</small>
+                <strong>${escapeHtml(mentorName)}</strong>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-icon">📅</div>
+              <div class="sidebar-card-info">
+                <small>PERIOD</small>
+                <strong>${escapeHtml(batchPeriodStr)}</strong>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-icon">📖</div>
+              <div class="sidebar-card-info">
+                <small>COURSE</small>
+                <strong>${escapeHtml(courseTitle)}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="batch-instructors-section">
+            <header class="instructors-header">
+              <span>Instructors</span>
+              <small>${instructors.length} Active</small>
+            </header>
+            <div class="instructors-list">
+              ${instructorsHtml}
+            </div>
+          </div>
+        `;
+
+        // Update online status student count
+        const onlineStatusEl = document.getElementById("chatOnlineStatus");
+        if (onlineStatusEl) {
+          onlineStatusEl.textContent = `• ${students.length} Students Online`;
+        }
       }
     }
 
-    if (classmates) {
-      const students = classmatesForBatch(batch);
-      classmates.innerHTML = students.length ? students.map((user) => `
-        <div class="classmate-card">
-          <strong>${escapeHtml(user.name || user.email || "Student")}</strong>
-          <small class="muted">${escapeHtml(user.email || "")}</small>
+    renderChat();
+    renderBatchPendingTasks();
+  }
+
+  function renderChat() {
+    const target = document.getElementById("chatList");
+    if (!target) return;
+    const messages = scopedChats().sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+    renderChatReplyBar(messages);
+    if (!messages.length) {
+      target.innerHTML = `
+        <div class="batch-chat-empty">
+          <span class="batch-chat-empty-icon" aria-hidden="true"></span>
+          <strong>Start the conversation</strong>
+          <p>Your learning journey is better together. Reach out to your mentor and classmates to begin.</p>
+          <button class="batch-chat-empty-action" type="button" data-focus-chat>Send first message</button>
         </div>
-      `).join("") : emptyState("No classmates visible", "Classmates appear when Supabase policies allow batch members.");
+      `;
+      return;
     }
 
-    renderChat();
+    function formatTimeOnly(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return "";
+      return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true }).toLowerCase();
+    }
+
+    let lastDateLabel = "";
+    target.innerHTML = messages.map((message) => {
+      const user = state.data.users.find((item) => sameId(item.id, message.user_id));
+      const mine = sameId(message.user_id, state.student.id);
+      const isMentor = user?.role === "mentor";
+      const reply = message.parent_id ? messages.find((item) => sameId(item.id, message.parent_id)) : null;
+      const dateLabel = message.created_at ? formatDate(message.created_at) : "Recent";
+      const divider = dateLabel !== lastDateLabel ? `<div class="chat-date-divider"><span>${escapeHtml(dateLabel)}</span></div>` : "";
+      lastDateLabel = dateLabel;
+
+      const authorName = mine ? "You" : (user?.name || user?.email || "User");
+      const roleTag = isMentor ? " <span class=\"mentor-badge\">(Mentor)</span>" : "";
+      const timeStr = message.created_at ? formatTimeOnly(message.created_at) : "";
+
+      return `
+        ${divider}
+        <div class="chat-message-row ${mine ? "mine" : ""}">
+          <div class="chat-message-meta">
+            <span class="chat-message-author">${escapeHtml(authorName)}${roleTag}</span>
+            <span class="chat-message-time">${escapeHtml(timeStr)}</span>
+          </div>
+          <div class="chat-message-bubble">
+            ${reply ? `<div class="reply-preview">Replying to ${escapeHtml(truncate(reply.message || "", 80))}</div>` : ""}
+            <p class="chat-message-text">${escapeHtml(message.message || "")}</p>
+            <button class="chat-bubble-reply-btn" type="button" data-reply-chat="${escapeAttr(message.id)}">reply</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+    target.scrollTop = target.scrollHeight;
+  }
+
+  function renderBatchPendingTasks() {
+    const target = document.getElementById("batchPendingTasks");
+    if (!target) return;
+    const batch = currentBatch();
+    const tasks = scopedTasks()
+      .filter((task) => (!batch || !task.batch_id || sameId(task.batch_id, batch.id)) && !submissionForTask(task.id))
+      .slice(0, 4);
+    target.innerHTML = tasks.length ? tasks.map((task) => `
+      <button class="batch-task-row" type="button" data-open-task="${escapeAttr(task.id)}">
+        <span class="batch-task-check"></span>
+        <span><strong>${escapeHtml(task.title || "Task")}</strong><small>${escapeHtml(task.deadline ? `Due ${formatDate(task.deadline)}` : "No deadline")}</small></span>
+        <b>Open</b>
+      </button>
+    `).join("") : emptyState("No pending tasks", "Your batch work is clear for now.");
   }
 
   function renderAnnouncements() {
@@ -994,37 +3383,26 @@
     const rows = scopedAnnouncements().filter((item) => filteredAnnouncement(item));
     target.innerHTML = rows.length
       ? rows.map(announcementCard).join("")
-      : emptyState("No announcements", "Notices from admin and mentors will appear here.");
+      : emptyState("No active announcements", "New notices from admin and mentors will appear here.");
   }
 
-  function renderChat() {
-    const target = document.getElementById("chatList");
+  function renderChatReplyBar(messages = scopedChats()) {
+    const target = document.getElementById("chatReplyBar");
     if (!target) return;
-    const messages = scopedChats().sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
-    if (!messages.length) {
-      target.innerHTML = emptyState("No messages", "Start a batch conversation with your mentor and classmates.");
+    const source = state.replyToChatId ? messages.find((chat) => sameId(chat.id, state.replyToChatId)) : null;
+    if (!source) {
+      target.hidden = true;
+      target.innerHTML = "";
       return;
     }
-
-    target.innerHTML = messages.map((message) => {
-      const user = state.data.users.find((item) => sameId(item.id, message.user_id));
-      const mine = sameId(message.user_id, state.student.id);
-      const reply = message.parent_id ? messages.find((item) => sameId(item.id, message.parent_id)) : null;
-      return `
-        <div class="chat-bubble ${mine ? "mine" : ""}">
-          <header>
-            <strong>${escapeHtml(mine ? "You" : user?.name || user?.email || "User")}</strong>
-            <time>${escapeHtml(formatDateTime(message.created_at))}</time>
-          </header>
-          ${reply ? `<div class="reply-preview">Replying to ${escapeHtml(truncate(reply.message || "", 80))}</div>` : ""}
-          <p>${escapeHtml(message.message || "")}</p>
-          <div class="chat-actions">
-            <button class="text-btn" type="button" data-reply-chat="${escapeAttr(message.id)}">Reply</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-    target.scrollTop = target.scrollHeight;
+    const author = sameId(source.user_id, state.student.id)
+      ? "your message"
+      : state.data.users.find((item) => sameId(item.id, source.user_id))?.name || "a classmate";
+    target.hidden = false;
+    target.innerHTML = `
+      <span><small>Replying to ${escapeHtml(author)}</small><strong>${escapeHtml(truncate(source.message || "", 90))}</strong></span>
+      <button class="text-btn" type="button" data-cancel-chat-reply>Cancel</button>
+    `;
   }
 
   function renderQuestions() {
@@ -1034,59 +3412,579 @@
       select.innerHTML = courses.length ? courses.map((course) => (
         `<option value="${escapeAttr(course.id)}">${escapeHtml(course.title || course.name || "Course")}</option>`
       )).join("") : `<option value="">No enrolled courses</option>`;
+      select.disabled = !courses.length;
+    }
+    const submitButton = document.getElementById("questionSubmitBtn");
+    if (submitButton) submitButton.disabled = !courses.length;
+
+    // Filter tabs active class
+    const filterTabs = document.querySelector(".disc-filter-tabs");
+    if (filterTabs) {
+      filterTabs.querySelectorAll("button").forEach(button => {
+        button.classList.toggle("active", button.dataset.discFilter === (state.questionsFilter || "all"));
+      });
     }
 
-    const questions = filteredRecords(myQuestions(), ["title", "description", "status"]);
+    let questions = myQuestions();
+
+    // Localized sidebar search filter
+    if (state.discQuery) {
+      questions = questions.filter(q =>
+        String(q.title || "").toLowerCase().includes(state.discQuery) ||
+        String(q.description || "").toLowerCase().includes(state.discQuery)
+      );
+    }
+
+    // Global header search filter
+    questions = filteredRecords(questions, ["title", "description", "status"]);
+
+    const filter = state.questionsFilter || "all";
+    if (filter === "pending") {
+      questions = questions.filter(q => {
+        const res = q.review_notes || q.response || q.feedback || "";
+        return !res && !/resolved|answered|complete|approved|reviewed/i.test(q.status);
+      });
+    } else if (filter === "answered") {
+      questions = questions.filter(q => {
+        const res = q.review_notes || q.response || q.feedback || "";
+        return Boolean(res) || /resolved|answered|complete|approved|reviewed/i.test(q.status);
+      });
+    }
+
     const target = document.getElementById("questionList");
     if (!target) return;
-    target.innerHTML = questions.length ? questions.map((question) => {
-      const course = state.data.courses.find((item) => sameId(item.id, question.course_id));
-      const status = question.status || "Pending";
-      const response = question.review_notes || question.response || question.feedback || "";
-      return `
-        <article class="question-card">
-          <div class="card-topline">
-            <span class="pill ${statusTone(status)}">${escapeHtml(humanizeStatus(status))}</span>
-            <small>${escapeHtml(formatDateTime(question.created_at))}</small>
-          </div>
-          <div class="card-copy">
-            <h3>${escapeHtml(question.title || question.name || "Question")}</h3>
-            <p>${escapeHtml(truncate(question.description || question.details || "", 150))}</p>
-          </div>
-          ${response ? `<div class="question-response"><small>Response</small><p>${escapeHtml(truncate(response, 170))}</p></div>` : ""}
-          <div class="card-footer"><small class="card-meta">${escapeHtml(course?.title || course?.name || "General support")}</small></div>
-        </article>
-      `;
-    }).join("") : emptyState("No questions yet", "Submit a question when you need mentor help.");
-  }
 
-  function renderShop() {
-    setText("shopCoinBalance", formatNumber(state.student.coins));
-    const purchases = new Set(state.data.purchases
-      .filter((item) => sameId(item.user_id || item.student_id, state.student.id))
-      .map((item) => String(purchaseItemId(item))));
-    const items = filteredRecords(state.data.shopItems, ["name", "description"]);
-    const target = document.getElementById("shopGrid");
-    if (!target) return;
-    if (!items.length) {
-      target.innerHTML = emptyState("Shop is empty", "Admin can add coin rewards from the admin dashboard.");
+    if (!questions.length) {
+      target.innerHTML = `<div style="text-align: center; color: var(--st-muted); padding: 24px; font-size: 13px;">No discussions found</div>`;
+      // Clear thread if no questions are present
+      state.selectedQuestionId = null;
+      renderQuestionThread(null);
       return;
     }
 
-    target.innerHTML = items.map((item) => {
+    // Auto-select first question if none selected or if selected is not in current view
+    let activeQuestion = questions.find(q => sameId(q.id, state.selectedQuestionId));
+    if (!activeQuestion && questions.length > 0) {
+      activeQuestion = questions[0];
+      state.selectedQuestionId = activeQuestion.id;
+    }
+
+    target.innerHTML = questions.map((question) => {
+      const course = state.data.courses.find((item) => sameId(item.id, question.course_id));
+      const res = question.review_notes || question.response || question.feedback || "";
+      const answered = Boolean(res) || /resolved|answered|complete|approved|reviewed/i.test(question.status);
+      const studentName = state.student?.name || "Student";
+      const initials = initialsFor(studentName);
+      const activeClass = sameId(question.id, state.selectedQuestionId) ? "active" : "";
+      const courseName = course?.title || course?.name || "General support";
+
+      return `
+        <article class="disc-question-card ${activeClass}" data-question-id="${escapeAttr(question.id)}">
+          <div class="disc-avatar" aria-hidden="true">${escapeHtml(initials)}</div>
+          <div class="disc-question-card-content">
+            <h3 class="disc-card-title">${escapeHtml(question.title || "Question")}</h3>
+            <div class="disc-card-meta">
+              <span class="disc-tag">${escapeHtml(truncate(courseName, 20))}</span>
+              <span class="disc-card-stats">
+                ${answered ? `<span style="color: var(--st-success);">💬 Answered</span>` : `<span>⏱ Pending</span>`}
+              </span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    renderQuestionThread(activeQuestion);
+  }
+
+  function categoryTagStyle(category = "") {
+    const cat = String(category).toLowerCase();
+    if (cat.includes("react") || cat.includes("frontend") || cat.includes("js") || cat.includes("javascript")) {
+      return "background: rgba(85, 71, 233, 0.08); color: var(--st-primary); border: 1px solid rgba(85, 71, 233, 0.15);";
+    }
+    if (cat.includes("design") || cat.includes("ui") || cat.includes("ux") || cat.includes("figma")) {
+      return "background: rgba(255, 159, 28, 0.08); color: var(--st-warning); border: 1px solid rgba(255, 159, 28, 0.15);";
+    }
+    if (cat.includes("database") || cat.includes("sql") || cat.includes("supabase") || cat.includes("backend")) {
+      return "background: rgba(24, 185, 111, 0.08); color: var(--st-success); border: 1px solid rgba(24, 185, 111, 0.15);";
+    }
+    return "background: var(--st-panel-soft); color: var(--st-muted); border: 1px solid var(--st-line);";
+  }
+
+  function renderQuestionThread(question) {
+    const mainPane = document.getElementById("discMain");
+    if (!mainPane) return;
+
+    // Remove any previous thread content
+    const existingThread = document.getElementById("discThreadContainer");
+    if (existingThread) existingThread.remove();
+
+    const emptyPane = document.getElementById("discEmptyPane");
+
+    if (!question) {
+      if (emptyPane) emptyPane.hidden = false;
+      return;
+    }
+
+    if (emptyPane) emptyPane.hidden = true;
+
+    const course = state.data.courses.find((item) => sameId(item.id, question.course_id));
+    const studentName = state.student?.name || "Student";
+    const studentInitials = initialsFor(studentName);
+    const dateStr = formatDate(question.created_at) || "Recent";
+    const courseName = course?.title || course?.name || "General support";
+
+    const response = question.review_notes || question.response || question.feedback || "";
+    const answered = Boolean(response) || /resolved|answered|complete|approved|reviewed/i.test(question.status);
+
+    // Dynamic but deterministic view & like counters using a simple hash code
+    const hashCode = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return hash;
+    };
+    const codeHash = hashCode(String(question.id || ""));
+    const viewCount = Math.abs(codeHash) % 80 + 15;
+    const likeCount = Math.abs(codeHash) % 15 + 3;
+
+    let answerHtml = "";
+    if (answered) {
+      const mentorName = mentorNameForQuestion(0);
+      const mentorInitials = initialsFor(mentorName);
+      const mentorDate = formatDate(question.reviewed_at || question.updated_at) || "Recent";
+
+      const formattedAnswer = response.split("\n\n").map(para => {
+        if (para.startsWith("- ") || para.startsWith("* ")) {
+          const items = para.split(/\n[-*]\s+/).map(item => item.replace(/^[-*]\s+/, ""));
+          return `<ul>${items.map(i => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
+        }
+        return `<p>${escapeHtml(para)}</p>`;
+      }).join("");
+
+      answerHtml = `
+        <div class="disc-answers-section">
+          <h3 class="disc-answers-title">Answers (1)</h3>
+          <article class="disc-answer-card best-answer">
+            <div class="disc-best-badge">★ BEST ANSWER</div>
+            <div class="disc-answer-author">
+              <div class="disc-avatar mentor-avatar" aria-hidden="true">${escapeHtml(mentorInitials)}</div>
+              <div class="disc-author-info">
+                <strong>${escapeHtml(mentorName)}</strong>
+                <span class="disc-author-meta">Mentor &bull; ${escapeHtml(mentorDate)}</span>
+              </div>
+            </div>
+            <div class="disc-answer-content">
+              ${formattedAnswer}
+            </div>
+            <div class="disc-answer-actions">
+              <button class="text-btn" type="button">Reply</button>
+            </div>
+          </article>
+        </div>
+      `;
+    } else {
+      answerHtml = `
+        <div class="disc-answers-section">
+          <h3 class="disc-answers-title">Answers (0)</h3>
+          <div class="disc-pending-answer">
+            <div class="disc-pending-icon">⏱</div>
+            <div>
+              <strong>Pending Mentor Response</strong>
+              <p>Our LMS mentor team has been notified. You'll receive a response here within 2–4 hours.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const threadContainer = document.createElement("div");
+    threadContainer.id = "discThreadContainer";
+    threadContainer.className = "disc-thread-container";
+
+    const formattedDetails = question.description.split("\n\n").map(para => {
+      if (para.startsWith("```")) {
+        const lines = para.split("\n");
+        const headerLine = lines[0].replace("```", "").trim() || "Code";
+        const codeContent = lines.slice(1, lines.length - (lines[lines.length - 1] === "```" ? 1 : 0)).join("\n");
+        return `
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span>${escapeHtml(headerLine)}</span>
+              <button class="copy-code-btn" type="button">Copy</button>
+            </div>
+            <pre><code>${escapeHtml(codeContent)}</code></pre>
+          </div>
+        `;
+      }
+      return `<p>${escapeHtml(para)}</p>`;
+    }).join("");
+
+    const tagStyle = categoryTagStyle(courseName);
+
+    threadContainer.innerHTML = `
+      <header class="disc-thread-header">
+        <span class="disc-category-tag" style="${tagStyle}">${escapeHtml(courseName)}</span>
+        <h2 class="disc-thread-title">${escapeHtml(question.title)}</h2>
+
+        <div class="disc-author-bar">
+          <div class="disc-avatar student-avatar" aria-hidden="true">${escapeHtml(studentInitials)}</div>
+          <div class="disc-author-info">
+            <strong>${escapeHtml(studentName)}</strong>
+            <span class="disc-author-meta">Posted &bull; ${escapeHtml(dateStr)}</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="disc-thread-body">
+        ${formattedDetails}
+
+        ${question.drive_link || question.file_url ? `
+          <div class="disc-attachment-card">
+            <div class="disc-attachment-icon">📎</div>
+            <div class="disc-attachment-details">
+              <strong>Attached Resource</strong>
+              <small>${escapeHtml(truncate(question.drive_link || question.file_url, 45))}</small>
+            </div>
+            <a class="disc-attachment-link-btn" href="${escapeAttr(question.drive_link || question.file_url)}" target="_blank" rel="noopener">
+              View File ↗
+            </a>
+          </div>
+        ` : ""}
+      </div>
+
+      <div class="disc-stats-bar">
+        <span class="disc-like-count">${likeCount} likes</span>
+        <button class="disc-action-btn like-btn" type="button">❤️ Like</button>
+      </div>
+
+      ${answerHtml}
+    `;
+
+    mainPane.appendChild(threadContainer);
+
+    // Bind interactive actions on the thread
+    // Like button
+    const likeBtn = threadContainer.querySelector(".disc-action-btn.like-btn");
+    if (likeBtn) {
+      likeBtn.addEventListener("click", () => {
+        const isLiked = likeBtn.classList.toggle("active");
+        likeBtn.classList.toggle("liked", isLiked);
+        const valEl = threadContainer.querySelector(".disc-like-count");
+        if (valEl) {
+          let val = parseInt(valEl.innerText) || 0;
+          val = isLiked ? val + 1 : val - 1;
+          valEl.innerText = `${val} likes`;
+          likeBtn.innerHTML = isLiked ? "❤️ Liked" : "❤️ Like";
+        }
+      });
+    }
+
+
+    // Copy code buttons
+    threadContainer.querySelectorAll(".copy-code-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const wrapper = btn.closest(".code-block-wrapper");
+        const code = wrapper?.querySelector("code")?.innerText || "";
+        navigator.clipboard.writeText(code).then(() => {
+          showAlert("Code copied to clipboard!");
+        });
+      });
+    });
+  }
+
+  function mentorNameForQuestion(index = 0) {
+    const mentors = state.data.users.filter((user) => String(user.role || "").toLowerCase() === "mentor");
+    const mentor = mentors[index % Math.max(mentors.length, 1)];
+    return mentor?.name || "Mentor Sarah L.";
+  }
+
+  function mentorInitialsForQuestion(index = 0) {
+    return initialsFor(mentorNameForQuestion(index));
+  }
+
+  function renderSupport() {
+    const target = document.getElementById("supportTicketList");
+    if (!target) return;
+    const tickets = supportTicketsForUser();
+    target.innerHTML = tickets.length ? tickets.map(supportTicketCard).join("") : emptyState("No support tickets", "Create a ticket when you need admin support.");
+    target.querySelectorAll("[data-open-support-ticket]").forEach((button) => {
+      button.addEventListener("click", () => openSupportTicketThread(button.dataset.openSupportTicket));
+    });
+  }
+
+  function supportTicketCard(ticket) {
+    const unread = supportUnreadMessages(ticket).length;
+    const status = (ticket.status || "open").toLowerCase();
+    const statusLabel = escapeHtml(humanizeSupportStatus(ticket.status));
+    const dateStr = escapeHtml(formatDateTime(ticket.updated_at || ticket.created_at));
+    const category = escapeHtml((ticket.category || "general").toUpperCase());
+    const unreadLabel = unread ? ` · ${unread} NEW` : " · NO UNREAD";
+    const ticketId = escapeAttr(ticket.id || ticket.ticket_id);
+    return `
+      <article class="support-ticket-item" data-ticket-id="${ticketId}">
+        <div class="ticket-meta-row">
+          <span class="ticket-status-badge ${status}">${statusLabel}</span>
+          <span class="ticket-date">${dateStr}</span>
+        </div>
+        <h3 class="ticket-title">${escapeHtml(ticket.subject || "Support ticket")}</h3>
+        <p class="ticket-preview">${escapeHtml(truncate(ticket.message || "", 140))}</p>
+        <div class="ticket-footer-row">
+          <span class="ticket-category-tag">${category}${unreadLabel}</span>
+          <button class="ticket-view-link" type="button" data-open-support-ticket="${ticketId}">View Thread →</button>
+        </div>
+      </article>
+    `;
+  }
+
+  async function submitSupportTicket(event) {
+    event.preventDefault();
+    const category = document.getElementById("supportCategory")?.value || "other";
+    const subject = document.getElementById("supportSubject")?.value.trim();
+    const message = document.getElementById("supportMessage")?.value.trim();
+    const file = document.getElementById("supportAttachment")?.files?.[0] || null;
+    if (!subject || !message) return;
+
+    try {
+      const attachmentUrl = file ? await uploadSupportAttachment(file) : null;
+      const ticket = await createSupportTicket({ category, subject, message, attachmentUrl });
+      event.target.reset();
+      showAlert("Support ticket submitted. Admin has been notified.");
+      clearQueryCache();
+      await loadAllData({ force: true, silent: true });
+      if (ticket?.id || ticket?.ticket_id) openSupportTicketThread(ticket.id || ticket.ticket_id);
+    } catch (error) {
+      showAlert(userFriendlyError(error, "Unable to submit support ticket."), true);
+    }
+  }
+
+  async function createSupportTicket({ category, subject, message, attachmentUrl }) {
+    if (getClient()?.rpc) {
+      const { data, error } = await getClient().rpc("lms_support_create_ticket", {
+        requester_user_id: state.student.id,
+        requester_role: "student",
+        ticket_category: category,
+        ticket_subject: subject,
+        ticket_message: message,
+        ticket_attachment_url: attachmentUrl
+      });
+      if (!error) return Array.isArray(data) ? data[0] : data;
+      if (!isMissingRpcError(error)) throw error;
+    }
+    const payload = {
+      user_id: state.student.id,
+      user_role: "student",
+      category,
+      subject,
+      message,
+      attachment_url: attachmentUrl,
+      status: "open",
+      priority: "normal",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    const { data, error } = await getClient().from("support_tickets").insert(payload).select(SELECTS.supportTickets);
+    if (error) throw error;
+    const ticket = Array.isArray(data) ? data[0] : data;
+    await createSupportAdminNotifications(ticket);
+    return ticket;
+  }
+
+  async function createSupportAdminNotifications(ticket) {
+    const admins = state.data.users.filter((user) => String(user.role || "").toLowerCase() === "admin");
+    if (!ticket || !admins.length) return;
+    const rows = admins.map((admin) => ({
+      ticket_id: ticket.id || ticket.ticket_id,
+      recipient_user_id: admin.id,
+      recipient_role: "admin",
+      title: "New Support Ticket",
+      body: `From: ${state.student.name || state.student.email || "Student"} | Role: Student | Category: ${ticket.category || "general"} | Subject: ${ticket.subject || "Support ticket"}`,
+      channel: "in_app",
+      is_read: false,
+      created_at: new Date().toISOString()
+    }));
+    const { error } = await getClient().from("support_notifications").insert(rows);
+    if (error && !isSchemaShapeError(error)) throw error;
+  }
+
+  async function openSupportTicketThread(ticketId) {
+    const ticket = supportTicketsForUser().find((item) => sameId(item.id || item.ticket_id, ticketId));
+    if (!ticket) return;
+    const messages = supportMessagesForTicket(ticket).sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+    openModal("Support Thread", `
+      <div class="support-thread-modal">
+        <div class="support-thread-summary">
+          <span class="pill ${statusTone(ticket.status || "open")}">${escapeHtml(humanizeSupportStatus(ticket.status))}</span>
+          <h3>${escapeHtml(ticket.subject || "Support ticket")}</h3>
+          <p>${escapeHtml(ticket.message || "")}</p>
+          ${ticket.attachment_url ? `<a class="text-btn" href="${escapeAttr(ticket.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+        </div>
+        <div class="support-thread">
+          ${messages.length ? messages.map(supportMessageBubble).join("") : emptyState("No replies yet", "Admin replies will appear here.")}
+        </div>
+        <form class="stack-form" id="supportReplyForm">
+          <label>Reply
+            <textarea id="supportReplyMessage" rows="4" placeholder="Add more context..."></textarea>
+          </label>
+          <label>Attachment
+            <input id="supportReplyAttachment" type="file" />
+          </label>
+          <button class="primary-btn" type="submit">Send Reply</button>
+        </form>
+      </div>
+    `);
+    document.getElementById("supportReplyForm")?.addEventListener("submit", (event) => replyToSupportTicket(event, ticket));
+    markSupportNotificationsRead(ticket);
+  }
+
+  async function replyToSupportTicket(event, ticket) {
+    event.preventDefault();
+    await runLockedSubmit(event.currentTarget, event.submitter, "Sending reply...", async () => {
+      const message = document.getElementById("supportReplyMessage")?.value.trim();
+      const file = document.getElementById("supportReplyAttachment")?.files?.[0] || null;
+      if (!message && !file) return;
+      try {
+        const attachmentUrl = file ? await uploadSupportAttachment(file) : null;
+        await sendSupportReply(ticket, message, attachmentUrl);
+        showAlert("Support reply sent.");
+        await loadAllData({ force: true, silent: true });
+        openSupportTicketThread(ticket.id || ticket.ticket_id);
+      } catch (error) {
+        showAlert(userFriendlyError(error, "Unable to send support reply."), true);
+      }
+    });
+  }
+
+  async function sendSupportReply(ticket, message, attachmentUrl) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    if (getClient()?.rpc) {
+      const { error } = await getClient().rpc("lms_support_reply", {
+        actor_user_id: state.student.id,
+        actor_role: "student",
+        target_ticket_id: ticketId,
+        reply_message: message || "",
+        reply_attachment_url: attachmentUrl,
+        next_status: null,
+        next_priority: null
+      });
+      if (!error) return;
+      if (!isMissingRpcError(error)) throw error;
+    }
+    const { error } = await getClient().from("support_messages").insert({
+      ticket_id: ticketId,
+      sender_id: state.student.id,
+      sender_role: "student",
+      message: message || "",
+      attachment_url: attachmentUrl,
+      created_at: new Date().toISOString()
+    });
+    if (error) throw error;
+  }
+
+  async function uploadSupportAttachment(file) {
+    const safeName = String(file.name || "support-file").replace(/[^a-z0-9._-]+/gi, "-");
+    const path = `${state.student.id}/${Date.now()}-${safeName}`;
+    const { error } = await getClient().storage.from("support-attachments").upload(path, file, { cacheControl: "3600", upsert: false });
+    if (error) throw error;
+    return `support-attachments:${path}`;
+  }
+
+  function supportTicketsForUser() {
+    return state.data.supportTickets
+      .filter((ticket) => sameId(ticket.user_id, state.student.id))
+      .sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+  }
+
+  function supportMessagesForTicket(ticket) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    return state.data.supportMessages.filter((message) => sameId(message.ticket_id, ticketId));
+  }
+
+  function supportUnreadMessages(ticket) {
+    return supportMessagesForTicket(ticket).filter((message) => (
+      !message.is_read && String(message.sender_role || "").toLowerCase() === "admin"
+    ));
+  }
+
+  function notifyUnreadSupportReplies() {
+    if (!state.student?.id) return;
+    const storageKey = `${QUERY_CACHE_PREFIX}seen-support-notifications:${state.student.id}`;
+    const seen = new Set(parseIdList(sessionStorage.getItem(storageKey)));
+    const unread = state.data.supportNotifications.filter((item) => (
+      sameId(item.recipient_user_id, state.student.id)
+      && !item.is_read
+      && !seen.has(String(item.id))
+      && /admin has replied/i.test(`${item.title || ""} ${item.body || ""}`)
+    ));
+    if (!unread.length) return;
+    unread.forEach((item) => seen.add(String(item.id)));
+    sessionStorage.setItem(storageKey, JSON.stringify(Array.from(seen).slice(-80)));
+    showAlert("Admin has replied to your support request.");
+  }
+
+  function supportMessageBubble(message) {
+    const mine = sameId(message.sender_id, state.student.id);
+    return `
+      <div class="chat-bubble support-message ${mine ? "mine" : ""}">
+        <header><strong>${escapeHtml(mine ? "You" : "Admin")}</strong><time>${escapeHtml(formatDateTime(message.created_at))}</time></header>
+        <p>${escapeHtml(message.message || "")}</p>
+        ${message.attachment_url ? `<a class="text-btn" href="${escapeAttr(message.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+        <small>${message.is_read ? "Read" : "Unread"}</small>
+      </div>
+    `;
+  }
+
+  function humanizeSupportStatus(status) {
+    return String(status || "open").replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  async function markSupportNotificationsRead(ticket) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    const unreadIds = state.data.supportNotifications
+      .filter((item) => sameId(item.ticket_id, ticketId) && sameId(item.recipient_user_id, state.student.id) && !item.is_read)
+      .map((item) => item.id)
+      .filter(Boolean);
+    if (!unreadIds.length) return;
+    await getClient().from("support_notifications").update({ is_read: true, read_at: new Date().toISOString() }).in("id", unreadIds);
+  }
+
+  function renderShop() {
+    // Update coin balance in the new hero banner
+    setText("shopCoinBalance", formatNumber(state.student.coins));
+
+    const purchases = new Set(state.data.purchases
+      .filter((item) => sameId(item.user_id || item.student_id, state.student.id))
+      .map((item) => String(purchaseItemId(item))));
+    const items = filteredRecords(state.data.shopItems, ["name", "description"])
+      .filter((item) => !item.deleted_at)
+      .filter((item) => !["archived", "disabled", "inactive"].includes(String(item.status || "active").toLowerCase()))
+      .filter((item) => item.stock === undefined || item.stock === null || Number(item.stock) > 0);
+    const target = document.getElementById("shopGrid");
+    if (!target) return;
+
+    if (!items.length) {
+      target.innerHTML = emptyState("Shop is empty", "Admin can add reward items from the admin dashboard.");
+      return;
+    }
+
+    target.innerHTML = items.map((item, index) => {
       const owned = purchases.has(String(item.id));
       const price = Number(item.price || item.coins || 0);
-      const canBuy = !owned && Number(state.student.coins || 0) >= price;
+      const inStock = item.stock === undefined || item.stock === null || Number(item.stock) > 0;
+      const canBuy = inStock && !owned && Number(state.student.coins || 0) >= price;
+      const btnClass = owned ? "primary-btn owned-btn" : "primary-btn";
+      const btnLabel = owned ? "✓ Owned" : "Redeem";
       return `
         <article class="shop-card">
-          ${item.image_url ? `<img src="${escapeAttr(item.image_url)}" alt="${escapeAttr(item.name || "Reward item")}" />` : ""}
+          <img src="${escapeAttr(item.image_url || rewardDisplayImage(index))}" alt="${escapeAttr(item.name || "Reward item")}" loading="lazy" />
           <div class="card-copy">
             <h3>${escapeHtml(item.name || "Reward item")}</h3>
-            <p>${escapeHtml(truncate(item.description || "Redeem this reward with coins.", 120))}</p>
+            <p>${escapeHtml(truncate(item.description || "Redeem this reward with your earned coins.", 120))}</p>
           </div>
           <div class="shop-actions">
             <span class="pill">${formatNumber(price)} coins</span>
-            <button class="primary-btn" type="button" data-buy-item="${escapeAttr(item.id)}" ${canBuy ? "" : "disabled"}>${owned ? "Owned" : "Buy"}</button>
+            <button class="${btnClass}" type="button" data-buy-item="${escapeAttr(item.id)}" ${canBuy ? "" : "disabled"}>${btnLabel}</button>
           </div>
         </article>
       `;
@@ -1094,39 +3992,12 @@
   }
 
   function renderRewards() {
-    renderWeeklyActivity();
     renderAchievementGrid();
     renderOwnedItems();
   }
 
   function renderReferral() {
     window.renderStudentReferral?.(state.student);
-  }
-
-  function renderWeeklyActivity() {
-    const target = document.getElementById("weeklyActivity");
-    if (!target) return;
-    const activeDays = weeklyActiveDateKeys();
-    target.innerHTML = weekDays().map((day) => {
-      const active = activeDays.has(day.key);
-      return `
-      <div class="day-cell ${active ? "active" : ""}">
-        <strong>${escapeHtml(day.shortLabel)}</strong>
-        <small>${active ? "Active" : "Open"}</small>
-      </div>
-    `;
-    }).join("");
-  }
-
-  function renderDashboardAchievements() {
-    const target = document.getElementById("dashboardAchievements");
-    if (!target) return;
-    target.innerHTML = achievements().slice(0, 4).map((item) => `
-      <div class="achievement-card">
-        <strong>${escapeHtml(item.value)}</strong>
-        <small>${escapeHtml(item.label)}</small>
-      </div>
-    `).join("");
   }
 
   function renderAchievementGrid() {
@@ -1163,23 +4034,199 @@
     if (!target) return;
     const batch = currentBatch();
     const courses = enrolledCourses();
+    const profileName = state.student.name || "Student";
+    const profileEmail = state.student.email || "";
+    const streak = currentStreak();
+
+    // Top banner card
     target.innerHTML = `
-      <div class="profile-hero">
-        <div class="student-avatar">${escapeHtml(initialsFor(state.student.name || state.student.email))}</div>
-        <div>
-          <h2>${escapeHtml(state.student.name || "Student")}</h2>
-          <p class="muted">${escapeHtml(state.student.email || "")}</p>
+      <div class="profile-banner-glass">
+        <div class="banner-glass-left">
+          <div class="banner-avatar-wrapper">
+            <div class="student-avatar-square">${escapeHtml(initialsFor(profileName || profileEmail))}</div>
+          </div>
+          <div class="banner-identity">
+            <h2>${escapeHtml(profileName)}</h2>
+            <div class="banner-badge-row">
+              <span class="student-badge">Student</span>
+              <span class="batch-text">${escapeHtml(batch?.name || "No batch assigned")}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="profile-meta">
-        <div><small class="muted">Role</small><strong>Student</strong></div>
-        <div><small class="muted">Coins</small><strong>${formatNumber(state.student.coins)}</strong></div>
-        <div><small class="muted">Streak</small><strong>${currentStreak()} day${currentStreak() === 1 ? "" : "s"}</strong></div>
-        <div><small class="muted">Batch</small><strong>${escapeHtml(batch?.name || "Not assigned")}</strong></div>
-        <div><small class="muted">Courses</small><strong>${courses.length}</strong></div>
-      </div>
     `;
+
+    // Metrics cards
+    setText("profileCoinsVal", formatNumber(state.student.coins));
+    setText("profileStreakVal", `${streak} Day${streak === 1 ? "" : "s"}`);
+    setText("profileEnrolledCount", courses.length);
+    setText("profileAverageProgress", `${averageCourseProgress(courses)}%`);
+    setText("profileBatchName", batch?.name || "Not assigned");
+
+    // Completed courses count
+    const completedCount = courses.filter(c => courseProgress(c).percent === 100).length;
+    setText("profileCoursesCount", completedCount);
+
+    // Active Enrollment details
+    const activeCourse = state.selectedCourseId
+      ? courses.find((course) => sameId(course.id, state.selectedCourseId)) || courses[0]
+      : courses[0];
+    const activeCourseEl = document.getElementById("profileActiveCourse");
+    if (activeCourseEl) {
+      if (activeCourse) {
+        activeCourseEl.textContent = activeCourse.title || activeCourse.name || "";
+        const progress = courseProgress(activeCourse);
+        setText("profileActiveProgressPercent", `${progress.percent}%`);
+        const bar = document.getElementById("profileActiveProgressBar");
+        if (bar) bar.style.width = `${progress.percent}%`;
+        const activeCard = activeCourseEl.closest(".active-enrollment-card");
+        if (activeCard) activeCard.style.display = "block";
+      } else {
+        const activeCard = activeCourseEl.closest(".active-enrollment-card");
+        if (activeCard) activeCard.style.display = "none";
+      }
+    }
+
     renderIdentity();
+  }
+
+  function averageCourseProgress(courses = enrolledCourses()) {
+    if (!courses.length) return 0;
+    return Math.round(courses.reduce((sum, course) => sum + courseProgress(course).percent, 0) / courses.length);
+  }
+
+  function courseDisplayImage(course, index = 0) {
+    const explicitUrl = [
+      course?.thumbnail_url,
+      course?.image_url,
+      course?.cover_url,
+      course?.photo_url,
+      course?.banner_url
+    ].find((url) => url && !isSharedCoursePlaceholder(url));
+    if (explicitUrl) return explicitUrl;
+    const slugifyCourseImageTitle = (title) => String(title || "")
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const imageByCourseSlug = {
+      "javascript-imagination": "course/1. Technology & Software Development/mk.avif",
+      "react-frontend-bootcamp": "course/1. Technology & Software Development/st.avif",
+      "python-data-analytics": "course/2. Artificial Intelligence & Data Science/yhn.jpg",
+      "graphic-design-beginners": "course/6. Design & Creative Arts/premium_photo-1661310081873-.avif",
+      "ui-ux-mobile-sprint": "course/6. Design & Creative Arts/ux-store-jJT2r2n7lYA.jpg",
+      "brand-identity-masterclass": "course/6. Design & Creative Arts/andy-brown-8dgFq8Vbelo.jpg",
+      "facebook-digital-marketing": "course/5. Business, Finance & Marketing/social-sail-Uno9TGPs4pc.jpg",
+      "social-ads-content-strategy": "course/5. Business, Finance & Marketing/premium_photo-1661604346220-5208d18cb34e.avif",
+      "financial-analyst-investing": "course/5. Business, Finance & Marketing/anne-nygard-x07ELaNFt34.jpg",
+      "personal-finance-students": "course/5. Business, Finance & Marketing/kelly-sikkema-xoU52jUVUXA.jpg",
+      "startup-business-strategy": "course/5. Business, Finance & Marketing/lala-azizli-OFZUaeYKP3k.jpg",
+      "product-management-fundamentals": "course/5. Business, Finance & Marketing/photo-1590103514966.avif",
+      "team-leadership-communication": "course/5. Business, Finance & Marketing/premium_photo-1664476794112.avif",
+      "wellness-productivity-system": "course/7. Healthcare & Human Sciences/premium_photo-1690297732590.avif",
+      "ai-tools-study-career": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
+      "cyber-security-basics": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
+      "photography-visual-storytelling": "course/6. Design & Creative Arts/premium_photo-1737597230774.avif",
+      "programming-in-python": "course/1. Technology & Software Development/code.jpg",
+      "programming-in-java": "course/1. Technology & Software Development/chris-ried-ieic5Tq8YMk.jpg",
+      "dsa-with-python": "course/1. Technology & Software Development/we.avif",
+      "front-end-web-development": "course/1. Technology & Software Development/mk.avif",
+      "full-stack-web-development": "course/1. Technology & Software Development/st.avif",
+      "senior-sde-interview-prep": "course/1. Technology & Software Development/fotis-fotopoulos-6sAl6aQ4OWI.jpg",
+      "full-stack-developer-portfolio": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
+      "android-development": "course/1. Technology & Software Development/hossain-khan-UP3SMQSoNsM.jpg",
+      "artificial-intelligence": "course/2. Artificial Intelligence & Data Science/ai.jpg",
+      "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
+      "machine-learning": "course/2. Artificial Intelligence & Data Science/br.jpg",
+      "data-science": "course/2. Artificial Intelligence & Data Science/ji.avif",
+      "data-engineering-with-sql-and-cloud": "course/2. Artificial Intelligence & Data Science/jonathan-kemper-MMUzS5Qzuus.jpg",
+      "data-analytics-with-power-bi": "course/2. Artificial Intelligence & Data Science/yhn.jpg",
+      "data-analysis": "course/2. Artificial Intelligence & Data Science/nnii.avif",
+      "cyber-security-and-ethical-hacking": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
+      "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/istockphoto-952067022.jpg",
+      "devops": "course/3. Cyber Security, Cloud & DevOps/gettyimages.jpg",
+      "internet-of-things-iot": "course/4. Engineering & Emerging Technologies/premium_photo-1681010317789.avif",
+      "embedded-systems": "course/4. Engineering & Emerging Technologies/jeswin-thomas--Cm7hnp4WOg.jpg",
+      "vlsi": "course/4. Engineering & Emerging Technologies/adi-goldstein-EUsVwEOsblE.jpg",
+      "robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
+      "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/premium_photo.avif",
+      "nanotechnology": "course/4. Engineering & Emerging Technologies/marius-masalar-CyFBmFEsytU.jpg",
+      "digital-marketing": "course/5. Business, Finance & Marketing/social-sail-Uno9TGPs4pc.jpg",
+      "human-resource-management": "course/5. Business, Finance & Marketing/vitaly-gariev-pg2eJwNVpvY.jpg",
+      "finance": "course/5. Business, Finance & Marketing/anne-nygard-x07ELaNFt34.jpg",
+      "startup-and-entrepreneurship": "course/5. Business, Finance & Marketing/lala-azizli-OFZUaeYKP3k.jpg",
+      "business-analysis": "course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif",
+      "operation-and-supply-chain-management": "course/5. Business, Finance & Marketing/shutter-speed-BQ9usyzHx_w.jpg",
+      "e-commerce-operations-management": "course/5. Business, Finance & Marketing/premium_photo-1681488262364.avif",
+      "product-and-project-management": "course/5. Business, Finance & Marketing/photo-1590103514966.avif",
+      "stock-marketing": "course/5. Business, Finance & Marketing/premium_photo-1663040328859.avif",
+      "ui-ux": "course/6. Design & Creative Arts/ux-store-jJT2r2n7lYA.jpg",
+      "graphic-designing": "course/6. Design & Creative Arts/premium_photo-1661310081873-.avif",
+      "autocad": "course/6. Design & Creative Arts/grove-brands-RDfZRXZH2Kc.jpg",
+      "car-design": "course/6. Design & Creative Arts/hyundai-motor-group-V1DFo8C4JPA.jpg",
+      "medical-coding": "course/7. Healthcare & Human Sciences/accuray-MFSEP2g4YS0.jpg",
+      "clinical-trials-and-research": "course/7. Healthcare & Human Sciences/piron-guillaume-y5hQCIn1c6o.jpg",
+      "psychology": "course/7. Healthcare & Human Sciences/psychology.webp",
+      "counselling-psychology-practice": "course/7. Healthcare & Human Sciences/metaphor-bipolar-disorder-mind-mental-dou.webp",
+      "clinical-psychology-basics": "course/7. Healthcare & Human Sciences/importance-of-.webp",
+      "rehabilitation-psychology": "course/7. Healthcare & Human Sciences/premium_photo-1699387204388.avif"
+    };
+    const titleImage = imageByCourseSlug[slugifyCourseImageTitle(course?.title || course?.name)];
+    if (titleImage) return titleImage;
+
+    const groups = {
+      aitool: ["course/2. Artificial Intelligence & Data Science/premium_photo-.avif", "course/2. Artificial Intelligence & Data Science/premium_photo-1725907643701.avif", "course/2. Artificial Intelligence & Data Science/re.avif"],
+      business: ["course/5. Business, Finance & Marketing/photo-1590103514966.avif", "course/5. Business, Finance & Marketing/premium_photo-1681487767138.avif", "course/5. Business, Finance & Marketing/premium_photo-1726804880693-8fcdd773ce80.avif"],
+      cyber: ["course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif", "course/3. Cyber Security, Cloud & DevOps/istockphoto-1556021855.jpg", "course/3. Cyber Security, Cloud & DevOps/glen-carrie-Ls1Npp-C-P8.jpg", "course/3. Cyber Security, Cloud & DevOps/kevin-horvat-Pyjp2zmxuLk.jpg", "course/3. Cyber Security, Cloud & DevOps/premium_photo-1733306493254.avif"],
+      development: ["course/1. Technology & Software Development/mk.avif", "course/1. Technology & Software Development/st.avif", "course/1. Technology & Software Development/we.avif"],
+      finance: ["course/5. Business, Finance & Marketing/premium_photo-1663040328859.avif", "course/5. Business, Finance & Marketing/premium_photo-1664476794112.avif"],
+      graphicDesign: ["course/6. Design & Creative Arts/premium_photo-1661310081873-.avif", "course/6. Design & Creative Arts/premium_photo-1661412864160-e0.avif", "course/6. Design & Creative Arts/premium_photo-172362970.avif"],
+      lifestyle: ["course/7. Healthcare & Human Sciences/psychology.webp", "course/7. Healthcare & Human Sciences/importance-of-.webp", "course/7. Healthcare & Human Sciences/ux-788002_640.webp"],
+      management: ["course/5. Business, Finance & Marketing/premium_photo-1726812103168-6ad609e53f94.avif", "course/5. Business, Finance & Marketing/premium_photo-1733328013343.avif", "course/5. Business, Finance & Marketing/ishant-mishra-osWDvhPlGLU.jpg"],
+      marketing: ["course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif", "course/5. Business, Finance & Marketing/premium_photo-1661604346220-5208d18cb34e.avif", "course/5. Business, Finance & Marketing/premium_photo-1681488262364.avif"],
+      photo: ["course/6. Design & Creative Arts/premium_photo-1737597230774.avif", "course/6. Design & Creative Arts/hyundai-motor-group-V1DFo8C4JPA.jpg", "course/6. Design & Creative Arts/premium_photo-1661771683263.avif"]
+    };
+    const key = courseImageGroupKey(course);
+    const images = groups[key] || groups.development;
+    const basis = `${course?.title || course?.name || ""}:${course?.category || course?.difficulty || ""}`;
+    return images[Math.abs(stableHash(basis || String(index))) % images.length];
+  }
+
+  function isSharedCoursePlaceholder(url) {
+    return /(?:assets\/img\/courses\/course_thumb0\d|image\/login\/loginimg)\.(?:jpg|png|webp)$/i.test(String(url || ""));
+  }
+
+  function courseImageGroupKey(course) {
+    const text = `${course?.title || course?.name || ""} ${course?.category || ""} ${course?.difficulty || ""}`.toLowerCase();
+    if (/\b(ai|prompt|automation|workflow)\b/.test(text)) return "aitool";
+    if (/\b(cyber|security|hacking|network)\b/.test(text)) return "cyber";
+    if (/\b(finance|financial|invest|money|budget|analyst)\b/.test(text)) return "finance";
+    if (/\b(graphic|design|ui|ux|brand|figma|visual)\b/.test(text)) return "graphicDesign";
+    if (/\b(marketing|facebook|social|ads|content|campaign)\b/.test(text)) return "marketing";
+    if (/\b(business|startup|founder|entrepreneur)\b/.test(text)) return "business";
+    if (/\b(management|product|leadership|team|communication|roadmap)\b/.test(text)) return "management";
+    if (/\b(lifestyle|life style|wellness|productivity|habit|focus)\b/.test(text)) return "lifestyle";
+    if (/\b(photo|photography|camera)\b/.test(text)) return "photo";
+    return "development";
+  }
+
+  function stableHash(value) {
+    return String(value || "").split("").reduce((hash, char) => ((hash << 5) - hash) + char.charCodeAt(0), 0);
+  }
+
+  function rewardDisplayImage(index = 0) {
+    const fallbacks = [
+      "assets/img/blog/blog_post01.jpg",
+      "assets/img/blog/blog_post02.jpg",
+      "assets/img/blog/blog_post03.jpg",
+      "assets/img/blog/blog_post04.jpg"
+    ];
+    return fallbacks[index % fallbacks.length];
+  }
+
+  function setStyleWidth(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.style.width = `${clamp(Number(value) || 0, 0, 100)}%`;
   }
 
   function attachLessonProgressTracker(course, lessonItem, options = {}) {
@@ -1368,13 +4415,25 @@
 
   async function submitQuestion(event) {
     event.preventDefault();
-    const courseId = document.getElementById("questionCourse")?.value || state.selectedCourseId || null;
+    const courseId = document.getElementById("questionCourse")?.value || null;
     const title = document.getElementById("questionTitle")?.value.trim();
     const details = document.getElementById("questionDetails")?.value.trim();
     const link = document.getElementById("questionLink")?.value.trim();
     if (!title || !details) return;
+    if (!courseId || !studentCourseIds().has(String(courseId))) {
+      showAlert("Choose one of your enrolled courses before submitting a question.", true);
+      return;
+    }
 
     const candidates = [
+      {
+        student_id: state.student.id,
+        batch_id: currentBatch()?.id || null,
+        course_id: courseId,
+        title,
+        description: details,
+        status: "pending"
+      },
       {
         student_id: state.student.id,
         user_id: state.student.id,
@@ -1406,13 +4465,46 @@
     ];
 
     try {
-      await insertFirstWorking("projects", candidates);
+      await submitQuestionRecord({ courseId, title, details, link });
       event.target.reset();
+      document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "true");
       showAlert("Question submitted to your LMS team.");
       await loadAllData({ silent: true });
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to submit question. Check the projects table schema and RLS."), true);
     }
+  }
+
+  async function submitQuestionRecord({ courseId, title, details, link }) {
+    if (getClient()?.rpc) {
+      const { error } = await getClient().rpc("lms_submit_student_question", {
+        target_user_id: state.student.id,
+        target_course_id: courseId,
+        question_title: title,
+        question_description: details,
+        question_link: link || null
+      });
+      if (!error) return;
+      if (!isMissingRpcError(error)) throw error;
+    }
+
+    const isEnrolled = studentCourseIds().has(String(courseId));
+    if (!isEnrolled) throw new Error("You can ask questions only for enrolled courses.");
+    await insertFirstWorking("projects", [
+      {
+        student_id: state.student.id,
+        user_id: state.student.id,
+        batch_id: currentBatch()?.id || null,
+        course_id: courseId,
+        title,
+        description: details,
+        drive_link: link || null,
+        file_url: link || null,
+        status: "pending",
+        type: "question",
+        created_at: new Date().toISOString()
+      }
+    ]);
   }
 
   async function postChatMessage(event) {
@@ -1436,6 +4528,7 @@
       if (error) throw error;
       state.replyToChatId = null;
       input.value = "";
+      input.placeholder = "Write a message to your batch...";
       showAlert("Message posted.");
       await loadAllData({ silent: true });
     } catch (error) {
@@ -1447,8 +4540,9 @@
     state.replyToChatId = chatId;
     const source = state.data.chats.find((chat) => sameId(chat.id, chatId));
     const input = document.getElementById("chatMessage");
+    renderChatReplyBar();
     if (input) {
-      input.value = source?.message ? `Replying: ${truncate(source.message, 40)} - ` : "";
+      input.placeholder = source?.message ? `Reply to: ${truncate(source.message, 40)}` : "Write a message to your batch...";
       input.focus();
     }
   }
@@ -1456,81 +4550,129 @@
   function openTaskModal(taskId) {
     const task = state.data.batchTasks.find((item) => sameId(item.id, taskId));
     if (!task) return;
-    const existing = submissionForTask(taskId);
-    const submissionLink = taskSubmissionLink(task);
-    openModal("Submit Task", `
+    const submissions = submissionsForTask(taskId).sort((a, b) => new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0));
+    const existing = submissions[0] || null;
+    const resourceLink = taskResourceLink(task);
+    openModal(existing ? "Resubmit Task" : "Submit Task", `
       <form class="stack-form" id="taskSubmitForm">
         <p class="muted">${escapeHtml(task.title || "Task")}</p>
         <div class="task-submit-link">
-          <span>Submission Link</span>
-          ${submissionLink
-            ? `<a class="secondary-btn" href="${escapeAttr(submissionLink)}" target="_blank" rel="noopener">Open Drive Link</a>`
-            : `<p class="muted">No Drive link has been added for this task yet.</p>`}
+          <span>Task Resource</span>
+          ${resourceLink
+        ? `<a class="secondary-btn" href="${escapeAttr(resourceLink)}" target="_blank" rel="noopener">Open Task Link</a>`
+        : `<p class="muted">No task resource link has been added.</p>`}
         </div>
-        <button class="primary-btn" type="submit" ${submissionLink ? "" : "disabled"}>${existing ? "Update Submission" : "Submit Task"}</button>
+        ${existing ? `
+          <div class="import-callout">Latest submission: ${escapeHtml(formatDateTime(existing.submitted_at || existing.created_at))}. You can resubmit; the previous submission remains in history.</div>
+          ${taskSubmissionLink(existing) ? `<a class="secondary-btn" href="${escapeAttr(taskSubmissionLink(existing))}" target="_blank" rel="noopener">Open Your Submission</a>` : ""}
+        ` : ""}
+        ${submissions.length ? `
+          <div class="task-submit-link">
+            <span>Submission History</span>
+            ${submissions.slice(0, 5).map((submission, index) => `
+              <a class="secondary-btn" href="${escapeAttr(taskSubmissionLink(submission) || "#")}" target="_blank" rel="noopener">
+                ${index === 0 ? "Latest" : `Attempt ${submissions.length - index}`} - ${escapeHtml(formatDateTime(submission.submitted_at || submission.created_at))}
+              </a>
+            `).join("")}
+          </div>
+        ` : ""}
+          <label>
+            <span>Submission Link</span>
+            <input id="taskSubmissionDriveLink" type="url" placeholder="https://drive.google.com/...">
+          </label>
+          <label>
+            <span>Or Upload File</span>
+            <input id="taskSubmissionFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.png,.jpg,.jpeg,.webp">
+          </label>
+          <small class="muted">Accepted: documents, archives, and images up to 25MB.</small>
+          <button class="primary-btn" type="submit">${existing ? "Resubmit Task" : "Submit Task"}</button>
       </form>
     `);
-    document.getElementById("taskSubmitForm")?.addEventListener("submit", (event) => submitTask(event, task));
+    document.getElementById("taskSubmitForm")?.addEventListener("submit", (event) => submitTask(event, task, Boolean(existing)));
   }
 
-  async function submitTask(event, task) {
+  async function submitTask(event, task, isResubmission = false) {
     event.preventDefault();
-    const link = taskSubmissionLink(task);
-    if (!link) {
-      showAlert("This task does not have a Drive submission link yet.", true);
-      return;
-    }
-    const existing = submissionForTask(task.id);
-    const now = new Date().toISOString();
-
-    const candidates = [
-      {
-        task_id: task.id,
-        student_id: state.student.id,
-        user_id: state.student.id,
-        batch_id: task.batch_id || currentBatch()?.id || null,
-        course_id: task.course_id || selectedCourse()?.id || null,
-        submission_url: link || null,
-        drive_link: link || null,
-        file_url: link || null,
-        status: "submitted",
-        submitted_at: now,
-        created_at: existing?.created_at || now
-      },
-      {
-        task_id: task.id,
-        student_id: state.student.id,
-        submission_url: link || null,
-        status: "submitted",
-        submitted_at: now
-      },
-      {
-        task_id: task.id,
-        user_id: state.student.id,
-        file_url: link || null,
-        status: "submitted",
-        submitted_at: now
+    const form = event.currentTarget;
+    await runLockedSubmit(form, event.submitter, "Submitting task...", async () => {
+      const link = document.getElementById("taskSubmissionDriveLink")?.value.trim();
+      const file = document.getElementById("taskSubmissionFile")?.files?.[0] || null;
+      if (!link && !file) {
+        showAlert("Add a submission link or upload a file before submitting.", true);
+        return;
       }
-    ];
-
-    try {
-      if (existing?.id) {
-        await updateFirstWorking("task_submissions", existing.id, candidates);
-      } else {
-        await insertFirstWorking("task_submissions", candidates);
+      const meter = file ? createUploadMeter(form, file) : null;
+      try {
+        const fileUrl = file ? await uploadAssignmentSubmission(file, task.id) : "";
+        const result = await submitTaskRecord(task, fileUrl || link, { isResubmission, originalLink: link, fileUrl });
+        closeModal();
+        const reward = Number(result?.reward_amount || 0);
+        showAlert(`${isResubmission ? "Task resubmission" : "Task submission"} saved.${reward ? ` You earned ${reward} coins.` : ""}`);
+        await loadAllData({ silent: true });
+      } catch (error) {
+        showAlert(userFriendlyError(error, "Unable to save task submission. Check task submission RLS."), true);
+      } finally {
+        meter?.remove();
       }
-      closeModal();
-      await rewardCoins(10);
-      showAlert("Task submission saved. You earned 10 coins.");
-      await loadAllData({ silent: true });
-    } catch (error) {
-      showAlert(userFriendlyError(error, "Unable to save task submission. Check task submission RLS."), true);
-    }
+    });
+  }
+
+  async function submitTaskRecord(task, link, options = {}) {
+    const { data, error } = await getClient().rpc("lms_submit_task_once", {
+      target_task_id: task.id,
+      target_student_id: state.student.id,
+      submission_drive_link: link
+    });
+    if (error) throw error;
+    return Array.isArray(data) ? data[0] : data;
+  }
+
+  async function uploadAssignmentSubmission(file, taskId) {
+    validateUploadFile(file, {
+      maxBytes: 25 * 1024 * 1024,
+      types: [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/zip",
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+      ]
+    });
+    const safeName = String(file.name || "assignment-file").replace(/[^a-z0-9._-]+/gi, "-");
+    const path = `${state.student.id}/${taskId}/${Date.now()}-${safeName}`;
+    const { error } = await getClient().storage.from("assignment-submissions").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+    if (error) throw error;
+    return `assignment-submissions:${path}`;
+  }
+
+  function validateUploadFile(file, options = {}) {
+    if (!file) throw new Error("Choose a file first.");
+    const maxBytes = Number(options.maxBytes || 10 * 1024 * 1024);
+    const types = new Set(options.types || []);
+    if (file.size > maxBytes) throw new Error(`File is too large. Maximum size is ${Math.round(maxBytes / 1024 / 1024)}MB.`);
+    if (types.size && !types.has(file.type)) throw new Error("This file type is not allowed.");
   }
 
   async function purchaseItem(itemId) {
     const item = state.data.shopItems.find((shopItem) => sameId(shopItem.id, itemId));
     if (!item) return;
+    if (item.deleted_at || ["archived", "disabled", "inactive"].includes(String(item.status || "active").toLowerCase())) {
+      showAlert("This reward is not available right now.", true);
+      return;
+    }
+    if (item.stock !== undefined && item.stock !== null && Number(item.stock) <= 0) {
+      showAlert("This reward is out of stock.", true);
+      return;
+    }
     const price = Number(item.price || item.coins || 0);
     const coins = Number(state.student.coins || 0);
     if (coins < price) {
@@ -1539,13 +4681,10 @@
     }
 
     try {
-      const purchasePayloads = [
-        { user_id: state.student.id, item_id: item.id },
-        { student_id: state.student.id, item_id: item.id }
-      ];
-      await insertPurchaseRecord(purchasePayloads);
-
-      await updateStudentProfile({ coins: Math.max(0, coins - price) });
+      const { data, error } = await getClient().rpc("lms_purchase_shop_item", { target_item_id: item.id });
+      if (error) throw error;
+      const result = Array.isArray(data) ? data[0] : data;
+      state.student.coins = Number(result?.coins ?? coins - price);
       showAlert("Reward added to your profile.");
       await loadAllData({ silent: true });
     } catch (error) {
@@ -1553,41 +4692,6 @@
         ? "You already own this reward."
         : userFriendlyError(error, "Unable to buy item. Check the shop purchase table permissions.");
       showAlert(message, true);
-    }
-  }
-
-  async function syncDailyStreak(options = {}) {
-    if (!state.student?.id) return;
-    const next = nextDailyStreakState(state.student);
-    if (!next.shouldSave) return;
-
-    try {
-      await updateStudentProfile({
-        last_active_date: next.today,
-        streak_count: next.count
-      });
-      if (!options.silent) {
-        showAlert(`Daily streak saved: ${next.count} day${next.count === 1 ? "" : "s"}.`);
-      }
-    } catch (error) {
-      console.warn("Daily streak update failed", error);
-      if (!options.silent) {
-        showAlert("Streak could not be saved. Check Supabase user update permissions.", true);
-      }
-    }
-  }
-
-  async function rewardCoins(amount) {
-    const current = Number(state.student.coins || 0);
-    const streak = nextDailyStreakState(state.student);
-    try {
-      await updateStudentProfile({
-        coins: current + amount,
-        last_active_date: streak.today,
-        streak_count: streak.count
-      });
-    } catch (error) {
-      console.warn("Coin reward update failed", error);
     }
   }
 
@@ -1602,6 +4706,12 @@
     try {
       await updateStudentProfile(payload);
       showAlert("Profile updated.");
+      const inputs = ["profileName", "profileUsername", "profilePhone"].map(id => document.getElementById(id));
+      inputs.forEach(input => { if (input) input.disabled = true; });
+      const actions = document.getElementById("profileFormActions");
+      if (actions) actions.style.display = "none";
+      const btnText = document.getElementById("profileEditToggleBtn");
+      if (btnText) btnText.innerHTML = `<span class="edit-icon">✎</span> Edit Details`;
       await loadAllData({ silent: true });
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to update profile."), true);
@@ -1634,14 +4744,13 @@
       return;
     }
     try {
-      const { data, error } = await getClient().rpc("lms_change_legacy_password", {
-        login_email: state.student.email,
-        current_password: currentPassword,
-        new_password: password
-      });
+      await window.JenovateAuth.signInWithPassword(state.student.email, currentPassword);
+      const { data, error } = await getClient().auth.updateUser({ password });
       if (error) throw error;
-      if (!data) throw new Error("Current password is incorrect.");
+      if (!data?.user) throw new Error("Password update failed.");
       event.target.reset();
+      const form = document.getElementById("passwordForm");
+      if (form) form.style.display = "none";
       showAlert("Password updated.");
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to update password."), true);
@@ -1649,13 +4758,9 @@
   }
 
   async function logout() {
-    try {
-      await getClient()?.auth?.signOut();
-    } catch (error) {
-      console.warn("Sign out failed", error);
-    }
-    clearStoredSessions();
-    window.location.replace("login.html");
+    if (window.JenovateAuth?.signOut) await window.JenovateAuth.signOut();
+    else clearStoredSessions();
+    window.location.replace("login.html?from=logout");
   }
 
   function clearStoredSessions() {
@@ -1666,39 +4771,87 @@
   }
 
   function openMobileMenu() {
-    document.querySelector(".student-sidebar")?.classList.add("mobile-open");
+    document.body.classList.add("sidebar-open");
+    document.querySelector(".student-sidebar")?.classList.add("mobile-open", "open");
     document.getElementById("studentSidebarScrim")?.classList.add("show");
+    document.getElementById("studentMenuBtn")?.setAttribute("aria-expanded", "true");
   }
 
   function closeMobileMenu() {
-    document.querySelector(".student-sidebar")?.classList.remove("mobile-open");
+    document.body.classList.remove("sidebar-open");
+    document.querySelector(".student-sidebar")?.classList.remove("mobile-open", "open");
     document.getElementById("studentSidebarScrim")?.classList.remove("show");
+    document.getElementById("studentMenuBtn")?.setAttribute("aria-expanded", "false");
   }
 
-  function setView(viewName) {
+  function openLearningPanel() {
+    document.body.classList.add("learning-panel-open");
+    document.getElementById("studentSidePanel")?.classList.add("open");
+  }
+
+  function closeLearningPanel() {
+    document.body.classList.remove("learning-panel-open");
+    document.getElementById("studentSidePanel")?.classList.remove("open");
+  }
+
+  function handleTopSearch(event) {
+    state.query = String(event.target.value || "").trim().toLowerCase();
+    clearTimeout(state.searchTimer);
+    state.searchTimer = setTimeout(renderActiveView, 120);
+  }
+
+  function initializeHistoryNavigation() {
+    const current = history.state?.studentView;
+    if (!current || !views[current]) {
+      history.replaceState({ studentView: "dashboard" }, "", window.location.href);
+    }
+    history.pushState({ studentView: "dashboard", studentGuard: true }, "", window.location.href);
+    window.addEventListener("popstate", () => {
+      if (state.activeView !== "dashboard") {
+        setView("dashboard", { historyMode: "none" });
+        history.pushState({ studentView: "dashboard", studentGuard: true }, "", window.location.href);
+      } else if (window.confirm("Go back to the login page?")) {
+        window.location.replace("login.html?from=back");
+      } else {
+        history.pushState({ studentView: "dashboard", studentGuard: true }, "", window.location.href);
+      }
+    });
+  }
+
+  function setView(viewName, options = {}) {
     if (!views[viewName]) return;
+    const previousView = state.activeView;
     state.activeView = viewName;
+    document.body.dataset.studentView = viewName;
     Object.entries(views).forEach(([name, element]) => {
       element?.classList.toggle("active", name === viewName);
     });
     document.querySelectorAll(".nav-item").forEach((button) => {
       button.classList.toggle("active", button.dataset.view === viewName);
     });
+    document.querySelectorAll("[data-panel-view]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.panelView === viewName);
+    });
+    document.querySelectorAll(".student-top-nav [data-jump]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.jump === viewName);
+    });
+    document.querySelectorAll(".page-tabs [data-jump]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.jump === viewName);
+    });
     viewTitle.textContent = views[viewName].dataset.title || "Student LMS";
     viewKicker.textContent = views[viewName].dataset.kicker || "Jenovate";
+    document.querySelector(".student-main")?.scrollTo({ top: 0, behavior: "auto" });
+    window.scrollTo({ top: 0, behavior: "auto" });
     renderActiveView();
+    if (options.historyMode !== "none" && previousView !== viewName) {
+      history.pushState({ studentView: viewName }, "", window.location.href);
+    }
   }
 
   function ensureSelections() {
     const courses = enrolledCourses();
     if (!state.selectedCourseId || !courses.some((course) => sameId(course.id, state.selectedCourseId))) {
       state.selectedCourseId = preferredLearningCourse(courses)?.id || "";
-    } else {
-      const selected = courses.find((course) => sameId(course.id, state.selectedCourseId));
-      const preferred = preferredLearningCourse(courses);
-      if (selected && !parseModules(selected.modules).length && preferred && parseModules(preferred.modules).length) {
-        state.selectedCourseId = preferred.id;
-      }
     }
     const batches = scopedBatches();
     if (!state.selectedBatchId || !batches.some((batch) => sameId(batch.id, state.selectedBatchId))) {
@@ -1713,33 +4866,67 @@
 
   function enrolledCourses() {
     const ids = studentCourseIds();
-    const mentorIds = studentMentorIds();
-    const courses = state.data.courses.filter((course) => (
-      ids.size === 0
-      || ids.has(String(course.id))
-      || (
-        mentorIds.has(String(course.mentor_id || ""))
-        && ["published", "active", "live"].includes(String(course.status || "").toLowerCase())
-      )
-    ));
-    return courses.length ? courses : state.data.courses;
+    const sourceCourses = mergedCourseRows(state.data.courses, state.data.catalogCourses);
+    return ids.size ? sourceCourses.filter((course) => (
+      ids.has(String(course.id))
+      && (!isArchivedCourse(course) || courseProgress(course).percent >= 100)
+    )) : [];
+  }
+
+  function isArchivedCourse(course) {
+    return String(course?.status || "").toLowerCase() === "archived";
+  }
+
+  function catalogCourses() {
+    const courses = mergedCourseRows(state.data.catalogCourses, state.data.courses);
+    return (courses.length ? courses : state.data.courses)
+      .filter((course) => String(course.status || "").toLowerCase() !== "archived");
+  }
+
+  function mergedCourseRows(...sources) {
+    const rows = new Map();
+    sources.flat().filter(Boolean).forEach((course) => {
+      const key = String(course.id || course.title || randomId());
+      const existing = rows.get(key);
+      if (!existing || courseRichness(course) > courseRichness(existing)) {
+        rows.set(key, { ...(existing || {}), ...course });
+      } else {
+        rows.set(key, { ...course, ...existing });
+      }
+    });
+    return Array.from(rows.values());
+  }
+
+  function courseRichness(course) {
+    return parseModules(course?.modules).length * 100 + Object.values(course || {}).filter(Boolean).length;
   }
 
   function preferredLearningCourse(courses) {
-    return courses.find((course) => parseModules(course.modules).length)
-      || courses.find((course) => ["published", "active", "live"].includes(String(course.status || "").toLowerCase()))
-      || courses[0]
+    return [...courses].sort((a, b) => courseContentScore(b) - courseContentScore(a))[0]
       || null;
   }
 
+  function courseContentScore(course) {
+    const modules = parseModules(course?.modules);
+    const lessonCount = modules.reduce((sum, module) => sum + moduleLessons(module).length, 0);
+    const quizCount = modules.reduce((sum, module) => sum + Number(moduleQuiz(module)?.questions?.length || 0), 0);
+    const publishedBonus = ["published", "active", "live"].includes(String(course?.status || "").toLowerCase()) ? 1 : 0;
+    return lessonCount * 1000 + quizCount * 100 + modules.length * 10 + publishedBonus;
+  }
+
   function studentCourseIds() {
+    return assignedCourseIds();
+  }
+
+  function assignedCourseIds() {
     const ids = new Set();
     parseIdList(state.student.course_ids).forEach((id) => ids.add(String(id)));
     state.data.userCourses
-      .filter((item) => sameId(item.user_id || item.student_id || item.learner_id, state.student.id))
-      .forEach((item) => item.course_id && ids.add(String(item.course_id)));
-    state.data.progress
-      .filter((item) => sameId(item.student_id, state.student.id))
+      .filter((item) => (
+        sameId(item.user_id || item.student_id || item.learner_id, state.student.id)
+        && !item.deleted_at
+        && !["cancelled", "archived", "removed"].includes(String(item.status || "active").toLowerCase())
+      ))
       .forEach((item) => item.course_id && ids.add(String(item.course_id)));
     state.data.batches
       .filter((batch) => sameId(batch.id, state.student.batch_id))
@@ -1757,22 +4944,32 @@
 
   function scopedBatches() {
     const courseIds = studentCourseIds();
-    return state.data.batches.filter((batch) => sameId(batch.id, state.student.batch_id) || courseIds.has(String(batch.course_id)));
+    return state.data.batches.filter((batch) => (
+      String(batch.status || "").toLowerCase() !== "archived"
+      && (sameId(batch.id, state.student.batch_id) || courseIds.has(String(batch.course_id)))
+    ));
   }
 
   function currentBatch() {
-    return scopedBatches().find((batch) => sameId(batch.id, state.student.batch_id))
-      || scopedBatches().find((batch) => sameId(batch.id, state.selectedBatchId))
+    return scopedBatches().find((batch) => sameId(batch.id, state.selectedBatchId))
+      || scopedBatches().find((batch) => sameId(batch.id, state.student.batch_id))
       || scopedBatches()[0]
       || null;
   }
 
   function scopedTasks() {
     const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
-    return state.data.batchTasks.filter((task) => !task.batch_id || batchIds.has(String(task.batch_id)));
+    return state.data.batchTasks.filter((task) => (
+      String(task.status || "active").toLowerCase() !== "archived"
+      && (!task.batch_id || batchIds.has(String(task.batch_id)))
+    ));
   }
 
   function scopedChats() {
+    const selected = currentBatch();
+    if (selected) {
+      return state.data.chats.filter((chat) => !chat.batch_id || sameId(chat.batch_id, selected.id));
+    }
     const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
     return state.data.chats.filter((chat) => !chat.batch_id || batchIds.has(String(chat.batch_id)));
   }
@@ -1780,15 +4977,18 @@
   function scopedAnnouncements() {
     const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
     const courseIds = studentCourseIds();
+    const selected = currentBatch();
     return state.data.announcements
       .filter((item) => {
         const status = String(item.status || "published").toLowerCase();
         const audience = String(item.audience || "all").toLowerCase();
         const expired = item.expires_at && new Date(item.expires_at).getTime() < Date.now();
-        if (status !== "published" || expired) return false;
-        if (audience === "all" || audience === "students") return true;
-        if (item.batch_id && batchIds.has(String(item.batch_id))) return true;
+        if (!["published", "active", "live", "sent", ""].includes(status) || expired) return false;
+        if (["all", "student", "students", "learner", "learners"].includes(audience)) return true;
+        if (item.batch_id && (sameId(item.batch_id, selected?.id) || batchIds.has(String(item.batch_id)))) return true;
         if (item.course_id && courseIds.has(String(item.course_id))) return true;
+        if (["batch", "batches"].includes(audience) && !item.batch_id) return true;
+        if (["course", "courses"].includes(audience) && !item.course_id) return true;
         return false;
       })
       .sort((a, b) => new Date(b.published_at || b.created_at || 0) - new Date(a.published_at || a.created_at || 0));
@@ -1808,6 +5008,11 @@
     if (!batch) return null;
     return state.data.users.find((user) => sameId(user.id, batch.mentor_id))
       || state.data.users.find((user) => String(user.role).toLowerCase() === "mentor");
+  }
+
+  function courseForBatch(batch) {
+    if (!batch) return null;
+    return state.data.courses.find((item) => sameId(item.id, batch.course_id)) || null;
   }
 
   function batchPeriod(batch) {
@@ -1832,6 +5037,10 @@
 
   function taskSubmissionLink(task) {
     return String(task?.drive_link || task?.google_drive_link || task?.submission_url || task?.file_url || "").trim();
+  }
+
+  function taskResourceLink(task) {
+    return String(task?.drive_link || task?.google_drive_link || task?.file_url || "").trim();
   }
 
   function filteredCourses(courses) {
@@ -1859,7 +5068,7 @@
     const audience = String(item?.audience || "all").toLowerCase();
     if (audience === "batch") return "Batch";
     if (audience === "course") return "Course";
-    if (audience === "students") return "Students";
+    if (["student", "students", "learner", "learners"].includes(audience)) return "Students";
     return "Students and mentors";
   }
 
@@ -1883,6 +5092,12 @@
     return "success";
   }
 
+  function isReviewedSubmission(submission) {
+    const status = String(submission?.status || "").toLowerCase();
+    return Boolean(String(submission?.feedback || "").trim())
+      || /reviewed|approved|graded|accepted|completed|resolved/.test(status);
+  }
+
   function statusTone(value) {
     const status = String(value || "").toLowerCase();
     if (/done|complete|submitted|approved|resolved|active/.test(status)) return "success";
@@ -1900,25 +5115,107 @@
     return purchase?.item_id || purchase?.shop_item_id || purchase?.product_id || purchase?.reward_id;
   }
 
+  function tasksForCourse(course) {
+    const batchIds = new Set(scopedBatches()
+      .filter((batch) => sameId(batch.course_id, course.id))
+      .map((batch) => String(batch.id)));
+    return scopedTasks().filter((task) => (
+      !task.deleted_at
+      && !["draft", "unpublished", "archived", "deleted", "cancelled"].includes(String(task.status || "published").toLowerCase())
+      && (sameId(task.course_id, course.id) || batchIds.has(String(task.batch_id || "")))
+    ));
+  }
+
+  function moduleContentProgressFromState(course, modules, moduleIndex, row) {
+    const lessons = flattenCourseLessons(course, modules).filter((item) => item.moduleIndex === moduleIndex);
+    const measured = lessons
+      .map((item) => lessonProgressFromState(row, item))
+      .filter((item) => item.durationSeconds > 0);
+    const totalDuration = measured.reduce((sum, item) => sum + item.durationSeconds, 0);
+    if (totalDuration > 0) {
+      const watched = measured.reduce((sum, item) => sum + Math.min(item.watchedSeconds, item.durationSeconds), 0);
+      return clamp((watched / totalDuration) * 100, 0, 100);
+    }
+    if (!lessons.length) return null;
+    const completed = lessons.filter((item) => (
+      lessonProgressFromState(row, item).completed || legacyOrderCompleted(row?.completed_lessons, item.order)
+    )).length;
+    return clamp((completed / lessons.length) * 100, 0, 100);
+  }
+
   function courseProgress(course) {
     const row = state.data.progress.find((item) => sameId(item.course_id, course.id) && sameId(item.student_id, state.student.id));
     const modules = parseModules(course.modules);
     const lessons = flattenCourseLessons(course, modules);
-    const totalLessons = Math.max(1, lessons.length);
+    const totalLessons = lessons.length;
     const completedLessons = lessons.filter((item) => (
       lessonProgressFromState(row, item).completed || legacyOrderCompleted(row?.completed_lessons, item.order)
     )).length;
-    const completedModules = modules.filter((module, index) => (
-      moduleProgressFromState(course, modules, index, row).completed || legacyOrderCompleted(row?.completed_modules, index + 1)
-    )).length;
+    const moduleStates = modules.map((module, index) => {
+      const measured = moduleProgressFromState(course, modules, index, row);
+      const completed = measured.completed || legacyOrderCompleted(row?.completed_modules, index + 1);
+      return { ...measured, completed, percent: completed ? 100 : measured.percent };
+    });
+    const completedModules = moduleStates.filter((module) => module.completed).length;
     const explicitProgress = numberFrom(row?.progress ?? row?.percentage ?? row?.percent);
-    const percent = modules.length
-      ? clamp(Math.round((completedModules / modules.length) * 100), 0, 100)
+    const lessonContent = lessons.map((item) => lessonProgressFromState(row, item));
+    const measuredDurations = lessonContent.map((item) => item.durationSeconds).filter((duration) => duration > 0);
+    const fallbackDuration = measuredDurations.length
+      ? measuredDurations.reduce((sum, duration) => sum + duration, 0) / measuredDurations.length
+      : 1;
+    const contentWeight = lessonContent.reduce((sum, item) => sum + (item.durationSeconds || fallbackDuration), 0);
+    const contentPercent = lessonContent.length && contentWeight > 0
+      ? clamp(lessonContent.reduce((sum, item) => (
+        sum + (item.completed ? 100 : item.percent) * (item.durationSeconds || fallbackDuration)
+      ), 0) / contentWeight, 0, 100)
       : explicitProgress !== null
-      ? clamp(Math.round(explicitProgress), 0, 100)
-      : clamp(Math.round((completedLessons / totalLessons) * 100), 0, 100);
+        ? clamp(explicitProgress, 0, 100)
+        : 0;
 
-    return { row, modules, totalLessons, completedLessons, completedModules, percent };
+    const requiredTasks = tasksForCourse(course);
+    const requiredTaskIds = new Set(requiredTasks.map((task) => String(task.id)));
+    const submittedTaskIds = new Set(state.data.taskSubmissions
+      .filter((submission) => (
+        sameId(submission.student_id || submission.user_id, state.student.id)
+        && !submission.deleted_at
+        && requiredTaskIds.has(String(submission.task_id || ""))
+        && isSubmittedAssignment(submission)
+      ))
+      .map((submission) => String(submission.task_id)));
+    const assignmentCompletion = requiredTasks.length ? (submittedTaskIds.size / requiredTasks.length) * 100 : 0;
+
+    const requiredQuizzes = courseQuizCatalog(course);
+    const completedQuizzes = requiredQuizzes.filter((quiz) => {
+      const attempt = bestQuizAttempt(course.id, quiz.moduleId, quiz.id);
+      if (!attempt) return false;
+      if (attempt.passed === true || String(attempt.passed).toLowerCase() === "true") return true;
+      const score = numberFrom(attempt.score ?? attempt.quiz_score);
+      const maximum = numberFrom(attempt.total ?? attempt.max_score);
+      const passScore = maximum !== null ? Math.ceil(maximum * quiz.passRatio) : null;
+      return score !== null && passScore !== null && score >= passScore;
+    }).length;
+    const quizCompletion = requiredQuizzes.length ? (completedQuizzes / requiredQuizzes.length) * 100 : 0;
+
+    const contentAvailable = totalLessons > 0 || explicitProgress !== null;
+    const percent = window.JenovateAcademicMetrics
+      ? Math.round(window.JenovateAcademicMetrics.courseProgress({
+        content: { value: contentPercent, available: contentAvailable },
+        assignments: { value: assignmentCompletion, available: requiredTasks.length > 0 },
+        quizzes: { value: quizCompletion, available: requiredQuizzes.length > 0 }
+      }))
+      : Math.round(contentPercent);
+
+    return {
+      row,
+      modules,
+      totalLessons,
+      completedLessons,
+      completedModules,
+      contentPercent: Math.round(contentPercent),
+      assignmentCompletion: Math.round(assignmentCompletion),
+      quizCompletion: Math.round(quizCompletion),
+      percent
+    };
   }
 
   function lessonProgressFromState(row, lessonItem) {
@@ -1936,6 +5233,9 @@
     const module = modules[moduleIndex];
     const lessons = flattenCourseLessons(course, modules).filter((item) => item.moduleIndex === moduleIndex);
     const mediaLessons = lessons.filter((item) => item.mediaUrl);
+    const quiz = moduleQuiz(module);
+    const hasQuiz = Boolean(quiz?.questions?.length);
+    const quizCompleted = !hasQuiz || moduleQuizCompleted(course, module, quiz);
     const measured = mediaLessons
       .map((item) => lessonProgressFromState(row, item))
       .filter((item) => item.durationSeconds > 0);
@@ -1943,19 +5243,37 @@
     if (totalDuration > 0) {
       const watched = measured.reduce((sum, item) => sum + Math.min(item.watchedSeconds, item.durationSeconds), 0);
       const percent = clamp(Math.round((watched / totalDuration) * 100), 0, 100);
-      return { percent, completed: percent >= 95, watchedSeconds: watched, durationSeconds: totalDuration };
+      const completed = percent >= 95 && quizCompleted;
+      return { percent: completed ? 100 : percent, completed, watchedSeconds: watched, durationSeconds: totalDuration };
     }
 
     const completedLessons = lessons.filter((item) => (
       lessonProgressFromState(row, item).completed || legacyOrderCompleted(row?.completed_lessons, item.order)
     )).length;
     const percent = clamp(Math.round((completedLessons / Math.max(1, lessons.length)) * 100), 0, 100);
+    const lessonCompleted = lessons.length ? percent >= 100 : true;
+    const storedCompleted = completedValueArray(row?.completed_modules).map(String).includes(moduleProgressKey(course, module, moduleIndex));
+    const completed = (storedCompleted || lessonCompleted) && quizCompleted;
     return {
-      percent,
-      completed: percent >= 100 || completedValueArray(row?.completed_modules).map(String).includes(moduleProgressKey(course, module, moduleIndex)),
+      percent: completed ? 100 : (hasQuiz && !quizCompleted ? Math.min(percent, 95) : percent),
+      completed,
       watchedSeconds: 0,
       durationSeconds: 0
     };
+  }
+
+  function moduleQuizCompleted(course, module, quiz = moduleQuiz(module)) {
+    if (!quiz?.questions?.length) return true;
+    const best = bestQuizAttempt(course?.id, module?.id, quiz?.id);
+    if (!best) return false;
+    if (best.passed === true || String(best.passed).toLowerCase() === "true") return true;
+    const score = numberFrom(best.score ?? best.quiz_score);
+    const total = numberFrom(best.total ?? best.max_score ?? best.maxScore);
+    if (score === null) return false;
+    const storedPassScore = numberFrom(best.pass_score);
+    if (storedPassScore !== null) return score >= storedPassScore;
+    if (total !== null) return score >= quizAttemptPassMarks(quiz, total);
+    return total ? Math.round((score / total) * 100) >= 60 : false;
   }
 
   function progressJsonState(row) {
@@ -2065,7 +5383,7 @@
 
   function flattenCourseLessons(course, modules = parseModules(course?.modules)) {
     return modules.flatMap((module, moduleIndex) => {
-      const sourceLessons = module.lessons.length ? module.lessons : [{ title: module.title || `Module ${moduleIndex + 1}`, duration: course?.duration || "" }];
+      const sourceLessons = module.lessons;
       return sourceLessons.map((lesson, lessonIndex) => ({
         key: lessonKey(course?.id, moduleIndex, lessonIndex, lesson),
         course,
@@ -2091,13 +5409,33 @@
   function lessonMediaUrl(lesson) {
     return [
       lesson?.video_drive_link,
+      lesson?.videoDriveLink,
       lesson?.video_url,
+      lesson?.videoUrl,
       lesson?.drive_link,
+      lesson?.driveLink,
       lesson?.google_drive_link,
+      lesson?.googleDriveLink,
       lesson?.file_url,
+      lesson?.fileUrl,
       lesson?.url,
       lesson?.content_url,
-      lesson?.material_url
+      lesson?.contentUrl,
+      lesson?.material_url,
+      lesson?.materialUrl
+    ].map((item) => String(item || "").trim()).find(Boolean) || "";
+  }
+
+  function lessonMaterialUrl(lesson) {
+    return [
+      lesson?.material_url,
+      lesson?.materialUrl,
+      lesson?.file_url,
+      lesson?.fileUrl,
+      lesson?.content_url,
+      lesson?.contentUrl,
+      lesson?.resource_url,
+      lesson?.resourceUrl
     ].map((item) => String(item || "").trim()).find(Boolean) || "";
   }
 
@@ -2136,59 +5474,161 @@
   }
 
   function parseModules(value) {
-    const parsed = typeof value === "string" ? tryJson(value) : value;
+    const parsed = parseJsonDeep(value);
     const source = Array.isArray(parsed)
       ? parsed
       : Array.isArray(parsed?.modules)
         ? parsed.modules
-        : parsed && typeof parsed === "object"
-          ? Object.values(parsed)
-          : [];
-    return source.map((module, index) => {
+        : Array.isArray(parsed?.course_modules)
+          ? parsed.course_modules
+          : Array.isArray(parsed?.data?.modules)
+            ? parsed.data.modules
+            : Array.isArray(parsed?.course?.modules)
+              ? parsed.course.modules
+              : Array.isArray(parsed?.curriculum)
+                ? parsed.curriculum
+                : Array.isArray(parsed?.syllabus)
+                  ? parsed.syllabus
+                  : Array.isArray(parsed?.content)
+                    ? parsed.content
+                    : Array.isArray(parsed?.lessons)
+                      ? [{ title: parsed.title || "Course content", lessons: parsed.lessons, quiz: parsed.quiz || parsed.questions || parsed.quizQuestions }]
+                      : Array.isArray(parsed?.items)
+                        ? parsed.items
+                        : parsed && typeof parsed === "object"
+                          ? Object.values(parsed)
+                          : [];
+    return source.filter((module) => module && !module.deleted_at).map((module, index) => {
       if (typeof module === "string") {
         return { id: `module-${index + 1}`, title: module, description: "", order_index: index + 1, lessons: [{ title: module, order_index: 1 }] };
       }
-      const lessons = Array.isArray(module.lessons) ? module.lessons : Array.isArray(module.items) ? module.items : [];
+      if (typeof module !== "object") {
+        return { id: `module-${index + 1}`, title: `Module ${index + 1}`, description: String(module || ""), order_index: index + 1, lessons: [] };
+      }
+      const parsedLessonSources = [
+        module.lessons,
+        module.lesson_list,
+        module.lessonList,
+        module.module_lessons,
+        module.moduleLessons,
+        module.videos,
+        module.resources,
+        module.studyMaterials,
+        module.study_materials,
+        module.materials,
+        module.items,
+        module.content
+      ].map(parseJsonDeep).filter(Array.isArray);
+      const parsedLessons = [];
+      const seenLessons = new Set();
+      parsedLessonSources.flat().forEach((lesson) => {
+        const key = typeof lesson === "string"
+          ? `text:${lesson}`
+          : [
+            lesson?.id,
+            lesson?.lesson_id,
+            lesson?.title,
+            lesson?.name,
+            lesson?.video_drive_link,
+            lesson?.video_url,
+            lesson?.drive_link,
+            lesson?.driveLink,
+            lesson?.google_drive_link,
+            lesson?.googleDriveLink,
+            lesson?.url
+          ].filter(Boolean).join(":");
+        const stableKey = key || `lesson-${parsedLessons.length + 1}`;
+        if (seenLessons.has(stableKey)) return;
+        seenLessons.add(stableKey);
+        parsedLessons.push(lesson);
+      });
       const moduleId = module.id || module.module_id || `module-${index + 1}`;
-      const moduleTitle = module.title || module.name || `Module ${index + 1}`;
+      const moduleTitle = module.title || module.name || module.module_title || module.heading || `Module ${index + 1}`;
       return {
         id: moduleId,
         title: moduleTitle,
         description: module.description || module.summary || "",
         type: module.type || module.module_type || "Self-paced",
         order_index: Number(module.order_index || module.order || index + 1),
-        quiz: normalizeQuiz(module.quiz || module.module_quiz || module.quizQuestions || module.questions, { ...module, id: moduleId, title: moduleTitle }),
-        lessons: lessons.map((lesson, lessonIndex) => typeof lesson === "string"
+        quiz: normalizeQuiz(
+          module.quiz
+          || module.module_quiz
+          || module.moduleQuiz
+          || module.quizQuestions
+          || module.quiz_questions
+          || module.quiz_items
+          || module.questions
+          || module.question_list
+          || module.data?.quiz
+          || module.data?.questions
+          || module.assessment
+          || module.test,
+          { ...module, id: moduleId, title: moduleTitle }
+        ),
+        lessons: parsedLessons.filter((lesson) => typeof lesson === "string" || !lesson?.deleted_at).map((lesson, lessonIndex) => typeof lesson === "string"
           ? { id: `lesson-${index + 1}-${lessonIndex + 1}`, title: lesson, order_index: lessonIndex + 1 }
           : {
-              id: lesson.id || lesson.lesson_id || `lesson-${index + 1}-${lessonIndex + 1}`,
-              title: lesson.title || lesson.name || `Lesson ${lessonIndex + 1}`,
-              description: lesson.description || lesson.summary || "",
-              duration: lesson.duration || lesson.time || "",
-              transcript: lesson.transcript || "",
-              order_index: Number(lesson.order_index || lesson.order || lessonIndex + 1),
-              video_drive_link: lesson.video_drive_link || "",
-              video_url: lesson.video_url || "",
-              drive_link: lesson.drive_link || lesson.google_drive_link || lesson.url || "",
-              google_drive_link: lesson.google_drive_link || "",
-              file_url: lesson.file_url || "",
-              url: lesson.url || "",
-              content_url: lesson.content_url || "",
-              material_url: lesson.material_url || ""
-            }).sort((a, b) => Number(a.order_index || 0) - Number(b.order_index || 0))
+            id: lesson.id || lesson.lesson_id || `lesson-${index + 1}-${lessonIndex + 1}`,
+            title: lesson.title || lesson.name || lesson.lesson_title || lesson.heading || `Lesson ${lessonIndex + 1}`,
+            description: lesson.description || lesson.summary || "",
+            content_type: lesson.content_type || lesson.contentType || lesson.type || (lesson.material_url || lesson.materialUrl ? "study_material" : "video"),
+            duration: lesson.duration || lesson.time || "",
+            transcript: lesson.transcript || "",
+            order_index: Number(lesson.order_index || lesson.order || lessonIndex + 1),
+            video_drive_link: lesson.video_drive_link || lesson.videoDriveLink || lesson.drive_video || "",
+            video_url: lesson.video_url || lesson.videoUrl || lesson.video || lesson.media_url || "",
+            drive_link: lesson.drive_link || lesson.driveLink || lesson.google_drive_link || lesson.googleDriveLink || lesson.url || "",
+            google_drive_link: lesson.google_drive_link || lesson.googleDriveLink || "",
+            file_url: lesson.file_url || lesson.fileUrl || "",
+            url: lesson.url || "",
+            content_url: lesson.content_url || lesson.contentUrl || "",
+            material_url: lesson.material_url || lesson.materialUrl || lesson.drive_link || lesson.driveLink || lesson.google_drive_link || lesson.googleDriveLink || ""
+          }).sort((a, b) => Number(a.order_index || 0) - Number(b.order_index || 0))
       };
     }).sort((a, b) => Number(a.order_index || 0) - Number(b.order_index || 0));
   }
 
+  function moduleLessons(module) {
+    return Array.isArray(module?.lessons) ? module.lessons : [];
+  }
+
+  function moduleQuiz(module) {
+    return module?.quiz || normalizeQuiz(
+      module?.module_quiz
+      || module?.moduleQuiz
+      || module?.quizQuestions
+      || module?.quiz_questions
+      || module?.quiz_items
+      || module?.questions
+      || module?.question_list
+      || module?.data?.quiz
+      || module?.data?.questions
+      || module?.assessment
+      || module?.test,
+      module
+    );
+  }
+
   function normalizeQuiz(rawQuiz, module = {}) {
     if (!rawQuiz) return null;
-    const source = Array.isArray(rawQuiz) ? { questions: rawQuiz } : rawQuiz;
+    const parsedQuiz = parseJsonDeep(rawQuiz);
+    const source = Array.isArray(parsedQuiz) ? { questions: parsedQuiz } : parsedQuiz;
     if (!source || typeof source !== "object") return null;
     const rawQuestions = Array.isArray(source.questions)
       ? source.questions
       : Array.isArray(source.quizQuestions)
         ? source.quizQuestions
-        : [];
+        : Array.isArray(source.quiz_questions)
+          ? source.quiz_questions
+          : Array.isArray(source.items)
+            ? source.items
+            : Array.isArray(source.question_list)
+              ? source.question_list
+              : Array.isArray(source.data?.questions)
+                ? source.data.questions
+                : Array.isArray(source.quiz?.questions)
+                  ? source.quiz.questions
+                  : [];
     const questions = rawQuestions.map(normalizeQuizQuestion).filter((question) => question.text);
     const totalMarks = questions.reduce((sum, question) => sum + Number(question.marks || 0), 0);
     const title = source.title || source.name || `${module?.title || "Module"} Quiz`;
@@ -2199,6 +5639,8 @@
       pass_marks: Number(source.pass_marks || source.passMarks || source.passing_score || Math.ceil(totalMarks * 0.6) || 0),
       random_count: Number(source.random_count || source.randomQuestions || source.random_questions || 0),
       max_attempts: Number(source.max_attempts || source.maxAttempts || 0),
+      timer_minutes: Number(source.timer_minutes || source.timerMinutes || source.duration_minutes || source.durationMinutes || 0),
+      status: String(source.status || source.publish_status || (source.is_published === false ? "draft" : "published")).toLowerCase(),
       questions
     };
   }
@@ -2297,9 +5739,14 @@
       }
     }
 
+    if (![opt_a, opt_b, opt_c, opt_d].some(Boolean) && !/^[A-Da-d1-4]$/.test(String(rawAnswer).trim())) {
+      opt_a = String(rawAnswer || "").trim();
+      rawAnswer = "A";
+    }
+
     return {
       id: question.id || question.question_id || randomId(),
-      text: question.text || question.question || question.prompt || question.title || question.q || "",
+      text: question.text || question.question || question.question_text || question.questionText || question.prompt || question.prompt_text || question.title || question.q || "",
       option_a: opt_a,
       option_b: opt_b,
       option_c: opt_c,
@@ -2327,6 +5774,30 @@
     return (quiz?.questions || []).reduce((sum, question) => sum + Number(question.marks || 0), 0);
   }
 
+  function quizAttemptsFor(courseId, moduleId, quizId) {
+    const course = state.data.courses.find((c) => sameId(c.id, courseId));
+    const modules = course ? parseModules(course.modules) : [];
+    const quizModules = modules.filter((module) => {
+      const quiz = normalizeQuiz(module.quiz || module.quizQuestions || module.questions, module);
+      return quiz && quiz.questions && quiz.questions.length > 0;
+    });
+    const hasOnlyOneQuiz = quizModules.length === 1;
+    return state.data.quizAttempts.filter((attempt) => (
+      sameId(attempt.student_id || attempt.user_id, state.student.id)
+      && !attempt.deleted_at
+      && sameId(attempt.course_id, courseId)
+      && (
+        sameId(attempt.module_id, moduleId)
+        || sameId(attempt.quiz_id, quizId)
+        || (
+          (attempt.module_id === null || attempt.module_id === undefined || attempt.quiz_id === null || attempt.quiz_id === undefined)
+          && hasOnlyOneQuiz
+          && sameId(quizModules[0].id, moduleId)
+        )
+      )
+    ));
+  }
+
   function bestQuizAttempt(courseId, moduleId, quizId) {
     const course = state.data.courses.find((c) => sameId(c.id, courseId));
     const modules = course ? parseModules(course.modules) : [];
@@ -2339,6 +5810,7 @@
     return state.data.quizAttempts
       .filter((attempt) => (
         sameId(attempt.student_id || attempt.user_id, state.student.id)
+        && !attempt.deleted_at
         && sameId(attempt.course_id, courseId)
         && (
           sameId(attempt.module_id, moduleId)
@@ -2353,36 +5825,60 @@
       .sort((a, b) => Number(b.score || b.quiz_score || 0) - Number(a.score || a.quiz_score || 0))[0] || null;
   }
 
-  function lessonsBefore(modules, moduleIndex) {
-    return modules.slice(0, moduleIndex).reduce((sum, module) => sum + Math.max(1, module.lessons.length), 0);
+  function formatQuizTime(seconds) {
+    const total = Math.max(0, Number(seconds || 0));
+    const minutes = Math.floor(total / 60);
+    const remainder = Math.floor(total % 60);
+    return `${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")} left`;
   }
 
+  function lessonsBefore(modules, moduleIndex) {
+    return modules.slice(0, moduleIndex).reduce((sum, module) => sum + module.lessons.length, 0);
+  }
+
+  // Returns the ISO key ("YYYY-MM-DD") for Monday of the current week.
+  function thisWeekMondayKey() {
+    const now = new Date();
+    const mondayOffset = (now.getDay() + 6) % 7; // getDay(): 0=Sun,1=Mon…6=Sat
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - mondayOffset);
+    return dateKeyFromDate(monday);
+  }
+
+  // Weekly streak state (Mon–Sun).
+  // The count goes 1→7 as the student logs in each day of the week.
+  // On the first login of a new week (Monday or later after last week)
+  // the count resets to 1.
   function nextDailyStreakState(profile) {
     const today = todayKey();
     const lastActive = dateKeyFromValue(profile?.last_active_date);
     const current = Math.max(0, Math.floor(Number(profile?.streak_count || 0)));
 
+    // Already logged in today — nothing to save
     if (lastActive === today) {
-      return {
-        count: Math.max(1, current),
-        today,
-        shouldSave: current < 1
-      };
+      return { count: current, today, shouldSave: false };
     }
 
-    const gap = lastActive ? daysBetween(lastActive, today) : Number.POSITIVE_INFINITY;
+    const monday = thisWeekMondayKey();
+    // lastActive is still in this Mon–Sun week if it is >= this Monday
+    const isThisWeek = lastActive && lastActive >= monday;
+
     return {
-      count: gap === 1 ? current + 1 : 1,
+      count: isThisWeek ? Math.min(7, current + 1) : 1,
       today,
       shouldSave: true
     };
   }
 
+  // The persisted counter is the real consecutive-day streak. The weekly dots below
+  // remain a separate Mon-Sun view and intentionally clamp this history to the week.
   function currentStreak() {
+    const count = Math.max(0, Math.floor(Number(state.student?.streak_count || 0)));
     const lastActive = dateKeyFromValue(state.student?.last_active_date);
-    const streak = Math.max(0, Math.floor(Number(state.student?.streak_count || 0)));
-    if (!lastActive) return streak;
-    return daysBetween(lastActive, todayKey()) > 1 ? 0 : streak;
+    if (!lastActive || count === 0) return 0;
+    const today = todayKey();
+    const yesterday = shiftDateKey(today, -1);
+    return lastActive === today || lastActive === yesterday ? count : 0;
   }
 
   function isActiveToday() {
@@ -2394,48 +5890,69 @@
   }
 
   function weeklyActiveDateKeys() {
-    const active = activityDateKeysFromData();
-    const weekKeys = new Set(weekDays().map((day) => day.key));
-    const orderedWeekKeys = weekDays().map((day) => day.key);
+    // Source of truth: streak_count = how many days this week the student logged in.
+    // last_active_date = the most recent login day.
+    // We fill backward from last_active_date for streak_count days,
+    // clamping strictly to this Mon–Sun window.
+    // NO historical task/progress data is mixed in — that was causing
+    // last-week activity to bleed into the current week's dots.
+    const monday = thisWeekMondayKey();
+    const sunday = weekDays()[6].key; // last day of this week
     const lastActive = dateKeyFromValue(state.student?.last_active_date);
-    const streak = currentStreak();
+    const streak = Math.max(0, Math.floor(Number(state.student?.streak_count || 0)));
+    const active = new Set();
 
-    if (lastActive && streak > 0) {
-      for (let index = 0; index < streak; index += 1) {
-        const key = shiftDateKey(lastActive, -index);
-        if (weekKeys.has(key)) {
-          active.add(key);
-        } else if (daysBetween(key, orderedWeekKeys[0]) > 0) {
-          const carryKey = [...orderedWeekKeys].reverse().find((dayKey) => !active.has(dayKey));
-          if (carryKey) active.add(carryKey);
-        }
+    localWeeklyStreakDates().forEach((key) => active.add(key));
+
+    if (!lastActive || streak <= 0) return active;
+    // Safety: lastActive must be within this week
+    if (lastActive < monday || lastActive > sunday) return active;
+
+    // Walk backward from lastActive for exactly streak days, stop at Monday
+    for (let i = 0; i < streak; i++) {
+      const key = shiftDateKey(lastActive, -i);
+      if (key >= monday) {
+        active.add(key);
+      } else {
+        break; // gone past Monday — stop
       }
     }
 
-    return new Set([...active].filter((key) => weekKeys.has(key)));
+    return active;
   }
 
-  function activityDateKeysFromData() {
-    const keys = new Set();
-    const addDate = (value) => {
-      const key = dateKeyFromValue(value);
-      if (key) keys.add(key);
-    };
-
-    state.data.progress
-      .filter((item) => sameId(item.student_id, state.student.id) || sameId(item.user_id, state.student.id))
-      .forEach((item) => addDate(item.updated_at || item.created_at));
-    state.data.taskSubmissions
-      .filter((item) => sameId(item.student_id, state.student.id) || sameId(item.user_id, state.student.id))
-      .forEach((item) => addDate(item.submitted_at || item.updated_at || item.created_at));
-    state.data.projects
-      .filter((item) => sameId(item.student_id, state.student.id) || sameId(item.user_id, state.student.id))
-      .forEach((item) => addDate(item.submitted_at || item.updated_at || item.created_at));
-
-    const lastActive = dateKeyFromValue(state.student?.last_active_date);
-    if (lastActive) keys.add(lastActive);
-    return keys;
+  function localStreakStorageKey() {
+    return `jenovate:lms:weekly-streak:${String(state.student?.id || "anonymous")}`;
   }
+
+  function localWeeklyStreakDates() {
+    if (!state.student?.id) return new Set();
+    try {
+      const saved = JSON.parse(localStorage.getItem(localStreakStorageKey()) || "null");
+      if (saved?.week !== thisWeekMondayKey() || !Array.isArray(saved.dates)) return new Set();
+      const monday = thisWeekMondayKey();
+      const sunday = weekDays()[6].key;
+      return new Set(saved.dates.filter((key) => key >= monday && key <= sunday));
+    } catch {
+      return new Set();
+    }
+  }
+
+  function recordLocalStreakVisit() {
+    if (!state.student?.id) return;
+    try {
+      const dates = localWeeklyStreakDates();
+      dates.add(todayKey());
+      localStorage.setItem(localStreakStorageKey(), JSON.stringify({
+        week: thisWeekMondayKey(),
+        dates: [...dates].sort()
+      }));
+    } catch (error) {
+      console.warn("Local streak visit could not be saved", error);
+    }
+  }
+
+
 
   function weekDays() {
     const today = new Date();
@@ -2580,20 +6097,6 @@
     throw lastError || new Error(`Unable to insert into ${table}.`);
   }
 
-  async function insertPurchaseRecord(payloads) {
-    let lastError = null;
-    for (const table of ["shop_purchases", "student_shop_purchases"]) {
-      try {
-        await insertFirstWorking(table, payloads);
-        return;
-      } catch (error) {
-        lastError = error;
-        if (!isSchemaShapeError(error)) break;
-      }
-    }
-    throw lastError || new Error("Unable to save shop purchase.");
-  }
-
   async function updateFirstWorking(table, id, payloads) {
     let lastError = null;
     for (const payload of payloads) {
@@ -2617,13 +6120,13 @@
 
     const message = error?.message || String(error || "");
     if (/failed to fetch|networkerror|load failed/i.test(message)) {
-      return "Could not reach Supabase. Check your internet connection and try again.";
+      return "Could not reach the learning server. Check your internet connection and try again.";
     }
     if (/permission denied|row-level security|rls/i.test(message)) {
-      return "Supabase blocked this action. Check the table insert/update policy for this student role.";
+      return "This action is blocked by current permissions. Please contact support.";
     }
     if (/schema cache|could not find|column/i.test(message)) {
-      return "Supabase schema cache does not match this table yet. Refresh the page; if it continues, reload the schema in Supabase.";
+      return "The learning server schema is updating. Refresh the page and try again.";
     }
     return message || fallback;
   }
@@ -2639,7 +6142,33 @@
       name: user.name || user.username || user.email || "Student",
       role: String(user.role || "student").toLowerCase(),
       coins: Number(user.coins || 0),
-      streak_count: Number(user.streak_count || 0)
+      streak_count: Number(user.streak_count || 0),
+      last_login_reward_date: user.last_login_reward_date || "",
+      reward_history: Array.isArray(user.reward_history) ? user.reward_history : []
+    };
+  }
+
+  function isMissingRpcError(error) {
+    return /function|schema cache|not found|could not find|permission denied/i.test(error?.message || "")
+      || ["PGRST202", "42501"].includes(String(error?.code || ""));
+  }
+
+  function notifyDailyLoginReward() {
+    if (!state.student?.daily_login_reward_claimed) return;
+    const amount = Number(state.student.daily_login_reward_amount || 10);
+    showAlert(`🎉 Daily Login Reward Claimed! +${amount} Coins`);
+    delete state.student.daily_login_reward_claimed;
+    delete state.student.daily_login_reward_amount;
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student));
+    sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
+  }
+
+  function normalizeCourse(course) {
+    const modules = parseModules(firstNonEmptyCourseContent(course));
+    return {
+      ...course,
+      id: course?.id ? String(course.id) : "",
+      modules
     };
   }
 
@@ -2662,6 +6191,33 @@
     return String(value).split(",").map((item) => item.trim()).filter(Boolean);
   }
 
+  function firstNonEmptyCourseContent(course) {
+    const fields = [
+      course?.modules,
+      course?.course_modules,
+      course?.curriculum,
+      course?.syllabus,
+      course?.content,
+      course?.lessons,
+      course?.data
+    ];
+    return fields.find((field) => {
+      const parsed = parseJsonDeep(field);
+      if (Array.isArray(parsed)) return parsed.length > 0;
+      return parsed && typeof parsed === "object" && Object.keys(parsed).length > 0;
+    }) || course?.modules || [];
+  }
+
+  function parseJsonDeep(value) {
+    let parsed = value;
+    for (let i = 0; i < 2 && typeof parsed === "string"; i += 1) {
+      const next = tryJson(parsed);
+      if (next === null) break;
+      parsed = next;
+    }
+    return parsed;
+  }
+
   function tryJson(value) {
     try {
       return JSON.parse(value);
@@ -2672,6 +6228,14 @@
 
   function sameId(a, b) {
     return a !== undefined && a !== null && b !== undefined && b !== null && String(a) === String(b);
+  }
+
+  function friendlySupabaseError(error) {
+    const message = error?.message || "Unable to fetch";
+    if (/permission|policy|rls/i.test(message)) return "permission/RLS blocked";
+    if (/relation|table|does not exist/i.test(message)) return "table is missing";
+    if (/column|schema cache|could not find/i.test(message)) return "schema cache/column mismatch";
+    return message;
   }
 
   function randomId() {
@@ -2707,6 +6271,21 @@
     const date = new Date(value);
     if (Number.isNaN(date.valueOf())) return String(value);
     return date.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  }
+
+  function relativeActivityTime(value) {
+    if (!value) return "recently";
+    const date = new Date(value);
+    if (Number.isNaN(date.valueOf())) return "recently";
+    const elapsed = Math.max(0, Date.now() - date.getTime());
+    const minutes = Math.floor(elapsed / 60000);
+    if (minutes < 1) return "just now";
+    if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+    return formatDate(value);
   }
 
   function truncate(value, length) {
@@ -2747,7 +6326,7 @@
   }
 
   function setSyncStatus(message) {
-    if (syncStatus) syncStatus.textContent = message;
+    if (syncStatus) syncStatus.textContent = "";
   }
 
   function showAlert(message, isError = false) {
@@ -2766,6 +6345,7 @@
   function openModal(title, body) {
     modalTitle.textContent = title;
     modalBody.innerHTML = body;
+    modal?.classList.toggle("quiz-modal", /quiz/i.test(String(title || "")));
     modal?.classList.add("open");
     modal?.setAttribute("aria-hidden", "false");
     modal?.querySelectorAll("[data-close-modal]").forEach((button) => {
@@ -2775,20 +6355,63 @@
 
   function closeModal() {
     modal?.classList.remove("open");
+    modal?.classList.remove("quiz-modal");
     modal?.setAttribute("aria-hidden", "true");
     modalBody.innerHTML = "";
   }
 
-  function toggleTheme() {
-    document.body.classList.toggle("dark");
-    const dark = document.body.classList.contains("dark");
-    localStorage.setItem("jenovateStudentTheme", dark ? "dark" : "light");
-    setText("themeToggle", dark ? "Light Mode" : "Dark Mode");
+  async function runLockedSubmit(form, submitter, loadingLabel, action) {
+    if (!form || form.dataset.submitting === "true") return;
+    if (typeof form.checkValidity === "function" && !form.checkValidity()) {
+      form.reportValidity?.();
+      form.querySelector(":invalid")?.focus?.();
+      return;
+    }
+
+    form.dataset.submitting = "true";
+    form.setAttribute("aria-busy", "true");
+    const controls = Array.from(form.querySelectorAll("input, select, textarea, button"));
+    const primary = submitter || form.querySelector("button[type='submit']");
+    const originalText = primary?.textContent || "";
+
+    controls.forEach((control) => {
+      control.dataset.wasDisabled = control.disabled ? "true" : "false";
+      control.disabled = true;
+      if (control instanceof HTMLButtonElement) control.setAttribute("aria-busy", "true");
+    });
+    if (primary && loadingLabel) primary.textContent = loadingLabel;
+
+    try {
+      await action();
+    } finally {
+      if (document.body.contains(form)) {
+        form.dataset.submitting = "false";
+        form.removeAttribute("aria-busy");
+        controls.forEach((control) => {
+          control.disabled = control.dataset.wasDisabled === "true";
+          delete control.dataset.wasDisabled;
+          control.removeAttribute("aria-busy");
+        });
+        if (primary) primary.textContent = originalText;
+      }
+    }
   }
 
-  if (localStorage.getItem("jenovateStudentTheme") === "dark") {
-    document.body.classList.add("dark");
-    setText("themeToggle", "Light Mode");
+  function createUploadMeter(form, file) {
+    const meter = document.createElement("div");
+    meter.className = "lms-upload-meter";
+    meter.setAttribute("role", "status");
+    meter.innerHTML = `<span><i></i></span><small>Uploading ${escapeHtml(file.name || "file")} - ${formatFileSize(file.size)}</small>`;
+    form.querySelector(".task-submit-input-group")?.after(meter);
+    if (!meter.parentElement) form.appendChild(meter);
+    return meter;
+  }
+
+  function formatFileSize(bytes) {
+    const value = Number(bytes || 0);
+    if (value >= 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`;
+    if (value >= 1024) return `${Math.round(value / 1024)} KB`;
+    return `${value} B`;
   }
 
   function on(id, eventName, handler) {
@@ -2796,15 +6419,17 @@
   }
 
   function escapeHtml(value) {
+    if (window.JenovateDom?.escapeHtml) return window.JenovateDom.escapeHtml(value);
     return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   function escapeAttr(value) {
+    if (window.JenovateDom?.escapeAttr) return window.JenovateDom.escapeAttr(value);
     return escapeHtml(value);
   }
 })();
