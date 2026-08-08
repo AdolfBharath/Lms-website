@@ -846,6 +846,29 @@ const ensureCourseTabScroller = () => {
   window.requestAnimationFrame(updateTabArrows);
 };
 
+const ensureMentorCardScroller = () => {
+  const strip = document.querySelector(".mentor-card-strip");
+  if (!strip || strip.closest(".mentor-scroll-shell")) return;
+
+  const shell = document.createElement("div");
+  shell.className = "mentor-scroll-shell";
+  shell.innerHTML = `
+    <button class="mentor-scroll-arrow left" type="button" aria-label="Scroll mentors left"></button>
+    <button class="mentor-scroll-arrow right" type="button" aria-label="Scroll mentors right"></button>
+  `;
+
+  strip.parentNode.insertBefore(shell, strip);
+  shell.insertBefore(strip, shell.querySelector(".mentor-scroll-arrow.right"));
+
+  const scrollMentors = (direction) => {
+    const distance = Math.max(220, Math.round(strip.clientWidth * 0.68));
+    strip.scrollBy({ left: direction * distance, behavior: "smooth" });
+  };
+
+  shell.querySelector(".mentor-scroll-arrow.left")?.addEventListener("click", () => scrollMentors(-1));
+  shell.querySelector(".mentor-scroll-arrow.right")?.addEventListener("click", () => scrollMentors(1));
+};
+
 const syncCourseCardsWithDirectory = () => {
   currentCourseCards().forEach((card) => {
     const title = card.querySelector("h3")?.textContent?.trim() || "";
@@ -1388,6 +1411,7 @@ if (stats) statsObserver.observe(stats);
 const initMentorShowcase = () => {
   const section = document.querySelector(".mentor-showcase");
   if (!section) return;
+  ensureMentorCardScroller();
 
   const mentorDetails = {
     "Rahul Singh": {

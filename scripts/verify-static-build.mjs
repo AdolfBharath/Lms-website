@@ -1,4 +1,5 @@
 import { access, readFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +15,7 @@ const requiredFiles = [
   "auth-session.js",
   "modules/portal-data.js",
   "modules/dom-utils.js",
+  "modules/portal-utils.js",
   "assets/vendor/supabase-2.49.4.js"
 ];
 
@@ -28,4 +30,20 @@ for (const file of ["index.html", "login.html", "admin.html", "mentor.html", "st
   }
 }
 
+await runNodeScript("scripts/check-project-risks.mjs");
+
 console.log(`Static build verification passed for ${requiredFiles.length} required files.`);
+
+function runNodeScript(relativePath) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [path.join(root, relativePath)], {
+      cwd: root,
+      stdio: "inherit"
+    });
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`${relativePath} failed with exit code ${code}.`));
+    });
+  });
+}

@@ -19,7 +19,7 @@ function profileFor(role) {
 }
 
 async function installSupabaseMock(page, role) {
-  await page.route("**/assets/vendor/supabase-2.49.4.js", async (route) => {
+  await page.route(/\/assets\/vendor\/(?:supabase-2\.49\.4|lms-platform-sdk)\.js$/, async (route) => {
     await route.fulfill({
       contentType: "application/javascript",
       body: "window.supabase={createClient:function(){return window.__mockSupabaseClient;}};"

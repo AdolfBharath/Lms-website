@@ -20,3 +20,7 @@ Jenovate now runs as a static HTML/CSS/JavaScript LMS again. The temporary Next.
 ## Deployment
 
 Static hosts should publish the repository root while respecting `.netlifyignore` or equivalent excludes. Do not publish source-only directories such as `supabase`, `tests`, `docs`, `scripts`, `learnwith`, `qa-*`, `.env*`, or package metadata.
+
+## Risk Controls
+
+Repository-level safeguards for large portal files, local secrets, browser Supabase configuration, and `learnwith/` ownership are documented in `docs/project-risk-controls.md`. `npm run build` runs those checks through `scripts/check-project-risks.mjs`.

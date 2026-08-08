@@ -32,14 +32,19 @@ window.getSupabaseClient = function getSupabaseClient() {
   return window.supabaseClient;
 };
 
+window.getLmsPlatformClient = window.getLmsPlatformClient || window.getSupabaseClient;
+
 window.createSupabaseSignedUrl = async function createSupabaseSignedUrl(bucket, pathOrUrl, expiresIn = 60 * 60) {
   const value = String(pathOrUrl || "").trim();
   if (!value) return "";
 
-  const marker = `/storage/v1/object/public/${bucket}/`;
+  const publicMarker = `/storage/v1/object/public/${bucket}/`;
+  const signedMarker = `/storage/v1/object/sign/${bucket}/`;
   let path = "";
-  if (value.includes(marker)) {
-    path = decodeURIComponent(value.split(marker)[1].split("?")[0] || "");
+  if (value.includes(publicMarker)) {
+    path = decodeURIComponent(value.split(publicMarker)[1].split("?")[0] || "");
+  } else if (value.includes(signedMarker)) {
+    path = decodeURIComponent(value.split(signedMarker)[1].split("?")[0] || "");
   } else if (/^https?:\/\//i.test(value)) {
     return value;
   } else {
@@ -59,11 +64,15 @@ const supabaseAssetCache = new Map();
 window.resolveSupabaseAssetUrl = async function resolveSupabaseAssetUrl(value) {
   const raw = String(value || "").trim();
   const match = raw.match(/^(support-attachments|assignment-submissions|study-materials):(.*)$/);
-  if (!match) return value;
-  if (!supabaseAssetCache.has(raw)) {
-    supabaseAssetCache.set(raw, window.createSupabaseSignedUrl(match[1], match[2]));
+  const urlMatch = raw.match(/\/storage\/v1\/object\/(?:public|sign)\/(support-attachments|assignment-submissions|study-materials)\/([^?]+)/);
+  const bucket = match?.[1] || urlMatch?.[1] || "";
+  const path = match?.[2] || (urlMatch?.[2] ? decodeURIComponent(urlMatch[2]) : "");
+  if (!bucket || !path) return value;
+  const cacheKey = `${bucket}:${path}`;
+  if (!supabaseAssetCache.has(cacheKey)) {
+    supabaseAssetCache.set(cacheKey, window.createSupabaseSignedUrl(bucket, path));
   }
-  return supabaseAssetCache.get(raw);
+  return supabaseAssetCache.get(cacheKey);
 };
 
 window.resolveSupabaseAssetsDeep = async function resolveSupabaseAssetsDeep(value, seen = new WeakSet()) {

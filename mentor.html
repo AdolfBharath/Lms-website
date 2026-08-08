@@ -8,11 +8,14 @@
   <meta http-equiv="Expires" content="0" />
   <title>Mentor | Jenovate LMS</title>
   <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="colours.css" />
   <link rel="stylesheet" href="role-compact.css?v=20260524-sidebar-actions-v1" />
   <link rel="stylesheet" href="role-final-fixes.css?v=20260724-auth-logout-hit-fix-v1" />
-  <link rel="stylesheet" href="mentor-new.css?v=20260725-mentor-reference-ui-v4" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
+  <link rel="stylesheet" href="mentor-new.css?v=20260729-mentor-course-v11" />
 </head>
 <body class="mentor-redesign-final mentor-premium-dashboard">
   <div class="mentor-shell">
@@ -82,6 +85,38 @@
       </div>
     </aside>
 
+    <aside class="mentor-context-panel" id="mentorContextPanel" aria-label="Mentor workspace sections">
+      <div class="mentor-context-head">
+        <strong>Mentor Works...</strong>
+        <button class="mentor-context-collapse" id="mentorContextCollapse" type="button" data-toggle-mentor-sidebar aria-label="Collapse mentor workspace" aria-expanded="true">&lt;</button>
+      </div>
+
+      <nav class="mentor-context-nav" aria-label="Mentor workspace">
+        <div class="mentor-context-section">
+          <span>Recents</span>
+          <button class="mentor-context-item nav-item active" type="button" data-view="dashboard"><b>HM</b><span class="mentor-context-label">Dashboard</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="students"><b>ST</b><span class="mentor-context-label">Students</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="courses"><b>CR</b><span class="mentor-context-label">Courses</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="reviews"><b>RV</b><span class="mentor-context-label">Reviews</span></button>
+        </div>
+
+        <div class="mentor-context-section">
+          <span>Learning Ops <em>0</em></span>
+          <button class="mentor-context-item nav-item" type="button" data-view="batches"><i class="green"></i><span class="mentor-context-label">Batches</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="tasks"><i class="purple"></i><span class="mentor-context-label">Assignments</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="chat"><i class="blue"></i><span class="mentor-context-label">Batch Chat</span></button>
+        </div>
+
+        <div class="mentor-context-section">
+          <span>Mentor Tools</span>
+          <button class="mentor-context-item nav-item" type="button" data-view="announcements"><i class="orange"></i><span class="mentor-context-label">Announcements</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="support"><i class="lime"></i><span class="mentor-context-label">Support</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="questions"><i class="pink"></i><span class="mentor-context-label">Q&amp;A</span></button>
+          <button class="mentor-context-item nav-item" type="button" data-view="profile"><i class="gray"></i><span class="mentor-context-label">Settings</span></button>
+        </div>
+      </nav>
+    </aside>
+
     <main class="mentor-main">
       <header class="mentor-topbar">
         <button class="icon-btn mentor-sidebar-toggle" id="mentorSidebarToggle" type="button" aria-label="Collapse sidebar" aria-pressed="false">
@@ -94,7 +129,6 @@
         <label class="lms-search" for="globalSearch">
           <span aria-hidden="true"></span>
           <input id="globalSearch" type="search" placeholder="Search assigned students and courses..." autocomplete="off" />
-          <kbd>Ctrl + K</kbd>
         </label>
         <div class="topbar-actions">
           <button class="sync-pill hidden-sync-pill" id="refreshBtn" type="button" aria-label="Refresh mentor data" hidden>
@@ -103,7 +137,6 @@
           </button>
           <button class="icon-btn topbar-icon bell-icon" type="button" aria-label="Announcements" data-jump="announcements"><span aria-hidden="true">AN</span><b id="topbarAnnouncementBadge" hidden></b></button>
           <button class="icon-btn topbar-icon" type="button" aria-label="Messages" data-jump="chat"><span aria-hidden="true">◌</span><b id="topbarMessageBadge" hidden></b></button>
-          <button class="icon-btn topbar-icon" id="mentorThemeToggle" type="button" aria-label="Toggle dark mode"><span aria-hidden="true">◐</span></button>
           <button class="profile-menu" type="button" data-jump="profile" aria-label="Open profile">
             <span class="avatar" id="mentorAvatar" aria-label="Mentor profile avatar">M</span>
             <span><strong id="topbarMentorName">Mentor</strong><small>Mentor</small></span>
@@ -880,12 +913,13 @@
     </div>
   </div>
 
-  <script src="assets/vendor/supabase-2.49.4.js"></script>
-  <script src="supabase-config.js?v=20260618-signed-storage"></script>
-  <script src="session-router.js?v=20260615-auth"></script>
-  <script src="auth-session.js?v=20260715-fast-auth"></script>
-  <script src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
-  <script src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
-  <script src="mentor.js?v=20260728-dom-utils-v1"></script>
+  <script defer src="assets/vendor/supabase-2.49.4.js"></script>
+  <script defer src="supabase-config.js?v=20260618-signed-storage"></script>
+  <script defer src="session-router.js?v=20260615-auth"></script>
+  <script defer src="auth-session.js?v=20260803-auth-retry-v1"></script>
+  <script defer src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
+  <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
+  <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
+  <script defer src="mentor.js?v=20260728-dom-utils-v1"></script>
 </body>
 </html>

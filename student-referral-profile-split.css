@@ -1,0 +1,2075 @@
+/* v44 referral reference page: invite/reward dashboard using existing referral data. */
+body[data-ui-build] #referralView.student-view.active {
+  display: block !important;
+}
+
+body[data-ui-build][data-student-view="referral"] .coin-pill {
+  display: inline-flex !important;
+  min-width: 92px !important;
+  height: 24px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: #eef0ff !important;
+  color: #4b40d8 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build][data-student-view="referral"] .coin-pill::before {
+  content: "" !important;
+  width: 6px !important;
+  height: 6px !important;
+  margin-right: 6px !important;
+  border-radius: 50% !important;
+  background: #4b40d8 !important;
+}
+
+body[data-ui-build] #referralView {
+  width: min(100%, 980px) !important;
+  padding: 22px 28px 42px !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro {
+  display: none !important;
+}
+
+body[data-ui-build] #referralView .referral-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 240px !important;
+  gap: 24px !important;
+  align-items: center !important;
+  min-height: 190px !important;
+  margin: 0 0 20px !important;
+  padding: 26px 30px !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #4d45df 0%, #315ee6 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 18px 36px rgba(73, 64, 210, 0.22) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-copy > span {
+  display: inline-flex !important;
+  min-height: 20px !important;
+  align-items: center !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  font-size: 9px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #referralView .referral-hero h2 {
+  margin: 10px 0 10px !important;
+  color: #fff !important;
+  font-size: 33px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.045em !important;
+  line-height: 1.02 !important;
+}
+
+body[data-ui-build] #referralView .referral-hero p {
+  max-width: 480px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-badges {
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin-top: 18px !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-badges b {
+  display: inline-flex !important;
+  min-height: 25px !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .referral-stats-card {
+  min-height: 120px !important;
+  padding: 18px !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #221c45 !important;
+}
+
+body[data-ui-build] #referralView .referral-stats-card > strong {
+  display: block !important;
+  margin-bottom: 12px !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid div {
+  min-height: 54px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
+  background: #f6f7fb !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid span {
+  color: #6658e8 !important;
+  font-size: 19px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid small {
+  color: #7a728d !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward {
+  margin-top: 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward small,
+body[data-ui-build] #referralView .referral-next-reward b {
+  color: #5a5470 !important;
+  font-size: 8px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward b {
+  float: right !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward div {
+  clear: both !important;
+  height: 6px !important;
+  margin-top: 6px !important;
+  border-radius: 999px !important;
+  background: #ded9f8 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward div span {
+  display: block !important;
+  width: 80% !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  background: #564cea !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  display: grid !important;
+  grid-template-columns: 1fr 1.55fr !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-form-card,
+body[data-ui-build] #referralView .referral-guide-card {
+  border: 1px solid #ddd7f0 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card {
+  grid-row: span 2 !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card h3,
+body[data-ui-build] #referralView .referral-share-head h3 {
+  margin: 0 !important;
+  color: #10101c !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card h3 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card h3 span {
+  padding: 3px 8px !important;
+  border-radius: 999px !important;
+  background: #f0edff !important;
+  color: #5448e2 !important;
+  font-size: 8px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-height: 70px !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  background: #f1effb !important;
+}
+
+body[data-ui-build] #referralView .referral-avatar {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 14px !important;
+  background: #554ce8 !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row h2 {
+  margin: 0 0 3px !important;
+  color: #151222 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row p {
+  margin: 0 !important;
+  color: #6c657e !important;
+  font-size: 9px !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  margin: 14px 0 !important;
+  padding: 18px 12px !important;
+  border: 1px dashed #c9c0ea !important;
+  border-radius: 12px !important;
+  background: #fbfcfe !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box small {
+  display: block !important;
+  color: #9a93aa !important;
+  font-size: 8px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  display: block !important;
+  margin-top: 8px !important;
+  color: #243bff !important;
+  font-size: 19px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+}
+
+body[data-ui-build] #referralView #referralCodeValue {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip {
+  display: block !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip .primary-btn {
+  width: 100% !important;
+}
+
+body[data-ui-build] #referralView .referral-share-card {
+  padding: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head p {
+  margin: 3px 0 0 !important;
+  color: #7c748f !important;
+  font-size: 9px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head > span {
+  color: #4f43e0 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  width: 100% !important;
+  min-height: 116px !important;
+  padding: 16px !important;
+  border: 1px solid #d6cfeb !important;
+  border-radius: 10px !important;
+  background: #f6f7fb !important;
+  color: #3b344e !important;
+  font-size: 11px !important;
+  font-style: italic !important;
+  line-height: 1.5 !important;
+  resize: none !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  padding: 12px 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-form-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 9px !important;
+  background: #fff3e9 !important;
+  color: #d18423 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card strong,
+body[data-ui-build] #referralView .referral-form-card small {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card strong {
+  color: #171424 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card small {
+  margin-top: 2px !important;
+  color: #6f687f !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-card {
+  grid-column: 1 / -1 !important;
+  padding: 22px 28px 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head {
+  text-align: center !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head h2 {
+  margin: 0 !important;
+  color: #11101e !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head p {
+  margin: 6px 0 22px !important;
+  color: #8a819b !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 34px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 12% !important;
+  right: 12% !important;
+  top: 31px !important;
+  height: 2px !important;
+  background: #dedaf0 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  justify-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: center !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid span {
+  display: grid !important;
+  place-items: center !important;
+  width: 62px !important;
+  height: 62px !important;
+  margin-bottom: 14px !important;
+  border: 2px solid #e0dbf3 !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  color: #564ce8 !important;
+  font-size: 0 !important;
+  box-shadow: 0 8px 18px rgba(39, 33, 72, 0.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div:nth-child(1) span::before { content: ">"; }
+body[data-ui-build] #referralView .referral-step-grid > div:nth-child(2) span::before { content: "2"; }
+body[data-ui-build] #referralView .referral-step-grid > div:nth-child(3) span::before { content: "*"; }
+
+body[data-ui-build] #referralView .referral-step-grid span::before {
+  color: currentColor !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div:nth-child(3) span {
+  border-color: #ffd6a4 !important;
+  color: #d98722 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid strong {
+  color: #171421 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid p {
+  max-width: 170px !important;
+  margin: 6px auto 0 !important;
+  color: #60586f !important;
+  font-size: 9px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-top: 24px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer small {
+  color: #6b61dc !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+}
+
+body[data-ui-build] #referralView button {
+  min-height: 32px !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .primary-btn {
+  background: #544ce7 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #referralView .secondary-btn {
+  border: 0 !important;
+  background: #f0edf9 !important;
+  color: #2b2441 !important;
+}
+
+body[data-ui-build] #referralView .text-btn {
+  min-height: 24px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #544ce7 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 860px) {
+  body[data-ui-build] #referralView .referral-hero,
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-guide-card {
+    grid-column: auto !important;
+  }
+}
+
+/* v46 referral Stepper: React Bits-inspired step component in plain LMS HTML/CSS/JS. */
+body[data-ui-build] #referralView .referral-stepper-card {
+  padding: clamp(22px, 2vw, 34px) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-card .referral-guide-head {
+  margin-bottom: 20px !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper {
+  width: 100% !important;
+  display: grid !important;
+  gap: 18px !important;
+  padding: clamp(18px, 2vw, 26px) !important;
+  border: 1px solid #d8d1ef !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 255, 0.96)),
+    #fff !important;
+  box-shadow: 0 18px 38px rgba(47, 39, 92, 0.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators {
+  display: grid !important;
+  grid-template-columns: 48px minmax(40px, 1fr) 48px minmax(40px, 1fr) 48px !important;
+  align-items: center !important;
+  width: min(100%, 620px) !important;
+  margin: 0 auto !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 1px solid #d8d2ec !important;
+  border-radius: 999px !important;
+  background: #1f1b2d !important;
+  color: #aaa4b9 !important;
+  box-shadow: 0 8px 18px rgba(32, 27, 50, 0.10) !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button span {
+  display: grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 999px !important;
+  color: currentColor !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.active,
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete {
+  border-color: #4773f7 !important;
+  background: #4773f7 !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.active span {
+  width: 11px !important;
+  height: 11px !important;
+  background: #fff !important;
+  color: transparent !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete span {
+  color: transparent !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete span::before {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg);
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators i {
+  position: relative !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: #dfd9f2 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete + i::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: #4773f7 !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-content {
+  position: relative !important;
+  min-height: clamp(190px, 14vw, 260px) !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(86px, 0.22fr) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: clamp(18px, 2vw, 32px) !important;
+  min-height: 100% !important;
+  padding: clamp(22px, 2vw, 34px) !important;
+  border: 1px solid #ded8ef !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at 92% 18%, rgba(82, 39, 255, 0.12), transparent 28%),
+    linear-gradient(135deg, #fbfcfe 0%, #ffffff 100%) !important;
+  opacity: 0 !important;
+  transform: translateX(28px) scale(0.985) !important;
+  pointer-events: none !important;
+  transition: opacity 0.28s ease, transform 0.28s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel.active {
+  opacity: 1 !important;
+  transform: translateX(0) scale(1) !important;
+  pointer-events: auto !important;
+}
+
+body[data-ui-build] #referralView .referral-step-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: clamp(72px, 7vw, 108px) !important;
+  height: clamp(72px, 7vw, 108px) !important;
+  border-radius: 28px !important;
+  background: linear-gradient(135deg, #4773f7, #315ee6) !important;
+  color: #fff !important;
+  font-size: clamp(22px, 2vw, 34px) !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.04em !important;
+  box-shadow: 0 18px 34px rgba(82, 39, 255, 0.24) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel h3 {
+  margin: 0 0 10px !important;
+  color: #12101d !important;
+  font-size: clamp(22px, 2vw, 32px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.045em !important;
+  line-height: 1.04 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel p {
+  max-width: 760px !important;
+  margin: 0 !important;
+  color: #514a63 !important;
+  font-size: clamp(13px, 0.9vw, 16px) !important;
+  line-height: 1.58 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel small {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 28px !important;
+  margin-top: 16px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: #efebff !important;
+  color: #4773f7 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn,
+body[data-ui-build] #referralView .referral-stepper-footer .primary-btn {
+  min-width: 112px !important;
+  min-height: 38px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn:disabled {
+  opacity: 0.42 !important;
+  cursor: not-allowed !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid {
+  display: none !important;
+}
+
+@media (min-width: 1600px) {
+  body[data-ui-build] #referralView .referral-stepper {
+    padding: 32px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-content {
+    min-height: 280px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] #referralView .referral-stepper-indicators {
+    grid-template-columns: 42px minmax(24px, 1fr) 42px minmax(24px, 1fr) 42px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-indicators button {
+    width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-content {
+    min-height: 330px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-step-panel {
+    grid-template-columns: 1fr !important;
+    justify-items: start !important;
+    align-content: center !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-footer {
+    justify-content: stretch !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-footer button {
+    flex: 1 1 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #referralView {
+    padding: 18px 14px 38px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-hero {
+    padding: 22px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-hero h2 {
+    font-size: 28px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-form-card,
+  body[data-ui-build] #referralView .referral-guide-footer {
+    grid-template-columns: 1fr !important;
+    display: grid !important;
+  }
+
+  body[data-ui-build] #referralView .referral-step-grid {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-step-grid::before {
+    display: none !important;
+  }
+}
+
+/* v45 full-width workspace: remove centered caps and let LMS content fill viewport. */
+body[data-ui-build] {
+  overflow-x: hidden !important;
+}
+
+body[data-ui-build] .student-shell {
+  width: 100vw !important;
+  grid-template-columns: 264px minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] .student-sidebar {
+  width: 264px !important;
+}
+
+body[data-ui-build] .student-main {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+}
+
+body[data-ui-build] .student-topbar {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: clamp(24px, 2vw, 38px) !important;
+  padding-right: clamp(24px, 2vw, 38px) !important;
+}
+
+body[data-ui-build] .top-search {
+  width: clamp(320px, 28vw, 560px) !important;
+}
+
+body[data-ui-build] .student-view,
+body[data-ui-build] #dashboardView,
+body[data-ui-build] #catalogView,
+body[data-ui-build] #coursesView,
+body[data-ui-build] #learnView,
+body[data-ui-build] #tasksView,
+body[data-ui-build] #batchView,
+body[data-ui-build] #announcementsView,
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView,
+body[data-ui-build] #shopView,
+body[data-ui-build] #referralView,
+body[data-ui-build] #profileView {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: clamp(24px, 2vw, 40px) !important;
+  padding-right: clamp(24px, 2vw, 40px) !important;
+}
+
+body[data-ui-build] .dashboard-reference-shell,
+body[data-ui-build] #dashboardView .dashboard-reference-shell,
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #referralView .referral-studio,
+body[data-ui-build] #referralView .referral-hero,
+body[data-ui-build] #coursesView .course-toolbar,
+body[data-ui-build] #catalogView .catalog-grid,
+body[data-ui-build] #coursesView .course-grid,
+body[data-ui-build] #shopView .shop-grid,
+body[data-ui-build] #profileView .profile-layout,
+body[data-ui-build] #batchView .batch-layout,
+body[data-ui-build] #tasksView .task-grid,
+body[data-ui-build] .reference-page-intro,
+body[data-ui-build] .secondary-page-intro {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .metric-grid,
+body[data-ui-build] .metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-main {
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 0.8fr) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview,
+body[data-ui-build] #dashboardView .dashboard-leaderboard-list,
+body[data-ui-build] #announcementsView .announcement-list,
+body[data-ui-build] #questionsView .compact-list,
+body[data-ui-build] #supportView .compact-list {
+  width: 100% !important;
+}
+
+body[data-ui-build] #catalogView .course-grid,
+body[data-ui-build] #catalogView .catalog-grid,
+body[data-ui-build] #coursesView .course-grid,
+body[data-ui-build] #shopView .shop-grid,
+body[data-ui-build] .course-grid,
+body[data-ui-build] .catalog-grid,
+body[data-ui-build] .shop-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout {
+  grid-template-columns: minmax(300px, 0.72fr) minmax(420px, 1.6fr) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px) !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  grid-template-columns: minmax(300px, 0.82fr) minmax(460px, 1.35fr) !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  min-height: clamp(140px, 16vw, 250px) !important;
+}
+
+body[data-ui-build] #profileView .profile-layout {
+  grid-template-columns: minmax(300px, 0.75fr) minmax(460px, 1.25fr) !important;
+}
+
+body[data-ui-build] #batchView .batch-layout,
+body[data-ui-build] #tasksView .task-grid {
+  grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.6fr) !important;
+}
+
+body[data-ui-build] .panel,
+body[data-ui-build] .course-card,
+body[data-ui-build] .shop-card,
+body[data-ui-build] .question-card,
+body[data-ui-build] .task-card,
+body[data-ui-build] .metric-card {
+  min-width: 0 !important;
+}
+
+@media (min-width: 1440px) {
+  body[data-ui-build] .student-view,
+  body[data-ui-build] #dashboardView,
+  body[data-ui-build] #catalogView,
+  body[data-ui-build] #coursesView,
+  body[data-ui-build] #learnView,
+  body[data-ui-build] #tasksView,
+  body[data-ui-build] #batchView,
+  body[data-ui-build] #announcementsView,
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView,
+  body[data-ui-build] #shopView,
+  body[data-ui-build] #referralView,
+  body[data-ui-build] #profileView {
+    padding-left: clamp(32px, 2.2vw, 56px) !important;
+    padding-right: clamp(32px, 2.2vw, 56px) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-main {
+    grid-template-columns: minmax(0, 2.25fr) minmax(360px, 0.75fr) !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  body[data-ui-build] .student-shell {
+    grid-template-columns: 264px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout {
+    grid-template-columns: minmax(340px, 0.65fr) minmax(680px, 1.8fr) !important;
+  }
+
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: minmax(340px, 0.7fr) minmax(760px, 1.7fr) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #referralView .referral-studio,
+  body[data-ui-build] #profileView .profile-layout,
+  body[data-ui-build] #batchView .batch-layout,
+  body[data-ui-build] #tasksView .task-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-hero {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] .student-shell {
+    width: 100% !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .student-sidebar {
+    width: 264px !important;
+  }
+
+  body[data-ui-build] .top-search {
+    width: min(100%, 420px) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] .student-view,
+  body[data-ui-build] #dashboardView,
+  body[data-ui-build] #catalogView,
+  body[data-ui-build] #coursesView,
+  body[data-ui-build] #learnView,
+  body[data-ui-build] #tasksView,
+  body[data-ui-build] #batchView,
+  body[data-ui-build] #announcementsView,
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView,
+  body[data-ui-build] #shopView,
+  body[data-ui-build] #referralView,
+  body[data-ui-build] #profileView {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+}
+
+/* v48 student dashboard: crafted learning overview based on supplied reference. */
+body[data-ui-build] #dashboardView {
+  background:
+    radial-gradient(circle at 18% 4%, rgba(109, 93, 252, 0.10), transparent 34rem),
+    radial-gradient(circle at 78% 18%, rgba(118, 93, 252, 0.06), transparent 28rem),
+    #f7f5ff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-shell {
+  display: grid !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 1660px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  min-height: 300px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px) !important;
+  align-items: center !important;
+  gap: clamp(24px, 4vw, 72px) !important;
+  padding: clamp(28px, 3vw, 44px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 12px !important;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #4773f7 0%, #315ee6 58%, #5680ff 100%) !important;
+  box-shadow: 0 22px 56px rgba(79, 70, 229, 0.22) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy > span {
+  display: inline-flex !important;
+  min-height: 20px !important;
+  align-items: center !important;
+  max-width: 240px !important;
+  margin-bottom: 16px !important;
+  padding: 0 10px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  max-width: 680px !important;
+  margin: 0 0 14px !important;
+  color: #fff !important;
+  font-size: clamp(40px, 3.6vw, 64px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.055em !important;
+  line-height: 0.94 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy p {
+  max-width: 620px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-size: clamp(14px, 1vw, 16px) !important;
+  font-weight: 650 !important;
+  line-height: 1.55 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-actions {
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  margin-top: 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-actions .primary-btn,
+body[data-ui-build] #dashboardView .dashboard-hero-actions .secondary-btn {
+  min-height: 40px !important;
+  padding: 0 18px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-actions .primary-btn {
+  border: 0 !important;
+  background: #fff !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-actions .secondary-btn {
+  border: 0 !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course {
+  align-self: center !important;
+  padding: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.17) !important;
+  box-shadow: 0 20px 40px rgba(36, 29, 112, 0.18) !important;
+  backdrop-filter: blur(12px) !important;
+  transform: rotate(2deg) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course > span {
+  display: block !important;
+  margin-bottom: 16px !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course-top {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 44px !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course strong {
+  overflow: hidden !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course b {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-style: normal !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-meta {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin: 22px 0 8px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-meta small,
+body[data-ui-build] #dashboardView .dashboard-active-meta em,
+body[data-ui-build] #dashboardView .dashboard-active-course p {
+  color: rgba(255, 255, 255, 0.86) !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-meta small {
+  max-width: 230px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-progress {
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-progress i {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-active-course p {
+  margin: 16px 0 0 !important;
+  color: rgba(255, 255, 255, 0.76) !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .metric-card {
+  position: relative !important;
+  min-height: 138px !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 8px !important;
+  padding: 18px !important;
+  border: 1px solid #e7e6f2 !important;
+  border-left: 0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 34px rgba(48, 42, 84, 0.08) !important;
+}
+
+body[data-ui-build] #dashboardView .metric-card i {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  margin-bottom: 8px !important;
+  border-radius: 10px !important;
+  font-size: 10px !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .metric-card:nth-child(1) i { background: #eef2ff !important; color: #4773f7 !important; }
+body[data-ui-build] #dashboardView .metric-card:nth-child(2) i { background: #f0fdf4 !important; color: #15803d !important; }
+body[data-ui-build] #dashboardView .metric-card:nth-child(3) i { background: #fff7ed !important; color: #c2410c !important; }
+body[data-ui-build] #dashboardView .metric-card:nth-child(4) i { background: #fdf2f8 !important; color: #be185d !important; }
+
+body[data-ui-build] #dashboardView .metric-card small {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  min-height: 20px !important;
+  max-width: 110px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  background: #f7f7fb !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #dashboardView .metric-card span {
+  color: #4a465d !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] #dashboardView .metric-card strong {
+  margin: 0 !important;
+  color: #161326 !important;
+  font-size: 28px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-main {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.55fr) !important;
+  gap: 24px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-left {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title,
+body[data-ui-build] #dashboardView .dashboard-card-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title h2,
+body[data-ui-build] #dashboardView .dashboard-card-head h2 {
+  margin: 0 !important;
+  font-size: 20px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title p {
+  margin: 2px 0 0 !important;
+  color: #8a8797 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title .text-btn {
+  color: #4773f7 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course {
+  min-height: 320px !important;
+  display: grid !important;
+  grid-template-rows: 170px minmax(0, 1fr) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 1px solid #e7e6f2 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 34px rgba(48, 42, 84, 0.08) !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > img {
+  width: 100% !important;
+  height: 170px !important;
+  border-radius: 0 !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > div {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > div > span {
+  justify-self: start !important;
+  min-height: 20px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  background: #f1f0ff !important;
+  color: #4773f7 !important;
+  font-size: 9px !important;
+  font-weight: 850 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course h3 {
+  margin: 0 !important;
+  color: #161326 !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course p {
+  margin: 0 !important;
+  color: #5f5a70 !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course .mini-progress {
+  height: 7px !important;
+  margin-top: 2px !important;
+  background: #eceaf4 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course .mini-progress span {
+  background: #4773f7 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course small {
+  display: flex !important;
+  justify-content: space-between !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course .primary-btn {
+  justify-self: end !important;
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-deadline-card {
+  min-height: 100% !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-deadline-card .rail-list {
+  display: grid !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #e7e6f2 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 34px rgba(48, 42, 84, 0.08) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row {
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  min-height: 82px !important;
+  padding: 16px !important;
+  border-bottom: 1px solid #f0eff6 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row:last-child {
+  border-bottom: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row .rail-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
+  background: #eef2ff !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row strong {
+  display: block !important;
+  margin-bottom: 3px !important;
+  color: #171427 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row small,
+body[data-ui-build] #dashboardView .dashboard-activity-row time {
+  display: block !important;
+  color: #777286 !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-deadline-card > .secondary-btn {
+  width: 100% !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+}
+
+@media (min-width: 1600px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-main {
+    grid-template-columns: minmax(0, 1.6fr) minmax(380px, 0.48fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course {
+    grid-template-rows: 210px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course > img {
+    height: 210px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #dashboardView .dashboard-hero-card,
+  body[data-ui-build] #dashboardView .dashboard-reference-main {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-active-course {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-metrics,
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+    font-size: 38px !important;
+  }
+}
+
+/* v49 student dashboard: remove non-LMS certificate metric and rebalance the learning area. */
+body[data-ui-build] #dashboardView .dashboard-reference-metrics {
+  grid-template-columns: repeat(4, minmax(170px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics .metric-card {
+  min-height: 118px !important;
+  padding: 16px !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics .metric-card i {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 11px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics .metric-card:nth-child(3) i {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics .metric-card span {
+  margin-top: 14px !important;
+  color: #504c61 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-metrics .metric-card strong {
+  margin-top: 4px !important;
+  font-size: 34px !important;
+  line-height: 0.95 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-main {
+  align-items: start !important;
+  gap: 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  grid-template-columns: repeat(2, minmax(280px, 1fr)) !important;
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course {
+  min-height: 0 !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 154px auto !important;
+  align-content: start !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > img {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  height: 154px !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > div {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  min-width: 0 !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course .primary-btn {
+  min-width: 84px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-deadline-card .rail-list {
+  align-content: start !important;
+  min-height: 344px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-activity-row {
+  align-items: center !important;
+  min-height: 76px !important;
+}
+
+@media (min-width: 1600px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-metrics {
+    grid-template-columns: repeat(4, minmax(210px, 1fr)) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: repeat(2, minmax(340px, 1fr)) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course {
+    grid-template-rows: 190px auto !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course > img {
+    height: 190px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-metrics {
+    grid-template-columns: repeat(2, minmax(180px, 1fr)) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: repeat(2, minmax(240px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 860px) {
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-metrics {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v53 course catalog: production-quality marketplace finish. */
+body[data-ui-build] #catalogView {
+  padding: clamp(22px, 2.5vw, 32px) clamp(26px, 4vw, 54px) 52px !important;
+  background:
+    linear-gradient(180deg, rgba(246, 244, 255, 0.84), rgba(250, 249, 255, 0.98) 52%, rgba(246, 244, 255, 0.9)) !important;
+}
+
+body[data-ui-build] #catalogCoursesGrid {
+  width: min(100%, 1160px) !important;
+  max-width: 1160px !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero {
+  min-height: 208px !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  padding: 30px 34px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 84% 76%, rgba(255, 255, 255, 0.17), transparent 34%),
+    linear-gradient(135deg, #4773f7 0%, #315ee6 55%, #5680ff 100%) !important;
+  box-shadow: 0 24px 58px rgba(69, 57, 184, 0.24) !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero::after,
+body[data-ui-build] #catalogView .catalog-hero-stat {
+  display: none !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero > div {
+  max-width: 700px !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero span {
+  min-height: 22px !important;
+  padding: 0 11px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero h2 {
+  max-width: 520px !important;
+  margin: 14px 0 8px !important;
+  color: #fff !important;
+  font-size: clamp(38px, 4vw, 58px) !important;
+  font-weight: 900 !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.025em !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero p {
+  max-width: 640px !important;
+  margin: 0 0 18px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-hero-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-search-pill {
+  width: min(430px, 100%) !important;
+  max-width: none !important;
+  height: 38px !important;
+  padding: 0 16px 0 34px !important;
+  position: relative !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.76) !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-search-pill::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  width: 9px !important;
+  height: 9px !important;
+  border: 2px solid rgba(255, 255, 255, 0.64) !important;
+  border-radius: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-search-pill::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 24px !important;
+  top: 22px !important;
+  width: 6px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.64) !important;
+  transform: rotate(45deg) !important;
+}
+
+body[data-ui-build] #catalogView .course-discovery-hero .primary-btn {
+  min-width: 112px !important;
+  min-height: 38px !important;
+  padding: 0 20px !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  color: #4338ca !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  box-shadow: 0 12px 24px rgba(26, 20, 88, 0.14) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-control-row {
+  margin: 18px 0 16px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-chip-row,
+body[data-ui-build] #catalogView .catalog-actions {
+  gap: 8px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-chip-row button,
+body[data-ui-build] #catalogView .catalog-actions button {
+  min-height: 36px !important;
+  padding: 0 15px !important;
+  border: 1px solid #ded9ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: #5f5b70 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-chip-row button.active {
+  border-color: #cfc9ff !important;
+  background: #fff !important;
+  color: #4773f7 !important;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.12) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-card-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #catalogView .discovery-course-card {
+  display: grid !important;
+  grid-template-rows: 136px minmax(0, 1fr) !important;
+  min-height: 326px !important;
+  overflow: hidden !important;
+  border: 1px solid #e3dfef !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 38px rgba(43, 35, 85, 0.09) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+}
+
+body[data-ui-build] #catalogView .discovery-course-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: #d3cdf8 !important;
+  box-shadow: 0 24px 48px rgba(43, 35, 85, 0.14) !important;
+}
+
+body[data-ui-build] #catalogView .discovery-media {
+  position: relative !important;
+  height: 136px !important;
+  background: #eceaf8 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #catalogView .discovery-media::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(9, 7, 32, 0.06), rgba(9, 7, 32, 0.18)) !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #catalogView .discovery-status,
+body[data-ui-build] #catalogView .discovery-price {
+  position: absolute !important;
+  z-index: 1 !important;
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-status {
+  top: 10px !important;
+  left: 10px !important;
+  padding: 0 10px !important;
+  background: #fff1dd !important;
+  color: #a95208 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-price {
+  right: 10px !important;
+  bottom: 10px !important;
+  padding: 0 11px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #4773f7 !important;
+  box-shadow: 0 8px 18px rgba(17, 14, 47, 0.14) !important;
+}
+
+body[data-ui-build] #catalogView .discovery-body {
+  display: grid !important;
+  grid-template-rows: auto minmax(40px, auto) auto auto 1fr !important;
+  align-content: start !important;
+  gap: 9px !important;
+  padding: 14px !important;
+}
+
+body[data-ui-build] #catalogView .discovery-kicker {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #catalogView .discovery-kicker small {
+  min-width: 0 !important;
+  color: #8a8598 !important;
+  font-size: 10px !important;
+  font-weight: 750 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #catalogView .discovery-body .course-category-label {
+  max-width: 130px !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  background: #f1efff !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #catalogView .discovery-body h3 {
+  min-height: 42px !important;
+  margin: 0 !important;
+  color: #171427 !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1.18 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-rating {
+  color: #f59e0b !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-rating small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #6f6a7d !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-meta {
+  display: flex !important;
+  min-height: 24px !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+body[data-ui-build] #catalogView .discovery-meta span {
+  min-height: 22px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  background: #f8f7fc !important;
+  color: #756f84 !important;
+  font-size: 10px !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions {
+  align-self: end !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions .secondary-btn,
+body[data-ui-build] #catalogView .discovery-actions .primary-btn {
+  min-height: 34px !important;
+  padding: 0 12px !important;
+  border-radius: 9px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions .secondary-btn {
+  background: #fff !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions .primary-btn {
+  min-width: 62px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card {
+  min-height: 250px !important;
+  margin-top: 34px !important;
+  padding: 34px !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(194, 92, 12, 0.5), transparent 36%),
+    linear-gradient(135deg, #552306, #391707) !important;
+  box-shadow: 0 18px 42px rgba(64, 24, 4, 0.16) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card h2 {
+  max-width: 620px !important;
+  margin: 16px auto 10px !important;
+  font-size: clamp(32px, 3vw, 44px) !important;
+  line-height: 1.02 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card p {
+  max-width: 600px !important;
+  margin-bottom: 22px !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card .primary-btn,
+body[data-ui-build] #catalogView .catalog-accelerator-card .secondary-btn {
+  min-height: 38px !important;
+  padding: 0 20px !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+}
+
+@media (min-width: 1500px) {
+  body[data-ui-build] #catalogCoursesGrid {
+    width: min(100%, 1260px) !important;
+    max-width: 1260px !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #catalogView .catalog-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 860px) {
+  body[data-ui-build] #catalogView .catalog-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #catalogView {
+    padding: 16px 14px 42px !important;
+  }
+
+  body[data-ui-build] #catalogView .course-discovery-hero {
+    padding: 24px !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-hero-actions,
+  body[data-ui-build] #catalogView .catalog-control-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-search-pill {
+    width: 100% !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v54 course catalog filters: functional frontend filtering controls. */
+body[data-ui-build] #catalogView .catalog-actions button.active {
+  border-color: #cfc9ff !important;
+  background: #fff !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-filter-row {
+  width: 100% !important;
+  display: none !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  margin: -4px 0 16px !important;
+  padding: 10px !important;
+  border: 1px solid #e4e0f1 !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-filter-row.open {
+  display: flex !important;
+}
+
+body[data-ui-build] #catalogView .catalog-filter-row button {
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border: 1px solid #e4e0f1 !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #6b6578 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #catalogView .catalog-filter-row button.active {
+  border-color: #cfc9ff !important;
+  background: #4773f7 !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.16) !important;
+}
+
+/* v55 student navigation: separate catalog, enrolled courses, and player. */

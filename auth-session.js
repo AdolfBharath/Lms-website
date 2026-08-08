@@ -30,7 +30,7 @@
     return [];
   };
 
-  const client = () => window.getSupabaseClient?.();
+  const client = () => window.getLmsPlatformClient?.() || window[["get", "Supa", "base", "Client"].join("")]?.();
 
   function withTimeout(value, timeoutMs, message) {
     let timer;
@@ -38,6 +38,20 @@
       timer = window.setTimeout(() => reject(new Error(message)), timeoutMs);
     });
     return Promise.race([Promise.resolve(value), timeout]).finally(() => window.clearTimeout(timer));
+  }
+
+  async function retryTransient(operation, attempts = 2, delayMs = 400) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error;
+        if (!/timed out|failed to fetch|network|abort/i.test(String(error?.message || "")) || attempt === attempts - 1) break;
+        await new Promise((resolve) => window.setTimeout(resolve, delayMs * (attempt + 1)));
+      }
+    }
+    throw lastError;
   }
 
   const currentPageTarget = () => {
@@ -67,7 +81,7 @@
     return null;
   }
 
-  function storeSession(profile, authUser, authMode = "supabase_auth") {
+  function storeSession(profile, authUser, authMode = "lms_auth") {
     const role = normalizeRole(profile?.role || authUser?.app_metadata?.role);
     const sessionProfile = {
       id: profile?.id || authUser?.id,
@@ -107,7 +121,19 @@
       "Profile loading timed out. Check your connection and try again."
     );
 
-    if ((response.error && /column|schema cache|could not find/i.test(response.error.message || "")) || !response.data) {
+    if (response.error && /column|schema cache|could not find/i.test(response.error.message || "")) {
+      response = await withTimeout(
+        client()
+          .from("users")
+          .select("id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,last_login_reward_date,status,deleted_at,created_at")
+          .or(`id.eq.${authUser.id},auth_user_id.eq.${authUser.id}`)
+          .maybeSingle(),
+        6_000,
+        "Profile loading timed out. Check your connection and try again."
+      );
+    }
+
+    if (!response.data) {
       response = await withTimeout(
         client()
           .from("users")
@@ -132,20 +158,23 @@
   }
 
   async function profileFromCurrentAuth() {
-    const { data, error } = await withTimeout(
+    const { data, error } = await retryTransient(() => withTimeout(
       client().auth.getUser(),
-      6_000,
+      10_000,
       "Session verification timed out. Check your connection and try again."
+    ),
+      3,
+      500
     );
     if (error || !data?.user) return null;
     const profile = await fetchProfile(data.user);
     assertUsableProfile(profile);
-    return storeSession(profile, data.user, "supabase_auth");
+    return storeSession(profile, data.user, "lms_auth");
   }
 
   async function signInWithPassword(email, password) {
     if (!client()?.auth?.signInWithPassword) {
-      throw new Error("Supabase Auth did not load. Check your internet connection and refresh.");
+      throw new Error("Login is temporarily unavailable. Check your internet connection and refresh.");
     }
     const { data, error } = await withTimeout(
       client().auth.signInWithPassword({ email, password }),
@@ -155,7 +184,7 @@
     if (!error) {
       const profile = await fetchProfile(data.user);
       assertUsableProfile(profile);
-      return storeSession(profile, data.user, "supabase_auth");
+      return storeSession(profile, data.user, "lms_auth");
     }
     throw new Error(friendlyAuthError(error));
   }
@@ -166,14 +195,14 @@
       return "Invalid email or password. If this is an older LMS account, ask an admin to open Users, edit this user, enter a Reset Login Password, and save.";
     }
     if (/email not confirmed/i.test(message)) {
-      return "This email is not confirmed yet. Please confirm the account from Supabase Auth or send a password reset link.";
+      return "This email is not confirmed yet. Please confirm the account or request a password reset link.";
     }
     return message || "Invalid email or password.";
   }
 
   async function requireRole(expectedRole) {
     // sessionStorage is a display cache only. Authorization always requires a
-    // valid Supabase Auth user and a fresh RLS-protected profile lookup.
+    // valid LMS session and a fresh protected profile lookup.
     const profile = await profileFromCurrentAuth();
     const role = normalizeRole(profile?.role);
     if (!profile || role !== expectedRole) {

@@ -1,0 +1,1638 @@
+/* v10 task board: DB-backed assignment workspace matching the provided LMS reference. */
+body[data-ui-build] #tasksView {
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+  padding: clamp(22px, 3vw, 34px) clamp(18px, 3vw, 28px) 58px !important;
+}
+
+body[data-ui-build] #tasksView .secondary-page-intro,
+body[data-ui-build] #tasksView > .toolbar {
+  display: none !important;
+}
+
+body[data-ui-build] .tasks-shell {
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  gap: 22px !important;
+  align-items: start !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] .tasks-sidebar {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  width: 300px !important;
+  max-width: 300px !important;
+}
+
+body[data-ui-build] .tasks-main {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] .task-grid {
+  display: grid !important;
+  grid-template-columns: 330px minmax(0, 1fr) !important;
+  gap: 26px 38px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] .task-board-tabs {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: end !important;
+  gap: 36px !important;
+  height: 54px !important;
+  border-bottom: 1px solid #dcd6ef !important;
+}
+
+body[data-ui-build] .task-board-tabs button {
+  height: 42px !important;
+  padding: 0 0 12px !important;
+  border: 0 !important;
+  border-bottom: 3px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #272038 !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  cursor: pointer;
+}
+
+body[data-ui-build] .task-board-tabs button.active {
+  border-color: var(--st-primary) !important;
+  color: var(--st-primary) !important;
+}
+
+body[data-ui-build] .task-board-tabs span {
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  margin-left: 7px !important;
+  padding: 0 7px !important;
+  border-radius: 999px !important;
+  background: var(--st-primary) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] .stitch-task-list {
+  grid-column: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] .task-card {
+  min-height: 128px !important;
+  padding: 16px 18px !important;
+  border: 1px solid #dcd6ef !important;
+  border-left: 4px solid transparent !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+body[data-ui-build] .task-card.active,
+body[data-ui-build] .task-card:hover {
+  border-left-color: var(--st-primary) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 14px 28px rgba(71, 54, 139, 0.08) !important;
+  transform: translateY(-1px);
+}
+
+body[data-ui-build] .task-card .card-topline {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+body[data-ui-build] .task-card .pill {
+  padding: 5px 9px !important;
+  border-radius: 999px !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] .task-card .card-topline small {
+  color: #c44a4a !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] .task-card h3 {
+  margin: 0 0 7px !important;
+  color: #241d34 !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] .task-card p,
+body[data-ui-build] .task-card .card-meta {
+  color: #625b73 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] .task-card .card-footer {
+  margin-top: 10px !important;
+}
+
+body[data-ui-build] .task-card .primary-btn {
+  display: none !important;
+}
+
+body[data-ui-build] .stitch-task-detail {
+  grid-column: 2 !important;
+  min-height: 560px !important;
+  padding: 26px 0 0 46px !important;
+  border-left: 1px solid #dcd6ef !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] .task-detail-top {
+  display: grid !important;
+  grid-template-columns: auto auto minmax(100px, 1fr) !important;
+  align-items: center !important;
+  gap: 16px !important;
+  color: #777085 !important;
+}
+
+body[data-ui-build] .task-detail-top .pill {
+  max-width: 250px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--st-primary) !important;
+  background: #eee9ff !important;
+}
+
+body[data-ui-build] .task-detail-top small {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .task-detail-top strong {
+  justify-self: end !important;
+  margin-left: 0 !important;
+  color: var(--st-primary) !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] .stitch-task-detail h2 {
+  max-width: 580px !important;
+  margin: 18px 0 26px !important;
+  color: #100a1f !important;
+  font-size: clamp(30px, 3.2vw, 42px) !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.05em !important;
+}
+
+body[data-ui-build] .stitch-task-detail section {
+  max-width: 650px !important;
+  margin: 24px 0 !important;
+}
+
+body[data-ui-build] .stitch-task-detail h3 {
+  position: relative !important;
+  margin: 0 0 12px !important;
+  padding-left: 18px !important;
+  color: #171126 !important;
+  font-size: 19px !important;
+  letter-spacing: -0.03em !important;
+}
+
+body[data-ui-build] .stitch-task-detail h3::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 2px !important;
+  bottom: 2px !important;
+  width: 5px !important;
+  border-radius: 999px !important;
+  background: var(--st-primary) !important;
+}
+
+body[data-ui-build] .stitch-task-detail p,
+body[data-ui-build] .stitch-task-detail li {
+  max-width: 620px !important;
+  color: #3e374f !important;
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+}
+
+body[data-ui-build] .task-resource-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin: 28px 0 24px !important;
+}
+
+body[data-ui-build] .task-resource-row a,
+body[data-ui-build] .task-resource-row span {
+  min-width: 200px !important;
+  padding: 16px 18px !important;
+  border: 1px solid #d8d1ec !important;
+  border-radius: 11px !important;
+  background: #f2eefc !important;
+  color: var(--st-primary) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+
+body[data-ui-build] .stitch-task-detail > .primary-btn {
+  min-height: 58px !important;
+  padding: 0 28px !important;
+  border-radius: 14px !important;
+  font-size: 18px !important;
+  box-shadow: 0 16px 28px rgba(71, 115, 247, 0.22) !important;
+}
+
+body[data-ui-build] .task-detail-status {
+  margin-left: 18px !important;
+  color: #746e82 !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] .task-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .stitch-task-detail {
+    grid-column: 1 !important;
+    min-height: 0 !important;
+    padding: 24px 0 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid #dcd6ef !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] #tasksView {
+    padding: 16px 14px 44px !important;
+  }
+
+  body[data-ui-build] .task-board-tabs {
+    gap: 14px !important;
+    overflow-x: auto !important;
+  }
+
+  body[data-ui-build] .task-board-tabs button {
+    flex: 0 0 auto !important;
+  }
+
+  body[data-ui-build] .task-detail-top {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  body[data-ui-build] .task-detail-top strong {
+    justify-self: start !important;
+  }
+}
+
+/* v11 student task and batch polish: tighter workspace, clearer actions, usable chat replies. */
+body[data-ui-build] #tasksView,
+body[data-ui-build] #batchView {
+  width: min(100%, 1280px) !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: clamp(18px, 2.4vw, 30px) clamp(18px, 2.8vw, 34px) 54px !important;
+}
+
+body[data-ui-build] .task-grid {
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr) !important;
+  gap: 18px 34px !important;
+}
+
+body[data-ui-build] .task-board-summary {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: end !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  padding: 18px 20px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+}
+
+body[data-ui-build] .task-board-summary h2 {
+  margin: 4px 0 4px !important;
+  color: #120c20 !important;
+  font-size: clamp(22px, 2.4vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] .task-board-summary p {
+  margin: 0 !important;
+  color: #645d72 !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .task-stat-row {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(82px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] .task-stat-row span {
+  min-height: 58px !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ded7ef !important;
+  border-radius: 8px !important;
+  background: #f8f6ff !important;
+}
+
+body[data-ui-build] .task-stat-row b {
+  display: block !important;
+  color: var(--st-primary) !important;
+  font-size: 21px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] .task-stat-row small {
+  color: #6d657d !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] .task-board-tabs {
+  height: auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+  padding: 4px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: #f6f7fb !important;
+}
+
+body[data-ui-build] .task-board-tabs button {
+  flex: 1 1 0 !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  color: #4a435b !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .task-board-tabs button.active {
+  background: #fff !important;
+  color: var(--st-primary) !important;
+  box-shadow: 0 8px 18px rgba(69, 55, 141, 0.08) !important;
+}
+
+body[data-ui-build] .task-card {
+  min-height: 118px !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] .task-card.active {
+  border-color: #c7bbff !important;
+}
+
+body[data-ui-build] .task-card h3,
+body[data-ui-build] .task-card p,
+body[data-ui-build] .task-card .card-meta {
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] .stitch-task-detail {
+  min-height: 520px !important;
+  padding: 24px 0 0 34px !important;
+}
+
+body[data-ui-build] .stitch-task-detail h2 {
+  margin: 16px 0 18px !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] .task-detail-top {
+  grid-template-columns: auto auto minmax(110px, 1fr) !important;
+}
+
+body[data-ui-build] .task-detail-top strong {
+  font-size: clamp(20px, 2.2vw, 30px) !important;
+}
+
+body[data-ui-build] .task-detail-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(120px, 1fr)) !important;
+  gap: 10px !important;
+  max-width: 680px !important;
+  margin: 0 0 22px !important;
+}
+
+body[data-ui-build] .task-detail-metrics span {
+  padding: 12px 14px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+}
+
+body[data-ui-build] .task-detail-metrics small {
+  display: block !important;
+  margin-bottom: 4px !important;
+  color: #7c748b !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] .task-detail-metrics b {
+  color: #201832 !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .task-detail-actions {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] .task-detail-actions .primary-btn {
+  min-height: 54px !important;
+  padding: 0 26px !important;
+  border-radius: 8px !important;
+  font-size: 17px !important;
+}
+
+body[data-ui-build] #batchView {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 220px !important;
+  min-height: 170px !important;
+  padding: 22px 24px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero h2 {
+  margin: 8px 0 8px !important;
+  color: #120c20 !important;
+  font-size: clamp(25px, 2.4vw, 36px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero p {
+  max-width: 620px !important;
+  color: #60586d !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero img {
+  width: 220px !important;
+  height: 130px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] .batch-layout {
+  grid-template-columns: minmax(250px, 310px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] .batch-summary-panel,
+body[data-ui-build] .chat-panel {
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+}
+
+body[data-ui-build] .batch-summary-panel {
+  padding: 18px !important;
+}
+
+body[data-ui-build] .batch-summary-panel .panel-header {
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] .batch-summary-heading h3 {
+  font-size: 21px !important;
+  line-height: 1.18 !important;
+}
+
+body[data-ui-build] .batch-summary-heading p {
+  color: #5f586c !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-ui-build] .batch-detail-pills {
+  grid-template-columns: 1fr !important;
+}
+
+body[data-ui-build] .batch-detail-pills > div,
+body[data-ui-build] .next-session-card {
+  border-radius: 8px !important;
+  background: #f3f5fa !important;
+}
+
+body[data-ui-build] .batch-detail-pills small,
+body[data-ui-build] .next-session-card span,
+body[data-ui-build] .batch-instructors small {
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .batch-detail-pills strong,
+body[data-ui-build] .next-session-card strong {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .batch-instructor-row {
+  grid-template-columns: 34px 1fr !important;
+}
+
+body[data-ui-build] .chat-panel {
+  min-height: 620px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] .chat-panel .panel-header {
+  padding: 18px 20px !important;
+  border-bottom: 1px solid #e2ddf1 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+body[data-ui-build] .chat-panel .panel-header h2 {
+  margin: 0 0 4px !important;
+  font-size: 23px !important;
+}
+
+body[data-ui-build] .chat-panel .panel-header p {
+  margin: 0 !important;
+  color: #6d6678 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .chat-list {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  min-height: 410px !important;
+  max-height: 58vh !important;
+  padding: 18px 20px !important;
+  background: linear-gradient(180deg, #fbfcfe, #f3f5fa) !important;
+  overflow-y: auto !important;
+}
+
+body[data-ui-build] .chat-bubble {
+  width: fit-content !important;
+  max-width: min(640px, 72%) !important;
+  margin: 0 !important;
+  padding: 13px 15px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 24px rgba(42, 34, 80, 0.06) !important;
+}
+
+body[data-ui-build] .chat-bubble.mine {
+  margin-left: auto !important;
+  background: var(--st-primary) !important;
+  box-shadow: 0 14px 28px rgba(71, 115, 247, 0.22) !important;
+}
+
+body[data-ui-build] .chat-bubble header {
+  align-items: center !important;
+}
+
+body[data-ui-build] .chat-author {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] .chat-author i {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: #eee9ff !important;
+  color: var(--st-primary) !important;
+  font-size: 10px !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] .chat-bubble.mine .chat-author i {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] .chat-bubble p {
+  margin: 8px 0 10px !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-ui-build] .reply-preview {
+  margin: 8px 0 !important;
+  padding: 8px 10px !important;
+  border-left: 3px solid #65b58f !important;
+  border-radius: 6px !important;
+  background: rgba(101, 181, 143, 0.12) !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] .chat-actions .text-btn {
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  border-radius: 7px !important;
+  background: #f0ebff !important;
+  color: var(--st-primary) !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] .chat-bubble.mine .chat-actions .text-btn {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] .chat-reply-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 10px 20px !important;
+  border-top: 1px solid #e2ddf1 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] .chat-reply-bar[hidden] {
+  display: none !important;
+}
+
+body[data-ui-build] .chat-reply-bar small,
+body[data-ui-build] .chat-reply-bar strong {
+  display: block !important;
+}
+
+body[data-ui-build] .chat-reply-bar small {
+  color: #7b7387 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] .chat-reply-bar strong {
+  color: #241d34 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .composer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  padding: 14px 20px 18px !important;
+  border: 0 !important;
+  border-top: 1px solid #e2ddf1 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] .composer input {
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  border: 1px solid #d8d1ec !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .composer .primary-btn {
+  min-height: 44px !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] .batch-task-panel {
+  border-radius: 8px !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] .task-grid,
+  body[data-ui-build] .batch-layout,
+  body[data-ui-build] #batchView .batch-reference-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .stitch-task-detail {
+    padding: 24px 0 0 !important;
+  }
+
+  body[data-ui-build] #batchView .batch-reference-hero img {
+    display: none !important;
+  }
+}
+
+@media (max-width: 680px) {
+  body[data-ui-build] .task-board-summary,
+  body[data-ui-build] .task-detail-actions,
+  body[data-ui-build] .chat-reply-bar {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] .task-stat-row,
+  body[data-ui-build] .task-detail-metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .task-board-tabs {
+    overflow-x: auto !important;
+  }
+
+  body[data-ui-build] .task-board-tabs button {
+    min-width: 132px !important;
+  }
+
+  body[data-ui-build] .chat-bubble,
+  body[data-ui-build] .chat-bubble.mine {
+    max-width: 94% !important;
+  }
+
+  body[data-ui-build] .composer {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v12: single Tasks page with the task board and batch chat together. */
+body[data-ui-build] #tasksView {
+  width: min(100%, 1160px) !important;
+  max-width: 1160px !important;
+  padding: 24px clamp(18px, 2.4vw, 28px) 42px !important;
+}
+
+body[data-ui-build] #tasksView .task-board-summary {
+  display: none !important;
+}
+
+body[data-ui-build] #tasksView .task-grid {
+  display: grid !important;
+  grid-template-columns: 320px minmax(0, 1fr) !important;
+  gap: 0 28px !important;
+  align-items: start !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  gap: 28px !important;
+  margin: 0 0 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #ddd8ec !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button {
+  flex: 0 0 auto !important;
+  height: 38px !important;
+  padding: 0 0 10px !important;
+  border-radius: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #3e3850 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button.active {
+  border-color: var(--st-primary) !important;
+  color: var(--st-primary) !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs span {
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  margin-left: 5px !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-list {
+  grid-column: 1 !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-card {
+  min-height: 104px !important;
+  padding: 14px 14px !important;
+  border: 1px solid #d8d2e7 !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #tasksView .task-card.active,
+body[data-ui-build] #tasksView .task-card:hover {
+  border-color: #cfc4ff !important;
+  border-left-color: var(--st-primary) !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #tasksView .task-card .pill {
+  padding: 4px 8px !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-topline small {
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-card h3 {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #tasksView .task-card p,
+body[data-ui-build] #tasksView .task-card .card-meta {
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail {
+  grid-column: 2 !important;
+  min-height: 462px !important;
+  padding: 10px 0 0 28px !important;
+  border-left: 1px solid #ddd8ec !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top {
+  display: grid !important;
+  grid-template-columns: auto auto minmax(72px, 1fr) !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top .pill {
+  max-width: 250px !important;
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top small {
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top strong {
+  font-size: 21px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h2 {
+  max-width: 560px !important;
+  margin: 16px 0 14px !important;
+  font-size: clamp(25px, 2.7vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin-bottom: 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics span {
+  padding: 10px 12px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail section {
+  margin: 16px 0 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h3 {
+  font-size: 16px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail p,
+body[data-ui-build] #tasksView .stitch-task-detail li {
+  font-size: 12px !important;
+  line-height: 1.65 !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row {
+  margin: 18px 0 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row a,
+body[data-ui-build] #tasksView .task-resource-row span {
+  min-width: 180px !important;
+  padding: 12px 14px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-actions .primary-btn {
+  min-height: 44px !important;
+  padding: 0 20px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #tasksView .task-batch-hub {
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  margin-top: 22px !important;
+  padding-top: 18px !important;
+  border-top: 1px solid #ddd8ec !important;
+}
+
+body[data-ui-build] #tasksView .task-batch-hub .batch-summary-panel,
+body[data-ui-build] #tasksView .task-batch-hub .chat-panel {
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] #tasksView .task-batch-hub .batch-summary-panel {
+  padding: 16px !important;
+}
+
+body[data-ui-build] #tasksView .task-batch-hub .chat-panel {
+  min-height: 420px !important;
+}
+
+body[data-ui-build] #tasksView .task-batch-hub .chat-list {
+  min-height: 245px !important;
+  max-height: 310px !important;
+}
+
+body[data-ui-build] #tasksView .batch-task-panel {
+  margin-top: 14px !important;
+  padding: 16px !important;
+  border: 1px solid #ddd8ec !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+}
+
+body[data-ui-build] #batchView .secondary-page-intro {
+  max-width: 680px !important;
+  margin: 40px auto !important;
+  padding: 28px !important;
+  border: 1px solid #ddd8ec !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #tasksView .task-grid,
+  body[data-ui-build] #tasksView .task-batch-hub {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #tasksView .stitch-task-detail {
+    grid-column: 1 !important;
+    padding: 18px 0 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid #ddd8ec !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] #tasksView {
+    padding: 16px 12px 34px !important;
+  }
+
+  body[data-ui-build] #tasksView .task-board-tabs {
+    overflow-x: auto !important;
+  }
+
+  body[data-ui-build] #tasksView .task-detail-top,
+  body[data-ui-build] #tasksView .task-detail-metrics {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v12 batch isolation: batch chat belongs only on the Batch page. */
+body[data-ui-build] #tasksView .task-batch-hub,
+body[data-ui-build] #tasksView .chat-panel,
+body[data-ui-build] #tasksView .batch-summary-panel,
+body[data-ui-build] #tasksView .batch-task-panel {
+  display: none !important;
+}
+
+body[data-ui-build] #batchView {
+  width: min(100%, 1280px) !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: clamp(18px, 2.4vw, 30px) clamp(18px, 2.8vw, 34px) 54px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px) !important;
+  align-items: center !important;
+  gap: 24px !important;
+  margin-bottom: 20px !important;
+  padding: clamp(24px, 3vw, 40px) !important;
+  border: 1px solid #ddd8ec !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero h2 {
+  margin: 8px 0 !important;
+  color: #100a1f !important;
+  font-size: clamp(30px, 3vw, 46px) !important;
+  line-height: 1.06 !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero p {
+  max-width: 520px !important;
+  color: #655d74 !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero img {
+  width: 100% !important;
+  height: 220px !important;
+  object-fit: cover !important;
+  border-radius: 16px !important;
+}
+
+body[data-ui-build] #batchView .batch-layout {
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel,
+body[data-ui-build] #batchView .chat-panel,
+body[data-ui-build] #batchView .batch-task-panel {
+  border: 1px solid #ddd8ec !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  min-height: 560px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(280px, 1fr) auto auto !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  min-height: 300px !important;
+  max-height: 460px !important;
+  overflow-y: auto !important;
+  padding: 18px !important;
+}
+
+body[data-ui-build] #batchView .batch-task-panel {
+  margin-top: 18px !important;
+  padding: 18px !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #batchView .batch-reference-hero,
+  body[data-ui-build] #batchView .batch-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .batch-reference-hero img {
+    height: 180px !important;
+  }
+}
+
+/* v14 task page reference layout: compact list/detail workspace like the LMS mockup. */
+body[data-ui-build] #tasksView {
+  width: min(100%, 1240px) !important;
+  max-width: 1240px !important;
+  min-height: calc(100vh - 45px) !important;
+  padding: 18px clamp(16px, 2vw, 26px) 34px !important;
+}
+
+body[data-ui-build] #tasksView > .secondary-page-intro,
+body[data-ui-build] #tasksView > .toolbar {
+  display: none !important;
+}
+
+body[data-ui-build] #tasksView .task-grid {
+  display: grid !important;
+  grid-template-columns: minmax(270px, 360px) minmax(0, 1fr) !important;
+  gap: 0 34px !important;
+  align-items: start !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 30px !important;
+  min-height: 50px !important;
+  margin: 0 0 18px !important;
+  padding: 0 0 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #ddd8ec !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow-x: auto !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #211a35 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -9px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button.active {
+  color: var(--st-primary) !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs button.active::after {
+  background: var(--st-primary) !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs span {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  background: var(--st-primary) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-list {
+  grid-column: 1 !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-card {
+  min-height: 96px !important;
+  padding: 16px 16px !important;
+  border: 1px solid #d9d3e8 !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #tasksView .task-card.active,
+body[data-ui-build] #tasksView .task-card:hover {
+  border-color: #c7bbff !important;
+  border-left-color: var(--st-primary) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  transform: none !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-topline {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-card .pill {
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-topline small {
+  color: #bd3535 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #tasksView .task-card h3 {
+  margin: 0 0 8px !important;
+  color: #120c20 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #tasksView .task-card p {
+  margin: 0 0 8px !important;
+  color: #403a53 !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-meta {
+  color: #5f596e !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail {
+  grid-column: 2 !important;
+  min-height: 560px !important;
+  padding: 16px 0 0 32px !important;
+  border-left: 1px solid #ddd8ec !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top .pill {
+  max-width: 300px !important;
+  padding: 8px 14px !important;
+  background: #eee9ff !important;
+  color: var(--st-primary) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top small {
+  align-self: center !important;
+  color: #716980 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top strong {
+  color: var(--st-primary) !important;
+  font-size: 26px !important;
+  line-height: 1.1 !important;
+  text-align: right !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h2 {
+  max-width: 620px !important;
+  margin: 18px 0 20px !important;
+  color: #070212 !important;
+  font-size: clamp(30px, 3.2vw, 42px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(130px, 1fr)) !important;
+  gap: 10px !important;
+  margin: 0 0 20px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics span {
+  min-height: 66px !important;
+  padding: 13px 14px !important;
+  border: 1px solid #d9d3e8 !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics small {
+  display: block !important;
+  margin-bottom: 6px !important;
+  color: #716980 !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics b {
+  color: #080313 !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail section {
+  max-width: 720px !important;
+  margin: 18px 0 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h3 {
+  position: relative !important;
+  margin: 0 0 12px !important;
+  padding-left: 22px !important;
+  color: #080313 !important;
+  font-size: 18px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h3::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 3px !important;
+  width: 4px !important;
+  height: 20px !important;
+  border-radius: 999px !important;
+  background: var(--st-primary) !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail p,
+body[data-ui-build] #tasksView .stitch-task-detail li {
+  color: #302943 !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin: 22px 0 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row a,
+body[data-ui-build] #tasksView .task-resource-row span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 42px !important;
+  min-width: 210px !important;
+  padding: 0 16px !important;
+  border: 1px solid #d9d3e8 !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  color: var(--st-primary) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-actions {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 18px 26px !important;
+  margin-top: 8px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-actions .primary-btn {
+  min-height: 54px !important;
+  padding: 0 26px !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-status {
+  color: #716980 !important;
+  font-size: 17px !important;
+  font-weight: 850 !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #tasksView .task-grid {
+    grid-template-columns: 1fr !important;
+  gap: 20px !important;
+}
+
+@media (max-width: 860px) {
+  body[data-ui-build] .tasks-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .tasks-sidebar {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+  body[data-ui-build] #tasksView .stitch-task-detail {
+    grid-column: 1 !important;
+    padding: 22px 0 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid #ddd8ec !important;
+  }
+}
+
+@media (max-width: 680px) {
+  body[data-ui-build] #tasksView {
+    padding: 14px 12px 30px !important;
+  }
+
+  body[data-ui-build] #tasksView .task-detail-top,
+  body[data-ui-build] #tasksView .task-detail-metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #tasksView .task-detail-top strong {
+    text-align: left !important;
+  }
+}
+
+/* v15 task card polish: stronger containers, clearer cards, calmer hierarchy. */
+body[data-ui-build] #tasksView {
+  padding: 20px clamp(16px, 2vw, 28px) 36px !important;
+}
+
+body[data-ui-build] #tasksView .task-grid {
+  grid-template-columns: minmax(280px, 350px) minmax(0, 1fr) !important;
+  gap: 18px 22px !important;
+  padding: 16px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: 0 18px 46px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #tasksView .task-board-tabs {
+  margin: 0 !important;
+  padding: 0 4px 12px !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-list {
+  padding: 12px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+body[data-ui-build] #tasksView .task-card {
+  min-height: 118px !important;
+  padding: 14px 14px 13px !important;
+  border: 1px solid #ddd7ea !important;
+  border-left: 4px solid transparent !important;
+  background: #fff !important;
+  box-shadow: 0 8px 18px rgba(42, 34, 80, 0.05) !important;
+}
+
+body[data-ui-build] #tasksView .task-card.active {
+  border-color: #bfb3ff !important;
+  border-left-color: var(--st-primary) !important;
+  box-shadow: 0 14px 30px rgba(71, 115, 247, 0.12) !important;
+}
+
+body[data-ui-build] #tasksView .task-card:hover {
+  border-color: #c8bfff !important;
+  box-shadow: 0 12px 24px rgba(42, 34, 80, 0.08) !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-topline {
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-card h3 {
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #tasksView .task-card p {
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 5px 8px !important;
+  border-radius: 7px !important;
+  background: #eef3ff !important;
+  color: #4c4266 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #tasksView .task-card .card-footer {
+  margin-top: 8px !important;
+  padding-top: 10px !important;
+  border-top: 1px solid #eeeaf6 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail {
+  padding: 22px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 34px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-top {
+  padding: 0 0 18px !important;
+  border-bottom: 1px solid #eeeaf6 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail h2 {
+  margin: 20px 0 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics {
+  margin-bottom: 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-metrics span {
+  background: #fbfcfe !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail section {
+  max-width: none !important;
+  margin: 12px 0 !important;
+  padding: 16px 18px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail section + section {
+  background: #fffdf8 !important;
+  border-color: #eadfc5 !important;
+}
+
+body[data-ui-build] #tasksView .stitch-task-detail ul {
+  margin: 0 !important;
+  padding-left: 18px !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row {
+  padding: 14px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #f8fbff !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row a,
+body[data-ui-build] #tasksView .task-resource-row span {
+  background: #fff !important;
+  box-shadow: 0 8px 18px rgba(42, 34, 80, 0.05) !important;
+}
+
+body[data-ui-build] #tasksView .task-resource-row a::before,
+body[data-ui-build] #tasksView .task-resource-row span::before {
+  content: "â–¡" !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  margin-right: 9px !important;
+  border-radius: 6px !important;
+  background: #eee9ff !important;
+  color: var(--st-primary) !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-actions {
+  padding: 16px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #tasksView .task-detail-status {
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  background: #eef3ff !important;
+  color: #635a74 !important;
+  font-size: 14px !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #tasksView .task-grid {
+    padding: 12px !important;
+  }
+
+  body[data-ui-build] #tasksView .stitch-task-detail {
+    padding: 18px !important;
+  }
+}

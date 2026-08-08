@@ -6,7 +6,19 @@
   <title>Student | Jenovate LMS</title>
   <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
   <link rel="stylesheet" href="colours.css" />
-  <link rel="stylesheet" href="student.css?v=20260724-auth-logout-hit-fix-v1" />
+  <link rel="stylesheet" href="student.css?v=20260730-pdf-localhost-v6" />
+  <link rel="stylesheet" href="student-courses-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-tasks-split.css?v=20260803-task-shell-v1" />
+  <link rel="stylesheet" href="student-batch-support-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-referral-profile-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-mycourses-learning-split.css?v=20260802-resource-fullscreen-v1" />
+  <link rel="stylesheet" href="student-discussions-tasks-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-batch-profile-shop-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-referral-support-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-support-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-premium-shell-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-learning-dashboard-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-referral-final-split.css?v=20260731-file-size-v1" />
   <style>nextjs-portal{pointer-events:none!important}</style>
   <link rel="stylesheet" href="student-dashboard-v3.css?v=20260714-alignment" />
   <link rel="stylesheet" href="student-streak-v4.css?v=20260716-streak-spacing" />
@@ -17,7 +29,9 @@
   <link rel="stylesheet" href="student-leaderboard.css?v=20260714-live-leaderboard" />
   <link rel="stylesheet" href="student-assignment-card.css?v=20260715-academic-dashboard" />
   <link rel="stylesheet" href="student-tasks-reference.css?v=20260725-reference-tasks-fit-v4" />
+  <link rel="stylesheet" href="student-batch-chat.css?v=20260728-active-chat-scale-v1" />
   <link rel="stylesheet" href="student-referral-refresh.css?v=20260720-referral-ui-v2" />
+  <link rel="stylesheet" href="student-learning-player-youtube.css?v=20260802-discussion-notes-v1" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
 </head>
 <body data-ui-build="stitch-20260605">
@@ -201,7 +215,7 @@
     <main class="student-main">
       <header class="student-topbar">
         <button class="mobile-menu-btn" id="studentMenuBtn" type="button" aria-label="Open student menu" aria-expanded="false">Menu</button>
-        <h1 class="student-topbar-title">Learning Dashboard</h1>
+        <h1 class="student-topbar-title">Student Dashboard</h1>
         <label class="top-search" for="topSearchInput">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
@@ -1123,14 +1137,16 @@
     </section>
   </div>
 
-  <script defer src="assets/vendor/supabase-2.49.4.js"></script>
-  <script defer src="supabase-config.js?v=20260618-signed-storage"></script>
+  <script defer src="assets/vendor/lms-platform-sdk.js"></script>
+  <script defer src="lms-platform-config.js?v=20260803-shared-auth-v1"></script>
   <script defer src="session-router.js?v=20260615-auth"></script>
-  <script defer src="auth-session.js?v=20260715-fast-auth"></script>
+  <script defer src="auth-session.js?v=20260803-auth-retry-v1"></script>
+  <script defer src="lms-content-service.js?v=20260802-provider-preview-v1"></script>
   <script defer src="academic-metrics.js?v=20260716-academic-metrics"></script>
   <script defer src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
   <script type="module" src="student-referral.js?v=20260720-referral-db-v2"></script>
   <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
-  <script defer src="student.js?v=20260728-dom-utils-v1"></script>
+  <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
+  <script defer src="student.js?v=20260802-discussion-pdf-v1"></script>
 </body>
 </html>

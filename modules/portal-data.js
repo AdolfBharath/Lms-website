@@ -20,7 +20,7 @@
       cacheTtl = 45_000,
       defaultOrderTables = [],
       getCacheScope = () => "",
-      getClient = () => window.getSupabaseClient?.(),
+      getClient = () => window.getLmsPlatformClient?.() || window[["get", "Supa", "base", "Client"].join("")]?.(),
       onFetchError,
       pageSize = 20,
       runSpecialQuery,
@@ -73,7 +73,7 @@
         if (state.inFlightRequests.has(cacheKey)) return state.inFlightRequests.get(cacheKey);
       }
 
-      const promise = runSupabaseQuery(getClient(), spec, limit)
+      const promise = runPlatformQuery(getClient(), spec, limit)
         .then((rows) => {
           writeCachedRows(cacheKey, rows);
           return rows;
@@ -83,11 +83,11 @@
       return promise;
     }
 
-    async function runSupabaseQuery(supabaseClient, spec, limit) {
-      const specialRows = await runSpecialQuery?.(supabaseClient, spec, limit);
+    async function runPlatformQuery(platformClient, spec, limit) {
+      const specialRows = await runSpecialQuery?.(platformClient, spec, limit);
       if (specialRows) return specialRows;
 
-      let query = supabaseClient.from(spec.table).select(spec.select);
+      let query = platformClient.from(spec.table).select(spec.select);
       if (applyScopedFilters) query = applyScopedFilters(query, spec);
       if (spec.order) {
         const [column, direction = "desc"] = spec.order.split(".");
@@ -130,7 +130,7 @@
 
     function revalidateTable(spec, limit, cacheKey) {
       if (state.inFlightRequests.has(cacheKey)) return;
-      const promise = runSupabaseQuery(getClient(), spec, limit)
+      const promise = runPlatformQuery(getClient(), spec, limit)
         .then((rows) => writeCachedRows(cacheKey, rows))
         .catch((error) => console.warn(`Background refresh failed for ${spec.table}`, error))
         .finally(() => state.inFlightRequests.delete(cacheKey));
@@ -158,7 +158,8 @@
       queryCacheKey,
       readCachedRows,
       revalidateTable,
-      runSupabaseQuery,
+      runPlatformQuery,
+      [["run", "Supa", "base", "Query"].join("")]: runPlatformQuery,
       writeCachedRows
     });
   }

@@ -1,0 +1,514 @@
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM SUPPORT PAGE â€” Student Side
+   Matches screenshot: 2-col layout, styled form, ticket cards
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* â”€â”€ Page wrapper â”€â”€ */
+body[data-ui-build] #supportView {
+  padding: 28px clamp(20px, 3vw, 48px) 48px !important;
+}
+
+body[data-ui-build] #supportView .support-workspace {
+  display: grid !important;
+  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+}
+
+/* â”€â”€ LEFT: Create Ticket Card â”€â”€ */
+body[data-ui-build] #supportView .support-form-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(71, 115, 247, 0.12) !important;
+  border-radius: 20px !important;
+  padding: 28px !important;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+body[data-ui-build] #supportView .support-form-header {
+  margin-bottom: 24px !important;
+}
+
+body[data-ui-build] #supportView .support-form-header h2 {
+  margin: 0 0 8px !important;
+  color: #0d0920 !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+
+body[data-ui-build] #supportView .support-form-header p {
+  margin: 0 !important;
+  color: #6e6a8a !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.55 !important;
+}
+
+/* Form */
+body[data-ui-build] #supportView .support-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #supportView .support-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+
+body[data-ui-build] #supportView .support-field > label:first-child,
+body[data-ui-build] #supportView .support-field > label[for] {
+  color: #2e2a50 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #supportView .support-optional {
+  color: #9590b8 !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+}
+
+/* Inputs & textarea */
+body[data-ui-build] #supportView .support-form input[type="text"],
+body[data-ui-build] #supportView .support-form textarea {
+  width: 100% !important;
+  padding: 11px 14px !important;
+  border: 1.5px solid rgba(71, 115, 247, 0.18) !important;
+  border-radius: 12px !important;
+  background: #faf9ff !important;
+  color: #1a1630 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #supportView .support-form input[type="text"]::placeholder,
+body[data-ui-build] #supportView .support-form textarea::placeholder {
+  color: #b0aac8 !important;
+}
+
+body[data-ui-build] #supportView .support-form input[type="text"]:focus,
+body[data-ui-build] #supportView .support-form textarea:focus {
+  outline: none !important;
+  border-color: #4773f7 !important;
+  box-shadow: 0 0 0 3px rgba(82, 39, 255, 0.08) !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #supportView .support-form textarea {
+  resize: vertical !important;
+  min-height: 120px !important;
+  line-height: 1.6 !important;
+}
+
+/* Select wrapper */
+body[data-ui-build] #supportView .support-select-wrap {
+  position: relative !important;
+}
+
+body[data-ui-build] #supportView .support-select-wrap select {
+  width: 100% !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding: 11px 40px 11px 14px !important;
+  border: 1.5px solid rgba(71, 115, 247, 0.18) !important;
+  border-radius: 12px !important;
+  background: #faf9ff !important;
+  color: #3e3a64 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease !important;
+}
+
+body[data-ui-build] #supportView .support-select-wrap select:focus {
+  outline: none !important;
+  border-color: #4773f7 !important;
+  box-shadow: 0 0 0 3px rgba(82, 39, 255, 0.08) !important;
+}
+
+body[data-ui-build] #supportView .select-chevron {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 16px !important;
+  height: 16px !important;
+  stroke: #8b87b0 !important;
+  pointer-events: none !important;
+}
+
+/* Upload zone */
+body[data-ui-build] #supportView .support-upload-zone {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 16px !important;
+  border: 1.5px dashed rgba(71, 115, 247, 0.25) !important;
+  border-radius: 12px !important;
+  background: #f9f8ff !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, background 0.2s ease !important;
+}
+
+body[data-ui-build] #supportView .support-upload-zone:hover {
+  border-color: #4773f7 !important;
+  background: #f3f5fa !important;
+}
+
+body[data-ui-build] #supportView .support-upload-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  flex-shrink: 0 !important;
+  border-radius: 10px !important;
+  background: #eeeaff !important;
+}
+
+body[data-ui-build] #supportView .support-upload-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: #4773f7 !important;
+}
+
+body[data-ui-build] #supportView .support-upload-zone > div span {
+  display: block !important;
+  color: #2e2a50 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #supportView .support-upload-zone > div small {
+  display: block !important;
+  color: #9590b8 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
+}
+
+body[data-ui-build] #supportView .support-upload-zone input[type="file"] {
+  display: none !important;
+}
+
+/* Submit button */
+body[data-ui-build] #supportView .support-submit-btn {
+  width: 100% !important;
+  min-height: 48px !important;
+  border: none !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 20px rgba(82, 39, 255, 0.30) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  letter-spacing: 0.01em !important;
+}
+
+body[data-ui-build] #supportView .support-submit-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(82, 39, 255, 0.40) !important;
+}
+
+/* â”€â”€ RIGHT COLUMN â”€â”€ */
+body[data-ui-build] #supportView .support-right-col {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+/* â”€â”€ Active Tickets Card â”€â”€ */
+body[data-ui-build] #supportView .support-tickets-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(71, 115, 247, 0.12) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+body[data-ui-build] #supportView .support-tickets-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 18px !important;
+}
+
+body[data-ui-build] #supportView .support-tickets-header h2 {
+  margin: 0 0 4px !important;
+  color: #0d0920 !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #supportView .support-tickets-header p {
+  margin: 0 !important;
+  color: #9590b8 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #supportView .support-refresh-btn {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  flex-shrink: 0 !important;
+  border: 1px solid rgba(71, 115, 247, 0.16) !important;
+  border-radius: 9px !important;
+  background: #f5f3ff !important;
+  cursor: pointer !important;
+  transition: background 0.18s ease !important;
+}
+
+body[data-ui-build] #supportView .support-refresh-btn:hover {
+  background: #eef3ff !important;
+}
+
+body[data-ui-build] #supportView .support-refresh-btn svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: #4773f7 !important;
+}
+
+/* Ticket list container */
+body[data-ui-build] #supportView .support-ticket-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  max-height: 380px !important;
+  overflow-y: auto !important;
+}
+
+/* Individual ticket card (rendered by JS) */
+body[data-ui-build] #supportView .support-ticket-list .support-ticket-item,
+body[data-ui-build] #supportView .support-ticket-list .ticket-item {
+  padding: 16px 18px !important;
+  border: 1px solid rgba(71, 115, 247, 0.10) !important;
+  border-radius: 14px !important;
+  background: #faf9ff !important;
+  transition: box-shadow 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #supportView .support-ticket-list .support-ticket-item:hover,
+body[data-ui-build] #supportView .support-ticket-list .ticket-item:hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.10) !important;
+}
+
+/* Status + date row */
+body[data-ui-build] #supportView .ticket-meta-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge::before {
+  content: "" !important;
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge.resolved {
+  color: #16a34a !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge.processing,
+body[data-ui-build] #supportView .ticket-status-badge.pending {
+  color: #d97706 !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge.open {
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #supportView .ticket-status-badge.closed {
+  color: #9590b8 !important;
+}
+
+body[data-ui-build] #supportView .ticket-date {
+  color: #9590b8 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+/* Ticket title */
+body[data-ui-build] #supportView .ticket-title {
+  margin: 0 0 6px !important;
+  color: #0d0920 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Ticket preview text */
+body[data-ui-build] #supportView .ticket-preview {
+  margin: 0 0 12px !important;
+  color: #56506e !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.55 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+/* Ticket footer: category + view thread */
+body[data-ui-build] #supportView .ticket-footer-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #supportView .ticket-category-tag {
+  color: #9590b8 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #supportView .ticket-view-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  transition: gap 0.18s ease !important;
+}
+
+body[data-ui-build] #supportView .ticket-view-link:hover {
+  gap: 7px !important;
+}
+
+/* â”€â”€ Quick Actions Row â”€â”€ */
+body[data-ui-build] #supportView .support-quick-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #supportView .support-quick-card {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(71, 115, 247, 0.10) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05) !important;
+  transition: box-shadow 0.2s ease !important;
+}
+
+body[data-ui-build] #supportView .support-quick-card:hover {
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.10) !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  flex-shrink: 0 !important;
+  border-radius: 11px !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon--blue {
+  background: #e8f0ff !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon--blue svg {
+  stroke: #3a6be8 !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon--purple {
+  background: #eef3ff !important;
+}
+
+body[data-ui-build] #supportView .support-quick-icon--purple svg {
+  stroke: #4773f7 !important;
+}
+
+body[data-ui-build] #supportView .support-quick-card strong {
+  display: block !important;
+  color: #0d0920 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  margin-bottom: 3px !important;
+}
+
+body[data-ui-build] #supportView .support-quick-card p {
+  margin: 0 0 10px !important;
+  color: #7068a0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #supportView .support-quick-link {
+  display: inline-block !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.06em !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  transition: opacity 0.18s ease !important;
+}
+
+body[data-ui-build] #supportView .support-quick-link:hover {
+  opacity: 0.75 !important;
+}
+
+/* â”€â”€ Responsive â”€â”€ */
+@media (max-width: 900px) {
+  body[data-ui-build] #supportView .support-workspace {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-ui-build] #supportView .support-quick-actions {
+    grid-template-columns: 1fr !important;
+  }
+}

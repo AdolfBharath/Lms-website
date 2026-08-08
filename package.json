@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/static-server.mjs",
     "build": "node scripts/verify-static-build.mjs",
+    "check:risks": "node scripts/check-project-risks.mjs",
     "check:admin-assignment": "node scripts/check-admin-assignment-modal.mjs",
     "check:roles": "node scripts/check-role-portals.mjs",
     "check:student-dashboard": "node scripts/check-student-dashboard-courses.mjs",

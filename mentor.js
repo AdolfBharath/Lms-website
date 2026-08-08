@@ -3,6 +3,26 @@
   const APP_SESSION_KEY = "jenovateCurrentUser";
   const ADMIN_SESSION_KEY = "jenovateAdminSession";
   const getClient = () => window.getSupabaseClient?.();
+  const utils = window.JenovatePortalUtils;
+  const {
+    clamp,
+    escapeAttr,
+    escapeHtml,
+    isSchemaShapeError,
+    matchesText,
+    on,
+    randomId,
+    runLockedSubmit,
+    truncate
+  } = utils;
+  const emptyState = (message) => `<div class="empty-state">${escapeHtml(message)}</div>`;
+  const findById = (list, id) => (list || []).find((item) => sameId(item.id, id));
+  const formatDate = (value) => utils.formatDate(value) || "-";
+  const formatDateTime = (value) => utils.formatDateTime(value) || "-";
+  const formatTableName = (table) => utils.formatTableName(table || "LMS data");
+  const initials = (name) => utils.initialsFor(name, "M");
+  const parseIdList = utils.parseIdList;
+  const sameId = utils.sameId;
   const PAGE_SIZE = 20;
   const CHAT_PAGE_SIZE = 30;
   const QUERY_CACHE_TTL = 45_000;
@@ -16,7 +36,7 @@
     projects: "id,title,description,status,student_id,user_id,batch_id,course_id,type,drive_link,file_url,file_urls,review_notes,feedback,reviewed_at,created_at,updated_at",
     batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,published_at,deleted_at,created_by,created_at",
     taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
-    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at,deleted_at",
+    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,time_taken_seconds,duration_seconds,question_count,selected_question_ids,created_at,submitted_at,deleted_at",
     extraMarks: "id,student_id,course_id,mentor_id,marks,reason,created_at,updated_at",
     chats: "id,batch_id,user_id,message,parent_id,created_at",
     announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
@@ -41,7 +61,7 @@
     { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,user_id,batch_id,course_id,type,file_urls,review_notes,feedback,created_at", limit: 200, scope: "mentorContent", order: "created_at.desc" },
     { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, scope: "mentorBatchesContent" },
     { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 500, order: "submitted_at.desc" },
-    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, optional: true, limit: 500, order: "submitted_at.desc" },
+    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, fallbackSelect: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at", optional: true, limit: 500, order: "submitted_at.desc" },
     { key: "extraMarks", table: "student_extra_marks", select: SELECTS.extraMarks, optional: true, limit: 500, scope: "mentorMarks" },
     { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "mentorBatchesContent", order: "created_at.desc" },
     { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, scope: "mentorAnnouncements", order: "published_at.desc" },
@@ -49,6 +69,19 @@
     { key: "supportMessages", table: "support_messages", select: SELECTS.supportMessages, optional: true, limit: 120, order: "created_at.desc" },
     { key: "supportNotifications", table: "support_notifications", select: SELECTS.supportNotifications, optional: true, limit: 30, scope: "supportNotificationRows", order: "created_at.desc" }
   ];
+  const MENTOR_INITIAL_TABLE_KEYS = new Set([
+    "users",
+    "courses",
+    "batches",
+    "userCourses",
+    "progress",
+    "projects",
+    "batchTasks",
+    "taskSubmissions",
+    "quizAttempts",
+    "extraMarks",
+    "announcements"
+  ]);
 
   const state = {
     mentor: null,
@@ -153,8 +186,9 @@
     
     renderMentorIdentity();
     initializeHistoryNavigation();
-    await loadAllData({ force: true });
+    await loadAllData({ initial: true, force: true });
     setupRealtime();
+    window.setTimeout(() => void loadAllData({ silent: true, force: true }), 0);
   }
 
   function wireNavigation() {
@@ -207,18 +241,22 @@
       const collapsed = !document.body.classList.contains("mentor-sidebar-collapsed");
       applyMentorSidebarState(collapsed);
     });
-    on("mentorThemeToggle", "click", () => {
-      document.body.classList.toggle("mentor-dark-mode");
+    document.querySelectorAll("[data-toggle-mentor-sidebar]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const collapsed = !document.body.classList.contains("mentor-sidebar-collapsed");
+        applyMentorSidebarState(collapsed);
+      });
+    });
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (!document.body.classList.contains("mentor-sidebar-collapsed")) return;
+      if (target.closest(".mentor-sidebar") || target.closest("#mentorSidebarToggle") || target.closest("[data-toggle-mentor-sidebar]")) return;
+      applyMentorSidebarState(false);
     });
     on("globalSearch", "input", (event) => {
       state.globalQuery = event.target.value.trim().toLowerCase();
       renderActiveView();
-    });
-    document.addEventListener("keydown", (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        document.getElementById("globalSearch")?.focus();
-      }
     });
     on("studentSearch", "input", renderStudents);
     on("studentCourseFilter", "change", renderStudents);
@@ -508,27 +546,38 @@
     setSyncStatus("");
     setLoading(!silent);
     try {
-      const results = await Promise.all(TABLE_SPECS.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
+      const requestedSpecs = options.initial === true
+        ? TABLE_SPECS.filter((spec) => MENTOR_INITIAL_TABLE_KEYS.has(spec.key))
+        : TABLE_SPECS;
+      const results = await Promise.all(requestedSpecs.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
-      await window.resolveSupabaseAssetsDeep?.(rows);
+      if (options.initial === true) {
+        window.setTimeout(() => {
+          void window.resolveSupabaseAssetsDeep?.(rows).then(renderActiveView).catch((error) => {
+            console.warn("Deferred mentor asset resolution failed", error);
+          });
+        }, 0);
+      } else {
+        await window.resolveSupabaseAssetsDeep?.(rows);
+      }
       const failed = results.filter((result) => result.error && !result.optional);
 
       state.tableErrors = Object.fromEntries(failed.map((result) => [result.table, result.error.message || "Unable to fetch"]));
-      state.data.users = rows.users.map(normalizeUser);
-      state.data.courses = rows.courses;
-      state.data.batches = rows.batches;
-      state.data.userCourses = rows.userCourses.map(normalizeEnrollment);
-      state.data.progress = rows.progress;
-      state.data.projects = rows.projects;
-      state.data.batchTasks = rows.batchTasks;
-      state.data.taskSubmissions = rows.taskSubmissions;
-      state.data.quizAttempts = rows.quizAttempts || [];
-      state.data.extraMarks = rows.extraMarks || [];
-      state.data.chats = rows.chats;
-      state.data.announcements = rows.announcements;
-      state.data.supportTickets = rows.supportTickets || [];
-      state.data.supportMessages = rows.supportMessages || [];
-      state.data.supportNotifications = rows.supportNotifications || [];
+      state.data.users = (rows.users || state.data.users).map(normalizeUser);
+      state.data.courses = rows.courses || state.data.courses;
+      state.data.batches = rows.batches || state.data.batches;
+      state.data.userCourses = (rows.userCourses || state.data.userCourses).map(normalizeEnrollment);
+      state.data.progress = rows.progress || state.data.progress;
+      state.data.projects = rows.projects || state.data.projects;
+      state.data.batchTasks = rows.batchTasks || state.data.batchTasks;
+      state.data.taskSubmissions = rows.taskSubmissions || state.data.taskSubmissions;
+      state.data.quizAttempts = rows.quizAttempts || state.data.quizAttempts || [];
+      state.data.extraMarks = rows.extraMarks || state.data.extraMarks || [];
+      state.data.chats = rows.chats || state.data.chats;
+      state.data.announcements = rows.announcements || state.data.announcements;
+      state.data.supportTickets = rows.supportTickets || state.data.supportTickets || [];
+      state.data.supportMessages = rows.supportMessages || state.data.supportMessages || [];
+      state.data.supportNotifications = rows.supportNotifications || state.data.supportNotifications || [];
 
       const batches = scopedBatches();
       if (state.selectedBatchId && !batches.some((batch) => sameId(batch.id, state.selectedBatchId))) {
@@ -2090,8 +2139,8 @@
     let draftModules = courseModules(course, true);
     openModal(isEdit ? "Edit Course Content" : "Course Content", `
       <form class="form-grid" id="courseEditorForm">
-        <div class="import-callout">
-          Course structure: Module -> Video, Study Material, Assignment, Quiz. Add Drive links or upload files inside each module item.
+        <div class="import-callout mentor-course-editor-note">
+          Build content as modules with lessons. Each lesson can have a video link, separate study material, notes, and duration.
         </div>
         <div class="course-editor-grid">
           <section class="form-grid">
@@ -2139,8 +2188,11 @@
           </section>
           <section>
             <div class="editor-toolbar">
-              <h3>Modules</h3>
-              <button class="ghost-btn" type="button" id="addModuleBtn">Add Module</button>
+              <div>
+                <h3>Course Content</h3>
+                <small>Organize videos, study material, assignments, and quiz-ready lessons.</small>
+              </div>
+              <button class="primary-btn" type="button" id="addModuleBtn">Add Module</button>
             </div>
             <div class="module-editor-list" id="courseModuleList"></div>
           </section>
@@ -2198,7 +2250,7 @@
         input.addEventListener("change", async () => {
           const file = input.files?.[0];
           if (!file) return;
-          const urlInput = input.closest("[data-lesson-row]")?.querySelector("[data-lesson-field='video_drive_link']");
+          const urlInput = input.closest("[data-lesson-row]")?.querySelector("[data-lesson-field='material_url']");
           try {
             input.disabled = true;
             const publicUrl = await uploadStudyMaterial(file);
@@ -2305,6 +2357,11 @@
       event.preventDefault();
       await runLockedSubmit(event.currentTarget, event.submitter, "Saving quizzes...", async () => {
         draftModules = syncQuizModulesFromForm(draftModules);
+        const invalid = draftModules.find((module) => {
+          const quiz = quizForEditor(module);
+          return quiz?.questions?.length && String(quiz.status || "published").toLowerCase() === "published" && quiz.questions.length < 15;
+        });
+        if (invalid) return showAlert(`${invalid.title || "Module"} quiz needs at least 15 questions before publishing.`, true);
         await saveCourseRecord(courseSavePayload(course, draftModules), course.id);
       });
     });
@@ -2317,7 +2374,7 @@
         <div class="editor-toolbar">
           <div>
             <strong>Module ${index + 1}</strong>
-            <small>${quiz.questions.length} question${quiz.questions.length === 1 ? "" : "s"} - ${quizTotalMarks(quiz)} marks</small>
+            <small>${quiz.questions.length}/15 questions minimum - ${quizTotalMarks(quiz)} marks - students get 5-7 random questions</small>
           </div>
           <button class="ghost-btn" type="button" data-add-quiz-question="${escapeAttr(module.id)}">Add Question</button>
         </div>
@@ -2449,6 +2506,7 @@
   function openLeaderboardModal(course) {
     if (!course) return;
     const rows = leaderboardRows(course);
+    const attempts = quizAttemptsForCourse(course);
     const quizMax = courseQuizzes(course).reduce((sum, item) => sum + quizTotalMarks(item.quiz), 0);
     openModal("Course Leaderboard", `
       <div class="leaderboard-head">
@@ -2483,6 +2541,18 @@
                 <td><button class="primary-btn" type="button" data-save-extra-mark="${escapeAttr(row.student.id)}">Save</button></td>
               </tr>
             `).join("") : `<tr><td colspan="7">${emptyState("No enrolled students for this course.")}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-shell leaderboard-shell" style="margin-top:16px;">
+        <table>
+          <thead><tr><th>Student</th><th>Quiz</th><th>Attempt</th><th>Score</th><th>Questions</th><th>Time</th><th>Submitted</th></tr></thead>
+          <tbody>
+            ${attempts.length ? attempts.map((attempt) => {
+              const student = findById(state.data.users, attempt.student_id || attempt.user_id);
+              const total = Number(attempt.total || attempt.max_score || 0);
+              return `<tr><td>${escapeHtml(student?.name || "Student")}</td><td>${escapeHtml(attempt.module_title || "Module quiz")}</td><td>${Number(attempt.attempt_number || 1)}</td><td><strong>${Number(attempt.score || 0)}/${total}</strong><small>${attempt.passed ? "Passed" : "Not passed"}</small></td><td>${Number(attempt.question_count || selectedQuestionIds(attempt).length || 0) || "-"}</td><td>${attemptDurationLabel(attempt)}</td><td>${formatDateTime(attempt.submitted_at || attempt.created_at)}</td></tr>`;
+            }).join("") : `<tr><td colspan="7">${emptyState("Quiz attempts will appear after students submit.")}</td></tr>`}
           </tbody>
         </table>
       </div>
@@ -3017,14 +3087,12 @@
       }
 
       const supabaseClient = getClient();
-      const existing = existingEnrollment || state.data.userCourses.find((row) => (
-        sameId(row.user_id, payload.user_id) && sameId(row.course_id, payload.course_id)
-      ));
-      const rowPayload = {
-        user_id: payload.user_id,
-        course_id: payload.course_id,
-        status: payload.status || "active"
-      };
+      let existing = existingEnrollment || state.data.userCourses.find((row) => sameId(row.user_id || row.student_id || row.learner_id, payload.user_id) && sameId(row.course_id, payload.course_id));
+      if (!existing) {
+        const { data: liveRows, error: liveError } = await supabaseClient.from("user_courses").select(SELECTS.userCourses).eq("course_id", payload.course_id).or(`user_id.eq.${payload.user_id},student_id.eq.${payload.user_id},learner_id.eq.${payload.user_id}`);
+        if (!liveError && Array.isArray(liveRows) && liveRows.length) existing = liveRows.find((row) => !row.deleted_at && !["archived", "removed"].includes(String(row.status || "").toLowerCase())) || liveRows[0];
+      }
+      const rowPayload = { user_id: payload.user_id, course_id: payload.course_id, status: payload.status || "active" };
 
       if (existing) {
         let { error } = await supabaseClient
@@ -3044,7 +3112,10 @@
           ({ error } = await supabaseClient.from("user_courses").insert(compatiblePayload).select(SELECTS.userCourses));
         }
         if (error && /duplicate|unique/i.test(error.message || "")) {
-          error = null;
+          const { data: duplicateRows, error: duplicateLookupError } = await supabaseClient.from("user_courses").select(SELECTS.userCourses).eq("course_id", payload.course_id).or(`user_id.eq.${payload.user_id},student_id.eq.${payload.user_id},learner_id.eq.${payload.user_id}`);
+          if (!duplicateLookupError && Array.isArray(duplicateRows) && duplicateRows.length) {
+            existing = duplicateRows[0]; ({ error } = await supabaseClient.from("user_courses").update({ status: rowPayload.status }).eq("course_id", payload.course_id).or(`user_id.eq.${payload.user_id},student_id.eq.${payload.user_id},learner_id.eq.${payload.user_id}`).select(SELECTS.userCourses));
+          } else error = duplicateLookupError || null;
         }
         if (error) throw error;
       }
@@ -3123,12 +3194,7 @@
     keys.forEach((key) => delete clone[key]);
     return clone;
   }
-
-  function isSchemaShapeError(error) {
-    return /column|schema cache|does not exist|could not find/i.test(error?.message || "")
-      || ["PGRST204", "42703"].includes(String(error?.code || ""));
-  }
-
+
   function isMissingRpcError(error) {
     return /function|schema cache|not found|could not find|permission denied/i.test(error?.message || "")
       || ["PGRST202", "42501"].includes(String(error?.code || ""));
@@ -3218,7 +3284,7 @@
       element.classList.toggle("active", isActive);
       element.hidden = !isActive;
     });
-    document.querySelectorAll(".mentor-nav .nav-item, .lms-mobile-nav .nav-item").forEach((button) => {
+    document.querySelectorAll(".mentor-nav .nav-item, .mentor-context-panel .nav-item, .lms-mobile-nav .nav-item").forEach((button) => {
       button.classList.toggle("active", button.dataset.view === view);
     });
     viewTitle.textContent = views[view]?.dataset.title || "Dashboard";
@@ -3294,6 +3360,21 @@
       if (!isActiveLmsRow(user)) return false;
       return batchIds.has(String(user.batch_id)) || enrollmentStudentIds.has(String(user.id));
     });
+  }
+
+  function quizAttemptsForCourse(course) {
+    return state.data.quizAttempts.filter((attempt) => sameId(attempt.course_id, course.id) && !attempt.deleted_at)
+      .sort((a, b) => new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0));
+  }
+
+  function selectedQuestionIds(attempt) {
+    return Array.isArray(attempt.selected_question_ids) ? attempt.selected_question_ids : [];
+  }
+
+  function attemptDurationLabel(attempt) {
+    const seconds = Math.max(0, Number(attempt.time_taken_seconds || attempt.duration_seconds || 0));
+    if (!seconds) return "-";
+    return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
   }
 
   function scopedEnrollments() {
@@ -3767,19 +3848,22 @@
   }
 
   function normalizeLesson(lesson, index = 0) {
-    const mediaUrl = lesson.video_drive_link || lesson.video_url || lesson.drive_link || lesson.google_drive_link || lesson.file_url || lesson.url || "";
+    const mediaUrl = lesson.video_drive_link || lesson.video_url || lesson.drive_link || lesson.google_drive_link || lesson.url || "";
+    const materialUrl = lesson.material_url || lesson.materialUrl || lesson.file_url || lesson.fileUrl || lesson.content_url || lesson.contentUrl || "";
     return {
       id: lesson.id || lesson.lesson_id || randomId(),
       title: lesson.title || lesson.name || "",
-      content_type: lesson.content_type || lesson.contentType || lesson.type || (lesson.material_url ? "study_material" : "video"),
+      content_type: lesson.content_type || lesson.contentType || lesson.type || (materialUrl && !mediaUrl ? "study_material" : "video"),
       deleted_at: lesson.deleted_at || null,
       order_index: Number(lesson.order_index || lesson.order || index + 1),
       video_drive_link: mediaUrl,
       video_url: lesson.video_url || "",
       drive_link: lesson.drive_link || mediaUrl,
       google_drive_link: lesson.google_drive_link || "",
-      file_url: lesson.file_url || "",
+      file_url: lesson.file_url || materialUrl,
       url: lesson.url || "",
+      content_url: lesson.content_url || materialUrl,
+      material_url: materialUrl,
       description: lesson.description || "",
       duration: lesson.duration || "",
       transcript: lesson.transcript || ""
@@ -3807,6 +3891,10 @@
       video_drive_link: "",
       drive_link: "",
       video_url: "",
+      material_url: "",
+      file_url: "",
+      content_url: "",
+      description: "",
       duration: "",
       transcript: ""
     };
@@ -3957,28 +4045,32 @@
   }
 
   function moduleEditorHtml(module, index) {
+    const lessons = (module.lessons || []).filter((lesson) => !lesson.deleted_at);
     return `
       <div class="module-editor" data-module-row data-module-id="${escapeAttr(module.id)}">
         <div class="editor-toolbar">
-          <strong>Module ${index + 1}</strong>
+          <div>
+            <strong>Module ${index + 1}</strong>
+            <small>${lessons.length} lesson${lessons.length === 1 ? "" : "s"}</small>
+          </div>
           <div class="row-actions">
-            <button class="ghost-btn" type="button" data-add-lesson="${escapeAttr(module.id)}">Add Content</button>
-            <button class="danger-btn" type="button" data-remove-module="${escapeAttr(module.id)}">Remove Playlist</button>
+            <button class="ghost-btn" type="button" data-add-lesson="${escapeAttr(module.id)}">Add Lesson</button>
+            <button class="danger-btn" type="button" data-remove-module="${escapeAttr(module.id)}">Remove Module</button>
           </div>
         </div>
         <div class="form-row two">
           <div>
-            <label>Playlist Title</label>
-            <input data-module-field="title" value="${escapeAttr(module.title)}">
+            <label>Module Name</label>
+            <input data-module-field="title" value="${escapeAttr(module.title)}" placeholder="Example: Introduction to AI Tools">
           </div>
           <div>
-            <label>Order Index</label>
+            <label>Module Order</label>
             <input data-module-field="order_index" type="number" min="1" value="${escapeAttr(module.order_index || index + 1)}">
           </div>
         </div>
         <div class="form-row two">
           <div>
-            <label>Playlist Type</label>
+            <label>Learning Mode</label>
             <select data-module-field="type">
               ${option("Self-paced", module.type)}
               ${option("Live", module.type)}
@@ -3991,10 +4083,16 @@
           </div>
         </div>
         <div class="form-row">
-          <label>Description</label>
-          <textarea data-module-field="description">${escapeHtml(module.description || "")}</textarea>
+          <label>Module Details</label>
+          <textarea data-module-field="description" placeholder="What will students learn in this module?">${escapeHtml(module.description || "")}</textarea>
         </div>
-        ${(module.lessons || []).filter((lesson) => !lesson.deleted_at).map(lessonEditorHtml).join("")}
+        <div class="mentor-module-section">
+          <div class="mentor-module-section-head">
+            <strong>Lessons</strong>
+            <small>Add video, notes, links, and downloadable study material.</small>
+          </div>
+          ${lessons.length ? lessons.map(lessonEditorHtml).join("") : emptyState("No lessons yet. Add the first lesson for this module.")}
+        </div>
       </div>
     `;
   }
@@ -4003,46 +4101,50 @@
     return `
       <div class="lesson-editor" data-lesson-row data-lesson-id="${escapeAttr(lesson.id)}">
         <div class="editor-toolbar">
-          <strong>Playlist Content</strong>
-          <button class="danger-btn" type="button" data-remove-lesson="${escapeAttr(lesson.id)}">Delete Content</button>
+          <strong>Lesson Content</strong>
+          <button class="danger-btn" type="button" data-remove-lesson="${escapeAttr(lesson.id)}">Delete Lesson</button>
         </div>
         <div class="form-row two">
           <div>
-            <label>Content Title</label>
-            <input data-lesson-field="title" value="${escapeAttr(lesson.title)}">
+            <label>Lesson Name</label>
+            <input data-lesson-field="title" value="${escapeAttr(lesson.title)}" placeholder="Example: Prompt writing basics">
           </div>
           <div>
-            <label>Content Type</label>
+            <label>Lesson Type</label>
             <select data-lesson-field="content_type">
               ${option("video", lesson.content_type, "Video")}
-              ${option("assignment", lesson.content_type, "Assignment")}
               ${option("study_material", lesson.content_type, "Study Material")}
-              ${option("quiz", lesson.content_type, "Quiz")}
+              ${option("assignment", lesson.content_type, "Assignment")}
             </select>
           </div>
         </div>
         <div class="form-row two">
           <div>
-            <label>Content File / Drive Link</label>
-            <input data-lesson-field="video_drive_link" value="${escapeAttr(lessonMediaUrl(lesson))}" placeholder="Video, assignment, PDF, document, or Drive URL">
+            <label>Video or Lesson Link</label>
+            <input data-lesson-field="video_drive_link" value="${escapeAttr(lesson.video_drive_link || lesson.video_url || lesson.drive_link || lesson.google_drive_link || lesson.url || "")}" placeholder="Paste YouTube, Google Drive, or video URL">
           </div>
           <div>
-            <label>Order Index</label>
+            <label>Lesson Order</label>
             <input data-lesson-field="order_index" type="number" min="1" value="${escapeAttr(lesson.order_index || 1)}">
           </div>
         </div>
         <div class="form-row">
-          <label>Duration or Notes</label>
-          <input data-lesson-field="duration" value="${escapeAttr(lesson.duration)}">
-        </div>
-        <div class="form-row mentor-study-material-row">
-          <label>Study Material (Optional)</label>
-          <input data-material-upload type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*">
-          <small>Optional PDF, document, image, or zip. Uploading fills the content link above; save the course to publish it.</small>
+          <label>Lesson Details</label>
+          <textarea data-lesson-field="description" placeholder="Short explanation, activity instructions, or what students should focus on.">${escapeHtml(lesson.description || "")}</textarea>
         </div>
         <div class="form-row">
-          <label>Transcript</label>
-          <textarea data-lesson-field="transcript">${escapeHtml(lesson.transcript || "")}</textarea>
+          <label>Duration</label>
+          <input data-lesson-field="duration" value="${escapeAttr(lesson.duration)}" placeholder="Example: 12 min, 1 hour, or self-paced">
+        </div>
+        <div class="form-row mentor-study-material-row">
+          <label>Study Material Link</label>
+          <input data-lesson-field="material_url" value="${escapeAttr(lesson.material_url || lesson.file_url || lesson.content_url || "")}" placeholder="Paste PDF, notes, worksheet, or resource link">
+          <input data-material-upload type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*">
+          <small>Optional PDF, document, image, spreadsheet, or zip. Uploading fills this study-material link; save the course to publish it.</small>
+        </div>
+        <div class="form-row">
+          <label>Transcript or Extra Notes</label>
+          <textarea data-lesson-field="transcript" placeholder="Optional transcript, key points, or extra mentor notes.">${escapeHtml(lesson.transcript || "")}</textarea>
         </div>
       </div>
     `;
@@ -4059,7 +4161,17 @@
         const priorLesson = (priorModule.lessons || []).find((lesson) => sameId(lesson.id, lessonId)) || {};
         const mediaUrl = fieldValue(lessonRow, "[data-lesson-field='video_drive_link']")
           || fieldValue(lessonRow, "[data-lesson-field='drive_link']")
-          || lessonMediaUrl(priorLesson);
+          || priorLesson.video_drive_link
+          || priorLesson.video_url
+          || priorLesson.drive_link
+          || priorLesson.google_drive_link
+          || priorLesson.url
+          || "";
+        const materialUrl = fieldValue(lessonRow, "[data-lesson-field='material_url']")
+          || priorLesson.material_url
+          || priorLesson.file_url
+          || priorLesson.content_url
+          || "";
         return {
           ...priorLesson,
           id: lessonId,
@@ -4069,12 +4181,14 @@
           video_drive_link: mediaUrl,
           drive_link: mediaUrl,
           video_url: mediaUrl,
-          material_url: mediaUrl,
-          file_url: mediaUrl,
+          material_url: materialUrl,
+          file_url: materialUrl,
+          content_url: materialUrl,
           duration: fieldValue(lessonRow, "[data-lesson-field='duration']"),
+          description: fieldValue(lessonRow, "[data-lesson-field='description']"),
           transcript: fieldValue(lessonRow, "[data-lesson-field='transcript']")
         };
-      }).filter((lesson) => lesson.title || lessonMediaUrl(lesson));
+      }).filter((lesson) => lesson.title || lesson.video_drive_link || lesson.material_url);
       const archivedLessons = (priorModule.lessons || []).filter((lesson) => lesson.deleted_at);
 
       return {
@@ -4255,34 +4369,14 @@
     if (["rejected", "archived", "changes_requested", "due"].includes(value)) return "red";
     return "gray";
   }
-
-  function findById(list, id) {
-    return (list || []).find((item) => sameId(item.id, id));
-  }
-
-  function sameId(a, b) {
-    return String(a || "") === String(b || "");
-  }
-
+
   function batchPeriod(batch) {
     const start = batch?.start_date ? formatDate(batch.start_date) : "";
     const end = batch?.end_date ? formatDate(batch.end_date) : "";
     if (start && end) return `${start} to ${end}`;
     return start || end || "-";
   }
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
-  function matchesText(query, ...values) {
-    const queries = (Array.isArray(query) ? query : [query])
-      .map((item) => String(item || "").trim().toLowerCase())
-      .filter(Boolean);
-    if (!queries.length) return true;
-    return queries.every((item) => values.some((value) => String(value ?? "").toLowerCase().includes(item)));
-  }
-
+
   function matchesCourse(course, query) {
     const moduleText = courseModules(course)
       .map((module) => [
@@ -4468,23 +4562,11 @@
       return fallback;
     }
   }
-
-  function parseIdList(value) {
-    if (!value) return [];
-    if (Array.isArray(value)) return value;
-    const parsed = parseJsonValue(value, null);
-    if (Array.isArray(parsed)) return parsed;
-    return String(value).split(",").map((item) => item.trim()).filter(Boolean);
-  }
-
+
   function compactPayload(payload) {
     return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
   }
-
-  function randomId() {
-    return window.crypto?.randomUUID?.() || `local-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-
+
   function fieldValue(root, selector) {
     return root.querySelector(selector)?.value?.trim() || "";
   }
@@ -4515,11 +4597,7 @@
     const element = document.getElementById(id);
     if (element) element.innerHTML = value;
   }
-
-  function on(id, event, handler) {
-    document.getElementById(id)?.addEventListener(event, handler);
-  }
-
+
   function option(value, selected, label = value) {
     return `<option value="${escapeAttr(value)}" ${sameId(value, selected) || String(value).toLowerCase() === String(selected || "").toLowerCase() ? "selected" : ""}>${escapeHtml(label)}</option>`;
   }
@@ -4555,7 +4633,7 @@
 
   function readMentorSidebarCollapsed() {
     try {
-      return localStorage.getItem("jenovateMentorSidebarCollapsed") === "1";
+      return localStorage.getItem("jenovateMentorContextCollapsed") === "1";
     } catch {
       return false;
     }
@@ -4565,49 +4643,12 @@
     document.body.classList.toggle("mentor-sidebar-collapsed", collapsed);
     const button = document.getElementById("mentorSidebarToggle");
     button?.setAttribute("aria-pressed", String(collapsed));
-    button?.setAttribute("aria-expanded", String(!collapsed));
-    button?.setAttribute("aria-label", collapsed ? "Open navigation" : "Close navigation");
+    button?.setAttribute("aria-expanded", String(collapsed));
+    button?.setAttribute("aria-label", collapsed ? "Close navigation" : "Open navigation");
     try {
-      localStorage.setItem("jenovateMentorSidebarCollapsed", collapsed ? "1" : "0");
+      localStorage.setItem("jenovateMentorContextCollapsed", collapsed ? "1" : "0");
     } catch {
       // The navigation still works when storage is unavailable.
-    }
-  }
-
-  async function runLockedSubmit(form, submitter, loadingLabel, action) {
-    if (!form || form.dataset.submitting === "true") return;
-    if (typeof form.checkValidity === "function" && !form.checkValidity()) {
-      form.reportValidity?.();
-      form.querySelector(":invalid")?.focus?.();
-      return;
-    }
-
-    form.dataset.submitting = "true";
-    form.setAttribute("aria-busy", "true");
-    const controls = Array.from(form.querySelectorAll("input, select, textarea, button"));
-    const primary = submitter || form.querySelector("button[type='submit']");
-    const originalText = primary?.textContent || "";
-
-    controls.forEach((control) => {
-      control.dataset.wasDisabled = control.disabled ? "true" : "false";
-      control.disabled = true;
-      if (control instanceof HTMLButtonElement) control.setAttribute("aria-busy", "true");
-    });
-    if (primary && loadingLabel) primary.textContent = loadingLabel;
-
-    try {
-      await action();
-    } finally {
-      if (document.body.contains(form)) {
-        form.dataset.submitting = "false";
-        form.removeAttribute("aria-busy");
-        controls.forEach((control) => {
-          control.disabled = control.dataset.wasDisabled === "true";
-          delete control.dataset.wasDisabled;
-          control.removeAttribute("aria-busy");
-        });
-        if (primary) primary.textContent = originalText;
-      }
     }
   }
 
@@ -4633,62 +4674,11 @@
     if (syncStatus) syncStatus.textContent = "";
     if (syncStatusMeta) syncStatusMeta.textContent = "";
   }
-
-  function emptyState(message) {
-    return `<div class="empty-state">${escapeHtml(message)}</div>`;
-  }
-
-  function initials(name) {
-    return String(name || "M")
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
-      .join("") || "M";
-  }
-
-  function formatDate(value) {
-    if (!value) return "-";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "-";
-    return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-  }
-
-  function formatDateTime(value) {
-    if (!value) return "-";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "-";
-    return date.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
-  }
-
-  function truncate(value, length = 120) {
-    const text = String(value || "");
-    return text.length > length ? `${text.slice(0, Math.max(0, length - 3))}...` : text;
-  }
-
+
   function dateInputValue(value) {
     if (!value) return "";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "";
     return date.toISOString().slice(0, 10);
   }
-
-  function formatTableName(table) {
-    return String(table || "LMS data").replaceAll("_", " ");
-  }
-
-  function escapeHtml(value) {
-    if (window.JenovateDom?.escapeHtml) return window.JenovateDom.escapeHtml(value);
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function escapeAttr(value) {
-    if (window.JenovateDom?.escapeAttr) return window.JenovateDom.escapeAttr(value);
-    return escapeHtml(value);
-  }
-})();
+})();

@@ -1,0 +1,1945 @@
+/* Batch Page Premium Split Layout */
+body[data-ui-build] #batchView.student-view.active {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: calc(100vh - 65px) !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .batch-layout {
+  display: grid !important;
+  grid-template-columns: 300px 1fr !important;
+  gap: 24px !important;
+  flex: 1 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  font-family: 'Inter', 'Poppins', sans-serif !important;
+}
+
+body[data-ui-build] #batchView .batch-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  gap: 24px !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #batchView .batch-sidebar-header {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+body[data-ui-build] #batchView .sidebar-eyebrow {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #4773f7 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  display: block !important;
+}
+
+body[data-ui-build] #batchView .sidebar-title {
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  line-height: 1.25 !important;
+  font-family: "Manrope", sans-serif !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #batchView .sidebar-status-badge {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #b45309 !important;
+  text-transform: uppercase !important;
+  margin-top: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  letter-spacing: 0.05em !important;
+}
+
+body[data-ui-build] #batchView .batch-sidebar-cards {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 16px !important;
+  padding: 14px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card:hover {
+  border-color: #d1d5db !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card-icon {
+  font-size: 18px !important;
+  color: #4773f7 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+  background: #eef2ff !important;
+  display: grid !important;
+  place-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card-info {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card-info small {
+  font-size: 10px !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 2px !important;
+}
+
+body[data-ui-build] #batchView .sidebar-card-info strong {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #batchView .batch-instructors-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  border-top: 1px solid #eaedf2 !important;
+  padding-top: 20px !important;
+  margin-top: 8px !important;
+}
+
+body[data-ui-build] #batchView .instructors-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+body[data-ui-build] #batchView .instructors-header span {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+body[data-ui-build] #batchView .instructors-header small {
+  font-size: 11px !important;
+  color: #4773f7 !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+body[data-ui-build] #batchView .instructors-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row .student-avatar.small {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 99px !important;
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  color: #ffffff !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row span {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row span strong {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 2px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row span small {
+  font-size: 11px !important;
+  color: #64748b !important;
+}
+
+/* Chat Panel */
+body[data-ui-build] #batchView .batch-chat-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.01) !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .batch-chat-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 18px 24px !important;
+  border-bottom: 1px solid #eaedf2 !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #batchView .batch-chat-header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #batchView .chat-icon-circle {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 99px !important;
+  background: #eef2ff !important;
+  color: #4773f7 !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 18px !important;
+}
+
+body[data-ui-build] #batchView .batch-chat-header-left h2 {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #batchView .online-status {
+  display: none !important;
+}
+
+body[data-ui-build] #batchView .chat-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 10px !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select:focus {
+  border-color: #4773f7 !important;
+}
+
+body[data-ui-build] #batchView .chat-refresh-btn {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 10px !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 14px !important;
+  color: #4773f7 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01) !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .chat-refresh-btn:hover {
+  border-color: #d1d5db !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  min-height: 0 !important;
+  background: #ffffff !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 12px 0 !important;
+  position: relative !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 50% !important;
+  height: 1px !important;
+  background: #f1f5f9 !important;
+  z-index: 1 !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider span {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  z-index: 2 !important;
+  position: relative !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  max-width: 70% !important;
+  width: fit-content !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine {
+  align-self: flex-end !important;
+  align-items: flex-end !important;
+}
+
+body[data-ui-build] #batchView .chat-message-meta {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  margin-bottom: 6px !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-message-meta {
+  flex-direction: row-reverse !important;
+}
+
+body[data-ui-build] #batchView .chat-message-author {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+body[data-ui-build] #batchView .chat-message-author .mentor-badge {
+  color: #4773f7 !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-time {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-bubble {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-radius: 0 16px 16px 16px !important;
+  padding: 12px 16px !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  text-align: left !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01) !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-message-bubble {
+  background: #4773f7 !important;
+  color: #ffffff !important;
+  border-radius: 16px 0 16px 16px !important;
+}
+
+body[data-ui-build] #batchView .chat-message-text {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: inherit !important;
+  margin: 0 !important;
+  word-break: break-word !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble-reply-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #4773f7 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-transform: lowercase !important;
+  padding: 0 !important;
+  margin-top: 2px !important;
+  align-self: flex-end !important;
+  transition: opacity 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble-reply-btn:hover {
+  opacity: 0.8 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-bubble-reply-btn {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body[data-ui-build] #batchView .reply-preview {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-left: 3px solid #4773f7 !important;
+  padding: 6px 10px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  color: #475569 !important;
+  margin-bottom: 4px !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .reply-preview {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-left-color: #ffffff !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Chat Composer */
+body[data-ui-build] #batchView .chat-composer {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 24px !important;
+  border-top: 1px solid #eaedf2 !important;
+  background: #ffffff !important;
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #batchView .composer-attach-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 99px !important;
+  border: 1px solid #eaedf2 !important;
+  background: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #batchView .composer-attach-btn:hover {
+  border-color: #d1d5db !important;
+  color: #0f172a !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper {
+  flex: 1 !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 99px !important;
+  padding: 0 20px !important;
+  height: 44px !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper:focus-within {
+  border-color: #4773f7 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.05) !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper input {
+  flex: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 8px 0 !important;
+  font-size: 14px !important;
+  color: #0f172a !important;
+  outline: none !important;
+}
+
+body[data-ui-build] #batchView .composer-emoji-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 99px !important;
+  border: 1px solid #eaedf2 !important;
+  background: #ffffff !important;
+  font-size: 18px !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #batchView .composer-emoji-btn:hover {
+  border-color: #d1d5db !important;
+}
+
+body[data-ui-build] #batchView .composer-send-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 99px !important;
+  border: none !important;
+  background: #4773f7 !important;
+  color: #ffffff !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #batchView .composer-send-btn:hover {
+  transform: scale(1.05) !important;
+  opacity: 0.95 !important;
+}
+
+body[data-ui-build] #batchView .send-icon {
+  font-size: 14px !important;
+  transform: rotate(45deg) !important;
+  display: inline-block !important;
+  margin-right: 2px !important;
+  margin-top: -2px !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 10px 24px !important;
+  background: #f5f3ff !important;
+  border-top: 1px solid rgba(79, 70, 229, 0.1) !important;
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar span {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar span small {
+  font-size: 11px !important;
+  color: #4773f7 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar span strong {
+  font-size: 13px !important;
+  color: #0f172a !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar .text-btn {
+  color: var(--st-danger) !important;
+  font-weight: 700 !important;
+}
+
+/* Profile Page Redesign overrides */
+body[data-ui-build] #profileView {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  font-family: 'Inter', 'Poppins', sans-serif !important;
+  background: #f8fafc !important;
+  min-height: 100% !important;
+}
+
+/* 1. Top Banner Card */
+body[data-ui-build] #profileView .profile-banner-container {
+  position: relative !important;
+  width: 100% !important;
+  height: 240px !important;
+  border-radius: 24px !important;
+  background-image: url('image/profile_banner_bg.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-glass {
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 20px !important;
+  padding: 20px 24px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+body[data-ui-build] #profileView .banner-glass-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+body[data-ui-build] #profileView .banner-avatar-wrapper {
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #profileView .student-avatar-square {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 16px !important;
+  border: 2px solid #ffffff !important;
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  color: #ffffff !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  display: grid !important;
+  place-items: center !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+body[data-ui-build] #profileView .verified-dot {
+  position: absolute !important;
+  bottom: -4px !important;
+  right: -4px !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 99px !important;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #profileView .banner-identity {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+body[data-ui-build] #profileView .banner-identity h2 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+}
+
+body[data-ui-build] #profileView .banner-badge-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #profileView .student-badge {
+  background: rgba(79, 70, 229, 0.9) !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+  border-radius: 99px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  box-shadow: 0 2px 6px rgba(79,70,229,0.2) !important;
+}
+
+body[data-ui-build] #profileView .batch-text {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
+}
+
+body[data-ui-build] #profileView .banner-glass-right {
+  display: flex !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #profileView .banner-action-btn {
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 10px 18px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+}
+
+body[data-ui-build] #profileView .banner-action-btn.edit-avatar {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body[data-ui-build] #profileView .banner-action-btn.edit-avatar:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+body[data-ui-build] #profileView .banner-action-btn.view-portfolio {
+  background: #4773f7 !important;
+  color: #ffffff !important;
+}
+
+body[data-ui-build] #profileView .banner-action-btn.view-portfolio:hover {
+  background: #4338ca !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 2. Three Metrics Cards Row */
+body[data-ui-build] #profileView .profile-metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .profile-metric-card {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 20px !important;
+  padding: 20px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01) !important;
+}
+
+body[data-ui-build] #profileView .metric-icon-circle {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #profileView .metric-icon-circle.coins {
+  background: #fef3c7 !important;
+}
+
+body[data-ui-build] #profileView .metric-icon-circle.streak {
+  background: #fee2e2 !important;
+}
+
+body[data-ui-build] #profileView .metric-icon-circle.leaderboard {
+  background: #e0e7ff !important;
+}
+
+body[data-ui-build] #profileView .metric-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #profileView .metric-info small {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+  letter-spacing: 0.05em !important;
+}
+
+body[data-ui-build] #profileView .metric-info strong {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+/* 3. Main Split Layout */
+body[data-ui-build] #profileView .profile-main-layout {
+  display: grid !important;
+  grid-template-columns: 1.6fr 1fr !important;
+  gap: 24px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #profileView .profile-column-left,
+body[data-ui-build] #profileView .profile-column-right {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* Left panels generic */
+body[data-ui-build] #profileView .panel {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01) !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #profileView .panel h2 {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 0 20px 0 !important;
+}
+
+/* Personal Information Card */
+body[data-ui-build] #profileView .panel-header-custom {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+body[data-ui-build] #profileView .panel-header-custom h2 {
+  margin: 0 !important;
+}
+
+body[data-ui-build] #profileView .edit-details-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #4773f7 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+body[data-ui-build] #profileView .edit-details-btn:hover {
+  text-decoration: underline !important;
+}
+
+body[data-ui-build] #profileView .profile-form-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px 24px !important;
+}
+
+body[data-ui-build] #profileView .profile-input-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #profileView .profile-input-label {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+  letter-spacing: 0.05em !important;
+}
+
+body[data-ui-build] #profileView .profile-input-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  height: 44px !important;
+  padding: 0 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #profileView .profile-input-wrapper:focus-within {
+  border-color: #4773f7 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.05) !important;
+}
+
+body[data-ui-build] #profileView .profile-input-icon {
+  font-size: 14px !important;
+  color: #94a3b8 !important;
+  margin-right: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #profileView .profile-input-wrapper input {
+  flex: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  width: 100% !important;
+}
+
+body[data-ui-build] #profileView .profile-input-wrapper input:disabled {
+  color: #475569 !important;
+  cursor: not-allowed !important;
+}
+
+body[data-ui-build] #profileView .profile-form-actions {
+  grid-column: span 2 !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  margin-top: 8px !important;
+}
+
+body[data-ui-build] #profileView .cancel-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #profileView .cancel-btn:hover {
+  background: #f1f5f9 !important;
+}
+
+body[data-ui-build] #profileView .save-btn {
+  background: #4773f7 !important;
+  border: none !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 8px 18px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #profileView .save-btn:hover {
+  background: #4338ca !important;
+}
+
+/* Settings & Security Card */
+body[data-ui-build] #profileView .security-banner-row {
+  background: #f8fafc !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+body[data-ui-build] #profileView .security-banner-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .security-icon-circle {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  background: #e0e7ff !important;
+  color: #4773f7 !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 18px !important;
+}
+
+body[data-ui-build] #profileView .security-banner-left div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+body[data-ui-build] #profileView .security-banner-left strong {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+body[data-ui-build] #profileView .security-banner-left small {
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+  letter-spacing: 0.05em !important;
+}
+
+body[data-ui-build] #profileView .security-action-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #profileView .security-action-btn:hover {
+  background: #f8fafc !important;
+}
+
+/* Inline password form styling */
+body[data-ui-build] #profileView .password-inline-form {
+  background: #f8fafc !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  animation: slideDown 0.3s ease-out !important;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body[data-ui-build] #profileView .password-inline-form .form-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .password-form-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+
+/* Notification switches */
+body[data-ui-build] #profileView .security-toggles-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .toggle-card {
+  border: 1px solid #eaedf2 !important;
+  border-radius: 14px !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+body[data-ui-build] #profileView .toggle-card-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+}
+
+body[data-ui-build] #profileView .toggle-icon {
+  font-size: 16px !important;
+  color: #94a3b8 !important;
+}
+
+/* Switch Toggle Slider styling */
+body[data-ui-build] #profileView .switch-toggle {
+  position: relative !important;
+  display: inline-block !important;
+  width: 44px !important;
+  height: 24px !important;
+}
+
+body[data-ui-build] #profileView .switch-toggle input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+body[data-ui-build] #profileView .switch-slider {
+  position: absolute !important;
+  cursor: pointer !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: #cbd5e1 !important;
+  transition: .2s !important;
+  border-radius: 24px !important;
+}
+
+body[data-ui-build] #profileView .switch-slider:before {
+  position: absolute !important;
+  content: "" !important;
+  height: 18px !important;
+  width: 18px !important;
+  left: 3px !important;
+  bottom: 3px !important;
+  background-color: white !important;
+  transition: .2s !important;
+  border-radius: 50% !important;
+}
+
+body[data-ui-build] #profileView .switch-toggle input:checked + .switch-slider {
+  background-color: #4773f7 !important;
+}
+
+body[data-ui-build] #profileView .switch-toggle input:checked + .switch-slider:before {
+  transform: translateX(20px) !important;
+}
+
+/* 4. Right Column: Milestones Card */
+body[data-ui-build] #profileView .academic-milestones-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+
+body[data-ui-build] #profileView .milestones-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #profileView .milestones-header h2 {
+  margin: 0 !important;
+}
+
+body[data-ui-build] #profileView .milestones-icon {
+  font-size: 20px !important;
+}
+
+body[data-ui-build] #profileView .milestone-items {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #profileView .milestone-pill {
+  background: #f8fafc !important;
+  border-radius: 14px !important;
+  padding: 12px 18px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+}
+
+body[data-ui-build] #profileView .milestone-badge {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #profileView .rank-badge {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+}
+
+body[data-ui-build] #profileView .rank-badge small {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+}
+
+body[data-ui-build] #profileView .milestone-skills-box {
+  background: #f8fafc !important;
+  border-radius: 14px !important;
+  padding: 12px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #profileView .skills-box-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+}
+
+body[data-ui-build] #profileView .skills-box-header small {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #profileView .skills-badges-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #profileView .skill-badge {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+}
+
+body[data-ui-build] #profileView .skill-badge.py { background: #3b82f6 !important; }
+body[data-ui-build] #profileView .skill-badge.js { background: #eab308 !important; }
+body[data-ui-build] #profileView .skill-badge.sql { background: #475569 !important; }
+body[data-ui-build] #profileView .skill-badge.more { background: #cbd5e1 !important; color: #475569 !important; }
+
+/* 5. Active Enrollment Card */
+body[data-ui-build] #profileView .active-enrollment-card {
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  border: none !important;
+  border-radius: 24px !important;
+  padding: 24px !important;
+  color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.15) !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] #profileView .enrollment-eyebrow {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #profileView .active-enrollment-card h2 {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #profileView .enrollment-progress-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #profileView .progress-labels {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #profileView .progress-labels span {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 600 !important;
+}
+
+body[data-ui-build] #profileView .progress-labels strong {
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+
+body[data-ui-build] #profileView .enrollment-progress-bar-wrap {
+  width: 100% !important;
+  height: 8px !important;
+  border-radius: 99px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #profileView .enrollment-progress-bar {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+body[data-ui-build] #profileView .enrollment-progress-bar i {
+  display: block !important;
+  height: 100% !important;
+  width: 0% !important;
+  background: #ffffff !important;
+  border-radius: 99px !important;
+}
+
+body[data-ui-build] #profileView .resume-learning-btn {
+  background: #ffffff !important;
+  color: #4773f7 !important;
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 12px 20px !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #profileView .resume-learning-btn:hover {
+  background: #f8fafc !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+body[data-ui-build] #profileView .play-icon {
+  font-size: 15px !important;
+}
+
+body[data-ui-build] #profileView .profile-footer-bar {
+  height: 14px !important;
+  width: 100% !important;
+  background: #eaedf2 !important;
+  border-radius: 99px !important;
+}
+
+/* v64 profile isolation and final polish: keep Profile out of Shop and other views. */
+body[data-ui-build] .student-view:not(.active),
+body[data-ui-build] #profileView.student-view:not(.active) {
+  display: none !important;
+}
+
+body[data-ui-build] #profileView.student-view.active {
+  width: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  padding: 28px clamp(24px, 4vw, 52px) 52px !important;
+  background: #f7f7fb !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-container,
+body[data-ui-build] #profileView .profile-metrics-grid,
+body[data-ui-build] #profileView .profile-main-layout {
+  width: min(100%, 1240px) !important;
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-container {
+  height: 210px !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(135deg, rgba(49, 94, 230, 0.86), rgba(86, 128, 255, 0.74)),
+    url('image/profile_banner_bg.png') center / cover !important;
+  box-shadow: 0 18px 42px rgba(45, 39, 126, 0.18) !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-glass {
+  padding: 16px 20px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+}
+
+body[data-ui-build] #profileView .profile-metrics-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #profileView .profile-metric-card {
+  min-height: 82px !important;
+  padding: 16px !important;
+  border: 1px solid #e6e3ef !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 28px rgba(39, 32, 79, 0.06) !important;
+}
+
+body[data-ui-build] #profileView .profile-main-layout {
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.7fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #profileView .panel,
+body[data-ui-build] #profileView .active-enrollment-card {
+  border-radius: 14px !important;
+}
+
+body[data-ui-build] #profileView .profile-footer-bar {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #profileView .profile-main-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #profileView .profile-banner-glass {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  body[data-ui-build] #profileView.student-view.active {
+    padding: 18px 14px 40px !important;
+  }
+
+  body[data-ui-build] #profileView .profile-banner-container {
+    height: auto !important;
+    min-height: 230px !important;
+  }
+
+  body[data-ui-build] #profileView .banner-glass-left,
+  body[data-ui-build] #profileView .banner-glass-right {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #profileView .profile-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SHOP PAGE â€” Premium "Featured Rewards" redesign
+   Matches the reference image: hero banner + 2-col card grid
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* â”€â”€ Shop view wrapper â”€â”€ */
+body[data-ui-build] #shopView.student-view {
+  padding: 28px clamp(20px, 3vw, 48px) 60px !important;
+  background: transparent !important;
+}
+
+/* â”€â”€ Hero banner â”€â”€ */
+body[data-ui-build] #shopView .shop-hero-banner {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  width: 100% !important;
+  min-height: 180px !important;
+  margin-bottom: 32px !important;
+  padding: clamp(28px, 3vw, 48px) clamp(28px, 3vw, 52px) !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 24px !important;
+  background: linear-gradient(135deg, #315ee6 0%, #4773f7 45%, #5680ff 100%) !important;
+  box-shadow: 0 28px 68px rgba(61, 47, 196, 0.30) !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-banner::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12), transparent 38%),
+    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.07), transparent 30%) !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-banner::after {
+  content: "" !important;
+  position: absolute !important;
+  right: clamp(80px, 10vw, 160px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) rotate(18deg) !important;
+  width: clamp(90px, 10vw, 150px) !important;
+  aspect-ratio: 0.75 !important;
+  border-radius: 28px !important;
+  background: rgba(255,255,255,0.08) !important;
+  pointer-events: none !important;
+}
+
+/* Hero left copy */
+body[data-ui-build] #shopView .shop-hero-left {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-eyebrow {
+  display: inline-block !important;
+  color: rgba(255,255,255,0.70) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-heading {
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: clamp(28px, 3.5vw, 46px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-sub {
+  margin: 0 !important;
+  max-width: 440px !important;
+  color: rgba(255,255,255,0.72) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+/* Coin badge (right side of hero) */
+body[data-ui-build] #shopView .shop-hero-coin-badge {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex-shrink: 0 !important;
+  padding: 18px 26px !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,0.14) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-coin-icon {
+  font-size: 36px !important;
+  line-height: 1 !important;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.18)) !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-coin-label {
+  display: block !important;
+  color: rgba(255,255,255,0.65) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+body[data-ui-build] #shopView .shop-hero-coin-val {
+  display: block !important;
+  color: #fff !important;
+  font-size: clamp(22px, 2.5vw, 32px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+}
+
+/* â”€â”€ Shop grid: 2 columns, matching reference â”€â”€ */
+body[data-ui-build] #shopView .shop-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(18px, 2vw, 28px) !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* â”€â”€ Shop card â”€â”€ */
+body[data-ui-build] #shopView .shop-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(221, 215, 244, 0.85) !important;
+  border-radius: 20px !important;
+  background: #fff !important;
+  box-shadow: 0 8px 32px rgba(45, 35, 88, 0.08) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+  cursor: default !important;
+}
+
+body[data-ui-build] #shopView .shop-card:hover {
+  border-color: rgba(71, 115, 247, 0.30) !important;
+  box-shadow: 0 20px 52px rgba(45, 35, 88, 0.14) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Card image */
+body[data-ui-build] #shopView .shop-card-media {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #eef3ff, #f5f2ff) !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #shopView .shop-card-media img,
+body[data-ui-build] #shopView .shop-card img {
+  width: 100% !important;
+  height: 220px !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 0 !important;
+  background: linear-gradient(135deg, #eef3ff, #f5f2ff) !important;
+}
+
+/* Card body */
+body[data-ui-build] #shopView .shop-card .card-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding: 20px 22px 10px !important;
+  flex: 1 !important;
+}
+
+body[data-ui-build] #shopView .shop-card h3 {
+  margin: 0 !important;
+  color: #100b1f !important;
+  font-size: clamp(16px, 1.6vw, 20px) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #shopView .shop-card p {
+  margin: 0 !important;
+  color: #7169864 !important;
+  color: #716986 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+/* Actions row */
+body[data-ui-build] #shopView .shop-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 14px 22px 22px !important;
+  border-top: 1px solid rgba(235, 231, 248, 0.9) !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #eef3ff !important;
+  color: #4836d0 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .pill::before {
+  content: "ðŸª™" !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .primary-btn {
+  min-width: 82px !important;
+  min-height: 42px !important;
+  padding: 0 20px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 10px 26px rgba(85, 71, 233, 0.28) !important;
+  transition: transform 160ms ease, box-shadow 160ms ease !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 32px rgba(85, 71, 233, 0.36) !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .primary-btn:disabled {
+  background: #eef0f7 !important;
+  color: #9899aa !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: default !important;
+}
+
+/* "Owned" badge variant */
+body[data-ui-build] #shopView .shop-actions .primary-btn.owned-btn {
+  background: #e8fbf0 !important;
+  color: #0d7a4e !important;
+  box-shadow: none !important;
+}
+
+/* â”€â”€ Responsive â”€â”€ */
+@media (max-width: 760px) {
+  body[data-ui-build] #shopView .shop-grid {
+    grid-template-columns: 1fr !important;
+  }
+  body[data-ui-build] #shopView .shop-hero-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    min-height: 0 !important;
+  }
+  body[data-ui-build] #shopView .shop-hero-coin-badge {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  body[data-ui-build] #shopView .shop-card img {
+    height: 180px !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  body[data-ui-build] #shopView .shop-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM BATCH CHAT STYLES â€” Overrides
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Chat list backdrop styling */
+body[data-ui-build] #batchView .chat-list {
+  background: #f8fafc !important;
+  padding: 24px !important;
+  gap: 20px !important;
+}
+
+/* Elegantly styled Date Divider */
+body[data-ui-build] #batchView .chat-date-divider {
+  margin: 16px 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider::before {
+  background: #e2e8f0 !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider span {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 4px 14px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Message Bubble layout & shadows */
+body[data-ui-build] #batchView .chat-message-row {
+  max-width: 75% !important;
+  margin-bottom: 2px !important;
+}
+
+body[data-ui-build] #batchView .chat-message-bubble {
+  background: #ffffff !important;
+  border: 1px solid #eaedf2 !important;
+  border-radius: 4px 18px 18px 18px !important;
+  padding: 14px 18px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+  color: #1e293b !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .chat-message-bubble:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* User Message bubble gradient (Mine) */
+body[data-ui-build] #batchView .chat-message-row.mine .chat-message-bubble {
+  background: linear-gradient(135deg, #5680ff 0%, #4773f7 100%) !important;
+  color: #ffffff !important;
+  border-radius: 18px 18px 4px 18px !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.18) !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-message-bubble:hover {
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.28) !important;
+}
+
+/* Meta text fonts */
+body[data-ui-build] #batchView .chat-message-author {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-message-author {
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-time {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+/* Reply Preview panel inside bubbles */
+body[data-ui-build] #batchView .reply-preview {
+  background: #f8fafc !important;
+  border-left: 3px solid #5680ff !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  margin-bottom: 8px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  border-right: 1px solid #f1f5f9 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .reply-preview {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-left: 3px solid #ffffff !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+/* Reply button styled link */
+body[data-ui-build] #batchView .chat-bubble-reply-btn {
+  color: #5680ff !important;
+  font-weight: 600 !important;
+  text-transform: capitalize !important;
+  font-size: 11px !important;
+  margin-top: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble-reply-btn::before {
+  content: "â†©" !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble-reply-btn:hover {
+  opacity: 1 !important;
+  text-decoration: underline !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-bubble-reply-btn {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .chat-bubble-reply-btn:hover {
+  color: #ffffff !important;
+}
+
+/* Chat Composer Premium Layout */
+body[data-ui-build] #batchView .chat-composer {
+  padding: 18px 24px !important;
+  background: #ffffff !important;
+  border-top: 1px solid #eaedf2 !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 24px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  padding: 0 20px !important;
+  height: 46px !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper:focus-within {
+  border-color: #5680ff !important;
+  box-shadow: 0 0 0 3px rgba(86, 128, 255, 0.12) !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper input {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #batchView .composer-send-btn {
+  background: linear-gradient(135deg, #5680ff 0%, #4773f7 100%) !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 99px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+body[data-ui-build] #batchView .composer-send-btn:hover {
+  transform: translateY(-1px) scale(1.03) !important;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35) !important;
+  opacity: 1 !important;
+}
+
+/* Sidebar refinement */
+body[data-ui-build] #batchView .batch-sidebar {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.01) !important;
+}
+
+/* Override individual chatMessage input styles to avoid double border/nested pill bug */
+body[data-ui-build] #batchView #chatMessage {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #0f172a !important;
+}
+
+body[data-ui-build] #batchView #chatMessage:focus {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

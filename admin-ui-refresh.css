@@ -585,6 +585,98 @@ body.admin-redesign-final #profileView .profile-hero-panel { grid-template-colum
 body.admin-redesign-final #profileView .profile-hero-stats { grid-column: 1 / -1 !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 body.admin-redesign-final #profileView .profile-admin-grid { grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr) !important; }
 body.admin-redesign-final #profileView .form-row.two { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
+
+/* v17 production polish: analytics tooltips and review scroll containment */
+body.admin-redesign-final .chart-shell, body.admin-redesign-final .report-chart { position: relative !important; overflow: visible !important; }
+body.admin-redesign-final .chart-bars { align-items: end !important; min-height: 220px !important; gap: clamp(6px, 1vw, 12px) !important; padding: 18px 12px 8px !important; }
+body.admin-redesign-final .chart-bar-wrap { min-width: 34px !important; animation: adminChartRise 520ms ease both !important; }
+body.admin-redesign-final .chart-bar { position: relative !important; border-radius: 10px 10px 4px 4px !important; background: linear-gradient(180deg, #2563eb 0%, #38bdf8 100%) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38), 0 10px 24px rgba(37, 99, 235, 0.18) !important; }
+body.admin-redesign-final .chart-bar.active { background: linear-gradient(180deg, #111827 0%, #2563eb 100%) !important; }
+body.admin-redesign-final .chart-bar.zero { min-height: 4px !important; background: #d0d5dd !important; box-shadow: none !important; }
+body.admin-redesign-final .chart-bar-wrap small { max-width: 54px !important; overflow: hidden !important; color: #667085 !important; font-size: 11px !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+body.admin-redesign-final .chart-tooltip { position: absolute !important; left: 50% !important; bottom: calc(100% + 12px) !important; z-index: 5 !important; width: max-content !important; max-width: 240px !important; padding: 9px 10px !important; color: #ffffff !important; font-size: 12px !important; font-weight: 800 !important; line-height: 1.35 !important; white-space: normal !important; pointer-events: none !important; opacity: 0 !important; transform: translate(-50%, 6px) !important; transition: opacity 160ms ease, transform 160ms ease !important; background: #101828 !important; border-radius: 8px !important; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22) !important; }
+body.admin-redesign-final .chart-bar:hover .chart-tooltip, body.admin-redesign-final .chart-bar:focus .chart-tooltip { opacity: 1 !important; transform: translate(-50%, 0) !important; }
+body.admin-redesign-final .chart-empty-state { grid-column: 1 / -1 !important; align-self: stretch !important; display: grid !important; place-content: center !important; gap: 6px !important; min-height: 210px !important; color: #667085 !important; text-align: center !important; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important; border: 1px dashed #cbd5e1 !important; border-radius: 14px !important; }
+body.admin-redesign-final .chart-empty-state strong { color: #101828 !important; font-size: 15px !important; }
+body.admin-redesign-final .legend-item.muted { color: #98a2b3 !important; }
+body.admin-redesign-final[data-admin-view="reviews"] { overflow: hidden !important; }
+body.admin-redesign-final[data-admin-view="reviews"] .admin-main { height: 100vh !important; overflow: hidden !important; }
+body.admin-redesign-final[data-admin-view="reviews"] .admin-topbar, body.admin-redesign-final[data-admin-view="reviews"] .page-heading, body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .section-toolbar { position: sticky !important; z-index: 20 !important; background: #f8fafc !important; }
+body.admin-redesign-final[data-admin-view="reviews"] .admin-topbar { top: 0 !important; }
+body.admin-redesign-final[data-admin-view="reviews"] .page-heading { top: 64px !important; }
+body.admin-redesign-final[data-admin-view="reviews"] #reviewsView.active { display: flex !important; flex-direction: column !important; height: calc(100vh - 190px) !important; min-height: 0 !important; overflow: hidden !important; }
+body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .section-toolbar { top: 132px !important; flex: 0 0 auto !important; }
+body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .review-grid { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .panel { display: flex !important; flex-direction: column !important; min-height: 0 !important; overflow: hidden !important; }
+body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .compact-list { flex: 1 1 auto !important; min-height: 0 !important; overflow: auto !important; padding-right: 6px !important; }
+@keyframes adminChartRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 760px) { body.admin-redesign-final[data-admin-view="reviews"] #reviewsView.active { height: calc(100vh - 168px) !important; } body.admin-redesign-final[data-admin-view="reviews"] #reviewsView .review-grid { grid-template-columns: 1fr !important; } }
+
+/* v18 enterprise analytics dashboard */
+body.admin-redesign-final .enterprise-analytics { display: grid !important; gap: 18px !important; padding: 22px !important; background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%) !important; border: 1px solid #dfe7f3 !important; border-radius: 18px !important; box-shadow: 0 18px 48px rgba(15, 23, 42, 0.055) !important; }
+body.admin-redesign-final .enterprise-analytics-head { display: flex !important; align-items: flex-start !important; justify-content: space-between !important; gap: 18px !important; }
+body.admin-redesign-final .analytics-eyebrow { margin: 0 0 5px !important; color: #2563eb !important; font-size: 11px !important; font-weight: 900 !important; letter-spacing: 0 !important; text-transform: uppercase !important; }
+body.admin-redesign-final .enterprise-analytics h2, body.admin-redesign-final .enterprise-analytics h3 { margin: 0 !important; color: #101828 !important; letter-spacing: 0 !important; }
+body.admin-redesign-final .enterprise-analytics h2 { font-size: 24px !important; font-weight: 900 !important; }
+body.admin-redesign-final .enterprise-analytics h3 { font-size: 15px !important; font-weight: 900 !important; }
+body.admin-redesign-final .enterprise-analytics p, body.admin-redesign-final .enterprise-analytics span, body.admin-redesign-final .enterprise-analytics small { color: #667085 !important; line-height: 1.45 !important; }
+body.admin-redesign-final #analyticsFreshness { display: inline-flex !important; margin-top: 8px !important; font-size: 12px !important; font-weight: 800 !important; color: #067647 !important; }
+body.admin-redesign-final .enterprise-analytics-actions { display: inline-flex !important; align-items: center !important; gap: 4px !important; padding: 4px !important; background: #f2f4f7 !important; border: 1px solid #e4e7ec !important; border-radius: 12px !important; }
+body.admin-redesign-final .enterprise-analytics-actions button { min-height: 34px !important; padding: 0 12px !important; color: #475467 !important; font-size: 12px !important; font-weight: 900 !important; background: transparent !important; border: 0 !important; border-radius: 9px !important; }
+body.admin-redesign-final .enterprise-analytics-actions button.active { color: #101828 !important; background: #ffffff !important; box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important; }
+body.admin-redesign-final .analytics-kpi-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 14px !important; }
+body.admin-redesign-final .analytics-kpi-card { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 14px !important; min-height: 132px !important; padding: 18px !important; background: #ffffff !important; border: 1px solid #e4e7ec !important; border-radius: 16px !important; box-shadow: 0 10px 26px rgba(15, 23, 42, 0.04) !important; }
+body.admin-redesign-final .analytics-kpi-card span { display: block !important; margin-bottom: 6px !important; color: #475467 !important; font-size: 12px !important; font-weight: 900 !important; text-transform: uppercase !important; }
+body.admin-redesign-final .analytics-kpi-card strong { display: block !important; color: #101828 !important; font-size: 30px !important; font-weight: 900 !important; letter-spacing: 0 !important; }
+body.admin-redesign-final .analytics-kpi-card small { display: block !important; max-width: 220px !important; margin-top: 5px !important; font-size: 12px !important; font-weight: 700 !important; }
+body.admin-redesign-final .analytics-kpi-ring { --ring: #2563eb; position: relative !important; display: grid !important; place-items: center !important; width: 64px !important; height: 64px !important; flex: 0 0 auto !important; background: conic-gradient(var(--ring) var(--pct), #edf2f7 0) !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-kpi-ring::before { content: "" !important; position: absolute !important; width: 46px !important; height: 46px !important; background: #ffffff !important; border-radius: inherit !important; }
+body.admin-redesign-final .analytics-kpi-ring b { position: relative !important; z-index: 1 !important; color: #344054 !important; font-size: 12px !important; font-weight: 900 !important; }
+body.admin-redesign-final .analytics-kpi-card.green .analytics-kpi-ring { --ring: #12b981; }
+body.admin-redesign-final .analytics-kpi-card.rose .analytics-kpi-ring { --ring: #e11d48; }
+body.admin-redesign-final .analytics-kpi-card.amber .analytics-kpi-ring { --ring: #f59e0b; }
+body.admin-redesign-final .analytics-kpi-card.cyan .analytics-kpi-ring { --ring: #0891b2; }
+body.admin-redesign-final .analytics-kpi-card.violet .analytics-kpi-ring { --ring: #7c3aed; }
+body.admin-redesign-final .analytics-main-grid { display: grid !important; grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr) !important; gap: 16px !important; }
+body.admin-redesign-final .analytics-card { min-width: 0 !important; padding: 18px !important; background: #ffffff !important; border: 1px solid #e4e7ec !important; border-radius: 16px !important; box-shadow: 0 10px 26px rgba(15, 23, 42, 0.035) !important; }
+body.admin-redesign-final .analytics-card-wide { grid-column: span 1 !important; }
+body.admin-redesign-final .analytics-card-head { display: flex !important; align-items: flex-start !important; justify-content: space-between !important; gap: 12px !important; margin-bottom: 14px !important; }
+body.admin-redesign-final #analyticsTrendDelta { min-width: 58px !important; padding: 7px 10px !important; color: #067647 !important; font-size: 12px !important; font-weight: 900 !important; text-align: center !important; background: #ecfdf3 !important; border: 1px solid #abefc6 !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-line-chart { min-height: 260px !important; overflow: hidden !important; }
+body.admin-redesign-final .analytics-line-chart svg { width: 100% !important; min-height: 240px !important; }
+body.admin-redesign-final .analytics-line-chart .grid { stroke: #edf2f7 !important; stroke-dasharray: 4 6 !important; }
+body.admin-redesign-final .analytics-line-chart .axis { stroke: #d0d5dd !important; }
+body.admin-redesign-final .analytics-line-chart .previous { fill: none !important; stroke: #c7d7fe !important; stroke-width: 3 !important; opacity: 0.85 !important; }
+body.admin-redesign-final .analytics-line-chart .current { fill: none !important; stroke: #2563eb !important; stroke-width: 5 !important; stroke-linecap: round !important; stroke-linejoin: round !important; filter: drop-shadow(0 10px 12px rgba(37, 99, 235, 0.18)) !important; }
+body.admin-redesign-final .analytics-line-chart circle { fill: #ffffff !important; stroke: #2563eb !important; stroke-width: 4 !important; }
+body.admin-redesign-final .analytics-line-chart text { fill: #667085 !important; font-size: 11px !important; text-anchor: middle !important; }
+body.admin-redesign-final .analytics-funnel, body.admin-redesign-final .analytics-ranked-list, body.admin-redesign-final .analytics-status-list, body.admin-redesign-final .analytics-insights { display: grid !important; gap: 10px !important; }
+body.admin-redesign-final .analytics-funnel-row, body.admin-redesign-final .analytics-ranked-row, body.admin-redesign-final .analytics-status-row, body.admin-redesign-final .analytics-insight { display: grid !important; gap: 9px !important; padding: 12px !important; background: #f8fafc !important; border: 1px solid #edf2f7 !important; border-radius: 12px !important; }
+body.admin-redesign-final .analytics-funnel-row { grid-template-columns: minmax(0, 1fr) auto !important; }
+body.admin-redesign-final .analytics-funnel-row strong, body.admin-redesign-final .analytics-ranked-row strong, body.admin-redesign-final .analytics-status-row strong, body.admin-redesign-final .analytics-insight strong { color: #101828 !important; font-size: 13px !important; font-weight: 900 !important; }
+body.admin-redesign-final .analytics-funnel-row b, body.admin-redesign-final .analytics-ranked-row b, body.admin-redesign-final .analytics-status-row b { color: #101828 !important; font-size: 13px !important; font-weight: 900 !important; }
+body.admin-redesign-final .analytics-funnel-track, body.admin-redesign-final .analytics-mini-track { grid-column: 1 / -1 !important; height: 8px !important; overflow: hidden !important; background: #e4e7ec !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-funnel-track span, body.admin-redesign-final .analytics-mini-track i { display: block !important; height: 100% !important; background: linear-gradient(90deg, #2563eb, #12b981) !important; border-radius: inherit !important; animation: adminChartRise 520ms ease both !important; }
+body.admin-redesign-final .analytics-ranked-row { grid-template-columns: 28px minmax(0, 1fr) auto !important; align-items: center !important; }
+body.admin-redesign-final .analytics-ranked-row > span { display: grid !important; place-items: center !important; width: 28px !important; height: 28px !important; color: #175cd3 !important; font-size: 12px !important; font-weight: 900 !important; background: #eff6ff !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-donut-row { display: grid !important; grid-template-columns: 170px minmax(0, 1fr) !important; gap: 16px !important; align-items: center !important; }
+body.admin-redesign-final .analytics-donut-chart, body.admin-redesign-final .analytics-donut-empty { position: relative !important; display: grid !important; place-items: center !important; width: 158px !important; height: 158px !important; margin: 0 auto !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-donut-chart::before { content: "" !important; position: absolute !important; inset: 22px !important; background: #ffffff !important; border-radius: inherit !important; box-shadow: inset 0 0 0 1px #edf2f7 !important; }
+body.admin-redesign-final .analytics-donut-chart strong, body.admin-redesign-final .analytics-donut-chart span, body.admin-redesign-final .analytics-donut-empty { position: relative !important; z-index: 1 !important; color: #101828 !important; font-weight: 900 !important; }
+body.admin-redesign-final .analytics-donut-chart strong { margin-top: 22px !important; font-size: 28px !important; }
+body.admin-redesign-final .analytics-donut-chart span { margin-top: -42px !important; font-size: 11px !important; text-transform: uppercase !important; }
+body.admin-redesign-final .analytics-donut-empty { background: #f2f4f7 !important; border: 1px dashed #cbd5e1 !important; }
+body.admin-redesign-final .analytics-status-row { grid-template-columns: 14px minmax(0, 1fr) auto !important; align-items: center !important; }
+body.admin-redesign-final .analytics-status-row span { width: 10px !important; height: 10px !important; background: var(--dot) !important; border-radius: 999px !important; }
+body.admin-redesign-final .analytics-insight { grid-template-columns: minmax(0, 1fr) auto !important; align-items: center !important; border-left: 4px solid #2563eb !important; }
+body.admin-redesign-final .analytics-insight p { margin: 4px 0 0 !important; font-size: 13px !important; }
+body.admin-redesign-final .analytics-insight.green { border-left-color: #12b981 !important; }
+body.admin-redesign-final .analytics-insight.rose { border-left-color: #e11d48 !important; }
+body.admin-redesign-final .analytics-insight.amber { border-left-color: #f59e0b !important; }
+body.admin-redesign-final .analytics-insight.violet { border-left-color: #7c3aed !important; }
+body.admin-redesign-final .analytics-insight.cyan { border-left-color: #0891b2 !important; }
+@media (max-width: 1120px) { body.admin-redesign-final .analytics-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } body.admin-redesign-final .analytics-main-grid { grid-template-columns: 1fr !important; } }
+@media (max-width: 720px) { body.admin-redesign-final .enterprise-analytics { padding: 16px !important; } body.admin-redesign-final .enterprise-analytics-head, body.admin-redesign-final .analytics-card-head, body.admin-redesign-final .analytics-insight { grid-template-columns: 1fr !important; flex-direction: column !important; } body.admin-redesign-final .enterprise-analytics-actions { width: 100% !important; overflow: auto !important; } body.admin-redesign-final .analytics-kpi-grid { grid-template-columns: 1fr !important; } body.admin-redesign-final .analytics-donut-row { grid-template-columns: 1fr !important; } body.admin-redesign-final .analytics-kpi-card strong { font-size: 26px !important; } }
 /* v16 EOF confirmed: sidebar brand order and clean toggle. */
 body.admin-redesign-final .admin-brand { grid-template-columns: 38px 54px minmax(0, 1fr) !important; gap: 8px !important; }
 body.admin-redesign-final .admin-brand .sidebar-toggle-btn { grid-column: 1 !important; grid-row: 1 !important; width: 36px !important; height: 36px !important; min-width: 36px !important; padding: 8px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 10px !important; }
@@ -2384,7 +2476,7 @@ body.admin-redesign-final #dashboardView .report-activity-card,
 body.admin-redesign-final #dashboardView .report-line-card,
 body.admin-redesign-final #dashboardView .report-health-card,
 body.admin-redesign-final #dashboardView .report-courses-card {
-  grid-column: span 8 !important;
+  grid-column: span 6 !important;
 }
 
 body.admin-redesign-final #dashboardView .report-total-card,
@@ -2393,13 +2485,94 @@ body.admin-redesign-final #dashboardView .report-bars-card,
 body.admin-redesign-final #dashboardView .report-workload-card,
 body.admin-redesign-final #dashboardView .report-batches-card,
 body.admin-redesign-final #dashboardView .report-attention-card {
-  grid-column: span 4 !important;
+  grid-column: span 3 !important;
 }
 
-body.admin-redesign-final #dashboardView .overview-grid,
-body.admin-redesign-final #dashboardView .metric-grid,
-body.admin-redesign-final #dashboardView .dashboard-grid {
+body.admin-redesign-final .admin-view#dashboardView.active > .role-report-dashboard,
+body.admin-redesign-final .admin-view#dashboardView.active > .overview-grid,
+body.admin-redesign-final .admin-view#dashboardView.active > .dashboard-grid {
   display: none !important;
+}
+
+body.admin-redesign-final .admin-view#dashboardView.active > .metric-grid {
+  display: grid !important;
+}
+
+body.admin-redesign-final #dashboardView .enterprise-analytics {
+  gap: 12px !important;
+  padding: 16px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-kpi-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-kpi-card {
+  min-height: 96px !important;
+  padding: 11px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-kpi-card strong {
+  font-size: 22px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-kpi-ring {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-kpi-ring::before {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-main-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: start !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-card {
+  padding: 12px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-card-wide:first-child {
+  grid-column: span 2 !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-card-wide:last-child {
+  grid-column: 1 / -1 !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-line-chart,
+body.admin-redesign-final #dashboardView .analytics-line-chart svg {
+  min-height: 150px !important;
+  height: 150px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-donut-chart,
+body.admin-redesign-final #dashboardView .analytics-donut-empty {
+  width: 118px !important;
+  height: 118px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-donut-row {
+  grid-template-columns: 126px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-funnel,
+body.admin-redesign-final #dashboardView .analytics-ranked-list,
+body.admin-redesign-final #dashboardView .analytics-status-list,
+body.admin-redesign-final #dashboardView .analytics-insights {
+  gap: 7px !important;
+}
+
+body.admin-redesign-final #dashboardView .analytics-funnel-row,
+body.admin-redesign-final #dashboardView .analytics-ranked-row,
+body.admin-redesign-final #dashboardView .analytics-status-row,
+body.admin-redesign-final #dashboardView .analytics-insight {
+  padding: 7px !important;
 }
 
 @media (max-width: 1180px) {

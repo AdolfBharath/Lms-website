@@ -1,0 +1,1137 @@
+/* v56 my courses: enrolled-course library matching the supplied reference. */
+body[data-ui-build] #coursesView {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: clamp(22px, 3vw, 34px) clamp(22px, 4vw, 54px) 58px !important;
+  background: linear-gradient(180deg, rgba(249, 247, 255, 0.92), rgba(246, 244, 253, 0.96)) !important;
+}
+
+body[data-ui-build] #coursesView .course-page-intro,
+body[data-ui-build] #coursesView .course-toolbar,
+body[data-ui-build] #coursesGrid {
+  width: min(100%, 1120px) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body[data-ui-build] #coursesView .course-page-intro {
+  display: flex !important;
+  align-items: start !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  margin-bottom: 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #coursesView .course-page-intro .reference-eyebrow,
+body[data-ui-build] #coursesView .overall-course-progress {
+  display: none !important;
+}
+
+body[data-ui-build] #coursesView .course-page-intro h2 {
+  margin: 0 0 6px !important;
+  color: #121022 !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #coursesView .course-page-intro p {
+  max-width: 520px !important;
+  margin: 0 !important;
+  color: #6f6a7c !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #coursesView .course-toolbar {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin-top: -52px !important;
+  margin-bottom: 24px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #coursesView .course-toolbar > .secondary-btn {
+  display: none !important;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs {
+  display: inline-grid !important;
+  grid-template-columns: repeat(3, minmax(90px, 1fr)) !important;
+  min-width: 420px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd8ee !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.74) !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button {
+  min-height: 34px !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: #5f5a70 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #coursesView #courseFilterTabs button.active {
+  background: #fff !important;
+  color: #4773f7 !important;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.11) !important;
+}
+
+body[data-ui-build] #coursesGrid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, 300px) !important;
+  gap: 24px !important;
+  align-items: start !important;
+  justify-content: start !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card {
+  display: grid !important;
+  grid-template-rows: 168px minmax(0, 1fr) !important;
+  width: 300px !important;
+  height: 390px !important;
+  min-height: 390px !important;
+  max-height: 390px !important;
+  overflow: hidden !important;
+  border: 1px solid #e3dfef !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 38px rgba(44, 35, 85, 0.08) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: #d2cdf5 !important;
+  box-shadow: 0 24px 48px rgba(44, 35, 85, 0.13) !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-media {
+  position: relative !important;
+  height: 168px !important;
+  overflow: hidden !important;
+  background: #eceaf8 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-status-badge {
+  top: 12px !important;
+  left: 12px !important;
+  min-height: 24px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  background: #fff1dd !important;
+  color: #a95208 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-status-badge.success {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-body {
+  display: grid !important;
+  grid-template-rows: auto 42px 36px auto auto auto 1fr !important;
+  align-content: stretch !important;
+  gap: 9px !important;
+  min-height: 0 !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-category-label {
+  width: max-content !important;
+  max-width: 100% !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  background: #f1efff !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card h3 {
+  min-height: 42px !important;
+  margin: 0 !important;
+  color: #151225 !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-instructor {
+  min-height: 36px !important;
+  margin: 0 !important;
+  color: #6f6a7c !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row {
+  margin: 0 !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row .student-avatar {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 9px !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row small,
+body[data-ui-build] #coursesView .my-course-card .card-meta {
+  color: #676173 !important;
+  font-size: 10px !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-progress-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-top: 2px !important;
+  color: #6f6a7c !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-progress-row b {
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .mini-progress {
+  height: 6px !important;
+  margin: -2px 0 4px !important;
+  border-radius: 999px !important;
+  background: #eceaf5 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .mini-progress span {
+  background: #4773f7 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .card-footer {
+  align-self: end !important;
+  margin-top: 2px !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .primary-btn,
+body[data-ui-build] #coursesView .my-course-card .secondary-btn {
+  width: 100% !important;
+  min-height: 38px !important;
+  border-radius: 9px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #coursesView .recommended-course-card {
+  display: none !important;
+}
+
+body[data-ui-build] .course-detail-modal {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] .course-detail-head {
+  display: grid !important;
+  grid-template-columns: 220px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] .course-detail-head img {
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] .course-detail-head h3 {
+  margin: 10px 0 8px !important;
+  color: #161326 !important;
+  font-size: 24px !important;
+  line-height: 1.12 !important;
+}
+
+body[data-ui-build] .course-detail-head p {
+  color: #625d70 !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-ui-build] .course-meta-row.detail {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] .course-meta-row.detail span {
+  padding: 12px !important;
+  border: 1px solid #e7e3f2 !important;
+  border-radius: 10px !important;
+  background: #faf9ff !important;
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] .module-preview-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] .module-preview-list > div {
+  padding: 12px !important;
+  border: 1px solid #ece8f5 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #coursesView .course-toolbar {
+    margin-top: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  body[data-ui-build] #coursesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 300px)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #coursesView #courseFilterTabs {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  body[data-ui-build] #coursesGrid,
+  body[data-ui-build] .course-detail-head,
+  body[data-ui-build] .course-meta-row.detail {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #coursesView .my-course-card {
+    width: 100% !important;
+  }
+}
+
+/* v57 enrolled card sizing and hidden learning-player nav. */
+body[data-ui-build] .student-nav .nav-item[data-view="learn"] {
+  display: none !important;
+}
+
+/* v62 exact my-course card reference: compact image, copy, progress, action. */
+body[data-ui-build] #coursesView #coursesGrid.course-grid,
+body[data-ui-build] #coursesView #coursesGrid {
+  grid-template-columns: repeat(auto-fill, 240px) !important;
+  grid-auto-columns: 240px !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #coursesView #coursesGrid.course-grid > .my-course-card,
+body[data-ui-build] #coursesView .my-course-card {
+  width: 240px !important;
+  min-width: 240px !important;
+  max-width: 240px !important;
+  height: 356px !important;
+  min-height: 356px !important;
+  max-height: 356px !important;
+  border-radius: 12px !important;
+  border: 1px solid #e5e1f1 !important;
+  background: #fff !important;
+  box-shadow: 0 14px 30px rgba(38, 30, 78, 0.08) !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-media {
+  flex: 0 0 132px !important;
+  height: 132px !important;
+  min-height: 132px !important;
+  max-height: 132px !important;
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-media img {
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-status-badge,
+body[data-ui-build] #coursesView .my-course-card .course-category-label {
+  display: none !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-card-body {
+  padding: 12px 14px 14px !important;
+  gap: 7px !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card h3 {
+  min-height: 34px !important;
+  max-height: 34px !important;
+  margin: 0 !important;
+  color: #11101f !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .course-instructor {
+  min-height: 32px !important;
+  max-height: 32px !important;
+  color: #6d6878 !important;
+  font-size: 9px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row {
+  gap: 6px !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row .student-avatar {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] #coursesView .course-mentor-row small {
+  color: #272334 !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .card-meta {
+  color: #4e4960 !important;
+  font-size: 8px !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] #coursesView .my-course-progress-row {
+  margin: 0 !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .mini-progress {
+  height: 5px !important;
+  margin: -2px 0 4px !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .card-footer {
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #coursesView .my-course-card .primary-btn,
+body[data-ui-build] #coursesView .my-course-card .secondary-btn {
+  min-height: 32px !important;
+  border-radius: 7px !important;
+  font-size: 9px !important;
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #coursesView #coursesGrid.course-grid,
+  body[data-ui-build] #coursesView #coursesGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #coursesView #coursesGrid.course-grid > .my-course-card,
+  body[data-ui-build] #coursesView .my-course-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 280px !important;
+  }
+}
+
+/* v63 learning player: reference-style video lesson with course content rail and materials. */
+body[data-ui-build] #learnView {
+  padding: 0 !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #learnView .learn-udemy-shell {
+  width: 100% !important;
+  min-height: calc(100vh - 82px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 330px !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  border-top: 1px solid #e4def0 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #learnView .learn-reference-main {
+  min-width: 0 !important;
+  padding: 28px 34px 42px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #learnView .stitch-lesson-header {
+  display: none !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player {
+  width: 100% !important;
+  max-width: 860px !important;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: #10101b !important;
+  box-shadow: 0 20px 46px rgba(18, 14, 48, 0.16) !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .player-header {
+  display: none !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame {
+  position: relative !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+  border-radius: 16px !important;
+  background: #10101b !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player video,
+body[data-ui-build] #learnView .reference-video-player iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  object-fit: cover !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls {
+  position: absolute !important;
+  left: 14px !important;
+  right: 14px !important;
+  bottom: 14px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+  padding: 9px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  background: rgba(8, 10, 22, 0.76) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 3 !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls button {
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls button.active,
+body[data-ui-build] #learnView .lesson-video-controls button:hover:not(:disabled) {
+  background: #4773f7 !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+body[data-ui-build] #learnView .lesson-fullscreen-launch {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 5 !important;
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.78) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28) !important;
+}
+
+body[data-ui-build] #learnView .lesson-fullscreen-launch:hover {
+  background: #4773f7 !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .player-description {
+  display: none !important;
+}
+
+body[data-ui-build] #learnView .reference-lesson-tabs {
+  width: min(100%, 860px) !important;
+  display: flex !important;
+  gap: 28px !important;
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+  border-bottom: 1px solid #e4def0 !important;
+}
+
+body[data-ui-build] #learnView .reference-lesson-tabs button {
+  min-height: 38px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #211b35 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #learnView .reference-lesson-tabs button.active {
+  border-color: #4773f7 !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] #learnView .lesson-reference-body {
+  width: min(100%, 860px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 18px !important;
+  padding-top: 18px !important;
+}
+
+body[data-ui-build] #learnView .reference-overview-card,
+body[data-ui-build] #learnView .lesson-mentor-card,
+body[data-ui-build] #learnView .reference-resource-card {
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #learnView .reference-overview-card h3 {
+  margin: 0 0 8px !important;
+  color: #11101f !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #learnView .lesson-facts {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #learnView .lesson-facts span {
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 9px !important;
+  border-radius: 999px !important;
+  background: #f3f1ff !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #learnView .reference-overview-card p {
+  max-width: 760px !important;
+  color: #504b61 !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+body[data-ui-build] #learnView .learning-outcomes-card {
+  width: min(100%, 760px) !important;
+  margin-top: 18px !important;
+  padding: 18px !important;
+  border: 1px solid #e7e1f5 !important;
+  border-radius: 14px !important;
+  background: #f3f5fa !important;
+}
+
+body[data-ui-build] #learnView .learning-outcomes-card ul {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+body[data-ui-build] #learnView .learning-outcomes-card li {
+  color: #302a42 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #learnView .lesson-mentor-card {
+  width: min(100%, 760px) !important;
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+  margin-top: 8px !important;
+  padding: 16px !important;
+  border: 1px solid #eee8f6 !important;
+  box-shadow: 0 14px 28px rgba(40, 31, 82, 0.06) !important;
+}
+
+body[data-ui-build] #learnView .lesson-mentor-card .student-avatar {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+body[data-ui-build] #learnView .lesson-mentor-card strong,
+body[data-ui-build] #learnView .lesson-mentor-card small,
+body[data-ui-build] #learnView .lesson-mentor-card p {
+  display: block !important;
+  margin: 0 !important;
+}
+
+body[data-ui-build] #learnView .lesson-mentor-card p {
+  color: #6f687d !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #learnView .reference-resource-card {
+  width: min(100%, 860px) !important;
+  margin-top: 6px !important;
+}
+
+body[data-ui-build] #learnView .resource-card-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 16px !important;
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] #learnView .resource-card-head h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+}
+
+body[data-ui-build] #learnView .resource-card-head p {
+  margin: 3px 0 0 !important;
+  color: #777184 !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #learnView .resource-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #learnView .resource-download-card {
+  min-height: 116px !important;
+  display: grid !important;
+  align-content: center !important;
+  gap: 7px !important;
+  padding: 16px !important;
+  border: 1px solid #eee8f6 !important;
+  border-radius: 14px !important;
+  background: #fbfcfe !important;
+  color: #211b35 !important;
+  text-decoration: none !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #learnView button.resource-download-card {
+  font: inherit !important;
+}
+
+body[data-ui-build] #learnView .resource-download-card em {
+  width: max-content !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  background: #eef3ff !important;
+  color: #4773f7 !important;
+  font-size: 10px !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail {
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  min-width: 0 !important;
+  border-left: 1px solid #e4def0 !important;
+  background: #fbf9ff !important;
+}
+
+body[data-ui-build] #learnView .rail-progress-card {
+  display: grid !important;
+  gap: 12px !important;
+  padding: 24px 22px !important;
+  border-bottom: 1px solid #e4def0 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #learnView .rail-progress-card > div:first-child {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  color: #4773f7 !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #learnView .rail-progress-card .primary-btn {
+  min-height: 46px !important;
+  border-radius: 10px !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .module-summary {
+  padding: 16px 18px !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li {
+  min-height: 44px !important;
+  padding: 9px 18px !important;
+}
+
+body[data-ui-build] #learnView .reference-rail-footer {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  padding: 18px 22px !important;
+}
+
+body[data-ui-build] #learnView .reference-rail-footer .circle-progress,
+body[data-ui-build] #learnView .reference-rail-footer .secondary-btn {
+  display: none !important;
+}
+
+.resource-preview-modal {
+  display: grid;
+  gap: 14px;
+}
+
+body[data-ui-build] .student-modal.resource-modal {
+  padding: 12px !important;
+}
+
+body[data-ui-build] .student-modal.resource-modal .modal-panel {
+  width: min(1280px, calc(100vw - 24px)) !important;
+  height: calc(100vh - 24px) !important;
+  max-height: calc(100vh - 24px) !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] .student-modal.resource-modal #modalBody,
+body[data-ui-build] .student-modal.resource-modal .resource-preview-modal {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+.resource-preview-modal iframe {
+  width: 100%;
+  height: min(72vh, 720px);
+  border: 1px solid var(--st-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+body[data-ui-build] .student-modal.resource-modal .resource-preview-modal iframe {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.resource-preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.resource-preview-url {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #6b6677;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resource-preview-loading {
+  display: grid;
+  gap: 6px;
+  place-items: center;
+  min-height: 220px;
+  padding: 28px;
+  border: 1px solid var(--st-line);
+  border-radius: 12px;
+  background: #fbfcfe;
+  text-align: center;
+}
+
+.resource-preview-loading strong {
+  color: #141222;
+  font-size: 18px;
+}
+
+.resource-preview-loading p {
+  max-width: 420px;
+  margin: 0;
+  color: #6b6677;
+  line-height: 1.5;
+}
+
+body.lesson-fullscreen-open {
+  overflow: hidden;
+}
+
+.lesson-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: #05070d;
+  color: #fff;
+}
+
+.lesson-fullscreen-topbar {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 18px;
+  background: rgba(5, 7, 13, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lesson-fullscreen-topbar strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.lesson-fullscreen-topbar button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.lesson-fullscreen-stage {
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.lesson-fullscreen-stage video,
+.lesson-fullscreen-stage iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+.lesson-fullscreen-stage video {
+  object-fit: contain;
+}
+
+.quiz-result-refresh {
+  display: grid;
+  gap: 18px;
+}
+
+.quiz-result-hero {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid #e9e4f2;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fbfcff 0%, #f5f7ff 100%);
+}
+
+.quiz-result-ring {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #fff 0 58%, transparent 59%),
+    conic-gradient(#4773f7 var(--quiz-result-score), #e8ecf8 0);
+}
+
+.quiz-result-ring strong,
+.quiz-result-ring small {
+  grid-area: 1 / 1;
+}
+
+.quiz-result-ring strong {
+  transform: translateY(-7px);
+  color: #11101f;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.quiz-result-ring small {
+  transform: translateY(18px);
+  color: #676174;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.quiz-result-hero h3 {
+  margin: 8px 0 6px;
+  color: #11101f;
+  font-size: 24px;
+}
+
+.quiz-result-hero p {
+  margin: 0;
+  color: #605b70;
+  line-height: 1.5;
+}
+
+.quiz-result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.quiz-result-stats div {
+  padding: 14px;
+  border: 1px solid #ece7f4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.quiz-result-stats small,
+.quiz-result-stats strong {
+  display: block;
+}
+
+.quiz-result-stats small {
+  color: #747083;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.quiz-result-stats strong {
+  margin-top: 5px;
+  color: #151324;
+  font-size: 18px;
+}
+
+.quiz-review-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid #ece7f4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.quiz-review-item > span {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.quiz-review-item.correct > span {
+  background: #e9f9ef;
+  color: #167a3a;
+}
+
+.quiz-review-item.wrong > span {
+  background: #fff3e7;
+  color: #a35400;
+}
+
+.quiz-review-item strong {
+  display: block;
+  color: #171327;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.quiz-review-item p {
+  margin: 5px 0 0;
+  color: #655f72;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.quiz-result-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #learnView .learn-udemy-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #learnView .reference-course-rail {
+    border-left: 0 !important;
+    border-top: 1px solid #e4def0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #learnView .learn-reference-main {
+    padding: 18px 14px 30px !important;
+  }
+
+  body[data-ui-build] #learnView .learning-outcomes-card ul,
+  body[data-ui-build] #learnView .resource-grid,
+  body[data-ui-build] #learnView .lesson-mentor-card {
+    grid-template-columns: 1fr !important;
+  }
+}

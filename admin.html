@@ -13,12 +13,13 @@
   <link rel="stylesheet" href="admin-ui-refresh.css?v=20260720-admin-brand-v16" />
   <link rel="stylesheet" href="admin-brand-final.css?v=20260720-admin-nav-header-fix-v1" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
+  <link rel="stylesheet" href="admin-dashboard-reference.css?v=20260728-dashboard-reference-v1" />
 </head>
 <body class="admin-redesign-final">
   <div class="admin-shell">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
-        <img src="image/logo/logonew.png" alt="Jenovate" />
+        <img src="assets/img/logo/favicon.png" alt="Jenovate" />
         <span>ADMIN LMS</span>
         <button class="sidebar-toggle-btn" id="adminSidebarToggle" type="button" aria-label="Close navigation" aria-expanded="true">
           <span></span>
@@ -86,24 +87,71 @@
         </button>
         <div class="sidebar-action-grid">
           <button class="sidebar-action-btn" id="homeBtn" type="button" aria-label="Open admin dashboard">
-            <span>HM</span>
+            <span class="sidebar-home-logo" aria-hidden="true"><img src="assets/img/logo/favicon.png" alt="" /></span>
             <strong>Home</strong>
           </button>
           <button class="sidebar-action-btn danger" id="logoutBtn" type="button" aria-label="Logout from your account" onclick="event.preventDefault();try{sessionStorage.removeItem('jenovateCurrentUser');sessionStorage.removeItem('jenovateAdminSession');sessionStorage.removeItem('jenovateMentorSession');sessionStorage.removeItem('jenovateStudentSession')}catch(e){}Promise.resolve(window.JenovateAuth&&window.JenovateAuth.signOut&&window.JenovateAuth.signOut()).finally(function(){window.location.replace('login.html?from=logout')})">
-            <span>LO</span>
+            <svg class="sidebar-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
             <strong>Logout</strong>
           </button>
         </div>
       </div>
     </aside>
 
+    <aside class="admin-context-panel" id="adminContextPanel" aria-label="Admin workspace sections">
+      <div class="admin-context-head">
+        <strong id="adminContextTitle">Admin Workspace</strong>
+        <button class="admin-context-collapse" id="adminContextCollapse" type="button" aria-label="Collapse admin workspace">&lt;</button>
+      </div>
+
+      <div class="admin-context-section">
+        <span>Recents</span>
+        <button class="active" type="button" data-context-view="dashboard"><b>HM</b><span class="admin-context-label">Dashboard</span></button>
+        <button type="button" data-context-view="users"><b>US</b><span class="admin-context-label">Users</span></button>
+        <button type="button" data-context-view="courses"><b>CO</b><span class="admin-context-label">Courses</span></button>
+        <button type="button" data-context-view="reviews"><b>RV</b><span class="admin-context-label">Reviews</span></button>
+      </div>
+
+      <div class="admin-context-section">
+        <span>Learning Ops <em id="adminContextLearningCount">0</em></span>
+        <button type="button" data-context-view="enrollments"><i class="cyan"></i><span class="admin-context-label">Enrollments</span></button>
+        <button type="button" data-context-view="batches"><i class="green"></i><span class="admin-context-label">Batches</span></button>
+        <button type="button" data-context-view="tasks"><i class="purple"></i><span class="admin-context-label">Tasks</span></button>
+        <button type="button" data-context-view="chat"><i class="blue"></i><span class="admin-context-label">Batch Chat</span></button>
+      </div>
+
+      <div class="admin-context-section">
+        <span>Admin Tools</span>
+        <button type="button" data-context-view="announcements"><i class="orange"></i><span class="admin-context-label">Announcements</span></button>
+        <button type="button" data-context-view="support"><i class="lime"></i><span class="admin-context-label">Support</span></button>
+        <button type="button" data-context-view="shop"><i class="pink"></i><span class="admin-context-label">Shop</span></button>
+        <button type="button" data-context-view="profile"><i class="gray"></i><span class="admin-context-label">Settings</span></button>
+      </div>
+
+      <div class="admin-context-card">
+        <strong id="contextAdminName">Admin</strong>
+        <small>Your LMS control center</small>
+      </div>
+    </aside>
+
     <main class="admin-main">
       <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button class="admin-menu-btn" id="adminTopbarMenu" type="button" aria-label="Toggle admin workspace"><span></span><span></span><span></span></button>
+          <h1 id="adminTopbarTitle">Dashboard</h1>
+        </div>
+        <label class="admin-global-search">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="globalSearch" type="search" placeholder="Search users, courses, mentors..." />
+        </label>
         <div class="topbar-actions">
-          <button class="sync-pill visually-hidden-sync" id="refreshBtn" type="button" aria-label="Refresh admin data">
+          <button class="sync-pill" id="refreshBtn" type="button" aria-label="Refresh admin data">
             <span class="live-dot"></span>
-            <span id="syncStatus">Workspace synced</span>
+            <span id="syncStatus">Synced</span>
           </button>
+          <button class="topbar-icon-btn" type="button" data-jump="support" aria-label="Open support messages">SP</button>
+          <button class="topbar-icon-btn" type="button" data-jump="announcements" aria-label="Open announcements">AN</button>
+          <button class="topbar-create-btn" type="button" data-quick-action="course">+ Create</button>
           <div class="role-pill" aria-label="Admin role">Admin</div>
           <button class="avatar" id="adminAvatar" type="button" aria-label="Open admin profile">A</button>
         </div>
@@ -221,6 +269,80 @@
             <div class="report-compact-list" id="adminReportAttention"></div>
           </section>
         </div>
+        <section class="enterprise-analytics" id="enterpriseAnalytics" aria-label="Admin analytics">
+          <div class="enterprise-analytics-head">
+            <div>
+              <p class="analytics-eyebrow">Enterprise Analytics</p>
+              <h2>Live LMS intelligence</h2>
+              <span id="analyticsFreshness">Synced with LMS data</span>
+            </div>
+            <div class="enterprise-analytics-actions" role="tablist" aria-label="Analytics focus">
+              <button class="active" type="button" data-analytics-filter="overview">Overview</button>
+              <button type="button" data-analytics-filter="learning">Learning</button>
+              <button type="button" data-analytics-filter="operations">Operations</button>
+            </div>
+          </div>
+
+          <div class="analytics-kpi-grid" id="analyticsKpiGrid"></div>
+
+          <div class="analytics-main-grid">
+            <section class="analytics-card analytics-card-wide">
+              <div class="analytics-card-head">
+                <div>
+                  <h3>Engagement trend</h3>
+                  <p>Real platform events by week</p>
+                </div>
+                <span id="analyticsTrendDelta">0%</span>
+              </div>
+              <div class="analytics-line-chart" id="analyticsEngagementChart"></div>
+            </section>
+
+            <section class="analytics-card">
+              <div class="analytics-card-head">
+                <div>
+                  <h3>Learning funnel</h3>
+                  <p>Enrollment to reviewed work</p>
+                </div>
+              </div>
+              <div class="analytics-funnel" id="analyticsLearningFunnel"></div>
+            </section>
+
+            <section class="analytics-card">
+              <div class="analytics-card-head">
+                <div>
+                  <h3>Course performance</h3>
+                  <p>Enrollment, progress, and submissions</p>
+                </div>
+                <button class="report-link" type="button" data-jump="courses">Courses</button>
+              </div>
+              <div class="analytics-ranked-list" id="analyticsCoursePerformance"></div>
+            </section>
+
+            <section class="analytics-card">
+              <div class="analytics-card-head">
+                <div>
+                  <h3>Review throughput</h3>
+                  <p>Submission quality and grading flow</p>
+                </div>
+                <button class="report-link" type="button" data-jump="reviews">Reviews</button>
+              </div>
+              <div class="analytics-donut-row">
+                <div class="analytics-donut" id="analyticsReviewDonut" aria-label="Review status distribution"></div>
+                <div class="analytics-status-list" id="analyticsReviewStatus"></div>
+              </div>
+            </section>
+
+            <section class="analytics-card analytics-card-wide">
+              <div class="analytics-card-head">
+                <div>
+                  <h3>Actionable insights</h3>
+                  <p>Generated from the current LMS records</p>
+                </div>
+              </div>
+              <div class="analytics-insights" id="analyticsInsights"></div>
+            </section>
+          </div>
+        </section>
         <div class="overview-grid">
           <section class="review-spotlight">
             <div class="spotlight-top">
@@ -496,9 +618,9 @@
       </section>
 
       <section class="admin-view" id="usersView" data-title="Users">
-        <div class="section-toolbar">
+        <div class="section-toolbar users-toolbar">
           <div class="segmented" id="userRoleTabs">
-            <button class="active" data-role="all" type="button">All</button>
+            <button class="active" data-role="all" type="button">All Users</button>
             <button data-role="student" type="button">Students</button>
             <button data-role="mentor" type="button">Mentors</button>
             <button data-role="admin" type="button">Admins</button>
@@ -506,7 +628,7 @@
           <div class="toolbar-actions">
             <label class="search-field slim">
               <span>Search</span>
-              <input id="userSearch" type="search" placeholder="Search users" />
+              <input id="userSearch" type="search" placeholder="Search users..." />
             </label>
             <button class="primary-btn" id="addUserBtn" type="button">+ Add User</button>
             <button class="soft-btn" id="importUsersBtn" type="button">Import CSV</button>
@@ -837,13 +959,14 @@
     </div>
   </div>
 
-  <script src="assets/vendor/supabase-2.49.4.js"></script>
-  <script src="supabase-config.js?v=20260618-signed-storage"></script>
-  <script src="session-router.js?v=20260615-auth"></script>
-  <script src="auth-session.js?v=20260715-fast-auth"></script>
-  <script src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
-  <script src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
-  <script src="admin.js?v=20260728-dom-utils-v1"></script>
+  <script defer src="assets/vendor/supabase-2.49.4.js"></script>
+  <script defer src="supabase-config.js?v=20260618-signed-storage"></script>
+  <script defer src="session-router.js?v=20260615-auth"></script>
+  <script defer src="auth-session.js?v=20260803-auth-retry-v1"></script>
+  <script defer src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
+  <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
+  <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
+  <script defer src="admin.js?v=20260803-course-delete-v1"></script>
 
   <!-- Scroll-to-top / Scroll-to-bottom floating buttons -->
   <div class="scroll-fab-group" id="scrollFabGroup" aria-label="Page navigation">

@@ -2,6 +2,25 @@
   const SESSION_KEY = "jenovateAdminSession";
   const LEGACY_SESSION_KEY = "jenovateCurrentUser";
   const getClient = () => window.getSupabaseClient?.();
+  const utils = window.JenovatePortalUtils;
+  const {
+    escapeAttr,
+    escapeHtml,
+    isSchemaShapeError,
+    matchesText,
+    setText,
+    setValue
+  } = utils;
+  const arrayFrom = utils.parseIdList;
+  const emptyState = (message) => `<div class="empty-state">${escapeHtml(message)}</div>`;
+  const findById = (rows, id) => (rows || []).find((row) => sameId(row.id, id));
+  const formatDate = (value) => utils.formatDate(value) || "Not set";
+  const formatDateTime = (value) => utils.formatDateTime(value) || "Not set";
+  const formatTableName = (table) => utils.formatTableName(table || "LMS data");
+  const friendlySupabaseError = utils.friendlySupabaseError;
+  const initials = (value) => utils.initialsFor(value, "A");
+  const sameId = utils.sameId;
+  const showAlert = (message, isError = false) => utils.showAlert(alertBox, message, isError, { errorMs: 12000, successMs: 3200 });
   const PAGE_SIZE = 20;
   const CHAT_PAGE_SIZE = 30;
   const QUERY_CACHE_TTL = 45_000;
@@ -34,6 +53,7 @@
     projects: "id,title,description,status,student_id,batch_id,file_urls,review_notes",
     batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,published_at,deleted_at,created_by,created_at",
     taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
+    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,time_taken_seconds,duration_seconds,question_count,selected_question_ids,created_at,submitted_at,deleted_at",
     chats: "id,batch_id,user_id,message,parent_id,created_at",
     announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
     supportTickets: "id,ticket_id,user_id,user_role,category,subject,message,attachment_url,status,priority,created_at,updated_at",
@@ -56,17 +76,31 @@
     { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,batch_id,file_urls,review_notes", limit: 500 },
     { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, order: "created_at.desc" },
     { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 500, order: "submitted_at.desc" },
+    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, fallbackSelect: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at", optional: true, limit: 500, order: "submitted_at.desc" },
     { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "selectedBatch", order: "created_at.desc" },
     { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, order: "published_at.desc" },
     { key: "supportTickets", table: "support_tickets", select: SELECTS.supportTickets, optional: true, limit: 60, order: "updated_at.desc" },
     { key: "supportMessages", table: "support_messages", select: SELECTS.supportMessages, optional: true, limit: 160, order: "created_at.desc" },
     { key: "supportNotifications", table: "support_notifications", select: SELECTS.supportNotifications, optional: true, limit: 60, scope: "adminNotifications", order: "created_at.desc" }
   ];
+  const ADMIN_INITIAL_TABLE_KEYS = new Set([
+    "users",
+    "courses",
+    "batches",
+    "userCourses",
+    "progress",
+    "projects",
+    "batchTasks",
+    "taskSubmissions",
+    "quizAttempts",
+    "announcements"
+  ]);
 
   const state = {
     admin: null,
     activeView: "dashboard",
     dashboardRole: "student",
+    dashboardAnalysisRange: "weekly",
     reportActivityFilter: "all",
     userRole: "all",
     analyticsRange: "daily",   // daily | weekly | monthly
@@ -77,7 +111,9 @@
     selectedBatchId: null,
     realtimeChannel: null,
     refreshTimer: null,
+    analyticsAutoRefreshTimer: null,
     viewTransitionTimer: null,
+    analyticsFilter: "overview",
     tableErrors: {},
     data: {
       users: [],
@@ -89,6 +125,7 @@
       projects: [],
       batchTasks: [],
       taskSubmissions: [],
+      quizAttempts: [],
       chats: [],
       announcements: [],
       supportTickets: [],
@@ -143,6 +180,8 @@
   // doing so causes a redirect loop when user presses the Back button.
 
   async function init() {
+    document.body.dataset.adminView = state.activeView;
+    document.body.classList.add("admin-context-collapsed");
     wireNavigation();
     wireActions();
 
@@ -168,8 +207,9 @@
     
     renderAdminIdentity();
     initializeHistoryNavigation();
-    await loadAllData({ force: true });
+    await loadAllData({ initial: true, force: true });
     setupRealtime();
+    window.setTimeout(() => void loadAllData({ silent: true, force: true }), 0);
   }
 
   async function verifyCurrentAdmin() {
@@ -199,7 +239,17 @@
 
   function wireNavigation() {
     document.querySelectorAll(".nav-item").forEach((button) => {
-      button.addEventListener("click", () => setView(button.dataset.view));
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+        document.body.classList.toggle("admin-context-collapsed", view !== "dashboard");
+        setView(view);
+      });
+    });
+
+    document.querySelectorAll("[data-context-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setView(button.dataset.contextView);
+      });
     });
 
     document.querySelectorAll("[data-jump]").forEach((button) => {
@@ -212,6 +262,9 @@
         if (action === "course") {
           setView("courses");
           openCourseModal();
+        } else if (action === "user") {
+          setView("users");
+          openUserCreateModal();
         } else if (action === "batch") {
           setView("batches");
           openBatchModal();
@@ -237,6 +290,7 @@
     document.getElementById("refreshSupportBtn")?.addEventListener("click", () => loadAllData({ force: true }));
     document.getElementById("homeBtn")?.addEventListener("click", () => {
       closeModal();
+      document.body.classList.remove("admin-context-collapsed");
       setView("dashboard");
       document.querySelector(".admin-main")?.scrollTo({ top: 0, behavior: "smooth" });
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -304,6 +358,16 @@
         renderAnalyticsChart();
       });
     });
+
+    document.getElementById("adminContextCollapse")?.addEventListener("click", () => {
+      document.body.classList.add("admin-context-collapsed");
+    });
+
+    document.getElementById("adminTopbarMenu")?.addEventListener("click", () => {
+      document.body.classList.toggle("admin-context-collapsed");
+    });
+
+    wireEnterpriseAnalyticsControls();
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeModal();
@@ -404,26 +468,37 @@
     setSyncStatus("Connecting to LMS data...");
     setLoading(!silent);
     try {
-      const results = await Promise.all(TABLE_SPECS.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
+      const requestedSpecs = options.initial === true
+        ? TABLE_SPECS.filter((spec) => ADMIN_INITIAL_TABLE_KEYS.has(spec.key))
+        : TABLE_SPECS;
+      const results = await Promise.all(requestedSpecs.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
-      await window.resolveSupabaseAssetsDeep?.(rows);
+      if (options.initial === true) {
+        window.setTimeout(() => {
+          void window.resolveSupabaseAssetsDeep?.(rows).then(renderActiveView).catch((error) => {
+            console.warn("Deferred admin asset resolution failed", error);
+          });
+        }, 0);
+      } else {
+        await window.resolveSupabaseAssetsDeep?.(rows);
+      }
       const failed = results.filter((result) => result.error);
 
       state.tableErrors = Object.fromEntries(failed.map((result) => [result.table, result.error.message || "Unable to fetch"]));
-      state.data.users = rows.users.map(normalizeUser);
-      state.data.courses = rows.courses;
-      state.data.batches = rows.batches;
-      state.data.userCourses = rows.userCourses.map(normalizeEnrollment);
-      state.data.progress = rows.progress;
-      state.data.shopItems = rows.shopItems;
-      state.data.projects = rows.projects;
-      state.data.batchTasks = rows.batchTasks;
-      state.data.taskSubmissions = rows.taskSubmissions;
-      state.data.chats = rows.chats;
-      state.data.announcements = rows.announcements;
-      state.data.supportTickets = rows.supportTickets || [];
-      state.data.supportMessages = rows.supportMessages || [];
-      state.data.supportNotifications = rows.supportNotifications || [];
+      state.data.users = (rows.users || state.data.users).map(normalizeUser);
+      state.data.courses = rows.courses || state.data.courses;
+      state.data.batches = rows.batches || state.data.batches;
+      state.data.userCourses = (rows.userCourses || state.data.userCourses).map(normalizeEnrollment);
+      state.data.progress = rows.progress || state.data.progress;
+      state.data.shopItems = rows.shopItems || state.data.shopItems;
+      state.data.projects = rows.projects || state.data.projects;
+      state.data.batchTasks = rows.batchTasks || state.data.batchTasks;
+      state.data.taskSubmissions = rows.taskSubmissions || state.data.taskSubmissions;
+      state.data.chats = rows.chats || state.data.chats;
+      state.data.announcements = rows.announcements || state.data.announcements;
+      state.data.supportTickets = rows.supportTickets || state.data.supportTickets || [];
+      state.data.supportMessages = rows.supportMessages || state.data.supportMessages || [];
+      state.data.supportNotifications = rows.supportNotifications || state.data.supportNotifications || [];
       if (state.selectedSupportTicketId && !state.data.supportTickets.some((ticket) => sameId(ticket.id || ticket.ticket_id, state.selectedSupportTicketId))) {
         state.selectedSupportTicketId = "";
       }
@@ -511,9 +586,13 @@
 
   function setupRealtime() {
     const supabaseClient = getClient();
-    if (!supabaseClient?.channel || state.realtimeChannel) return;
+    if (!supabaseClient?.channel) {
+      startAnalyticsAutoRefresh();
+      return;
+    }
+    if (state.realtimeChannel) return;
 
-    const liveTables = ["batch_chats", "announcements", "support_tickets", "support_messages", "support_notifications"];
+    const liveTables = Array.from(new Set(TABLE_SPECS.map((spec) => spec.table)));
 
     const channel = supabaseClient.channel("admin-lms-realtime");
     liveTables.forEach((table) => {
@@ -527,8 +606,10 @@
     channel.subscribe((status) => {
       if (status === "SUBSCRIBED") {
         setSyncStatus("LMS data ready");
+        stopAnalyticsAutoRefresh();
       } else if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
         setSyncStatus("LMS data reconnecting");
+        startAnalyticsAutoRefresh();
       }
     });
 
@@ -547,10 +628,25 @@
 
   async function cleanupRealtime() {
     window.clearTimeout(state.refreshTimer);
+    stopAnalyticsAutoRefresh();
     if (state.realtimeChannel && getClient()?.removeChannel) {
       await getClient().removeChannel(state.realtimeChannel);
     }
     state.realtimeChannel = null;
+  }
+
+  function startAnalyticsAutoRefresh() {
+    if (state.analyticsAutoRefreshTimer) return;
+    state.analyticsAutoRefreshTimer = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      loadAllData({ silent: true, force: true });
+    }, 60_000);
+  }
+
+  function stopAnalyticsAutoRefresh() {
+    if (!state.analyticsAutoRefreshTimer) return;
+    window.clearInterval(state.analyticsAutoRefreshTimer);
+    state.analyticsAutoRefreshTimer = null;
   }
 
   function renderAll() {
@@ -578,6 +674,7 @@
     document.getElementById("adminAvatar").textContent = initials(name);
     document.getElementById("sidebarAdminAvatar").textContent = initials(name);
     setText("footerAdminAvatar", initials(name));
+    setText("contextAdminName", name);
     renderProfile();
   }
 
@@ -644,8 +741,11 @@
     setText("metricEnrollments", state.data.userCourses.length);
     setText("metricTasksMeta", `${state.data.taskSubmissions.length} submitted reviews`);
     setText("metricEnrollmentsMeta", `${state.data.progress.length} progress records`);
+    setText("adminContextLearningCount", state.data.courses.length + state.data.batches.length + state.data.batchTasks.length);
 
     renderAdminReportDashboard({ users, students, mentors, publishedCourses, draftCourses, activeBatches, pendingReviews, reviewedItems });
+    renderAdminReferenceDashboard({ users, students, mentors, publishedCourses, draftCourses, activeBatches, pendingReviews, reviewedItems });
+    renderEnterpriseAnalytics();
 
     if (document.getElementById("dashboardUsersList")) renderDashboardUsers();
     if (document.getElementById("courseProgressList")) renderCourseProgress();
@@ -655,108 +755,175 @@
     renderAnalyticsChart();
   }
 
+  function dashboardSummary() {
+    const users = state.data.users;
+    const students = users.filter((user) => user.role === "student" && String(user.email).toLowerCase() !== "adolf@gmail.com" && !sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7")).length;
+    const mentors = users.filter((user) => user.role === "mentor").length;
+    const publishedCourses = state.data.courses.filter((course) => ["published", "active", "live"].includes(String(course.status || "").toLowerCase())).length;
+    const draftCourses = Math.max(0, state.data.courses.length - publishedCourses);
+    const activeBatches = state.data.batches.filter((batch) => ["active", "published", "live"].includes(String(batch.status || "").toLowerCase())).length;
+    const pendingReviews = [
+      ...state.data.projects,
+      ...state.data.taskSubmissions
+    ].filter((item) => ["", "pending", "submitted", "review_pending"].includes(String(item.status || "").toLowerCase())).length;
+    const reviewedItems = [
+      ...state.data.projects,
+      ...state.data.taskSubmissions
+    ].filter((item) => ["approved", "reviewed", "completed", "rejected", "changes_requested"].includes(String(item.status || "").toLowerCase())).length;
+    return { users, students, mentors, publishedCourses, draftCourses, activeBatches, pendingReviews, reviewedItems };
+  }
+
   function ensureAdminReportDashboard() {
     const view = document.getElementById("dashboardView");
-    if (!view || view.dataset.reportDashboard === "true") return;
-    view.dataset.reportDashboard = "true";
+    if (!view || view.dataset.reportDashboard === "reference") return;
+    view.dataset.reportDashboard = "reference";
     view.innerHTML = `
-      <div class="role-report-dashboard">
-        <section class="report-card report-activity-card">
-          <div class="report-card-head">
+      <div class="admin-reference-dashboard">
+        <section class="admin-reference-hero">
+          <article class="admin-welcome-panel">
             <div>
-              <h2>Learners activity <span aria-hidden="true">i</span></h2>
+              <h2 id="adminRefGreeting">Good Morning, Admin</h2>
+              <p>Here is what is happening in your LMS today.</p>
             </div>
-            <button class="report-link" type="button" data-jump="users">View all</button>
-          </div>
-          <div class="report-mini-tabs" aria-label="Activity filters">
-            <button class="active" type="button" data-report-filter="all">All</button>
-            <button type="button" data-report-filter="courses">Courses</button>
-            <button type="button" data-report-filter="tasks">Tasks</button>
-            <button type="button" data-report-filter="reviews">Reviews</button>
-          </div>
-          <div class="report-list" id="adminReportActivityList"></div>
+            <span><i></i><b id="adminRefSync">Last synced just now</b></span>
+          </article>
+
+          <article class="admin-status-panel">
+            <span class="admin-ref-icon">SS</span>
+            <div>
+              <strong>System Status</strong>
+              <p><i></i>All systems operational</p>
+              <small id="adminRefUptime">Realtime sync ready</small>
+            </div>
+          </article>
         </section>
 
-        <section class="report-card report-total-card">
-          <div class="report-card-head">
-            <h2>Total learners <span aria-hidden="true">i</span></h2>
-            <button class="report-select" type="button">All roles</button>
-          </div>
-          <div class="report-total"><strong id="adminReportTotalLearners">0</strong><span>People</span></div>
-          <div class="report-breakdown" id="adminReportBreakdown"></div>
-        </section>
+        <section class="admin-ref-kpis" id="adminRefKpis"></section>
 
-        <section class="report-card report-time-card">
-          <div class="report-card-head">
-            <h2>Learning time <span aria-hidden="true">i</span></h2>
-            <button class="report-select" type="button">All courses</button>
-          </div>
-          <div class="report-total"><strong id="adminReportLearningTime">0</strong><span>Hours</span></div>
-          <small class="report-growth">+ synced from active LMS data</small>
-          <div class="report-sparkline" id="adminReportSparkline"></div>
-        </section>
+        <section class="admin-ref-grid">
+          <article class="admin-ref-card admin-ref-card-wide">
+            <header>
+              <div>
+                <h3>Student Growth</h3>
+                <p>New users, enrollments, submissions, and chat activity</p>
+              </div>
+            <div class="admin-ref-segments" aria-label="Growth period">
+              <button class="active" type="button" data-admin-ref-range="weekly">Weekly</button>
+              <button type="button" data-admin-ref-range="monthly">Monthly</button>
+              <button type="button" data-admin-ref-range="yearly">Yearly</button>
+            </div>
+            </header>
+            <div class="admin-ref-chart admin-ref-chart-large" id="adminRefGrowthChart"></div>
+          </article>
 
-        <section class="report-card report-line-card">
-          <div class="report-card-head">
-            <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
-            <button class="report-select" type="button">This week</button>
-          </div>
-          <div class="report-chart" id="adminReportWeeklyChart"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <div>
+                <h3>Platform Overview</h3>
+                <p id="adminRefOverviewMeta">Live LMS metrics</p>
+              </div>
+              <button class="admin-ref-link" type="button" data-jump="courses">View Report</button>
+            </header>
+            <strong class="admin-ref-total" id="adminRefPlatformTotal">0</strong>
+            <span class="admin-ref-trend" id="adminRefPlatformTrend">+0% from activity</span>
+            <div class="admin-ref-chart" id="adminRefRevenueChart"></div>
+          </article>
 
-        <section class="report-card report-bars-card">
-          <div class="report-card-head">
-            <h2>Most active learners <span aria-hidden="true">i</span></h2>
-            <button class="report-select" type="button">Last 4 weeks</button>
-          </div>
-          <div class="report-bars" id="adminReportActiveLearners"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <div>
+                <h3>Quick Actions</h3>
+                <p>Common admin tasks</p>
+              </div>
+            </header>
+            <div class="admin-ref-actions">
+              <button type="button" data-quick-action="course"><span>+</span>Create Course</button>
+              <button type="button" data-quick-action="user"><span>US</span>Add User</button>
+              <button type="button" data-quick-action="batch"><span>BA</span>Create Batch</button>
+              <button type="button" data-quick-action="announcement"><span>AN</span>Publish Announcement</button>
+              <button type="button" data-jump="reviews"><span>RV</span>Review Work</button>
+            </div>
+          </article>
 
-        <section class="report-card report-health-card">
-          <div class="report-card-head">
-            <h2>Content health <span aria-hidden="true">i</span></h2>
-            <button class="report-link" type="button" data-jump="courses">Manage</button>
-          </div>
-          <div class="report-kpi-grid" id="adminReportContentHealth"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <h3>Top Courses</h3>
+              <button class="admin-ref-link" type="button" data-jump="courses">View All</button>
+            </header>
+            <div class="admin-ref-table" id="adminRefTopCourses"></div>
+          </article>
 
-        <section class="report-card report-workload-card">
-          <div class="report-card-head">
-            <h2>Operations queue <span aria-hidden="true">i</span></h2>
-            <button class="report-link" type="button" data-jump="reviews">Open</button>
-          </div>
-          <div class="report-kpi-grid" id="adminReportWorkload"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <h3>Recent Activity</h3>
+              <button class="admin-ref-link" type="button" data-jump="users">View All</button>
+            </header>
+            <div class="admin-ref-activity" id="adminRefActivity"></div>
+          </article>
 
-        <section class="report-card report-courses-card">
-          <div class="report-card-head">
-            <h2>Course snapshot <span aria-hidden="true">i</span></h2>
-            <button class="report-link" type="button" data-jump="courses">View all</button>
-          </div>
-          <div class="report-compact-list" id="adminReportCourses"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <h3>Pending Tasks</h3>
+              <button class="admin-ref-link" type="button" data-jump="reviews">View All</button>
+            </header>
+            <div class="admin-ref-pending" id="adminRefPending"></div>
+          </article>
 
-        <section class="report-card report-batches-card">
-          <div class="report-card-head">
-            <h2>Batch snapshot <span aria-hidden="true">i</span></h2>
-            <button class="report-link" type="button" data-jump="batches">View all</button>
-          </div>
-          <div class="report-compact-list" id="adminReportBatches"></div>
-        </section>
+          <article class="admin-ref-card">
+            <header>
+              <h3>Support Tickets</h3>
+              <button class="admin-ref-link" type="button" data-jump="support">View All</button>
+            </header>
+            <div class="admin-ref-support" id="adminRefSupport"></div>
+          </article>
 
-        <section class="report-card report-attention-card">
-          <div class="report-card-head">
-            <h2>Needs attention <span aria-hidden="true">i</span></h2>
-            <button class="report-select" type="button">Live</button>
-          </div>
-          <div class="report-compact-list" id="adminReportAttention"></div>
+          <article class="admin-ref-card">
+            <header>
+              <h3>Batch Schedule</h3>
+              <button class="admin-ref-link" type="button" data-jump="batches">View Calendar</button>
+            </header>
+            <div class="admin-ref-schedule" id="adminRefSchedule"></div>
+          </article>
+
+          <article class="admin-ref-card admin-ref-card-wide">
+            <header>
+              <h3>Latest Announcements</h3>
+              <button class="admin-ref-link" type="button" data-jump="announcements">View All</button>
+            </header>
+            <div class="admin-ref-announcements" id="adminRefAnnouncements"></div>
+          </article>
+
+          <article class="admin-ref-card">
+            <header>
+              <h3>System Health</h3>
+              <button class="admin-ref-link" type="button" data-jump="support">Open</button>
+            </header>
+            <div class="admin-ref-health" id="adminRefHealth"></div>
+          </article>
         </section>
       </div>
     `;
     view.querySelectorAll("[data-jump]").forEach((button) => {
       button.addEventListener("click", () => setView(button.dataset.jump));
     });
-    wireReportTabs();
+    view.querySelectorAll("[data-quick-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.quickAction;
+        if (action === "course") {
+          setView("courses");
+          openCourseModal();
+        } else if (action === "user") {
+          setView("users");
+          openUserCreateModal();
+        } else if (action === "batch") {
+          setView("batches");
+          openBatchModal();
+        } else if (action === "announcement") {
+          setView("announcements");
+          openAnnouncementModal();
+        }
+      });
+    });
   }
 
   function renderAdminReportDashboard(summary) {
@@ -791,6 +958,686 @@
     setHtml("adminReportCourses", courseRows.length ? courseRows.map(reportCompactItem).join("") : emptyState("Courses added by admin or mentor will appear here."));
     setHtml("adminReportBatches", batchRows.length ? batchRows.map(reportCompactItem).join("") : emptyState("Live batches will appear here."));
     setHtml("adminReportAttention", attentionRows.length ? attentionRows.map(reportCompactItem).join("") : emptyState("No urgent admin actions right now."));
+  }
+
+  function renderAdminReferenceDashboard(summary) {
+    if (!document.getElementById("adminRefKpis")) return;
+    const adminName = state.admin?.name || state.admin?.username || "Admin";
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+    const enrollments = activeEnrollments();
+    const submissions = state.data.taskSubmissions.filter((item) => !item.deleted_at);
+    const projects = state.data.projects.filter((item) => !item.deleted_at);
+    const avgProgress = state.data.progress.length
+      ? Math.round(state.data.progress.reduce((sum, row) => sum + estimateProgress(row), 0) / state.data.progress.length)
+      : 0;
+    const totalCoins = state.data.users.reduce((sum, user) => sum + Number(user.coins || 0), 0);
+    const weekly = weeklyEventSeries();
+    const trend = dashboardAnalysisSeries(state.dashboardAnalysisRange);
+    const activeLearners = learnerActivityIds(30).size;
+    const supportOpen = state.data.supportTickets.filter((ticket) => !["resolved", "closed", "archived"].includes(String(ticket.status || "").toLowerCase())).length;
+
+    setText("adminRefGreeting", `${greeting}, ${adminName}`);
+    setText("adminRefSync", state.realtimeChannel ? "Realtime sync active" : "Last synced just now");
+    setText("adminRefUptime", `${state.tableErrors && Object.keys(state.tableErrors).length ? "Check table warnings" : "Data services ready"}`);
+    setText("adminRefPlatformTotal", `${summary.students + summary.mentors + state.data.courses.length + state.data.batches.length}`);
+    setText("adminRefPlatformTrend", `${activeLearners} active learners in last 30 days`);
+    setText("adminRefOverviewMeta", `${enrollments.length} enrollments - ${submissions.length + projects.length} review records`);
+
+    const kpis = [
+      { icon: "US", label: "Total Students", value: summary.students, meta: `${summary.mentors} mentors`, delta: `${activeLearners} active`, tone: "blue", spark: weekly.current },
+      { icon: "CO", label: "Active Courses", value: summary.publishedCourses, meta: `${summary.draftCourses} draft`, delta: `${state.data.courses.length} total`, tone: "indigo", spark: trend.current.slice(-7) },
+      { icon: "BA", label: "Active Batches", value: summary.activeBatches, meta: `${state.data.batches.length} total batches`, delta: `${enrollments.length} enrollments`, tone: "cyan", spark: weekly.previous },
+      { icon: "RV", label: "Pending Reviews", value: summary.pendingReviews, meta: `${summary.reviewedItems} reviewed`, delta: summary.pendingReviews ? "Needs attention" : "Clear", tone: summary.pendingReviews ? "rose" : "green", spark: weekly.current.slice().reverse() }
+    ];
+
+    setHtml("adminRefKpis", kpis.map(adminRefKpiCard).join(""));
+    setHtml("adminRefGrowthChart", adminRefLineChart(trend.labels, trend.current, trend.previous, "Student growth and engagement"));
+    syncAdminRefRangeButtons();
+    setHtml("adminRefRevenueChart", adminRefLineChart(["Users", "Courses", "Batches", "Tasks", "Reviews", "Coins"], [
+      summary.students,
+      state.data.courses.length,
+      state.data.batches.length,
+      state.data.batchTasks.length,
+      summary.pendingReviews + summary.reviewedItems,
+      Math.max(1, Math.round(totalCoins / 100))
+    ], [], "Platform overview"));
+    setHtml("adminRefTopCourses", adminRefTopCourseRows().map(adminRefCourseRow).join("") || emptyState("Courses will appear here."));
+    setHtml("adminRefActivity", adminActivityRows("all").slice(0, 5).map(adminRefActivityRow).join("") || emptyState("Recent activity will appear here."));
+    setHtml("adminRefPending", adminRefPendingRows(summary, supportOpen).map(adminRefPendingRow).join(""));
+    setHtml("adminRefSupport", adminRefSupportRows().map(adminRefSupportRow).join("") || emptyState("No support tickets yet."));
+    setHtml("adminRefSchedule", adminRefScheduleRows().map(adminRefScheduleRow).join("") || emptyState("Batch dates will appear here."));
+    setHtml("adminRefAnnouncements", adminRefAnnouncementRows().map(adminRefAnnouncementRow).join("") || emptyState("Announcements will appear here."));
+    setHtml("adminRefHealth", adminRefHealthRows({ avgProgress, supportOpen }).map(adminRefHealthRow).join(""));
+  }
+
+  function syncAdminRefRangeButtons() {
+    document.querySelectorAll("[data-admin-ref-range]").forEach((button) => {
+      const isActive = button.dataset.adminRefRange === state.dashboardAnalysisRange;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+      if (button.dataset.wired === "true") return;
+      button.dataset.wired = "true";
+      button.addEventListener("click", () => {
+        state.dashboardAnalysisRange = button.dataset.adminRefRange || "weekly";
+        renderAdminReferenceDashboard(dashboardSummary());
+      });
+    });
+  }
+
+  function adminRefKpiCard(item) {
+    return `
+      <article class="admin-ref-kpi ${escapeAttr(item.tone)}">
+        <span class="admin-ref-icon">${escapeHtml(item.icon)}</span>
+        <div>
+          <small>${escapeHtml(item.label)}</small>
+          <strong>${escapeHtml(item.value)}</strong>
+          <p>${escapeHtml(item.delta)} <em>${escapeHtml(item.meta)}</em></p>
+        </div>
+        <div class="admin-ref-spark">${reportSparklineSvg(item.spark || [0])}</div>
+      </article>
+    `;
+  }
+
+  function adminRefTopCourseRows() {
+    return analyticsCoursePerformanceRows().slice(0, 5).map((row) => ({
+      title: row.title,
+      students: row.meta.split(" enrolled")[0] || "0",
+      completion: row.progress,
+      rating: Math.max(3.8, Math.min(5, (4 + Number(row.progress || 0) / 100))).toFixed(1)
+    }));
+  }
+
+  function adminRefCourseRow(row) {
+    const title = String(row.title || "Course");
+    const students = Number(row.students || 0);
+    const completion = Math.max(0, Math.min(100, Number(row.completion || 0)));
+    const rating = String(row.rating || "0.0");
+    return `
+      <article class="admin-ref-course-row" title="${escapeAttr(`${title}: ${students} students, ${completion}% completion, ${rating} rating`)}">
+        <strong>${escapeHtml(title)}</strong>
+        <span title="${escapeAttr(`${students} students`)}">${escapeHtml(students)}</span>
+        <div title="${escapeAttr(`${completion}% completion`)}"><i style="width:${Math.max(4, completion)}%"></i></div>
+        <b>${escapeHtml(completion)}%</b>
+        <em>${escapeHtml(rating)}</em>
+      </article>
+    `;
+  }
+
+  function adminRefActivityRow(row) {
+    return `
+      <article class="admin-ref-activity-row">
+        <time>${escapeHtml(relativeTime(row.time))}</time>
+        <span class="admin-ref-dot"></span>
+        <b>${escapeHtml(row.badge || initials(row.name))}</b>
+        <div>
+          <strong>${escapeHtml(row.name)}</strong>
+          <small>${escapeHtml(row.detail)}</small>
+        </div>
+      </article>
+    `;
+  }
+
+  function adminRefPendingRows(summary, supportOpen) {
+    const unverified = state.data.users.filter((user) => String(user.status || "active").toLowerCase() !== "active").length;
+    return [
+      { label: "Review Assignments", value: summary.pendingReviews, icon: "RV", view: "reviews" },
+      { label: "Approve Mentors", value: state.data.users.filter((user) => user.role === "mentor" && String(user.status || "active").toLowerCase() !== "active").length, icon: "ME", view: "users" },
+      { label: "Verify Students", value: unverified, icon: "ST", view: "users" },
+      { label: "Open Support", value: supportOpen, icon: "SP", view: "support" }
+    ];
+  }
+
+  function adminRefPendingRow(row) {
+    return `
+      <button class="admin-ref-pending-row" type="button" data-jump="${escapeAttr(row.view)}">
+        <span>${escapeHtml(row.icon)}</span>
+        <strong>${escapeHtml(row.label)}</strong>
+        <b>${Number(row.value || 0)}</b>
+      </button>
+    `;
+  }
+
+  function adminRefSupportRows() {
+    return state.data.supportTickets.slice(0, 4).map((ticket) => ({
+      id: ticket.ticket_id || ticket.id || "Ticket",
+      priority: ticket.priority || "Normal",
+      status: ticket.status || "Open",
+      time: ticket.updated_at || ticket.created_at
+    }));
+  }
+
+  function adminRefSupportRow(row) {
+    return `
+      <article class="admin-ref-support-row">
+        <strong>#${escapeHtml(row.id)}</strong>
+        <span class="${escapeAttr(String(row.priority).toLowerCase())}">${escapeHtml(row.priority)}</span>
+        <b>${escapeHtml(row.status)}</b>
+        <time>${escapeHtml(row.time ? relativeTime(row.time) : "Now")}</time>
+      </article>
+    `;
+  }
+
+  function adminRefScheduleRows() {
+    return state.data.batches
+      .map((batch) => ({ batch, date: batch.start_date || batch.end_date || batch.created_at }))
+      .filter((item) => item.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 4);
+  }
+
+  function adminRefScheduleRow(item) {
+    const course = findById(state.data.courses, item.batch.course_id);
+    return `
+      <article class="admin-ref-schedule-row">
+        <span>BA</span>
+        <div>
+          <strong>${escapeHtml(formatDate(item.date))}</strong>
+          <small>${escapeHtml(item.batch.name || "Batch")}</small>
+        </div>
+        <b>${escapeHtml(course?.title || "No course")}</b>
+      </article>
+    `;
+  }
+
+  function adminRefAnnouncementRows() {
+    return state.data.announcements.slice(0, 3);
+  }
+
+  function adminRefAnnouncementRow(item) {
+    return `
+      <article class="admin-ref-announcement-row">
+        <span>AN</span>
+        <div>
+          <strong>${escapeHtml(item.title || "Announcement")}</strong>
+          <small>${escapeHtml(truncate(item.message || "No message", 92))}</small>
+        </div>
+      </article>
+    `;
+  }
+
+  function adminRefHealthRows(model) {
+    const warningCount = state.tableErrors ? Object.keys(state.tableErrors).length : 0;
+    return [
+      { label: "Database", value: warningCount ? "Warning" : "Operational", ok: !warningCount },
+      { label: "Realtime", value: state.realtimeChannel ? "Operational" : "Ready", ok: true },
+      { label: "Support Queue", value: model.supportOpen ? `${model.supportOpen} Open` : "Clear", ok: model.supportOpen === 0 },
+      { label: "Avg Progress", value: `${model.avgProgress}%`, ok: model.avgProgress >= 40 || state.data.progress.length === 0 },
+      { label: "Admin Service", value: "Configured", ok: true }
+    ];
+  }
+
+  function adminRefHealthRow(row) {
+    return `
+      <article class="admin-ref-health-row">
+        <strong>${escapeHtml(row.label)}</strong>
+        <span class="${row.ok ? "ok" : "warn"}">${escapeHtml(row.value)} <i></i></span>
+      </article>
+    `;
+  }
+
+  function adminRefLineChart(labels, current, previous = [], title = "Dashboard chart") {
+    const max = Math.max(1, ...current, ...previous);
+    const width = 620;
+    const height = 230;
+    const chartWidth = 540;
+    const points = (values) => values.map((value, index) => {
+      const x = 42 + (values.length <= 1 ? 0 : index * (chartWidth / (values.length - 1)));
+      const y = 184 - (Number(value || 0) / max) * 132;
+      return `${x},${y}`;
+    }).join(" ");
+    const labelStep = Math.max(1, Math.ceil(labels.length / 6));
+    const labelSvg = labels.map((label, index) => index % labelStep ? "" : `<text x="${42 + (labels.length <= 1 ? 0 : index * (chartWidth / (labels.length - 1)))}" y="214">${escapeHtml(label)}</text>`).join("");
+    const previousLine = previous.length ? `<polyline points="${points(previous)}" class="previous"></polyline>` : "";
+    const dots = current.map((value, index) => {
+      const x = 42 + (current.length <= 1 ? 0 : index * (chartWidth / (current.length - 1)));
+      const y = 184 - (Number(value || 0) / max) * 132;
+      const tip = `${labels[index] || title}: ${Number(value || 0)}`;
+      const tipX = Math.max(58, Math.min(width - 92, x - 44));
+      const tipY = Math.max(24, y - 20);
+      return `
+        <g class="admin-ref-chart-point" tabindex="0" role="button" aria-label="${escapeAttr(tip)}">
+          <circle cx="${x}" cy="${y}" r="5"></circle>
+          <rect class="admin-ref-chart-tip-bg" x="${tipX}" y="${tipY - 16}" width="88" height="22" rx="7"></rect>
+          <text class="admin-ref-chart-tip" x="${tipX + 44}" y="${tipY - 1}">${escapeHtml(tip)}</text>
+          <title>${escapeHtml(tip)}</title>
+        </g>
+      `;
+    }).join("");
+    return `
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeAttr(title)}">
+        <defs>
+          <linearGradient id="adminRefChartFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#2f63ff" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#2f63ff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="40" y1="184" x2="586" y2="184" class="axis"></line>
+        <line x1="40" y1="140" x2="586" y2="140" class="grid"></line>
+        <line x1="40" y1="96" x2="586" y2="96" class="grid"></line>
+        <line x1="40" y1="52" x2="586" y2="52" class="grid"></line>
+        ${previousLine}
+        <polygon points="${points(current)} 586,184 42,184" class="fill"></polygon>
+        <polyline points="${points(current)}" class="current"></polyline>
+        ${dots}
+        ${labelSvg}
+      </svg>
+    `;
+  }
+
+  function wireEnterpriseAnalyticsControls() {
+    document.querySelectorAll("[data-analytics-filter]").forEach((button) => {
+      if (button.dataset.wired === "true") return;
+      button.dataset.wired = "true";
+      button.addEventListener("click", () => {
+        state.analyticsFilter = button.dataset.analyticsFilter || "overview";
+        document.querySelectorAll("[data-analytics-filter]").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+        renderEnterpriseAnalytics();
+      });
+    });
+  }
+
+  function renderEnterpriseAnalytics() {
+    if (!document.getElementById("enterpriseAnalytics")) return;
+    wireEnterpriseAnalyticsControls();
+    const model = buildEnterpriseAnalyticsModel();
+    const focus = state.analyticsFilter || "overview";
+    const visibleKpis = (focus === "overview"
+      ? model.kpis
+      : model.kpis.filter((item) => item.focus === "overview" || item.focus === focus)
+    ).slice(0, 6);
+
+    setText("analyticsFreshness", model.freshness);
+    setText("analyticsTrendDelta", model.trendDelta);
+    setHtml("analyticsKpiGrid", visibleKpis.map(analyticsKpiCard).join(""));
+    setHtml("analyticsEngagementChart", analyticsLineChart(model.trend.labels, model.trend.current, model.trend.previous));
+    setHtml("analyticsLearningFunnel", model.funnel.map(analyticsFunnelRow).join(""));
+    setHtml("analyticsCoursePerformance", model.coursePerformance.length ? model.coursePerformance.map(analyticsRankedRow).join("") : emptyState("Course performance appears after enrollments and progress records."));
+    setHtml("analyticsReviewDonut", analyticsDonut(model.reviewStatus));
+    setHtml("analyticsReviewStatus", model.reviewStatus.length ? model.reviewStatus.map(analyticsStatusRow).join("") : emptyState("Review status appears after submissions."));
+    setHtml("analyticsInsights", model.insights.length ? model.insights.map(analyticsInsightRow).join("") : emptyState("No analytics recommendations right now."));
+    document.querySelectorAll("#enterpriseAnalytics [data-jump]").forEach((button) => {
+      if (button.dataset.wired === "true") return;
+      button.dataset.wired = "true";
+      button.addEventListener("click", () => setView(button.dataset.jump));
+    });
+  }
+
+  function buildEnterpriseAnalyticsModel() {
+    const students = state.data.users.filter((user) => String(user.role || "").toLowerCase() === "student");
+    const mentors = state.data.users.filter((user) => String(user.role || "").toLowerCase() === "mentor");
+    const enrollments = activeEnrollments();
+    const progressRows = state.data.progress;
+    const submissions = state.data.taskSubmissions.filter((item) => !item.deleted_at);
+    const projects = state.data.projects.filter((item) => !item.deleted_at);
+    const reviewItems = [...submissions, ...projects];
+    const gradedSubmissions = submissions.filter(isReviewedRecord);
+    const pendingReviews = reviewItems.filter(isPendingReviewRecord);
+    const avgProgress = progressRows.length
+      ? Math.round(progressRows.reduce((sum, row) => sum + estimateProgress(row), 0) / progressRows.length)
+      : 0;
+    const completionRate = progressRows.length
+      ? Math.round((progressRows.filter((row) => estimateProgress(row) >= 100 || row.quiz_completed).length / progressRows.length) * 100)
+      : 0;
+    const activeLearnerIds = learnerActivityIds(30);
+    const engagementRate = students.length ? Math.round((activeLearnerIds.size / students.length) * 100) : 0;
+    const atRiskLearners = students.filter((student) => learnerRiskScore(student) >= 2).length;
+    const onTimeRate = submissions.length
+      ? Math.round((submissions.filter((item) => item.is_on_time === true || String(item.is_on_time) === "true").length / submissions.length) * 100)
+      : 0;
+    const averageScore = gradedSubmissions.length
+      ? Math.round(gradedSubmissions.reduce((sum, item) => sum + submissionScorePercent(item), 0) / gradedSubmissions.length)
+      : 0;
+    const activeCourses = state.data.courses.filter((course) => ["published", "active", "live"].includes(String(course.status || "").toLowerCase())).length;
+    const courseReadiness = state.data.courses.length
+      ? Math.round((state.data.courses.filter((course) => adminCourseModules(course).length > 0 && adminCourseQuizzes(course).length > 0).length / state.data.courses.length) * 100)
+      : 0;
+    const trend = analyticsTrendSeries();
+    const currentTotal = trend.current.reduce((sum, value) => sum + value, 0);
+    const previousTotal = trend.previous.reduce((sum, value) => sum + value, 0);
+    const trendDeltaValue = previousTotal ? Math.round(((currentTotal - previousTotal) / previousTotal) * 100) : currentTotal ? 100 : 0;
+
+    return {
+      freshness: analyticsFreshnessLabel(),
+      trend,
+      trendDelta: `${trendDeltaValue >= 0 ? "+" : ""}${trendDeltaValue}%`,
+      kpis: [
+        { label: "Active learners", value: activeLearnerIds.size, detail: `${engagementRate}% of students active in 30 days`, trend: engagementRate, tone: "blue", focus: "overview" },
+        { label: "Completion rate", value: `${completionRate}%`, detail: `${avgProgress}% average course progress`, trend: completionRate, tone: "green", focus: "learning" },
+        { label: "Pending reviews", value: pendingReviews.length, detail: `${gradedSubmissions.length} submissions reviewed`, trend: reviewItems.length ? Math.round((gradedSubmissions.length / reviewItems.length) * 100) : 0, tone: pendingReviews.length ? "rose" : "green", focus: "operations" },
+        { label: "On-time work", value: `${onTimeRate}%`, detail: `${submissions.length} task submissions tracked`, trend: onTimeRate, tone: "cyan", focus: "learning" },
+        { label: "Average score", value: `${averageScore}%`, detail: `${gradedSubmissions.length} graded submissions`, trend: averageScore, tone: "violet", focus: "learning" },
+        { label: "At-risk learners", value: atRiskLearners, detail: "Low progress or no recent activity", trend: students.length ? 100 - Math.round((atRiskLearners / students.length) * 100) : 100, tone: atRiskLearners ? "amber" : "green", focus: "operations" },
+        { label: "Course readiness", value: `${courseReadiness}%`, detail: `${activeCourses} live courses`, trend: courseReadiness, tone: "blue", focus: "overview" },
+        { label: "Enrollment load", value: enrollments.length, detail: `${students.length} students across ${state.data.batches.length} batches`, trend: students.length ? Math.min(100, Math.round((enrollments.length / students.length) * 100)) : 0, tone: "cyan", focus: "overview" }
+      ],
+      funnel: [
+        { label: "Students", value: students.length, base: students.length, detail: "Registered learner profiles" },
+        { label: "Enrolled", value: uniqueEnrollmentLearnerIds(enrollments).size, base: students.length, detail: "Assigned to at least one course" },
+        { label: "In progress", value: uniqueProgressLearnerIds(progressRows).size, base: students.length, detail: "Progress records available" },
+        { label: "Submitted", value: uniqueSubmissionLearnerIds(reviewItems).size, base: students.length, detail: "Submitted task or project work" },
+        { label: "Reviewed", value: uniqueSubmissionLearnerIds(reviewItems.filter(isReviewedRecord)).size, base: students.length, detail: "Received review outcome" }
+      ],
+      coursePerformance: analyticsCoursePerformanceRows(),
+      reviewStatus: analyticsReviewStatusRows(reviewItems),
+      insights: analyticsInsightRows({ students, mentors, enrollments, pendingReviews, atRiskLearners, courseReadiness, completionRate, activeCourses, submissions })
+    };
+  }
+
+  function analyticsTrendSeries() {
+    const labels = [];
+    const current = Array(8).fill(0);
+    const previous = Array(8).fill(0);
+    const now = new Date();
+    const weekStart = startOfDay(new Date(now));
+    weekStart.setDate(weekStart.getDate() - (weekStart.getDay() || 7) + 1);
+    const start = new Date(weekStart);
+    start.setDate(start.getDate() - 7 * 7);
+    const previousStart = new Date(start);
+    previousStart.setDate(previousStart.getDate() - 8 * 7);
+    for (let i = 0; i < 8; i += 1) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i * 7);
+      labels.push(d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }));
+    }
+    analyticsEvents().forEach((event) => {
+      const date = startOfDay(event.ts);
+      const diff = Math.floor((date - start) / 604800000);
+      const previousDiff = Math.floor((date - previousStart) / 604800000);
+      if (diff >= 0 && diff < 8) current[diff] += 1;
+      if (previousDiff >= 0 && previousDiff < 8) previous[previousDiff] += 1;
+    });
+    return { labels, current, previous };
+  }
+
+  function dashboardAnalysisSeries(range = "weekly") {
+    if (range === "monthly") return dashboardMonthlySeries();
+    if (range === "yearly") return dashboardYearlySeries();
+    return analyticsTrendSeries();
+  }
+
+  function dashboardMonthlySeries() {
+    const labels = [];
+    const current = Array(12).fill(0);
+    const previous = Array(12).fill(0);
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    const previousStart = new Date(start.getFullYear() - 1, start.getMonth(), 1);
+    for (let i = 0; i < 12; i += 1) {
+      const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
+      labels.push(d.toLocaleDateString("en-IN", { month: "short" }));
+    }
+    analyticsEvents().forEach((event) => {
+      const date = event.ts;
+      const diff = (date.getFullYear() - start.getFullYear()) * 12 + date.getMonth() - start.getMonth();
+      const previousDiff = (date.getFullYear() - previousStart.getFullYear()) * 12 + date.getMonth() - previousStart.getMonth();
+      if (diff >= 0 && diff < 12) current[diff] += 1;
+      if (previousDiff >= 0 && previousDiff < 12) previous[previousDiff] += 1;
+    });
+    return { labels, current, previous };
+  }
+
+  function dashboardYearlySeries() {
+    const labels = [];
+    const current = Array(5).fill(0);
+    const previous = Array(5).fill(0);
+    const now = new Date();
+    const startYear = now.getFullYear() - 4;
+    const previousStartYear = startYear - 5;
+    for (let i = 0; i < 5; i += 1) {
+      labels.push(String(startYear + i));
+    }
+    analyticsEvents().forEach((event) => {
+      const year = event.ts.getFullYear();
+      const diff = year - startYear;
+      const previousDiff = year - previousStartYear;
+      if (diff >= 0 && diff < 5) current[diff] += 1;
+      if (previousDiff >= 0 && previousDiff < 5) previous[previousDiff] += 1;
+    });
+    return { labels, current, previous };
+  }
+
+  function analyticsEvents() {
+    const fromRows = (rows, fields, type) => rows.map((row) => {
+      const raw = fields.reduce((value, field) => value || row[field], "");
+      const ts = raw ? new Date(raw) : null;
+      return ts && !isNaN(ts.getTime()) ? { ts, type, row } : null;
+    }).filter(Boolean);
+    return [
+      ...fromRows(state.data.users, ["created_at"], "users"),
+      ...fromRows(state.data.userCourses, ["enrolled_at", "created_at"], "enrollments"),
+      ...fromRows(state.data.progress, ["updated_at", "created_at"], "progress"),
+      ...fromRows(state.data.taskSubmissions, ["graded_at", "submitted_at", "created_at"], "submissions"),
+      ...fromRows(state.data.projects, ["updated_at", "submitted_at", "created_at"], "projects"),
+      ...fromRows(state.data.batchTasks, ["published_at", "created_at"], "tasks"),
+      ...fromRows(state.data.chats, ["created_at"], "chats"),
+      ...fromRows(state.data.announcements, ["published_at", "created_at"], "announcements"),
+      ...fromRows(state.data.supportTickets, ["updated_at", "created_at"], "support")
+    ].sort((a, b) => b.ts - a.ts);
+  }
+
+  function analyticsCoursePerformanceRows() {
+    return state.data.courses.map((course) => {
+      const enrollments = activeEnrollments().filter((row) => sameId(row.course_id, course.id));
+      const progress = state.data.progress.filter((row) => sameId(row.course_id, course.id));
+      const submissions = state.data.taskSubmissions.filter((row) => sameId(row.course_id, course.id) || enrollments.some((enrollment) => sameId(enrollment.user_id || enrollment.student_id, row.student_id || row.user_id)));
+      const averageProgress = progress.length ? Math.round(progress.reduce((sum, row) => sum + estimateProgress(row), 0) / progress.length) : 0;
+      const score = enrollments.length * 12 + averageProgress + submissions.length * 8 + adminCourseModules(course).length * 4;
+      return {
+        title: course.title || "Untitled course",
+        meta: `${enrollments.length} enrolled - ${submissions.length} submissions`,
+        value: `${averageProgress}%`,
+        progress: averageProgress,
+        score
+      };
+    }).sort((a, b) => b.score - a.score).slice(0, 6);
+  }
+
+  function analyticsReviewStatusRows(reviewItems) {
+    const statusMap = reviewItems.reduce((acc, item) => {
+      const key = normalizedReviewStatus(item);
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(statusMap)
+      .map(([label, value], index) => ({ label: permissionLabel(label), value, color: analyticsPalette(index) }))
+      .sort((a, b) => b.value - a.value);
+  }
+
+  function analyticsInsightRows(model) {
+    const rows = [];
+    if (model.pendingReviews.length) {
+      rows.push({ tone: "rose", title: "Review queue needs attention", detail: `${model.pendingReviews.length} task or project submissions are waiting for review.`, action: "Open reviews", view: "reviews" });
+    }
+    if (model.atRiskLearners) {
+      rows.push({ tone: "amber", title: "Learner risk detected", detail: `${model.atRiskLearners} students have low progress or no recent tracked activity.`, action: "Open users", view: "users" });
+    }
+    if (model.courseReadiness < 80 && state.data.courses.length) {
+      rows.push({ tone: "blue", title: "Improve course readiness", detail: `${model.courseReadiness}% of courses include both modules and quizzes.`, action: "Manage courses", view: "courses" });
+    }
+    const unassignedBatches = state.data.batches.filter((batch) => !batch.mentor_id).length;
+    if (unassignedBatches) {
+      rows.push({ tone: "violet", title: "Assign batch mentors", detail: `${unassignedBatches} batches do not have a mentor assigned.`, action: "Open batches", view: "batches" });
+    }
+    if (!model.submissions.length && model.enrollments.length) {
+      rows.push({ tone: "cyan", title: "Assignments have no submissions yet", detail: "Learners are enrolled, but no task submission records are available.", action: "Open tasks", view: "tasks" });
+    }
+    if (!rows.length && (model.students.length || model.activeCourses)) {
+      rows.push({ tone: "green", title: "Analytics health looks stable", detail: `${model.completionRate}% completion rate with ${model.activeCourses} live courses.`, action: "View courses", view: "courses" });
+    }
+    return rows.slice(0, 5);
+  }
+
+  function learnerActivityIds(days) {
+    const since = Date.now() - days * 86400000;
+    const ids = new Set();
+    state.data.progress.forEach((row) => addRecentLearnerId(ids, row.student_id || row.user_id, row.updated_at || row.created_at, since));
+    state.data.taskSubmissions.forEach((row) => addRecentLearnerId(ids, row.student_id || row.user_id, row.submitted_at || row.created_at, since));
+    state.data.projects.forEach((row) => addRecentLearnerId(ids, row.student_id || row.user_id, row.submitted_at || row.created_at, since));
+    state.data.chats.forEach((row) => addRecentLearnerId(ids, row.user_id || row.sender_id, row.created_at, since));
+    return ids;
+  }
+
+  function addRecentLearnerId(ids, id, value, since) {
+    const date = value ? new Date(value) : null;
+    if (!id || !date || isNaN(date.getTime()) || date.getTime() < since) return;
+    ids.add(String(id));
+  }
+
+  function learnerRiskScore(student) {
+    const id = student.id;
+    const progress = state.data.progress.filter((row) => sameId(row.student_id || row.user_id, id));
+    const maxProgress = progress.length ? Math.max(...progress.map(estimateProgress)) : 0;
+    const hasEnrollment = activeEnrollments().some((row) => sameId(row.user_id || row.student_id, id));
+    const active = learnerActivityIds(30).has(String(id));
+    return (hasEnrollment && maxProgress < 35 ? 1 : 0) + (!active && hasEnrollment ? 1 : 0) + (!progress.length && hasEnrollment ? 1 : 0);
+  }
+
+  function isPendingReviewRecord(item) {
+    return ["", "pending", "submitted", "review_pending", "in_review"].includes(String(item.status || "").toLowerCase());
+  }
+
+  function isReviewedRecord(item) {
+    return ["approved", "reviewed", "completed", "rejected", "changes_requested", "graded"].includes(String(item.status || "").toLowerCase()) || Boolean(item.graded_at);
+  }
+
+  function normalizedReviewStatus(item) {
+    if (isPendingReviewRecord(item)) return "pending";
+    if (isReviewedRecord(item)) return "reviewed";
+    return String(item.status || "other").toLowerCase();
+  }
+
+  function submissionScorePercent(item) {
+    const score = Number(item.marks_obtained ?? item.score ?? 0);
+    const total = Number(item.total_marks ?? item.max_marks ?? 0);
+    if (!Number.isFinite(score) || !Number.isFinite(total) || total <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((score / total) * 100)));
+  }
+
+  function uniqueEnrollmentLearnerIds(rows) {
+    return new Set(rows.map((row) => row.user_id || row.student_id || row.learner_id).filter(Boolean).map(String));
+  }
+
+  function uniqueProgressLearnerIds(rows) {
+    return new Set(rows.map((row) => row.student_id || row.user_id).filter(Boolean).map(String));
+  }
+
+  function uniqueSubmissionLearnerIds(rows) {
+    return new Set(rows.map((row) => row.student_id || row.user_id).filter(Boolean).map(String));
+  }
+
+  function analyticsFreshnessLabel() {
+    const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    const mode = state.realtimeChannel ? "Realtime" : "Auto refresh";
+    return `${mode} sync - ${stamp}`;
+  }
+
+  function analyticsKpiCard(item) {
+    const pct = Math.max(0, Math.min(100, Number(item.trend || 0)));
+    return `
+      <article class="analytics-kpi-card ${escapeAttr(item.tone || "blue")}">
+        <div>
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.value)}</strong>
+          <small>${escapeHtml(item.detail)}</small>
+        </div>
+        <div class="analytics-kpi-ring" style="--pct:${pct}%"><b>${pct}%</b></div>
+      </article>
+    `;
+  }
+
+  function analyticsLineChart(labels, current, previous) {
+    const max = Math.max(1, ...current, ...previous);
+    const points = (values) => values.map((value, index) => {
+      const x = 28 + index * 64;
+      const y = 188 - (Number(value || 0) / max) * 144;
+      return `${x},${y}`;
+    }).join(" ");
+    const dots = current.map((value, index) => {
+      const x = 28 + index * 64;
+      const y = 188 - (Number(value || 0) / max) * 144;
+      const label = `${labels[index]}: ${value} events`;
+      return `<circle cx="${x}" cy="${y}" r="4"><title>${escapeHtml(label)}</title></circle>`;
+    }).join("");
+    const axis = labels.map((label, index) => `<text x="${28 + index * 64}" y="222">${escapeHtml(label)}</text>`).join("");
+    return `
+      <svg viewBox="0 0 500 240" role="img" aria-label="Engagement trend chart">
+        <line x1="24" y1="188" x2="480" y2="188" class="axis"></line>
+        <line x1="24" y1="116" x2="480" y2="116" class="grid"></line>
+        <line x1="24" y1="44" x2="480" y2="44" class="grid"></line>
+        <polyline points="${points(previous)}" class="previous"></polyline>
+        <polyline points="${points(current)}" class="current"></polyline>
+        ${dots}
+        ${axis}
+      </svg>
+    `;
+  }
+
+  function analyticsFunnelRow(item) {
+    const pct = item.base ? Math.round((Number(item.value || 0) / item.base) * 100) : 0;
+    return `
+      <article class="analytics-funnel-row">
+        <div><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>
+        <b>${Number(item.value || 0)}</b>
+        <div class="analytics-funnel-track"><span style="width:${Math.max(4, Math.min(100, pct))}%"></span></div>
+      </article>
+    `;
+  }
+
+  function analyticsRankedRow(item, index) {
+    const progress = Math.max(0, Math.min(100, Number(item.progress || 0)));
+    return `
+      <article class="analytics-ranked-row">
+        <span>${index + 1}</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.meta)}</small>
+          <div class="analytics-mini-track"><i style="width:${progress}%"></i></div>
+        </div>
+        <b>${escapeHtml(item.value)}</b>
+      </article>
+    `;
+  }
+
+  function analyticsDonut(rows) {
+    const total = rows.reduce((sum, row) => sum + Number(row.value || 0), 0);
+    if (!total) return `<div class="analytics-donut-empty">0</div>`;
+    let cursor = 0;
+    const stops = rows.map((row) => {
+      const start = cursor;
+      const size = (Number(row.value || 0) / total) * 100;
+      cursor += size;
+      return `${row.color} ${start}% ${cursor}%`;
+    }).join(", ");
+    return `<div class="analytics-donut-chart" style="background:conic-gradient(${stops})"><strong>${total}</strong><span>Total</span></div>`;
+  }
+
+  function analyticsStatusRow(item) {
+    return `
+      <article class="analytics-status-row">
+        <span style="--dot:${escapeAttr(item.color)}"></span>
+        <strong>${escapeHtml(item.label)}</strong>
+        <b>${Number(item.value || 0)}</b>
+      </article>
+    `;
+  }
+
+  function analyticsInsightRow(item) {
+    return `
+      <article class="analytics-insight ${escapeAttr(item.tone || "blue")}">
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.detail)}</p>
+        </div>
+        <button class="report-link" type="button" data-jump="${escapeAttr(item.view)}">${escapeHtml(item.action)}</button>
+      </article>
+    `;
+  }
+
+  function analyticsPalette(index) {
+    return ["#2563eb", "#12b981", "#f59e0b", "#e11d48", "#7c3aed", "#0891b2"][index % 6];
   }
 
   function renderAdminReportActivity() {
@@ -1236,6 +2083,18 @@
     const barCount = buckets.length;
     barsEl.style.setProperty("--bar-count", barCount);
 
+    if (!allEvents.length) {
+      barsEl.innerHTML = `
+        <div class="chart-empty-state">
+          <strong>No analytics events yet</strong>
+          <span>Activity appears here after users, courses, submissions, or announcements are created.</span>
+        </div>
+      `;
+      const legendEl = document.querySelector(".chart-legend");
+      if (legendEl) legendEl.innerHTML = `<span class="legend-item muted"><b></b>No event data</span>`;
+      return;
+    }
+
     barsEl.innerHTML = bucketData.map(({ count, byTag, label }, i) => {
       const pct   = Math.max(Math.round((count / maxCount) * 100), count > 0 ? 4 : 1);
       const isNow = range === "daily" && i === barCount - 1;
@@ -1251,8 +2110,10 @@
         `  <em class="chart-bar-count">${count}</em>`,
         `  <span class="chart-bar ${isNow ? "active" : count === 0 ? "zero" : ""}"`,
         `    style="--bar:${pct}%"`,
+        `    data-chart-tip="${escapeAttr(tip)}"`,
         `    title="${escapeAttr(tip)}"`,
         `    aria-label="${escapeAttr(tip)}">`,
+        `    <span class="chart-tooltip">${escapeHtml(tip)}</span>`,
         `  </span>`,
         `  <small>${escapeHtml(labels[i])}</small>`,
         `</span>`
@@ -1693,18 +2554,26 @@
 
     document.getElementById("usersTable").innerHTML = rows.length
       ? rows.map((user) => `
-        <tr>
-          <td><strong>${escapeHtml(user.name || "Unnamed")}</strong><br><small>${escapeHtml(user.username || "")}</small></td>
-          <td>${escapeHtml(user.email || "")}</td>
-          <td><span class="badge ${roleColor(user.role)}">${escapeHtml(user.role || "user")}</span></td>
-          <td>${userLearningSummary(user)}</td>
-          <td><code class="referral-code-pill">${escapeHtml(userReferralCode(user))}</code></td>
-          <td>${Number(user.coins || 0).toLocaleString("en-IN")}</td>
-          <td>${formatDate(user.created_at)}</td>
+        <tr class="admin-user-row">
+          <td>
+            <div class="admin-user-person">
+              <span class="admin-user-avatar ${roleColor(user.role)}">${escapeHtml(initials(user.name || user.email || "U"))}</span>
+              <div>
+                <strong>${escapeHtml(user.name || "Unnamed")}</strong>
+                <small>${escapeHtml(user.username || "")}</small>
+              </div>
+            </div>
+          </td>
+          <td><span class="admin-user-email">${escapeHtml(user.email || "")}</span></td>
+          <td><span class="admin-user-role badge ${roleColor(user.role)}">${escapeHtml(String(user.role || "user").toUpperCase())}</span></td>
+          <td><div class="admin-user-learning">${userLearningSummary(user)}</div></td>
+          <td><code class="referral-code-pill admin-user-referral">${escapeHtml(userReferralCode(user))}</code></td>
+          <td><strong class="admin-user-coins">${Number(user.coins || 0).toLocaleString("en-IN")}</strong></td>
+          <td><strong class="admin-user-joined">${formatDate(user.created_at)}</strong></td>
           <td>
             <div class="row-actions">
-              <button class="ghost-btn" type="button" data-view-user="${user.id}">View</button>
-              <button class="soft-btn" type="button" data-edit-user="${user.id}">Edit</button>
+              <button class="ghost-btn admin-user-action" type="button" data-view-user="${user.id}">View</button>
+              <button class="soft-btn admin-user-action" type="button" data-edit-user="${user.id}">Edit</button>
             </div>
           </td>
         </tr>
@@ -1717,6 +2586,10 @@
     document.querySelectorAll("[data-edit-user]").forEach((button) => {
       button.addEventListener("click", () => openUserModal(findById(state.data.users, button.dataset.editUser), true));
     });
+  }
+
+  function permissionLabel(value) {
+    return String(value || "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
   function renderCourses() {
@@ -1751,7 +2624,7 @@
                 <button class="soft-btn" type="button" data-toggle-course="${course.id}">${course.status === "Published" ? "Unpublish" : "Publish"}</button>
                 ${String(course.status || "").toLowerCase() === "archived"
                   ? `<button class="soft-btn" type="button" data-restore-course="${course.id}">Restore</button>`
-                  : `<button class="danger-btn" type="button" data-delete-course="${course.id}">Archive</button>`}
+                  : `<button class="danger-btn" type="button" data-delete-course="${course.id}">Delete</button>`}
                 ${archivedContent ? `<button class="soft-btn" type="button" data-restore-course-content="${course.id}">Recover Content (${archivedContent})</button>` : ""}
               </div>
             </div>
@@ -2124,13 +2997,18 @@
       const student = findById(state.data.users, submission.student_id || submission.user_id);
       return matchesText(query, task?.title, student?.name, student?.email, submission.status, submission.drive_link, submission.file_url);
     });
+    const quizAttempts = state.data.quizAttempts.filter((attempt) => {
+      const student = findById(state.data.users, attempt.student_id || attempt.user_id);
+      const course = findById(state.data.courses, attempt.course_id);
+      return !attempt.deleted_at && matchesText(query, student?.name, student?.email, course?.title, attempt.module_title, attempt.passed ? "passed" : "not passed");
+    });
 
     document.getElementById("projectsList").innerHTML = projects.length
       ? projects.map(projectCardCompact).join("")
       : emptyState(hasQuery(query) ? "No projects match your search." : "No project submissions.");
 
-    document.getElementById("submissionsList").innerHTML = submissions.length
-      ? submissions.map(adminSubmissionRow).join("")
+    document.getElementById("submissionsList").innerHTML = submissions.length || quizAttempts.length
+      ? `${submissions.map(adminSubmissionRow).join("")}${quizAttempts.map(adminQuizAttemptRow).join("")}`
       : emptyState(hasQuery(query) ? "No submissions match your search." : "No task submissions."); /*
         <div class="list-row">
           <div>
@@ -2174,6 +3052,31 @@
 
   function taskSubmissionLink(submission) {
     return String(submission?.drive_link || submission?.submission_url || submission?.file_url || "").trim();
+  }
+
+  function adminQuizAttemptRow(attempt) {
+    const student = findById(state.data.users, attempt.student_id || attempt.user_id);
+    const course = findById(state.data.courses, attempt.course_id);
+    const total = Number(attempt.total || attempt.max_score || 0);
+    return `
+      <div class="list-row">
+        <div>
+          <strong>${escapeHtml(course?.title || "Quiz attempt")}</strong>
+          <small>${escapeHtml(student?.name || "Student")} - ${escapeHtml(attempt.module_title || "Module quiz")} - attempt ${Number(attempt.attempt_number || 1)}</small>
+          <small>Score ${Number(attempt.score || 0)}/${total} - ${attempt.passed ? "Passed" : "Not passed"} - ${Number(attempt.question_count || selectedQuestionIds(attempt).length || 0) || "-"} questions - ${attemptDurationLabel(attempt)}</small>
+        </div>
+        <div class="row-actions"><span class="badge ${attempt.passed ? "green" : "amber"}">${formatDateTime(attempt.submitted_at || attempt.created_at)}</span></div>
+      </div>
+    `;
+  }
+
+  function selectedQuestionIds(attempt) {
+    return Array.isArray(attempt.selected_question_ids) ? attempt.selected_question_ids : [];
+  }
+
+  function attemptDurationLabel(attempt) {
+    const seconds = Math.max(0, Number(attempt.time_taken_seconds || attempt.duration_seconds || 0));
+    return seconds ? `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}` : "-";
   }
 
   function projectCardCompact(project) {
@@ -2407,6 +3310,11 @@
         <div class="import-callout">
           ${escapeHtml(course.title || "Course")} content is saved as modules with lessons, Drive video links, PDF/material links, assignments, FAQs, and quizzes.
         </div>
+        <details class="advanced-form-options">
+          <summary>Import Modules JSON</summary>
+          <div class="form-row"><label for="courseContentJsonImport">Modules JSON</label><textarea id="courseContentJsonImport" rows="8" placeholder='[{"title":"Module 1","lessons":[],"quiz":{"questions":[]}}]'></textarea></div>
+          <button class="ghost-btn" type="button" id="importContentJsonBtn">Import JSON</button>
+        </details>
         <div class="module-editor-list" id="courseContentModuleList"></div>
         <div class="form-actions">
           <button class="ghost-btn" type="button" id="addContentModuleBtn" data-testid="add-content-module">Add Module</button>
@@ -2422,6 +3330,30 @@
       renderContentEditor();
     });
 
+    document.getElementById("importContentJsonBtn")?.addEventListener("click", () => {
+      try {
+        const parsed = JSON.parse(document.getElementById("courseContentJsonImport")?.value || "[]");
+        const modules = Array.isArray(parsed) ? parsed : parsed.modules;
+        if (!Array.isArray(modules)) throw new Error("JSON must be an array of modules or an object with a modules array.");
+        draftModules = modules.map((module, index) => ({
+          ...module,
+          id: module.id || module.module_id || randomContentId("module"),
+          title: module.title || module.name || `Module ${index + 1}`,
+          order_index: Number(module.order_index || module.order || index + 1),
+          deleted_at: module.deleted_at || null,
+          lessons: Array.isArray(module.lessons) ? module.lessons.map((lesson, lessonIndex) => ({
+            ...lesson, id: lesson.id || lesson.lesson_id || randomContentId("lesson"), title: lesson.title || lesson.name || `Lesson ${lessonIndex + 1}`,
+            content_type: lesson.content_type || lesson.type || "video", order_index: Number(lesson.order_index || lesson.order || lessonIndex + 1), deleted_at: lesson.deleted_at || null
+          })) : [],
+          quiz: module.quiz || module.module_quiz || module.quizQuestions || null
+        }));
+        renderContentEditor();
+        showAlert(`Imported ${draftModules.filter((module) => !module.deleted_at).length} module${draftModules.length === 1 ? "" : "s"}. Review and save content.`);
+      } catch (error) {
+        showAlert(error.message || "Invalid modules JSON.", true);
+      }
+    });
+
     document.getElementById("courseContentForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       await runLockedSubmit(event.currentTarget, event.submitter, async () => {
@@ -2429,6 +3361,11 @@
         const driveError = firstInvalidDriveLesson(modules);
         if (driveError) {
           showAlert(driveError, true);
+          return;
+        }
+        const invalidQuiz = modules.find((module) => module.quiz?.questions?.length && module.quiz.questions.length < 15);
+        if (invalidQuiz) {
+          showAlert(`${invalidQuiz.title || "Module"} quiz needs at least 15 questions. Use the mentor quiz editor for full question banks.`, true);
           return;
         }
         await saveCourseRecord({ modules }, course.id);
@@ -2462,7 +3399,7 @@
           <button class="ghost-btn" type="button" data-add-content-lesson="${escapeAttr(module.id)}">Add Lesson</button>
         </div>
         <details class="advanced-form-options">
-          <summary>Quiz</summary>
+          <summary>Quiz - requires 15 questions before publishing</summary>
           <div class="form-row two">
             <div><label>Quiz Title</label><input data-quiz-field="title" value="${escapeAttr(quiz.title)}"></div>
             <div><label>Pass Marks</label><input data-quiz-field="pass_marks" type="number" min="0" value="${escapeAttr(quiz.pass_marks)}"></div>
@@ -2544,6 +3481,14 @@
       const question = fieldValue(row, "[data-quiz-question-field='question']");
       const answer = fieldValue(row, "[data-quiz-question-field='answer']");
       const marks = Number(fieldValue(row, "[data-quiz-question-field='marks']") || 0);
+      const priorQuizQuestions = Array.isArray(previous.quiz?.questions) ? previous.quiz.questions : [];
+      const quizQuestions = question ? (
+        priorQuizQuestions.length
+          ? priorQuizQuestions.map((item, itemIndex) => itemIndex === 0
+            ? { ...item, question, text: item.text || question, answer, marks: Number.isFinite(marks) ? marks : Number(item.marks || 0) }
+            : item)
+          : [{ id: randomContentId("question"), question, answer, marks: Number.isFinite(marks) ? marks : 0 }]
+      ) : [];
       return {
         ...previous,
         id: moduleId,
@@ -2557,12 +3502,7 @@
           id: previous.quiz?.id || randomContentId("quiz"),
           title: fieldValue(row, "[data-quiz-field='title']") || `${title} Quiz`,
           pass_marks: Number(fieldValue(row, "[data-quiz-field='pass_marks']") || 0),
-          questions: [{
-            id: previous.quiz?.questions?.[0]?.id || randomContentId("question"),
-            question,
-            answer,
-            marks: Number.isFinite(marks) ? marks : 0
-          }]
+          questions: quizQuestions
         } : null
       };
     });
@@ -2595,37 +3535,14 @@
     }));
   }
 
-  function activeLessons(module) {
-    return (module.lessons || []).filter((lesson) => !lesson.deleted_at);
-  }
+  function activeLessons(module) { return (module.lessons || []).filter((lesson) => !lesson.deleted_at); }
 
   function blankContentModule(index) {
-    return {
-      id: randomContentId("module"),
-      title: `Module ${index}`,
-      description: "",
-      type: "Self-paced",
-      order_index: index,
-      deleted_at: null,
-      lessons: [blankContentLesson(1)],
-      quiz: null
-    };
+    return { id: randomContentId("module"), title: `Module ${index}`, description: "", type: "Self-paced", order_index: index, deleted_at: null, lessons: [blankContentLesson(1)], quiz: null };
   }
 
   function blankContentLesson(index) {
-    return {
-      id: randomContentId("lesson"),
-      title: `Lesson ${index}`,
-      content_type: "video",
-      order_index: index,
-      video_drive_link: "",
-      drive_link: "",
-      file_url: "",
-      material_url: "",
-      assignment_url: "",
-      description: "",
-      deleted_at: null
-    };
+    return { id: randomContentId("lesson"), title: `Lesson ${index}`, content_type: "video", order_index: index, video_drive_link: "", drive_link: "", file_url: "", material_url: "", assignment_url: "", description: "", deleted_at: null };
   }
 
   function normalizeContentQuiz(rawQuiz, module = {}, index = 0) {
@@ -3816,14 +4733,18 @@
   async function writeEnrollmentRecord(userId, courseId, batchId, status = "active", existingEnrollment = null) {
     if (!userId || !courseId) return;
     const supabaseClient = getClient();
-    const current = existingEnrollment || state.data.userCourses.find((row) => (
-      String(row.user_id || row.student_id || "") === String(userId)
-      && String(row.course_id || "") === String(courseId)
-    ));
+    let current = existingEnrollment || state.data.userCourses.find((row) => String(row.user_id || row.student_id || "") === String(userId) && String(row.course_id || "") === String(courseId));
+    if (!current) {
+      const { data: liveRows, error: liveError } = await supabaseClient.from("user_courses").select(SELECTS.userCourses).eq("course_id", courseId).or(`user_id.eq.${userId},student_id.eq.${userId},learner_id.eq.${userId}`);
+      if (!liveError && Array.isArray(liveRows) && liveRows.length) current = liveRows.find((row) => !row.deleted_at && !["archived", "removed"].includes(String(row.status || "").toLowerCase())) || liveRows[0];
+    }
+    if (!current && supabaseClient.rpc) {
+      const { data, error: rpcError } = await supabaseClient.rpc("lms_enroll_student", { target_user_id: userId, target_course_id: courseId });
+      if (!rpcError && data) current = Array.isArray(data) ? data[0] : data;
+      else if (rpcError && !isMissingRpcError(rpcError)) throw rpcError;
+    }
     const payload = compactObject({ user_id: userId, course_id: courseId, batch_id: batchId || null, status });
-    let writePayload = payload;
-    let error = null;
-    let selectColumns = SELECTS.userCourses;
+    let writePayload = payload, error = null, selectColumns = SELECTS.userCourses;
     for (let attempt = 0; attempt < 4; attempt += 1) {
       const request = current?.id
         ? supabaseClient.from("user_courses").update(writePayload).eq("id", current.id).select(selectColumns)
@@ -3832,20 +4753,20 @@
           : supabaseClient.from("user_courses").insert(writePayload).select(selectColumns);
       ({ error } = await request);
       if (!error) break;
+      if (/duplicate key value|user_courses_pkey|unique constraint/i.test(error.message || "")) {
+        const { data: duplicateRows, error: duplicateLookupError } = await supabaseClient.from("user_courses").select(SELECTS.userCourses).eq("course_id", courseId).or(`user_id.eq.${userId},student_id.eq.${userId},learner_id.eq.${userId}`);
+        if (!duplicateLookupError && Array.isArray(duplicateRows) && duplicateRows.length) { current = duplicateRows[0]; continue; }
+      }
       if (!isSchemaShapeError(error)) break;
       const nextPayload = compatibleWritePayload("user_courses", writePayload, error);
       if (JSON.stringify(nextPayload) === JSON.stringify(writePayload)) break;
-      writePayload = nextPayload;
-      selectColumns = "user_id,course_id,created_at,status";
+      writePayload = nextPayload; selectColumns = "user_id,course_id,created_at,status";
     }
     if (error) throw error;
 
     const user = findById(state.data.users, userId);
     const courseIds = mergeCourseIds(user?.course_ids, courseId);
-    await updateUserRecord(userId, compactObject({
-      batch_id: batchId || null,
-      course_ids: courseIds.length ? courseIds : undefined
-    }));
+    await updateUserRecord(userId, compactObject({ batch_id: batchId || null, course_ids: courseIds.length ? courseIds : undefined }));
   }
 
   async function saveAdminProfile(event) {
@@ -4088,7 +5009,9 @@
   }
 
   async function deleteRecord(table, id) {
-    if (!id || !window.confirm("Archive this item? You can restore it later.")) return;
+    const isCourse = table === "courses";
+    const actionLabel = isCourse ? "Delete" : "Archive";
+    if (!id || !window.confirm(`${actionLabel} this item? You can restore it later.`)) return;
     try {
       setRecordActionBusy(table, id, true);
       const rpcArchived = await archiveRecordViaRpc(table, id);
@@ -4098,9 +5021,9 @@
       applyRecordStatus(table, id, softDeletePayload(table));
       renderActiveView();
       await loadAllData({ force: true });
-      showAlert("Archived successfully.");
+      showAlert(`${actionLabel}d successfully.`);
     } catch (error) {
-      showAlert(error.message || "Archive failed.", true);
+      showAlert(error.message || `${actionLabel} failed.`, true);
     } finally {
       setRecordActionBusy(table, id, false);
     }
@@ -4275,8 +5198,9 @@
   function setView(view, options = {}) {
     if (!views[view]) view = "dashboard";
     const previousView = state.activeView;
-    const shouldAnimate = previousView !== view;
+    const shouldAnimate = false;
     state.activeView = view;
+    document.body.dataset.adminView = view;
     Object.entries(views).forEach(([key, element]) => {
       if (!element) return;
       element.classList.remove("admin-view-entering");
@@ -4285,8 +5209,13 @@
     document.querySelectorAll(".nav-item").forEach((button) => {
       button.classList.toggle("active", button.dataset.view === view);
     });
+    document.querySelectorAll("[data-context-view]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.contextView === view);
+    });
     document.getElementById("sidebarProfileBtn")?.classList.toggle("active", view === "profile");
     viewTitle.textContent = views[view]?.dataset.title || "Dashboard";
+    setText("adminTopbarTitle", views[view]?.dataset.title || "Dashboard");
+    setText("adminContextTitle", view === "dashboard" ? "Admin Workspace" : views[view]?.dataset.title || "Admin Workspace");
     if (shouldAnimate) {
       const activeElement = views[view];
       const heading = document.querySelector(".page-heading");
@@ -4408,27 +5337,7 @@
     syncStatus.textContent = message;
     setText("profileSyncText", message);
   }
-
-  function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-  }
-
-  function setValue(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.value = value;
-  }
-
-  function showAlert(message, isError = false) {
-    alertBox.textContent = message;
-    alertBox.classList.toggle("error", isError);
-    alertBox.classList.add("show");
-    window.clearTimeout(showAlert.timer);
-    showAlert.timer = window.setTimeout(() => {
-      alertBox.classList.remove("show");
-    }, isError ? 12000 : 3200);
-  }
-
+
   function setActiveButton(selector, activeButton) {
     document.querySelectorAll(selector).forEach((button) => button.classList.remove("active"));
     activeButton.classList.add("active");
@@ -4761,18 +5670,9 @@
     return Array.from(new Set(ids.filter(Boolean).map(String)));
   }
 
-  function arrayFrom(value) {
-    if (Array.isArray(value)) return value;
-    if (!value) return [];
-    if (typeof value === "string") {
-      try {
-        const parsed = JSON.parse(value);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (error) {
-        return value.split(",").map((item) => item.trim()).filter(Boolean);
-      }
-    }
-    return [];
+  function truncate(value, maxLength = 80) {
+    const text = String(value || "");
+    return text.length > maxLength ? `${text.slice(0, Math.max(0, maxLength - 1))}...` : text;
   }
 
   function compactObject(payload) {
@@ -4784,24 +5684,12 @@
     keys.forEach((key) => delete next[key]);
     return next;
   }
-
-  function isSchemaShapeError(error) {
-    return /column|schema|does not exist|could not find|relation/i.test(error?.message || "");
-  }
-
+
   function isMissingRpcError(error) {
     return /function|schema cache|not found|could not find|permission denied/i.test(error?.message || "")
       || ["PGRST202", "42501"].includes(String(error?.code || ""));
   }
-
-  function friendlySupabaseError(error) {
-    const message = error?.message || "Unable to fetch";
-    if (/permission|policy|rls/i.test(message)) return "permission/RLS blocked";
-    if (/relation|table|does not exist/i.test(message)) return "table is missing";
-    if (/column|schema cache|could not find/i.test(message)) return "schema cache/column mismatch";
-    return message;
-  }
-
+
   function matchesAnnouncement(item, query) {
     return matchesText(
       query,
@@ -4846,15 +5734,7 @@
     if (audience === "students") return "blue";
     return "gray";
   }
-
-  function matchesText(query, ...values) {
-    const queries = (Array.isArray(query) ? query : [query])
-      .map((item) => String(item || "").trim().toLowerCase())
-      .filter(Boolean);
-    if (!queries.length) return true;
-    return queries.every((item) => values.some((value) => String(value ?? "").toLowerCase().includes(item)));
-  }
-
+
   function searchQuery(localInputId = "") {
     const localQuery = localInputId ? document.getElementById(localInputId)?.value.trim().toLowerCase() : "";
     return [state.globalQuery, localQuery].filter(Boolean);
@@ -4903,15 +5783,7 @@
       return null;
     }
   }
-
-  function findById(rows, id) {
-    return rows.find((row) => String(row.id) === String(id));
-  }
-
-  function sameId(a, b) {
-    return String(a || "") === String(b || "");
-  }
-
+
   function findEnrollmentByKey(key) {
     return state.data.userCourses.find((row) => String(row._key) === String(key));
   }
@@ -4970,11 +5842,7 @@
   function countSubmissionsForTask(taskId) {
     return state.data.taskSubmissions.filter((submission) => String(submission.task_id || submission.batch_task_id) === String(taskId)).length;
   }
-
-  function formatTableName(table) {
-    return String(table || "LMS data").replaceAll("_", " ");
-  }
-
+
   function toDateInput(value) {
     if (!value) return "";
     const date = new Date(value);
@@ -5009,55 +5877,7 @@
   function option(value, selectedValue, label = value) {
     return `<option value="${escapeAttr(value)}" ${String(value) === String(selectedValue || "") ? "selected" : ""}>${escapeHtml(label)}</option>`;
   }
-
-  function initials(value) {
-    return String(value || "A")
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((part) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  }
-
-  function formatDate(value) {
-    if (!value) return "Not set";
-    return new Intl.DateTimeFormat("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric"
-    }).format(new Date(value));
-  }
-
-  function formatDateTime(value) {
-    if (!value) return "Not set";
-    return new Intl.DateTimeFormat("en-IN", {
-      day: "2-digit",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit"
-    }).format(new Date(value));
-  }
-
-  function emptyState(message) {
-    return `<div class="empty-state">${escapeHtml(message)}</div>`;
-  }
-
-  function escapeHtml(value) {
-    if (window.JenovateDom?.escapeHtml) return window.JenovateDom.escapeHtml(value);
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function escapeAttr(value) {
-    if (window.JenovateDom?.escapeAttr) return window.JenovateDom.escapeAttr(value);
-    return escapeHtml(value);
-  }
-
+
   function cssEscape(value) {
     if (window.CSS?.escape) return window.CSS.escape(String(value));
     return String(value).replace(/["\\]/g, "\\$&");

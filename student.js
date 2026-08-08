@@ -3,7 +3,53 @@
   const APP_SESSION_KEY = "jenovateCurrentUser";
   const ADMIN_SESSION_KEY = "jenovateAdminSession";
   const MENTOR_SESSION_KEY = "jenovateMentorSession";
-  const getClient = () => window.getSupabaseClient?.();
+  const getClient = () => window.getLmsPlatformClient?.();
+  const contentService = window.JenovateContentService || {};
+  const utils = window.JenovatePortalUtils;
+  const {
+    clamp,
+    createUploadMeter,
+    emptyState,
+    escapeAttr,
+    escapeHtml,
+    formatDate,
+    formatDateTime,
+    formatFileSize,
+    formatNumber,
+    formatTableName,
+    initialsFor,
+    isSchemaShapeError,
+    numberFrom,
+    on,
+    parseIdList,
+    parseJsonDeep,
+    randomId,
+    relativeActivityTime,
+    runLockedSubmit,
+    setProgress,
+    setText,
+    setValue,
+    stripNullish,
+    truncate,
+    uniqueArray,
+    userFriendlyError
+  } = utils;
+  const tryJson = (value) => utils.parseJson(value, null);
+  const sameId = (a, b) => utils.sameId(a, b, { strictPresent: true });
+  const DEBUG_STUDENT_PORTAL = Boolean(window.JENOVATE_DEBUG);
+  const LMS_MESSAGES = {
+    load: "Unable to load lesson. Please try again later.",
+    material: "Unable to load study material. Please try again later.",
+    video: "Video is temporarily unavailable.",
+    save: "Unable to save progress right now.",
+    generic: "Something went wrong. Please try again later."
+  };
+  const studentDebug = (message, detail) => {
+    if (!DEBUG_STUDENT_PORTAL || !window.console) return;
+    if (detail === undefined) console.warn(message);
+    else console.warn(message, detail);
+  };
+  const safeStudentMessage = (message = LMS_MESSAGES.generic) => message;
   const PAGE_SIZE = 20;
   const CHAT_PAGE_SIZE = 30;
   const QUERY_CACHE_TTL = 45_000;
@@ -19,7 +65,7 @@
     projects: "id,title,description,status,student_id,user_id,batch_id,course_id,type,drive_link,file_url,file_urls,review_notes,feedback,reviewed_at,created_at,updated_at",
     batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,max_marks,published_at,deleted_at,created_by,created_at",
     taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,max_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
-    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at,deleted_at",
+    quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,time_taken_seconds,duration_seconds,question_count,selected_question_ids,created_at,submitted_at,deleted_at",
     academicActivity: "id,student_id,batch_id,course_id,activity_type,points,max_points,occurred_at,metadata,created_at",
     chats: "id,batch_id,user_id,message,parent_id,created_at",
     announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
@@ -48,7 +94,7 @@
     { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,user_id,batch_id,course_id,type,file_urls,review_notes,feedback,created_at", limit: 100, scope: "studentProjectRows", order: "created_at.desc" },
     { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, scope: "studentBatchRows" },
     { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 200, scope: "studentOnlyRows", order: "submitted_at.desc" },
-    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, optional: true, limit: 200, scope: "studentOnlyRows", order: "submitted_at.desc" },
+    { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, fallbackSelect: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at", optional: true, limit: 200, scope: "studentOnlyRows", order: "submitted_at.desc" },
     { key: "academicActivity", table: "student_academic_activity", select: SELECTS.academicActivity, optional: true, limit: 300, scope: "studentOnlyRows", order: "occurred_at.desc" },
     { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "studentBatchRows", order: "created_at.desc" },
     { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, order: "published_at.desc" },
@@ -86,6 +132,7 @@
     query: "",
     selectedCourseId: "",
     selectedLessonKey: "",
+    lessonTab: "overview",
     selectedBatchId: "",
     selectedTaskId: "",
     questionsFilter: "all",
@@ -100,6 +147,7 @@
     courseAccessTimes: null,
     videoProgressLastSaved: {},
     videoProgressSaveInFlight: {},
+    resourceHandles: new Map(),
     realtimeChannel: null,
     refreshTimer: null,
     searchTimer: null,
@@ -142,7 +190,7 @@
     ].join(":"),
     getClient,
     onFetchError: (spec, error) => {
-      if (!spec.optional) console.error(`Supabase fetch failed for ${spec.table}`, error);
+      if (!spec.optional) studentDebug("Learning data request failed.", error);
     },
     pageSize: PAGE_SIZE,
     runSpecialQuery: runStudentSpecialQuery,
@@ -213,11 +261,11 @@
     renderIdentity();
     notifyDailyLoginReward();
     renderAll();
-    void finishStudentBootstrap(!cachedStudent);
+    void finishStudentBootstrap({ hasCachedStudent: Boolean(cachedStudent) });
   }
 
-  async function finishStudentBootstrap(sessionAlreadyVerified) {
-    if (!sessionAlreadyVerified) {
+  async function finishStudentBootstrap(options = {}) {
+    if (!options.hasCachedStudent) {
       const liveStudent = await resolveStudentSession();
       if (!liveStudent) {
         clearStoredSessions();
@@ -228,6 +276,14 @@
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(liveStudent));
       sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(liveStudent));
       renderIdentity();
+    } else {
+      const liveStudent = await resolveStudentSession();
+      if (liveStudent) {
+        state.student = liveStudent;
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(liveStudent));
+        sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(liveStudent));
+        renderIdentity();
+      }
     }
 
     void syncDailyStreak({ render: true, notify: true });
@@ -260,12 +316,12 @@
         "Daily streak sync timed out."
       );
     } catch (error) {
-      console.warn("Daily streak sync skipped", error.message || error);
+      studentDebug("Daily streak sync skipped.", error);
       return false;
     }
     const { data, error } = response;
     if (error) {
-      console.warn("Daily streak sync failed", friendlySupabaseError(error));
+      studentDebug("Daily streak sync failed.", error);
       return false;
     }
 
@@ -314,7 +370,6 @@
   function wireNavigation() {
     document.querySelectorAll(".nav-item").forEach((button) => {
       button.addEventListener("click", () => {
-        openLearningPanel();
         setView(button.dataset.view);
         closeMobileMenu();
       });
@@ -329,16 +384,8 @@
 
     on("studentSidePanelClose", "click", closeLearningPanel);
 
-    document.querySelectorAll("[data-jump]").forEach((button) => {
-      button.addEventListener("click", (event) => {
-        event.preventDefault();
-        setView(button.dataset.jump);
-        closeMobileMenu();
-      });
-    });
-
-    document.querySelectorAll("[data-close-modal]").forEach((button) => {
-      button.addEventListener("click", closeModal);
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close-modal]")) closeModal();
     });
 
     document.addEventListener("keydown", (event) => {
@@ -353,7 +400,7 @@
   function wireActions() {
     on("refreshBtn", "click", () => loadAllData({ force: true }));
     on("reloadTasksBtn", "click", () => loadAllData({ force: true }));
-    on("reloadChatBtn", "click", () => loadAllData({ force: true }));
+    on("reloadChatBtn", "click", () => refreshChatRows({ force: true }));
     on("reloadAnnouncementsBtn", "click", () => loadAllData({ force: true }));
     on("refreshSupportBtn", "click", () => loadAllData({ force: true }));
     document.addEventListener("click", (event) => {
@@ -361,6 +408,12 @@
       if (target instanceof Element && target.closest("#logoutBtn")) {
         event.preventDefault();
         logout();
+      }
+      const jump = target instanceof Element ? target.closest("[data-jump]") : null;
+      if (jump) {
+        event.preventDefault();
+        setView(jump.dataset.jump);
+        closeMobileMenu();
       }
     });
     on("studentMenuBtn", "click", openMobileMenu);
@@ -600,7 +653,51 @@
       const selectLesson = event.target.closest("[data-select-lesson]");
       if (selectLesson) {
         state.selectedLessonKey = selectLesson.dataset.selectLesson;
+        state.lessonTab = "overview";
         renderLearn();
+        return;
+      }
+
+      const lessonTab = event.target.closest("[data-lesson-tab]");
+      if (lessonTab) {
+        state.lessonTab = lessonTab.dataset.lessonTab || "overview";
+        updateLessonTabPanels();
+        return;
+      }
+
+      const lessonSeek = event.target.closest("[data-lesson-seek]");
+      if (lessonSeek) {
+        seekActiveLessonVideo(Number(lessonSeek.dataset.lessonSeek || 0));
+        return;
+      }
+
+      const lessonTogglePlay = event.target.closest("[data-lesson-toggle-play]");
+      if (lessonTogglePlay) {
+        toggleActiveLessonVideo();
+        return;
+      }
+
+      const lessonToggleMute = event.target.closest("[data-lesson-toggle-mute]");
+      if (lessonToggleMute) {
+        toggleActiveLessonMute();
+        return;
+      }
+
+      const lessonSpeed = event.target.closest("[data-lesson-speed]");
+      if (lessonSpeed) {
+        setActiveLessonSpeed(Number(lessonSpeed.dataset.lessonSpeed || 1));
+        return;
+      }
+
+      const lessonFullscreen = event.target.closest("[data-lesson-fullscreen]");
+      if (lessonFullscreen) {
+        openLessonFullscreen();
+        return;
+      }
+
+      const openResource = event.target.closest("[data-open-resource]");
+      if (openResource) {
+        void openResourcePreview(openResource.dataset.openResource, openResource.dataset.resourceTitle || "Resource", openResource.dataset.resourceKind || "");
         return;
       }
 
@@ -664,13 +761,23 @@
       const profile = await window.JenovateAuth?.requireRole?.("student");
       if (profile) return normalizeUser(profile);
     } catch (error) {
-      console.warn("Student auth check failed", error);
+      studentDebug("Session check failed.", error);
     }
     return null;
   }
 
   async function enforceLiveSession() {
-    if (!(await resolveStudentSession())) {
+    const liveStudent = await resolveStudentSession();
+    if (liveStudent) {
+      state.student = liveStudent;
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(liveStudent));
+      sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(liveStudent));
+      return;
+    }
+    if (window.JenovateAuth?.readStoredSession?.("student")) {
+      return;
+    }
+    {
       if (redirectToActiveSession("student")) return;
       window.location.replace("login.html?next=student");
     }
@@ -696,7 +803,15 @@
         : TABLE_SPECS;
       const results = await Promise.all(requestedSpecs.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
-      await window.resolveSupabaseAssetsDeep?.(rows);
+      if (options.initial === true) {
+        window.setTimeout(() => {
+          void window.resolveLmsAssetsDeep?.(rows).then(renderActiveView).catch((error) => {
+            studentDebug("Deferred asset preparation failed.", error);
+          });
+        }, 0);
+      } else {
+        await window.resolveLmsAssetsDeep?.(rows);
+      }
       const failed = results.filter((result) => result.error && !result.optional);
 
       state.tableErrors = Object.fromEntries(failed.map((result) => [result.table, result.error.message || "Unable to fetch"]));
@@ -735,19 +850,23 @@
       }
 
       ensureSelections();
-      await loadLeaderboardData();
+      if (options.initial === true) {
+        if (!state.data.leaderboard.length) state.data.leaderboard = buildPersonalLeaderboardRows();
+      } else {
+        await loadLeaderboardData();
+      }
       renderAll();
 
       const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
       if (failed.length) {
-        console.warn("Student background data loaded with warnings", failed.map((item) => ({ table: item.table, error: friendlySupabaseError(item.error) })));
+        studentDebug("Some background learning data could not be loaded.");
         setSyncStatus("");
       } else {
         setSyncStatus("");
       }
     } catch (error) {
       const errorMsg = error.message || "Unable to load student data.";
-      console.error("Student background data sync failed", errorMsg);
+      studentDebug("Background learning data sync failed.", error);
       setSyncStatus("");
     } finally {
       setLoading(false);
@@ -770,7 +889,7 @@
       if (!taskResult.error) state.data.batchTasks = mergeRowsById(state.data.batchTasks, taskResult.data || []);
       if (!userResult.error) state.data.users = mergeRowsById(state.data.users, (userResult.data || []).map(normalizeUser));
     } catch (error) {
-      console.warn("Unable to load supplemental batch rows", error);
+      studentDebug("Supplemental batch rows could not be loaded.", error);
     }
   }
 
@@ -786,7 +905,7 @@
         .limit(PAGE_SIZE);
       if (!error) state.data.batches = mergeRowsById(state.data.batches, data || []);
     } catch (error) {
-      console.warn("Unable to load supplemental batches", error);
+      studentDebug("Supplemental batches could not be loaded.", error);
     }
   }
 
@@ -815,22 +934,18 @@
     return tableClient.fetchTable(spec, options);
   }
 
-  async function runSupabaseQuery(supabaseClient, spec, limit) {
-    return tableClient.runSupabaseQuery(supabaseClient, spec, limit);
-  }
-
-  async function runStudentSpecialQuery(supabaseClient, spec, limit) {
+  async function runStudentSpecialQuery(platformClient, spec, limit) {
     if (spec.scope === "studentUsers") {
       const [profileResult, directoryResult] = await Promise.all([
-        supabaseClient.from("users").select(spec.select).eq("id", state.student.id).maybeSingle(),
-        supabaseClient.rpc("lms_student_directory")
+        platformClient.from("users").select(spec.select).eq("id", state.student.id).maybeSingle(),
+        platformClient.rpc("lms_student_directory")
       ]);
       const profileRows = profileResult.error
         ? [state.student].filter(Boolean)
         : (profileResult.data ? [profileResult.data] : [state.student].filter(Boolean));
       const directoryRows = directoryResult.error ? [] : (directoryResult.data || []);
       if (directoryResult.error) {
-        console.warn("Student directory is unavailable; showing the signed-in student profile only.", directoryResult.error);
+        studentDebug("Student directory is unavailable; showing the signed-in profile only.", directoryResult.error);
       }
       if (profileResult.error && !profileRows.length) throw profileResult.error;
       return mergeRowsById(profileRows, directoryRows).slice(0, limit);
@@ -925,6 +1040,20 @@
     return tableClient.clearQueryCache();
   }
 
+  async function refreshChatRows(options = {}) {
+    const spec = TABLE_SPECS.find((item) => item.key === "chats");
+    if (!spec) return;
+    const result = await fetchTableSafe(spec, { force: options.force === true });
+    if (result.error) {
+      studentDebug("Unable to refresh batch chat.", result.error);
+      return;
+    }
+    state.data.chats = result.rows || [];
+    renderChat();
+    renderBatchPendingTasks();
+    setSyncStatus("");
+  }
+
   function mergePurchaseRows(...sources) {
     const seen = new Set();
     return sources.flat().filter(Boolean).filter((purchase) => {
@@ -940,19 +1069,25 @@
   }
 
   function setupRealtime() {
-    const supabaseClient = getClient();
-    if (!supabaseClient?.channel || state.realtimeChannel) return;
+    const platformClient = getClient();
+    if (!platformClient?.channel || state.realtimeChannel) return;
 
     const liveTables = ["projects", "batch_chats", "announcements", "support_tickets", "support_messages", "support_notifications"];
 
-    const channel = supabaseClient.channel("student-lms-realtime");
+    const channel = platformClient.channel("student-lms-realtime");
     liveTables.forEach((table) => {
-      channel.on("postgres_changes", { event: "*", schema: "public", table }, () => queueRealtimeRefresh(table));
+      const filter = table === "batch_chats" && state.student?.batch_id
+        ? `batch_id=eq.${state.student.batch_id}`
+        : undefined;
+      const config = filter
+        ? { event: "*", schema: "public", table, filter }
+        : { event: "*", schema: "public", table };
+      channel.on("postgres_changes", config, () => queueRealtimeRefresh(table));
     });
 
     channel.subscribe((status) => {
       if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status)) {
-        console.warn("Student realtime status", status);
+        studentDebug("Realtime status update.", status);
       }
     });
 
@@ -964,7 +1099,13 @@
   function queueRealtimeRefresh(table) {
     setSyncStatus("");
     window.clearTimeout(state.refreshTimer);
-    state.refreshTimer = window.setTimeout(() => loadAllData({ silent: true, force: true }), 900);
+    state.refreshTimer = window.setTimeout(() => {
+      if (table === "batch_chats") {
+        void refreshChatRows({ force: true });
+        return;
+      }
+      void loadAllData({ silent: true, force: true });
+    }, table === "batch_chats" ? 650 : 900);
   }
 
   async function cleanupRealtime() {
@@ -1009,7 +1150,7 @@
     try {
       renderers[state.activeView]?.();
     } catch (error) {
-      console.error(`Unable to render ${state.activeView} view`, error);
+      studentDebug("Unable to render the selected view.", error);
       if (state.activeView === "learn") {
         renderLearnFallback(error);
       }
@@ -1127,7 +1268,7 @@
         state.data.catalogCourses = mergeRowsById(state.data.catalogCourses, rows);
       }
     } catch (error) {
-      console.warn("Unable to load supplemental courses", error);
+      studentDebug("Supplemental courses could not be loaded.", error);
     }
   }
 
@@ -1305,7 +1446,7 @@
       if (error) throw error;
       state.data.leaderboard = (data || []).map(normalizeLeaderboardRow);
     } catch (error) {
-      console.warn("Unable to load the shared leaderboard; using verified personal metrics.", error);
+      studentDebug("Shared leaderboard could not be loaded.", error);
       state.data.leaderboard = buildPersonalLeaderboardRows();
     }
   }
@@ -2181,7 +2322,7 @@
     try {
       localStorage.setItem(courseAccessStorageKey(), JSON.stringify(times));
     } catch (error) {
-      console.warn("Unable to save recent course access locally.", error);
+      studentDebug("Recent course access could not be saved locally.", error);
     }
   }
 
@@ -2315,8 +2456,28 @@
     }
   }
 
+  function registerLmsResource(url, title = "Resource", kind = "file") {
+    const id = `lms-resource-${state.resourceHandles.size + 1}`;
+    state.resourceHandles.set(id, {
+      kind: String(kind || "file"),
+      title: String(title || "Resource"),
+      url: String(url || "").trim()
+    });
+    return id;
+  }
+
+  function resourceFromHandle(handleOrUrl, fallbackTitle = "Resource", fallbackKind = "file") {
+    const value = String(handleOrUrl || "").trim();
+    return state.resourceHandles.get(value) || {
+      kind: fallbackKind,
+      title: fallbackTitle,
+      url: value
+    };
+  }
+
   function courseStudyResources(course, modules = parseModules(course?.modules)) {
     const resources = [];
+    state.resourceHandles.clear();
     modules.forEach((module, moduleIndex) => {
       (module.lessons || []).forEach((lesson, lessonIndex) => {
         const url = lessonMaterialUrl(lesson);
@@ -2325,12 +2486,14 @@
           || /\.(pdf|docx?|pptx?|xlsx?|zip|txt)(?:$|\?)/i.test(url);
         if (!url || !looksLikeMaterial) return;
         const ext = (url.match(/\.([a-z0-9]+)(?:$|\?)/i)?.[1] || "file").toUpperCase();
+        const title = lesson.title || `${module.title || `Module ${moduleIndex + 1}`} Material`;
+        const kind = ext.toLowerCase().includes("pdf") ? "pdf" : "file";
         resources.push({
-          url,
-          title: lesson.title || `${module.title || `Module ${moduleIndex + 1}`} Material`,
+          id: registerLmsResource(url, title, kind),
+          title,
           meta: `${module.title || `Module ${moduleIndex + 1}`} - ${lesson.duration || `Item ${lessonIndex + 1}`}`,
           label: ext.slice(0, 3),
-          kind: ext.toLowerCase().includes("pdf") ? "pdf" : "file"
+          kind
         });
       });
     });
@@ -2374,6 +2537,9 @@
     const resources = courseStudyResources(course, modules);
     const selectedTitle = selectedLesson?.lesson?.title || title;
     const instructor = course?.instructor_name || course?.mentor_name || "Jenovate Mentor";
+    const activeLessonTab = ["overview", "notes", "resources", "discussion"].includes(state.lessonTab) ? state.lessonTab : "overview";
+    const notesText = lessonNotesText(selectedLesson?.lesson, activeModule, course);
+    const activeMaterialUrl = lessonMaterialUrl(selectedLesson?.lesson);
 
     surface.innerHTML = `
       <section class="stitch-learn-main learn-reference-main">
@@ -2395,14 +2561,14 @@
         <div class="lesson-player stitch-video-player reference-video-player" id="lessonPlayer"></div>
 
         <nav class="lesson-tabs reference-lesson-tabs" aria-label="Lesson tabs">
-          <button class="active" type="button">Overview</button>
-          <button type="button">Notes</button>
-          <button type="button">Resources</button>
-          <button type="button" data-jump="questions">Discussion</button>
+          <button class="${activeLessonTab === "overview" ? "active" : ""}" type="button" data-lesson-tab="overview">Overview</button>
+          <button class="${activeLessonTab === "notes" ? "active" : ""}" type="button" data-lesson-tab="notes">Notes</button>
+          <button class="${activeLessonTab === "resources" ? "active" : ""}" type="button" data-lesson-tab="resources">Resources</button>
+          <button class="${activeLessonTab === "discussion" ? "active" : ""}" type="button" data-lesson-tab="discussion">Discussion</button>
         </nav>
 
         <section class="lesson-body-grid lesson-reference-body">
-          <article class="lesson-about-card reference-overview-card">
+          <article class="lesson-about-card reference-overview-card lesson-tab-panel ${activeLessonTab === "overview" ? "active" : ""}" data-lesson-panel="overview">
             <h3>${escapeHtml(selectedTitle)}</h3>
             <div class="lesson-facts">
               <span>${escapeHtml(selectedLesson?.lesson?.duration || course?.duration || "Self paced")}</span>
@@ -2420,7 +2586,43 @@
               </ul>
             </div>
           </article>
-          <article class="lesson-mentor-card">
+          <article class="lesson-about-card reference-overview-card lesson-tab-panel ${activeLessonTab === "notes" ? "active" : ""}" data-lesson-panel="notes" ${activeLessonTab === "notes" ? "" : "hidden"}>
+            <h3>Lesson Notes</h3>
+            <p>${escapeHtml(notesText)}</p>
+            ${selectedLesson?.lesson?.transcript ? `
+              <div class="lesson-notes-box">
+                <strong>Transcript</strong>
+                <p>${escapeHtml(selectedLesson.lesson.transcript)}</p>
+              </div>
+            ` : ""}
+            ${activeMaterialUrl ? `<button class="primary-btn" type="button" data-open-resource="${escapeAttr(registerLmsResource(activeMaterialUrl, `${selectedTitle} Notes`, "pdf"))}" data-resource-title="${escapeAttr(`${selectedTitle} Notes`)}" data-resource-kind="pdf">Open Study Material</button>` : ""}</article>
+          <article class="lesson-resource-card reference-resource-card lesson-tab-panel ${activeLessonTab === "resources" ? "active" : ""}" data-lesson-panel="resources" ${activeLessonTab === "resources" ? "" : "hidden"}>
+            <div class="resource-card-head">
+              <div>
+                <h3>Curated Course Materials</h3>
+                <p>Open PDFs and study files inside the learning player.</p>
+              </div>
+            </div>
+            <div class="resource-grid">
+              ${resources.length ? resources.map((resource) => `
+                <button class="resource-download-card" type="button" data-open-resource="${escapeAttr(resource.id)}" data-resource-title="${escapeAttr(resource.title)}" data-resource-kind="${escapeAttr(resource.kind)}">
+                  <span class="resource-icon ${escapeAttr(resource.kind)}">${escapeHtml(resource.label)}</span>
+                  <strong>${escapeHtml(resource.title)}</strong>
+                  <small>${escapeHtml(resource.meta)}</small>
+                  <em>Open</em>
+                </button>
+              `).join("") : emptyState("No study materials yet", "Optional PDFs and materials added by your mentor will appear here.")}
+            </div>
+          </article>
+          <article class="lesson-about-card reference-overview-card lesson-tab-panel ${activeLessonTab === "discussion" ? "active" : ""}" data-lesson-panel="discussion" ${activeLessonTab === "discussion" ? "" : "hidden"}>
+            <h3>Lesson Discussion</h3>
+            <p>Ask your mentor or continue the batch discussion for this lesson.</p>
+            <div class="lesson-discussion-actions">
+              <button class="primary-btn" type="button" data-jump="questions">Open Discussion</button>
+              <button class="secondary-btn" type="button" data-jump="batch">Open Batch Chat</button>
+            </div>
+          </article>
+          <article class="lesson-mentor-card lesson-tab-panel ${activeLessonTab === "overview" ? "active" : ""}" data-lesson-panel-extra="overview" ${activeLessonTab === "overview" ? "" : "hidden"}>
             <span class="student-avatar">${escapeHtml(initialsFor(instructor))}</span>
             <div>
               <strong>${escapeHtml(instructor)}</strong>
@@ -2429,22 +2631,22 @@
             </div>
             <button class="secondary-btn" type="button" data-jump="questions">Ask</button>
           </article>
-          <aside class="lesson-resource-card reference-resource-card">
+          <aside class="lesson-resource-card reference-resource-card lesson-tab-panel ${activeLessonTab === "overview" ? "active" : ""}" data-lesson-panel-extra="overview" ${activeLessonTab === "overview" ? "" : "hidden"}>
             <div class="resource-card-head">
               <div>
                 <h3>Curated Course Materials</h3>
                 <p>Download assets and study files shared for this course.</p>
               </div>
-              ${resources.length ? `<a class="primary-btn" href="${escapeAttr(resources[0].url)}" target="_blank" rel="noopener">Open First</a>` : ""}
+              ${resources.length ? `<button class="primary-btn" type="button" data-open-resource="${escapeAttr(resources[0].id)}" data-resource-title="${escapeAttr(resources[0].title)}" data-resource-kind="${escapeAttr(resources[0].kind)}">Open Study Material</button>` : ""}
             </div>
             <div class="resource-grid">
               ${resources.length ? resources.slice(0, 4).map((resource) => `
-                <a class="resource-download-card" href="${escapeAttr(resource.url)}" target="_blank" rel="noopener">
+                <button class="resource-download-card" type="button" data-open-resource="${escapeAttr(resource.id)}" data-resource-title="${escapeAttr(resource.title)}" data-resource-kind="${escapeAttr(resource.kind)}">
                   <span class="resource-icon ${escapeAttr(resource.kind)}">${escapeHtml(resource.label)}</span>
                   <strong>${escapeHtml(resource.title)}</strong>
                   <small>${escapeHtml(resource.meta)}</small>
-                  <em>Download</em>
-                </a>
+                  <em>Open</em>
+                </button>
               `).join("") : emptyState("No study materials yet", "Optional PDFs and materials added by your mentor will appear here.")}
             </div>
           </aside>
@@ -2581,11 +2783,14 @@
       : contentType === "assignment" ? "Assignment"
         : contentType === "quiz" ? "Quiz"
           : "Video";
+    const playableUrl = contentService.isProviderUrl?.(mediaUrl) ? mediaUrl : contentService.directProviderContentUrl?.(mediaUrl) || mediaUrl;
     const embedUrl = mediaEmbedUrl(mediaUrl);
-    const directVideo = contentType === "video" && mediaUrl && isDirectVideoUrl(mediaUrl);
+    const directVideo = contentType === "video" && playableUrl && isDirectVideoUrl(playableUrl);
+    const documentEmbedUrl = !directVideo && playableUrl ? resourcePreviewUrl(playableUrl, contentType) : "";
     const description = lesson.description || lesson.transcript || lessonItem.module.description || course.description || "";
     const moduleLabel = `Module ${lessonItem.moduleIndex + 1}: ${lessonItem.module.title || "Untitled module"}`;
     const lessonLabel = `Lesson ${lessonItem.lessonIndex + 1}`;
+    const canSeek = Boolean(directVideo);
 
     target.innerHTML = `
       <div class="player-header">
@@ -2593,20 +2798,45 @@
           <span>${escapeHtml(`${moduleLabel} - ${contentLabel} ${lessonItem.lessonIndex + 1}`)}</span>
           <h3>${escapeHtml(lesson.title || "Lesson")}</h3>
         </div>
-        ${mediaUrl ? `<a class="secondary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open ${escapeHtml(contentLabel)}</a>` : ""}
+        ${playableUrl ? `<button class="secondary-btn" type="button" data-lesson-fullscreen>Full Screen</button>` : ""}
       </div>
-      <div class="media-frame">
+      <div class="media-frame" data-player-direct="${directVideo ? "true" : "false"}" data-player-title="${escapeAttr(lesson.title || "Lesson")}">
         ${directVideo ? `
-          <video controls preload="metadata" src="${escapeAttr(mediaUrl)}"></video>
+          <video playsinline preload="metadata" src="${escapeAttr(playableUrl)}"></video>
         ` : embedUrl ? `
           <iframe src="${escapeAttr(embedUrl)}" title="${escapeAttr(lesson.title || "Lesson video")}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        ` : documentEmbedUrl ? `
+          <iframe src="${escapeAttr(documentEmbedUrl)}" title="${escapeAttr(lesson.title || "Lesson material")}" allow="fullscreen" allowfullscreen></iframe>
         ` : `
           <div class="media-empty">
-            <strong>${mediaUrl ? `Open the ${escapeHtml(contentLabel.toLowerCase())}` : `No ${escapeHtml(contentLabel.toLowerCase())} attached`}</strong>
-            <p>${escapeHtml(mediaUrl ? "This content opens in a new tab." : "Your mentor has not attached a file or link yet.")}</p>
-            ${mediaUrl ? `<a class="primary-btn" href="${escapeAttr(mediaUrl)}" target="_blank" rel="noopener">Open ${escapeHtml(contentLabel)}</a>` : ""}
+            <strong>${playableUrl ? `${escapeHtml(contentLabel)} temporarily unavailable` : `No ${escapeHtml(contentLabel.toLowerCase())} attached`}</strong>
+            <p>${escapeHtml(playableUrl ? LMS_MESSAGES.video : "Your mentor has not attached this lesson yet.")}</p>
           </div>
         `}
+        ${directVideo ? `
+          <button class="lesson-fullscreen-launch" type="button" data-lesson-fullscreen aria-label="Open lesson in full screen">Full Screen</button>
+          <div class="lesson-video-controls" aria-label="Lesson player controls">
+            <div class="lesson-control-progress" aria-hidden="true">
+              <span class="lesson-control-buffer"></span>
+              <span class="lesson-control-played" data-lesson-played></span>
+            </div>
+            <div class="lesson-control-row">
+              <div class="lesson-control-left">
+                <button class="lesson-icon-control lesson-play-toggle" type="button" data-lesson-toggle-play ${canSeek ? "" : "disabled"} aria-label="Play lesson">
+                  <span data-lesson-play-icon>▶</span>
+                </button>
+                <button class="lesson-icon-control" type="button" data-lesson-toggle-mute ${canSeek ? "" : "disabled"} aria-label="Mute lesson">🔊</button>
+                <span class="lesson-time-readout" data-lesson-time>0:00 / 0:00</span>
+              </div>
+              <div class="lesson-control-right">
+                <button class="lesson-icon-control" type="button" data-lesson-seek="-10" ${canSeek ? "" : "disabled"} aria-label="Rewind 10 seconds">↺10</button>
+                <button class="lesson-icon-control" type="button" data-lesson-seek="10" ${canSeek ? "" : "disabled"} aria-label="Forward 10 seconds">10↻</button>
+                ${[0.75, 1, 1.25, 1.5, 2].map((speed) => `<button class="lesson-speed-chip ${speed === 1 ? "active" : ""}" type="button" data-lesson-speed="${speed}" ${canSeek ? "" : "disabled"}>${speed}x</button>`).join("")}
+                <button class="lesson-icon-control" type="button" data-lesson-fullscreen aria-label="Open fullscreen">⛶</button>
+              </div>
+            </div>
+          </div>
+        ` : ""}
       </div>
       <div class="player-description">
         <strong>Description</strong>
@@ -2615,7 +2845,218 @@
     `;
 
     updateLessonProgressStatus(lessonProgressFromState(courseProgress(course).row, lessonItem));
-    attachLessonProgressTracker(course, lessonItem, { directVideo, embedUrl });
+    attachLessonProgressTracker(course, lessonItem, { directVideo, embedUrl: embedUrl || documentEmbedUrl });
+    initializeLessonVideoControls();
+  }
+
+  function updateLessonTabPanels() {
+    const activeTab = ["overview", "notes", "resources", "discussion"].includes(state.lessonTab) ? state.lessonTab : "overview";
+    document.querySelectorAll("[data-lesson-tab]").forEach((button) => {
+      const active = button.dataset.lessonTab === activeTab;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    document.querySelectorAll("[data-lesson-panel]").forEach((panel) => {
+      const active = panel.dataset.lessonPanel === activeTab;
+      panel.classList.toggle("active", active);
+      panel.hidden = !active;
+    });
+    document.querySelectorAll("[data-lesson-panel-extra]").forEach((panel) => {
+      const active = panel.dataset.lessonPanelExtra === activeTab;
+      panel.classList.toggle("active", active);
+      panel.hidden = !active;
+    });
+  }
+
+  function seekActiveLessonVideo(deltaSeconds) {
+    const video = document.querySelector("#lessonPlayer video");
+    if (!video || !Number.isFinite(deltaSeconds)) return;
+    video.currentTime = clamp((video.currentTime || 0) + deltaSeconds, 0, Number.isFinite(video.duration) ? video.duration : Number.MAX_SAFE_INTEGER);
+    updateLessonVideoControls(video);
+  }
+
+  function toggleActiveLessonVideo() {
+    const video = document.querySelector("#lessonPlayer video");
+    if (!video) return;
+    if (video.paused) {
+      video.play?.().catch(() => {});
+    } else {
+      video.pause?.();
+    }
+    updateLessonVideoControls(video);
+  }
+
+  function toggleActiveLessonMute() {
+    const video = document.querySelector("#lessonPlayer video");
+    if (!video) return;
+    video.muted = !video.muted;
+    updateLessonVideoControls(video);
+  }
+
+  function setActiveLessonSpeed(rate) {
+    const video = document.querySelector("#lessonPlayer video");
+    if (!video || !Number.isFinite(rate) || rate <= 0) return;
+    video.playbackRate = rate;
+    document.querySelectorAll("[data-lesson-speed]").forEach((button) => {
+      button.classList.toggle("active", Number(button.dataset.lessonSpeed) === rate);
+    });
+  }
+
+  function initializeLessonVideoControls() {
+    const video = document.querySelector("#lessonPlayer video");
+    if (!video) return;
+    ["loadedmetadata", "timeupdate", "durationchange", "play", "pause", "volumechange", "progress"].forEach((eventName) => {
+      video.addEventListener(eventName, () => updateLessonVideoControls(video));
+    });
+    updateLessonVideoControls(video);
+  }
+
+  function updateLessonVideoControls(video) {
+    if (!video) return;
+    const duration = Number.isFinite(video.duration) ? video.duration : 0;
+    const current = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    const percent = duration ? clamp((current / duration) * 100, 0, 100) : 0;
+    const bufferedEnd = video.buffered?.length ? video.buffered.end(video.buffered.length - 1) : 0;
+    const bufferedPercent = duration ? clamp((bufferedEnd / duration) * 100, 0, 100) : 0;
+    document.querySelector("[data-lesson-played]")?.style.setProperty("width", `${percent}%`);
+    document.querySelector(".lesson-control-buffer")?.style.setProperty("width", `${bufferedPercent}%`);
+    const timeReadout = document.querySelector("[data-lesson-time]");
+    if (timeReadout) timeReadout.textContent = `${formatVideoTime(current)} / ${formatVideoTime(duration)}`;
+    const playIcon = document.querySelector("[data-lesson-play-icon]");
+    if (playIcon) playIcon.textContent = video.paused ? "▶" : "Ⅱ";
+    const playButton = document.querySelector("[data-lesson-toggle-play]");
+    if (playButton) playButton.setAttribute("aria-label", video.paused ? "Play lesson" : "Pause lesson");
+    const muteButton = document.querySelector("[data-lesson-toggle-mute]");
+    if (muteButton) {
+      muteButton.textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
+      muteButton.setAttribute("aria-label", video.muted || video.volume === 0 ? "Unmute lesson" : "Mute lesson");
+    }
+  }
+
+  function formatVideoTime(seconds) {
+    const value = Math.max(0, Math.floor(Number(seconds || 0)));
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+    const remainingSeconds = value % 60;
+    if (hours) return `${hours}:${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+    return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+  }
+
+  async function openLessonFullscreen() {
+    const frame = document.querySelector("#lessonPlayer .media-frame");
+    if (!frame) return;
+    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fullscreenElement) {
+      const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+      try {
+        await exitFullscreen?.call(document);
+      } catch (_) {}
+      return;
+    }
+
+    const requestFullscreen = frame.requestFullscreen || frame.webkitRequestFullscreen;
+    if (!requestFullscreen) return;
+    try {
+      await requestFullscreen.call(frame);
+    } catch (_) {}
+  }
+
+  async function openResourcePreview(url, title = "Resource", kind = "") {
+    const resource = resourceFromHandle(url, title, kind || "file");
+    if (!resource.url) return;
+    const displayTitle = resource.title || title || "Study Material";
+    const displayKind = resource.kind || kind || "file";
+    const loadingHtml = (heading, message, close = false) => `
+      <div class="resource-preview-modal"><div class="resource-preview-loading">
+        <strong>${escapeHtml(heading)}</strong><p>${escapeHtml(message)}</p>
+        ${close ? `<button class="secondary-btn" type="button" data-close-modal>Close</button>` : ""}
+      </div></div>`;
+    openModal(displayTitle, loadingHtml("Opening study material...", "Please wait while your file is prepared."));
+    modal?.classList.add("resource-modal");
+
+    const resolvedRaw = await resolveResourceUrl(resource.url), unresolvedBarePath = isBareStorageMaterialPath(resource.url) && String(resolvedRaw || "").replace(/^\/+/, "") === String(resource.url || "").trim().replace(/^\/+/, "");
+    const resolvedUrl = normalizePreviewUrl(resolvedRaw);
+    const previewUrl = unresolvedBarePath ? "" : resourcePreviewUrl(resolvedUrl, displayKind);
+    if (!previewUrl) {
+      modalBody.innerHTML = loadingHtml("Study material temporarily unavailable", LMS_MESSAGES.material, true);
+      return;
+    }
+    modalBody.innerHTML = `
+      <div class="resource-preview-modal">
+        <iframe src="${escapeAttr(previewUrl)}" title="${escapeAttr(displayTitle)}" allow="fullscreen" allowfullscreen></iframe>
+        <div class="resource-preview-actions">
+          <a class="primary-btn" href="${escapeAttr(resourceDownloadUrl(resolvedUrl))}" target="_blank" rel="noopener" download>Download PDF</a>
+          <button class="secondary-btn" type="button" data-close-modal>Close</button>
+        </div>
+      </div>
+    `;
+  }
+
+  async function resolveResourceUrl(url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    try {
+      const resolveAssetUrl = window.resolveLmsAssetUrl;
+      if (resolveAssetUrl) {
+        const resolved = await resolveAssetUrl(raw);
+        if (resolved && resolved !== raw) return resolved;
+      }
+      const createSignedAssetUrl = window.createLmsSignedAssetUrl;
+      if (createSignedAssetUrl && isBareStorageMaterialPath(raw)) {
+        return await createSignedAssetUrl("study-materials", raw.replace(/^\/+/, ""));
+      }
+    } catch (error) {
+      studentDebug("Study material could not be prepared.", error);
+    }
+    return raw;
+  }
+
+  function isBareStorageMaterialPath(value) {
+    const text = String(value || "").trim();
+    if (!text || /^[a-z][a-z0-9+.-]*:/i.test(text)) return false;
+    if (/^(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(text)) return false;
+    return /\.(pdf|docx?|pptx?|xlsx?|zip|txt)(?:$|\?|#)/i.test(text)
+      || /^[0-9a-f-]{20,}\//i.test(text.replace(/^\/+/, ""));
+  }
+
+  function normalizePreviewUrl(url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    try {
+      const current = new URL(window.location.href);
+      const prepared = /^(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(raw) ? `${current.protocol}//${raw}` : raw;
+      const parsed = new URL(prepared, window.location.href);
+      const isLoopback = ["127.0.0.1", "localhost"].includes(parsed.hostname);
+      if (isLoopback) {
+        parsed.protocol = current.protocol;
+        parsed.hostname = current.hostname;
+        parsed.port = current.port;
+        return parsed.toString();
+      }
+      return parsed.toString();
+    } catch {
+      return raw;
+    }
+  }
+
+  function resourceDownloadUrl(url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    return contentService.isProviderUrl?.(raw) ? contentService.directProviderContentUrl?.(raw) || raw : raw;
+  }
+
+  function lessonNotesText(lesson, module, course) {
+    return [
+      lesson?.notes,
+      lesson?.note,
+      lesson?.summary,
+      lesson?.description,
+      module?.notes,
+      module?.description,
+      course?.notes,
+      course?.description
+    ].map((item) => String(item || "").trim()).find(Boolean)
+      || "No mentor notes have been added for this lesson yet.";
   }
 
   function moduleQuizBlock(course, module, moduleIndex) {
@@ -2654,6 +3095,7 @@
       showAlert("This quiz is not published yet.", true);
       return;
     }
+    if (quiz.questions.length < 15) return showAlert("This quiz needs at least 15 questions before students can attempt it.", true);
     const priorAttempts = quizAttemptsFor(course.id, module.id, quiz.id);
     const maxAttempts = Number(quiz.max_attempts || 0);
     if (maxAttempts > 0 && priorAttempts.length >= maxAttempts) {
@@ -2661,13 +3103,12 @@
       return;
     }
 
-    // Select exactly 5 random questions from the pool using a robust Fisher-Yates shuffle
     const shuffled = [...quiz.questions];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    const attemptQuestions = shuffled.slice(0, 5);
+    const attemptQuestions = shuffled.slice(0, 5 + Math.floor(Math.random() * 3));
     const totalMarks = attemptQuestions.reduce((sum, q) => sum + Number(q.marks || 1), 0);
     const passMarks = quizAttemptPassMarks(quiz, totalMarks);
     const best = bestQuizAttempt(course.id, module.id, quiz.id);
@@ -2727,7 +3168,7 @@
 
     const form = document.getElementById("quizAttemptForm");
     if (form) {
-      form._attemptQuestions = attemptQuestions;
+      form._attemptQuestions = attemptQuestions; form.dataset.startedAt = String(Date.now());
       wireQuizAttemptControls(form, attemptQuestions.length, timerSeconds);
       form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -2817,34 +3258,60 @@
     const maxScore = questionsToEvaluate.reduce((sum, question) => sum + Number(question.marks || 1), 0);
     const passMarks = quizAttemptPassMarks(quiz, maxScore);
     const passed = score >= passMarks;
+    const timeTakenSeconds = Math.max(1, Math.round((Date.now() - Number(form.dataset.startedAt || Date.now())) / 1000));
 
     let saveMessage = "";
     try {
-      await saveQuizAttempt(course, module, quiz, { score, maxScore, passed, answers });
+      const selectedQuestionIds = questionsToEvaluate.map((question, index) => question.id || `q${index + 1}`);
+      await saveQuizAttempt(course, module, quiz, { score, maxScore, passed, answers, timeTakenSeconds, questionCount: questionsToEvaluate.length, selectedQuestionIds });
       await saveQuizProgress(course, score, maxScore, passed);
       await loadAllData({ silent: true });
     } catch (error) {
       saveMessage = /student_quiz_attempts|schema cache|relation|could not find/i.test(error.message || "")
-        ? "Run supabase-quiz-leaderboard-setup.sql so this score can be saved to the leaderboard."
+        ? "Leaderboard saving is temporarily unavailable. Your attempt is still recorded locally."
         : error.message || "Quiz score calculated, but saving failed.";
       showAlert(saveMessage, true);
     }
 
+    const scorePercent = maxScore ? Math.round((score / maxScore) * 100) : 0;
+    const correctCount = results.filter((result) => result.earned).length;
     openModal("Quiz Result", `
-      <div class="quiz-result-card ${passed ? "passed" : "failed"}">
-        <span class="pill ${passed ? "success" : "warning"}">${passed ? "Passed" : "Needs Practice"}</span>
-        <h3>${escapeHtml(quiz.title || "Module Quiz")}</h3>
-        <p>Score ${score}/${maxScore}. Passing score is ${passMarks}/${maxScore}.</p>
+      <div class="quiz-result-card quiz-result-refresh ${passed ? "passed" : "failed"}">
+        <section class="quiz-result-hero">
+          <div class="quiz-result-ring" style="--quiz-result-score:${scorePercent * 3.6}deg">
+            <strong>${scorePercent}%</strong>
+            <small>${score}/${maxScore}</small>
+          </div>
+          <div>
+            <span class="pill ${passed ? "success" : "warning"}">${passed ? "Passed" : "Needs Practice"}</span>
+            <h3>${escapeHtml(quiz.title || "Module Quiz")}</h3>
+            <p>${passed ? "Strong work. Your attempt has been recorded." : "Keep going. Review the lesson and try again when you are ready."}</p>
+          </div>
+        </section>
+        <div class="quiz-result-stats">
+          <div><small>Score</small><strong>${score}/${maxScore}</strong></div>
+          <div><small>Correct</small><strong>${correctCount}/${results.length}</strong></div>
+          <div><small>Pass Mark</small><strong>${passMarks}/${maxScore}</strong></div>
+          <div><small>Time Taken</small><strong>${formatDuration(timeTakenSeconds)}</strong></div>
+        </div>
         ${saveMessage ? `<p class="quiz-save-warning">${escapeHtml(saveMessage)}</p>` : ""}
         <div class="quiz-review-list">
           ${results.map((result, index) => `
-            <div class="${result.earned ? "correct" : "wrong"}">
-              <span>${result.earned ? "OK" : "!"}</span>
-              <p>Q${index + 1}: Correct ${escapeHtml(result.correct)}, your answer ${escapeHtml(result.answer || "None")}</p>
+            <div class="quiz-review-item ${result.earned ? "correct" : "wrong"}">
+              <span>${result.earned ? "OK" : "Try"}</span>
+              <div>
+                <strong>Q${index + 1}. ${escapeHtml(truncate(result.question.text || "Question", 130))}</strong>
+                <p>${result.earned
+                  ? `Correct. Your answer: ${escapeHtml(result.answer || "None")}.`
+                  : `Your answer: ${escapeHtml(result.answer || "None")}. The correct answer is hidden for retakes.`}</p>
+              </div>
             </div>
           `).join("")}
         </div>
-        <button class="primary-btn" type="button" data-start-quiz data-course-id="${escapeAttr(course.id)}" data-module-index="${parseModules(course.modules).findIndex((item) => sameId(item.id, module.id))}">Start Another Attempt</button>
+        <div class="quiz-result-actions">
+          <button class="secondary-btn" type="button" data-close-modal>Back to Lesson</button>
+          <button class="primary-btn" type="button" data-start-quiz data-course-id="${escapeAttr(course.id)}" data-module-index="${parseModules(course.modules).findIndex((item) => sameId(item.id, module.id))}">Start Another Attempt</button>
+        </div>
       </div>
     `);
     renderLearn();
@@ -2869,6 +3336,8 @@
       passed: result.passed,
       attempt_number: attempts.length + 1,
       answers: result.answers,
+      time_taken_seconds: result.timeTakenSeconds, duration_seconds: result.timeTakenSeconds,
+      question_count: result.questionCount, selected_question_ids: result.selectedQuestionIds,
       submitted_at: new Date().toISOString()
     };
     const legacyPayload = {
@@ -3069,7 +3538,8 @@
       let resourceCardsHtml = "";
       if (activeResource) {
         const isPdf = activeResource.toLowerCase().endsWith(".pdf");
-        const title = activeResource.split("/").pop() || "Assignment resource";
+        const title = activeTask.title ? `${activeTask.title} Resource` : "Assignment Resource";
+        const resourceId = registerLmsResource(activeResource, title, isPdf ? "pdf" : "file");
         resourceCardsHtml = `
           <div class="task-resources-list">
             <div class="resource-card ${isPdf ? "pdf" : "figma"}">
@@ -3078,11 +3548,11 @@
               </div>
               <div class="resource-info">
                 <strong>${escapeHtml(title)}</strong>
-                <small>${isPdf ? "PDF" : "RESOURCE"} • External Link</small>
+                <small>${isPdf ? "PDF" : "RESOURCE"} - Study Material</small>
               </div>
-              <a class="resource-download-btn" href="${escapeAttr(activeResource)}" target="_blank" rel="noopener" title="Open Resource">
+              <button class="resource-download-btn" type="button" data-open-resource="${escapeAttr(resourceId)}" data-resource-title="${escapeAttr(title)}" data-resource-kind="${isPdf ? "pdf" : "file"}" title="Open Resource">
                 <span>↗</span>
-              </a>
+              </button>
             </div>
           </div>
         `;
@@ -3113,9 +3583,9 @@
             </div>
             ${feedbackHtml}
             <div class="task-submit-actions">
-              <a class="primary-btn text-center" href="${escapeAttr(taskSubmissionLink(activeSubmission))}" target="_blank" rel="noopener">
-                View Your Submission ↗
-              </a>
+              <button class="primary-btn text-center" type="button" data-open-resource="${escapeAttr(registerLmsResource(taskSubmissionLink(activeSubmission), "Your Submission", "file"))}" data-resource-title="Your Submission" data-resource-kind="file">
+                View Your Submission
+              </button>
             </div>
           </div>
         `;
@@ -3126,12 +3596,12 @@
               <span class="task-submit-icon">📤</span>
               <div>
                 <strong>Submit Your Work</strong>
-                <small>Paste a Google Drive link containing your Figma file or document.</small>
+                <small>Paste a shareable project link or upload your file.</small>
               </div>
             </div>
             <form id="taskSubmitForm" class="task-submit-form">
               <div class="task-submit-input-group">
-                <input id="taskSubmissionDriveLink" type="url" placeholder="https://drive.google.com/..." required />
+                <input id="taskSubmissionDriveLink" type="url" placeholder="https://your-project-link.example" required />
                 <button class="primary-btn" type="submit">Submit Task</button>
               </div>
             </form>
@@ -3197,7 +3667,7 @@
     return [
       "Review the assignment overview before starting your work.",
       "Complete the task using the format requested by your mentor.",
-      "Keep your file accessible through a shareable Google Drive link.",
+      "Keep your work accessible through a shareable project link.",
       "Submit the final link before the deadline."
     ];
   }
@@ -3505,7 +3975,7 @@
     if (cat.includes("design") || cat.includes("ui") || cat.includes("ux") || cat.includes("figma")) {
       return "background: rgba(255, 159, 28, 0.08); color: var(--st-warning); border: 1px solid rgba(255, 159, 28, 0.15);";
     }
-    if (cat.includes("database") || cat.includes("sql") || cat.includes("supabase") || cat.includes("backend")) {
+    if (cat.includes("data engineering") || cat.includes("cloud")) {
       return "background: rgba(24, 185, 111, 0.08); color: var(--st-success); border: 1px solid rgba(24, 185, 111, 0.15);";
     }
     return "background: var(--st-panel-soft); color: var(--st-muted); border: 1px solid var(--st-line);";
@@ -3645,11 +4115,11 @@
             <div class="disc-attachment-icon">📎</div>
             <div class="disc-attachment-details">
               <strong>Attached Resource</strong>
-              <small>${escapeHtml(truncate(question.drive_link || question.file_url, 45))}</small>
+              <small>Study material</small>
             </div>
-            <a class="disc-attachment-link-btn" href="${escapeAttr(question.drive_link || question.file_url)}" target="_blank" rel="noopener">
-              View File ↗
-            </a>
+            <button class="disc-attachment-link-btn" type="button" data-open-resource="${escapeAttr(registerLmsResource(question.drive_link || question.file_url, "Attached Resource", "file"))}" data-resource-title="Attached Resource" data-resource-kind="file">
+              View File
+            </button>
           </div>
         ` : ""}
       </div>
@@ -4327,21 +4797,21 @@
   async function saveLessonProgress(course, lessonItem, snapshot) {
     const payload = buildVideoProgressPayload(course, lessonItem, snapshot);
     mergeLocalProgressRow(payload);
-    const supabaseClient = getClient();
-    const { error } = await supabaseClient
+    const platformClient = getClient();
+    const { error } = await platformClient
       .from("student_course_progress")
       .upsert(payload, { onConflict: "student_id,course_id" });
 
     if (!error) return;
 
-    const { error: updateError } = await supabaseClient
+    const { error: updateError } = await platformClient
       .from("student_course_progress")
       .update(payload)
       .eq("student_id", state.student.id)
       .eq("course_id", course.id);
     if (!updateError) return;
 
-    const { error: insertError } = await supabaseClient.from("student_course_progress").insert(payload);
+    const { error: insertError } = await platformClient.from("student_course_progress").insert(payload);
     if (insertError) throw insertError;
   }
 
@@ -4530,7 +5000,7 @@
       input.value = "";
       input.placeholder = "Write a message to your batch...";
       showAlert("Message posted.");
-      await loadAllData({ silent: true });
+      await refreshChatRows({ force: true });
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to post chat message. Check batch chat RLS."), true);
     }
@@ -4578,7 +5048,7 @@
         ` : ""}
           <label>
             <span>Submission Link</span>
-            <input id="taskSubmissionDriveLink" type="url" placeholder="https://drive.google.com/...">
+            <input id="taskSubmissionDriveLink" type="url" placeholder="https://your-project-link.example">
           </label>
           <label>
             <span>Or Upload File</span>
@@ -4840,6 +5310,13 @@
     });
     viewTitle.textContent = views[viewName].dataset.title || "Student LMS";
     viewKicker.textContent = views[viewName].dataset.kicker || "Jenovate";
+    const topbarTitle = document.querySelector(".student-topbar-title");
+    if (topbarTitle) topbarTitle.textContent = views[viewName].dataset.title || "Student LMS";
+    if (viewName === "learn") {
+      openLearningPanel();
+    } else {
+      closeLearningPanel();
+    }
     document.querySelector(".student-main")?.scrollTo({ top: 0, behavior: "auto" });
     window.scrollTo({ top: 0, behavior: "auto" });
     renderActiveView();
@@ -5407,51 +5884,40 @@
   }
 
   function lessonMediaUrl(lesson) {
-    return [
-      lesson?.video_drive_link,
-      lesson?.videoDriveLink,
-      lesson?.video_url,
-      lesson?.videoUrl,
-      lesson?.drive_link,
-      lesson?.driveLink,
-      lesson?.google_drive_link,
-      lesson?.googleDriveLink,
-      lesson?.file_url,
-      lesson?.fileUrl,
-      lesson?.url,
-      lesson?.content_url,
-      lesson?.contentUrl,
-      lesson?.material_url,
-      lesson?.materialUrl
-    ].map((item) => String(item || "").trim()).find(Boolean) || "";
+    return [lesson?.video_drive_link, lesson?.videoDriveLink, lesson?.video_url, lesson?.videoUrl, lesson?.google_drive_link, lesson?.googleDriveLink, lesson?.url, lesson?.content_url, lesson?.contentUrl].map((item) => String(item || "").trim()).find((item) => item && !looksLikeStudyMaterialUrl(item)) || "";
   }
 
   function lessonMaterialUrl(lesson) {
-    return [
-      lesson?.material_url,
-      lesson?.materialUrl,
-      lesson?.file_url,
-      lesson?.fileUrl,
-      lesson?.content_url,
-      lesson?.contentUrl,
-      lesson?.resource_url,
-      lesson?.resourceUrl
-    ].map((item) => String(item || "").trim()).find(Boolean) || "";
+    return [lesson?.material_url, lesson?.materialUrl, lesson?.study_material_url, lesson?.studyMaterialUrl, lesson?.notes_url, lesson?.notesUrl, lesson?.pdf_url, lesson?.pdfUrl, lesson?.file_url, lesson?.fileUrl, lesson?.drive_link, lesson?.driveLink, lesson?.content_url, lesson?.contentUrl, lesson?.resource_url, lesson?.resourceUrl].map((item) => String(item || "").trim()).find((item) => item && looksLikeStudyMaterialUrl(item)) || "";
+  }
+
+  function looksLikeStudyMaterialUrl(url) {
+    const text = String(url || "").trim(); return Boolean(text) && (/\.(pdf|docx?|pptx?|xlsx?|zip|txt)(?:$|\?|#)/i.test(text) || /\/storage\/v1\/object\/(?:sign|public)\/study-materials\//i.test(text) || /docs\.google\.com\/(?:document|presentation|spreadsheets)\//i.test(text) || (isGoogleDriveUrl(text) && !/\.(mp4|webm|ogg|mov)(?:$|\?|#)/i.test(text)));
   }
 
   function mediaEmbedUrl(url) {
     if (!url) return "";
     const text = String(url).trim();
-    const driveFile = text.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
-    if (driveFile?.[1]) return `https://drive.google.com/file/d/${driveFile[1]}/preview`;
-    const driveOpen = text.match(/drive\.google\.com\/open\?id=([^&]+)/i);
-    if (driveOpen?.[1]) return `https://drive.google.com/file/d/${driveOpen[1]}/preview`;
-    if (/drive\.google\.com\/.*\/preview/i.test(text)) return text;
+    if (isGoogleDriveUrl(text)) return contentService.providerPreviewUrl?.(text) || "";
     const youtube = youtubeId(text);
     if (youtube) return `https://www.youtube.com/embed/${youtube}`;
     if (/player\.vimeo\.com\/video\//i.test(text)) return text;
     const vimeo = text.match(/vimeo\.com\/(\d+)/i);
     if (vimeo?.[1]) return `https://player.vimeo.com/video/${vimeo[1]}`;
+    return "";
+  }
+
+  function resourcePreviewUrl(url, contentType = "") {
+    if (!url) return "";
+    const text = String(url).trim();
+    const type = String(contentType || "").toLowerCase();
+    try { const parsed = new URL(text, window.location.href); if (parsed.origin === window.location.origin && isBareStorageMaterialPath(parsed.pathname)) return ""; } catch {}
+    const driveContent = contentService.providerPreviewUrl?.(text);
+    if (driveContent) return driveContent;
+    const drivePreview = mediaEmbedUrl(text);
+    if (/\.pdf(?:$|\?|#)/i.test(text) || type.includes("pdf")) return text;
+    if (/\/storage\/v1\/object\/(?:sign|public)\/study-materials\//i.test(text) && !/\.(mp4|webm|ogg|mov)(?:$|\?|#)/i.test(text)) return text;
+    if (/docs\.google\.com\/(?:document|presentation|spreadsheets)\//i.test(text)) return text.replace(/\/edit(?:\?.*)?$/i, "/preview");
     return "";
   }
 
@@ -5468,6 +5934,8 @@
     }
     return "";
   }
+
+  function isGoogleDriveUrl(url) { const text = String(url || "").trim(); try { return Boolean(text) && (contentService.isProviderUrl?.(text) || /(^|\.)drive\.google\.com$/i.test(new URL(text, window.location.href).hostname)); } catch { return /drive\.google\.com/i.test(text); } }
 
   function isDirectVideoUrl(url) {
     return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(String(url || ""));
@@ -5948,7 +6416,7 @@
         dates: [...dates].sort()
       }));
     } catch (error) {
-      console.warn("Local streak visit could not be saved", error);
+      studentDebug("Local streak visit could not be saved.", error);
     }
   }
 
@@ -6109,32 +6577,7 @@
     }
     throw lastError || new Error(`Unable to update ${table}.`);
   }
-
-  function isSchemaShapeError(error) {
-    return /column|schema|does not exist|could not find|relation/i.test(error?.message || "");
-  }
-
-  function userFriendlyError(error, fallback) {
-    const sharedFormatter = window.JenovatePortalErrors?.formatPortalError;
-    if (sharedFormatter) return sharedFormatter(error, fallback);
-
-    const message = error?.message || String(error || "");
-    if (/failed to fetch|networkerror|load failed/i.test(message)) {
-      return "Could not reach the learning server. Check your internet connection and try again.";
-    }
-    if (/permission denied|row-level security|rls/i.test(message)) {
-      return "This action is blocked by current permissions. Please contact support.";
-    }
-    if (/schema cache|could not find|column/i.test(message)) {
-      return "The learning server schema is updating. Refresh the page and try again.";
-    }
-    return message || fallback;
-  }
-
-  function stripNullish(payload) {
-    return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
-  }
-
+
   function normalizeUser(user) {
     return {
       ...user,
@@ -6182,15 +6625,6 @@
       course_id: item.course_id ? String(item.course_id) : ""
     };
   }
-
-  function parseIdList(value) {
-    if (!value) return [];
-    if (Array.isArray(value)) return value;
-    const parsed = typeof value === "string" ? tryJson(value) : value;
-    if (Array.isArray(parsed)) return parsed;
-    return String(value).split(",").map((item) => item.trim()).filter(Boolean);
-  }
-
   function firstNonEmptyCourseContent(course) {
     const fields = [
       course?.modules,
@@ -6207,120 +6641,7 @@
       return parsed && typeof parsed === "object" && Object.keys(parsed).length > 0;
     }) || course?.modules || [];
   }
-
-  function parseJsonDeep(value) {
-    let parsed = value;
-    for (let i = 0; i < 2 && typeof parsed === "string"; i += 1) {
-      const next = tryJson(parsed);
-      if (next === null) break;
-      parsed = next;
-    }
-    return parsed;
-  }
-
-  function tryJson(value) {
-    try {
-      return JSON.parse(value);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function sameId(a, b) {
-    return a !== undefined && a !== null && b !== undefined && b !== null && String(a) === String(b);
-  }
-
-  function friendlySupabaseError(error) {
-    const message = error?.message || "Unable to fetch";
-    if (/permission|policy|rls/i.test(message)) return "permission/RLS blocked";
-    if (/relation|table|does not exist/i.test(message)) return "table is missing";
-    if (/column|schema cache|could not find/i.test(message)) return "schema cache/column mismatch";
-    return message;
-  }
-
-  function randomId() {
-    return window.crypto?.randomUUID?.() || `local-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-
-  function numberFrom(value) {
-    const number = Number(value);
-    return Number.isFinite(number) ? number : null;
-  }
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
-  function uniqueArray(values) {
-    return Array.from(new Set(values.filter((value) => value !== undefined && value !== null)));
-  }
-
-  function formatNumber(value) {
-    return new Intl.NumberFormat("en-IN").format(Number(value || 0));
-  }
-
-  function formatDate(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.valueOf())) return String(value);
-    return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-  }
-
-  function formatDateTime(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.valueOf())) return String(value);
-    return date.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
-  }
-
-  function relativeActivityTime(value) {
-    if (!value) return "recently";
-    const date = new Date(value);
-    if (Number.isNaN(date.valueOf())) return "recently";
-    const elapsed = Math.max(0, Date.now() - date.getTime());
-    const minutes = Math.floor(elapsed / 60000);
-    if (minutes < 1) return "just now";
-    if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-    const days = Math.floor(hours / 24);
-    if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
-    return formatDate(value);
-  }
-
-  function truncate(value, length) {
-    const text = String(value || "");
-    return text.length > length ? `${text.slice(0, Math.max(0, length - 3))}...` : text;
-  }
-
-  function initialsFor(value) {
-    return String(value || "S")
-      .split(/\s|@/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((item) => item[0]?.toUpperCase())
-      .join("") || "S";
-  }
-
-  function formatTableName(table) {
-    return String(table || "").replace(/_/g, " ");
-  }
-
-  function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-  }
-
-  function setValue(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.value = value;
-  }
-
-  function setProgress(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.style.width = `${clamp(Number(value || 0), 0, 100)}%`;
-  }
-
+
   function setLoading(active) {
     loadingPanel?.classList.toggle("active", active);
   }
@@ -6337,99 +6658,20 @@
     window.clearTimeout(showAlert.timer);
     showAlert.timer = window.setTimeout(() => alertBox.classList.remove("show"), isError ? 7000 : 3500);
   }
-
-  function emptyState(title, detail) {
-    return `<div class="empty-state"><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail || "")}</p></div>`;
-  }
-
+
   function openModal(title, body) {
     modalTitle.textContent = title;
     modalBody.innerHTML = body;
     modal?.classList.toggle("quiz-modal", /quiz/i.test(String(title || "")));
     modal?.classList.add("open");
     modal?.setAttribute("aria-hidden", "false");
-    modal?.querySelectorAll("[data-close-modal]").forEach((button) => {
-      button.addEventListener("click", closeModal);
-    });
   }
 
   function closeModal() {
     modal?.classList.remove("open");
     modal?.classList.remove("quiz-modal");
+    modal?.classList.remove("resource-modal");
     modal?.setAttribute("aria-hidden", "true");
     modalBody.innerHTML = "";
   }
-
-  async function runLockedSubmit(form, submitter, loadingLabel, action) {
-    if (!form || form.dataset.submitting === "true") return;
-    if (typeof form.checkValidity === "function" && !form.checkValidity()) {
-      form.reportValidity?.();
-      form.querySelector(":invalid")?.focus?.();
-      return;
-    }
-
-    form.dataset.submitting = "true";
-    form.setAttribute("aria-busy", "true");
-    const controls = Array.from(form.querySelectorAll("input, select, textarea, button"));
-    const primary = submitter || form.querySelector("button[type='submit']");
-    const originalText = primary?.textContent || "";
-
-    controls.forEach((control) => {
-      control.dataset.wasDisabled = control.disabled ? "true" : "false";
-      control.disabled = true;
-      if (control instanceof HTMLButtonElement) control.setAttribute("aria-busy", "true");
-    });
-    if (primary && loadingLabel) primary.textContent = loadingLabel;
-
-    try {
-      await action();
-    } finally {
-      if (document.body.contains(form)) {
-        form.dataset.submitting = "false";
-        form.removeAttribute("aria-busy");
-        controls.forEach((control) => {
-          control.disabled = control.dataset.wasDisabled === "true";
-          delete control.dataset.wasDisabled;
-          control.removeAttribute("aria-busy");
-        });
-        if (primary) primary.textContent = originalText;
-      }
-    }
-  }
-
-  function createUploadMeter(form, file) {
-    const meter = document.createElement("div");
-    meter.className = "lms-upload-meter";
-    meter.setAttribute("role", "status");
-    meter.innerHTML = `<span><i></i></span><small>Uploading ${escapeHtml(file.name || "file")} - ${formatFileSize(file.size)}</small>`;
-    form.querySelector(".task-submit-input-group")?.after(meter);
-    if (!meter.parentElement) form.appendChild(meter);
-    return meter;
-  }
-
-  function formatFileSize(bytes) {
-    const value = Number(bytes || 0);
-    if (value >= 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`;
-    if (value >= 1024) return `${Math.round(value / 1024)} KB`;
-    return `${value} B`;
-  }
-
-  function on(id, eventName, handler) {
-    document.getElementById(id)?.addEventListener(eventName, handler);
-  }
-
-  function escapeHtml(value) {
-    if (window.JenovateDom?.escapeHtml) return window.JenovateDom.escapeHtml(value);
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function escapeAttr(value) {
-    if (window.JenovateDom?.escapeAttr) return window.JenovateDom.escapeAttr(value);
-    return escapeHtml(value);
-  }
-})();
+})();

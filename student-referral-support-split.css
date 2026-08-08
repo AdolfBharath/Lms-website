@@ -1,0 +1,1279 @@
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM REFERRAL PAGE REDESIGN â€” Student Side
+   Complete visual overhaul with modern glassmorphism & gradients
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* â”€â”€ Page Wrapper â”€â”€ */
+body[data-ui-build] #referralView {
+  padding: 28px clamp(20px, 3vw, 48px) 48px !important;
+  background: #f5f4fe !important;
+  min-height: 100% !important;
+}
+
+/* â”€â”€ Hero Banner â”€â”€ */
+body[data-ui-build] #referralView .referral-hero {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 270px !important;
+  gap: 28px !important;
+  align-items: center !important;
+  min-height: 210px !important;
+  margin: 0 0 28px !important;
+  padding: 36px 40px !important;
+  border-radius: 24px !important;
+  background: linear-gradient(135deg, #315ee6 0%, #4773f7 45%, #5680ff 100%) !important;
+  color: #fff !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 60px rgba(58, 48, 200, 0.35), 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(circle at 80% -10%, rgba(255,255,255,0.14) 0%, transparent 55%),
+    radial-gradient(circle at 10% 110%, rgba(120, 80, 255, 0.35) 0%, transparent 50%) !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #referralView .referral-hero::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -60px !important;
+  top: -60px !important;
+  width: 280px !important;
+  height: 280px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  pointer-events: none !important;
+}
+
+/* Hero copy area */
+body[data-ui-build] #referralView .referral-hero-copy {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-copy > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 14px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.20) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-hero h2 {
+  margin: 0 0 14px !important;
+  color: #fff !important;
+  font-size: clamp(30px, 2.8vw, 44px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.06 !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero p {
+  max-width: 500px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.65 !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-badges {
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin-top: 22px !important;
+}
+
+body[data-ui-build] #referralView .referral-hero-badges b {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Stats card inside hero */
+body[data-ui-build] #referralView .referral-stats-card {
+  position: relative !important;
+  z-index: 1 !important;
+  min-height: 130px !important;
+  padding: 22px !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(16px) saturate(1.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.30) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2) !important;
+}
+
+body[data-ui-build] #referralView .referral-stats-card > strong {
+  display: block !important;
+  margin-bottom: 16px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid div {
+  min-height: 64px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 8px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  gap: 4px !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid span {
+  color: #fff !important;
+  font-size: 26px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #referralView .referral-stat-grid small {
+  color: rgba(255, 255, 255, 0.70) !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward {
+  margin-top: 16px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward small,
+body[data-ui-build] #referralView .referral-next-reward b {
+  color: rgba(255, 255, 255, 0.80) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward div {
+  clear: both !important;
+  height: 6px !important;
+  margin-top: 8px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.20) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-next-reward div span {
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6)) !important;
+}
+
+/* â”€â”€ Studio Layout â”€â”€ */
+body[data-ui-build] #referralView .referral-studio {
+  display: grid !important;
+  grid-template-columns: 1fr 1.6fr !important;
+  gap: 18px !important;
+}
+
+/* â”€â”€ All cards base â”€â”€ */
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-form-card,
+body[data-ui-build] #referralView .referral-guide-card {
+  border: 1px solid rgba(71, 115, 247, 0.14) !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 4px rgba(0,0,0,0.04) !important;
+  transition: box-shadow 0.25s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card:hover,
+body[data-ui-build] #referralView .referral-share-card:hover {
+  box-shadow: 0 8px 40px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+/* â”€â”€ Pass card (identity) â”€â”€ */
+body[data-ui-build] #referralView .referral-pass-card {
+  grid-row: span 2 !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  background: linear-gradient(160deg, #ffffff 0%, #fbfcfe 100%) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card h3 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 0 0 4px !important;
+  color: #0f0b26 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card h3 span {
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #eaf4ff, #e8f0ff) !important;
+  color: #3a6be8 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+/* Profile Row */
+body[data-ui-build] #referralView .referral-profile-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 16px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #f3f5fa, #eef2ff) !important;
+  border: 1px solid rgba(71, 115, 247, 0.12) !important;
+}
+
+body[data-ui-build] #referralView .referral-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  display: grid !important;
+  place-items: center !important;
+  box-shadow: 0 4px 14px rgba(82, 39, 255, 0.30) !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row h2 {
+  margin: 0 0 3px !important;
+  color: #151222 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row p {
+  margin: 0 !important;
+  color: #7068a0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+/* Referral Code Box */
+body[data-ui-build] #referralView .referral-code-box {
+  margin: 4px 0 !important;
+  padding: 22px 18px !important;
+  border: 2px dashed rgba(82, 39, 255, 0.25) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #fbfcfe, #fbf9ff) !important;
+  text-align: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: radial-gradient(circle at center, rgba(82,39,255,0.04), transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box small {
+  display: block !important;
+  color: #9088b8 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  display: block !important;
+  color: #3a1eff !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  font-family: "Courier New", monospace !important;
+  text-shadow: 0 2px 16px rgba(82, 39, 255, 0.20) !important;
+}
+
+/* Action Strip Buttons */
+body[data-ui-build] #referralView .referral-action-strip {
+  display: block !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip .primary-btn {
+  width: 100% !important;
+  min-height: 46px !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 20px rgba(82, 39, 255, 0.30) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  letter-spacing: 0.01em !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip .primary-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(82, 39, 255, 0.42) !important;
+}
+
+/* â”€â”€ Share Card â”€â”€ */
+body[data-ui-build] #referralView .referral-share-card {
+  padding: 22px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(120px, 1fr) auto !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head h3 {
+  margin: 0 0 4px !important;
+  color: #0f0b26 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head p {
+  margin: 0 !important;
+  color: #7068a0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #referralView .referral-share-head > span {
+  flex-shrink: 0 !important;
+  padding: 5px 12px !important;
+  border-radius: 8px !important;
+  background: #f0edff !important;
+  color: #4773f7 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  width: 100% !important;
+  min-height: 120px !important;
+  padding: 16px !important;
+  border: 1px solid rgba(71, 115, 247, 0.18) !important;
+  border-radius: 12px !important;
+  background: #fbfcfe !important;
+  color: #3b344e !important;
+  font-size: 12px !important;
+  font-style: italic !important;
+  font-weight: 500 !important;
+  line-height: 1.6 !important;
+  resize: none !important;
+  transition: border-color 0.2s ease !important;
+}
+
+body[data-ui-build] #referralView #referralShareText:focus {
+  border-color: #4773f7 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(82, 39, 255, 0.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions .secondary-btn {
+  min-height: 42px !important;
+  border-radius: 11px !important;
+  background: #f0edff !important;
+  color: #4430d0 !important;
+  border: none !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: background 0.18s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions .secondary-btn:hover {
+  background: #e5e0ff !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions .primary-btn {
+  min-height: 42px !important;
+  border-radius: 11px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(82, 39, 255, 0.28) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-share-actions .primary-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 20px rgba(82, 39, 255, 0.38) !important;
+}
+
+/* â”€â”€ Form Card (Enrollment Form link) â”€â”€ */
+body[data-ui-build] #referralView .referral-form-card {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+  padding: 18px 20px !important;
+  background: linear-gradient(135deg, #fffbf2, #fff9ee) !important;
+  border-color: rgba(215, 155, 60, 0.22) !important;
+  transition: all 0.2s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card:hover {
+  border-color: rgba(215, 155, 60, 0.40) !important;
+  box-shadow: 0 6px 24px rgba(200, 130, 30, 0.10) !important;
+}
+
+body[data-ui-build] #referralView .referral-form-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #ff9e40, #f57c28) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 12px rgba(245, 124, 40, 0.30) !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card strong {
+  display: block !important;
+  color: #1a1400 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  margin-bottom: 3px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card small {
+  display: block !important;
+  color: #9a8f72 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card .secondary-btn {
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 10px !important;
+  background: #fff3e0 !important;
+  color: #b86300 !important;
+  border: 1px solid rgba(215, 155, 60, 0.30) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  transition: background 0.15s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-form-card .secondary-btn:hover {
+  background: #ffe6b8 !important;
+}
+
+/* â”€â”€ Guide / Stepper Card â”€â”€ */
+body[data-ui-build] #referralView .referral-guide-card {
+  grid-column: 1 / -1 !important;
+  padding: clamp(24px, 2vw, 36px) !important;
+  background: linear-gradient(160deg, #ffffff 0%, #fbfcfe 100%) !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head {
+  text-align: left !important;
+  margin-bottom: 24px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head h2 {
+  margin: 0 0 6px !important;
+  color: #0f0b26 !important;
+  font-size: clamp(22px, 2vw, 30px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head p {
+  margin: 0 !important;
+  color: #7068a0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+/* Stepper Container */
+body[data-ui-build] #referralView .referral-stepper {
+  background: linear-gradient(160deg, #fafaff, #f3f5fa) !important;
+  border: 1px solid rgba(71, 115, 247, 0.18) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Stepper indicators */
+body[data-ui-build] #referralView .referral-stepper-indicators button {
+  background: #1e1733 !important;
+  border: 1px solid rgba(71, 115, 247, 0.30) !important;
+  box-shadow: 0 4px 14px rgba(30, 23, 51, 0.16) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.active,
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete {
+  background: linear-gradient(135deg, #4773f7, #315ee6) !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 18px rgba(82, 39, 255, 0.30) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators i {
+  background: rgba(71, 115, 247, 0.18) !important;
+}
+
+/* Step panel */
+body[data-ui-build] #referralView .referral-step-panel {
+  background: linear-gradient(135deg, #fbfcfe 0%, #ffffff 100%) !important;
+  border: 1px solid rgba(71, 115, 247, 0.14) !important;
+  border-radius: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-icon {
+  background: linear-gradient(135deg, #4773f7, #315ee6) !important;
+  box-shadow: 0 14px 36px rgba(82, 39, 255, 0.28) !important;
+  border-radius: 22px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel h3 {
+  color: #0f0b26 !important;
+  font-size: clamp(20px, 1.8vw, 28px) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel p {
+  color: #564f7a !important;
+  font-size: clamp(12px, 0.85vw, 15px) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel small {
+  background: linear-gradient(135deg, #eef3ff, #f0edff) !important;
+  color: #4d3fe0 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+}
+
+/* Stepper footer buttons */
+body[data-ui-build] #referralView .referral-stepper-footer .primary-btn {
+  background: linear-gradient(135deg, #4773f7, #315ee6) !important;
+  box-shadow: 0 4px 14px rgba(82, 39, 255, 0.28) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .primary-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 22px rgba(82, 39, 255, 0.40) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn {
+  background: rgba(71, 115, 247, 0.10) !important;
+  color: #4773f7 !important;
+  border: none !important;
+}
+
+/* Guide footer */
+body[data-ui-build] #referralView .referral-guide-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-top: 24px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid rgba(71, 115, 247, 0.10) !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer small {
+  color: #7068a0 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer .text-btn {
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+  border: none !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  min-height: auto !important;
+}
+
+/* Referral status message */
+body[data-ui-build] #referralView .referral-status {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #3a6be8 !important;
+  text-align: center !important;
+  padding: 6px 0 !important;
+  min-height: 20px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  body[data-ui-build] #referralView .referral-hero {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-pass-card {
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #referralView {
+    padding: 16px 14px 36px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-hero {
+    padding: 24px 20px !important;
+    border-radius: 18px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-form-card {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    justify-items: start !important;
+  }
+}
+
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM HOW-IT-WORKS STEPPER â€” Complete Redesign
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Guide card wrapper */
+body[data-ui-build] #referralView .referral-guide-card {
+  grid-column: 1 / -1 !important;
+  padding: clamp(28px, 2.5vw, 40px) !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(71, 115, 247, 0.12) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 40px rgba(15, 23, 42, 0.07) !important;
+}
+
+/* Section heading */
+body[data-ui-build] #referralView .referral-guide-head {
+  text-align: left !important;
+  margin-bottom: 28px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head h2 {
+  margin: 0 0 8px !important;
+  color: #0d0920 !important;
+  font-size: clamp(22px, 2vw, 30px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-head p {
+  margin: 0 !important;
+  color: #7068a0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+/* â”€â”€ Stepper outer shell â”€â”€ */
+body[data-ui-build] #referralView .referral-stepper {
+  width: 100% !important;
+  display: grid !important;
+  gap: 24px !important;
+  padding: clamp(24px, 2.5vw, 36px) !important;
+  border: 1px solid rgba(71, 115, 247, 0.15) !important;
+  border-radius: 20px !important;
+  background: linear-gradient(165deg, #f8f6ff 0%, #f3f0fe 50%, #fbfcfe 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 4px 24px rgba(82, 39, 255, 0.05) !important;
+  position: relative !important;
+}
+
+/* â”€â”€ Step Indicators Row â”€â”€ */
+body[data-ui-build] #referralView .referral-stepper-indicators {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  width: min(100%, 560px) !important;
+  margin: 0 auto !important;
+  padding: 8px 0 !important;
+}
+
+/* Step number buttons */
+body[data-ui-build] #referralView .referral-stepper-indicators button {
+  position: relative !important;
+  z-index: 2 !important;
+  flex-shrink: 0 !important;
+  width: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border: 2px solid rgba(71, 115, 247, 0.20) !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  color: #9590b8 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 12px rgba(82, 39, 255, 0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button:hover {
+  border-color: rgba(82, 39, 255, 0.40) !important;
+  color: #4773f7 !important;
+  box-shadow: 0 4px 18px rgba(82, 39, 255, 0.15) !important;
+}
+
+/* Span inside button (the number/dot indicator) */
+body[data-ui-build] #referralView .referral-stepper-indicators button span {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+/* Active state */
+body[data-ui-build] #referralView .referral-stepper-indicators button.active {
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 6px 20px rgba(82, 39, 255, 0.40), 0 2px 8px rgba(0,0,0,0.10) !important;
+  transform: scale(1.10) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.active span {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,0.90) !important;
+  color: transparent !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.30) !important;
+}
+
+/* Complete state */
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete {
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(82, 39, 255, 0.28) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete span {
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete span::before {
+  content: "" !important;
+  display: block !important;
+  width: 12px !important;
+  height: 7px !important;
+  border-left: 2.5px solid #fff !important;
+  border-bottom: 2.5px solid #fff !important;
+  transform: rotate(-45deg) translateY(-2px) !important;
+  color: #fff !important;
+}
+
+/* Connector lines (i elements) */
+body[data-ui-build] #referralView .referral-stepper-indicators i {
+  flex: 1 !important;
+  position: relative !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: rgba(71, 115, 247, 0.18) !important;
+  overflow: hidden !important;
+  margin: 0 -1px !important;
+  z-index: 1 !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators i::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, #4773f7, #315ee6) !important;
+  width: 0% !important;
+  transition: width 0.4s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete + i::before {
+  display: none !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete + i::after {
+  width: 100% !important;
+}
+
+/* â”€â”€ Step Content Panels â”€â”€ */
+body[data-ui-build] #referralView .referral-stepper-content {
+  position: relative !important;
+  min-height: clamp(200px, 14vw, 260px) !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: clamp(20px, 2.5vw, 40px) !important;
+  min-height: 100% !important;
+  padding: clamp(24px, 2.5vw, 36px) !important;
+  border: 1px solid rgba(71, 115, 247, 0.14) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.06) !important;
+  opacity: 0 !important;
+  transform: translateX(32px) scale(0.98) !important;
+  pointer-events: none !important;
+  transition: opacity 0.30s cubic-bezier(0.4, 0, 0.2, 1), transform 0.30s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel.active {
+  opacity: 1 !important;
+  transform: translateX(0) scale(1) !important;
+  pointer-events: auto !important;
+}
+
+/* Step icon (number badge) */
+body[data-ui-build] #referralView .referral-step-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: clamp(80px, 7vw, 110px) !important;
+  height: clamp(80px, 7vw, 110px) !important;
+  border-radius: 24px !important;
+  background: linear-gradient(145deg, #4773f7 0%, #5680ff 60%, #8b6dff 100%) !important;
+  color: #fff !important;
+  font-size: clamp(26px, 2.2vw, 38px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  box-shadow:
+    0 16px 40px rgba(82, 39, 255, 0.30),
+    0 4px 12px rgba(82, 39, 255, 0.20),
+    inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-icon::before {
+  content: "" !important;
+  position: absolute !important;
+  top: -30% !important;
+  left: -20% !important;
+  width: 70% !important;
+  height: 70% !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  pointer-events: none !important;
+}
+
+/* Step text content */
+body[data-ui-build] #referralView .referral-step-panel > div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel h3 {
+  margin: 0 !important;
+  color: #0d0920 !important;
+  font-size: clamp(22px, 2vw, 32px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel p {
+  max-width: 540px !important;
+  margin: 0 !important;
+  color: #56506e !important;
+  font-size: clamp(13px, 0.9vw, 15px) !important;
+  line-height: 1.65 !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel small {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-height: 30px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #eef3ff, #eef0ff) !important;
+  border: 1px solid rgba(82, 39, 255, 0.14) !important;
+  color: #4d3fe8 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  width: fit-content !important;
+  margin-top: 4px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-panel small::before {
+  content: "ðŸ’¡" !important;
+  font-size: 12px !important;
+}
+
+/* â”€â”€ Stepper Footer Nav â”€â”€ */
+body[data-ui-build] #referralView .referral-stepper-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding-top: 4px !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer::before {
+  content: "" !important;
+  display: none !important;
+}
+
+/* Step counter text */
+body[data-ui-build] #referralView .referral-stepper-footer::after {
+  content: none !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn {
+  min-width: 120px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  background: rgba(71, 115, 247, 0.09) !important;
+  color: #4773f7 !important;
+  border: 1px solid rgba(82, 39, 255, 0.16) !important;
+  transition: all 0.18s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn:hover:not(:disabled) {
+  background: rgba(71, 115, 247, 0.15) !important;
+  border-color: rgba(82, 39, 255, 0.30) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn:disabled {
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+  background: #f2f0f8 !important;
+  color: #9590b8 !important;
+  border-color: transparent !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .primary-btn {
+  min-width: 120px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #4773f7 0%, #315ee6 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(82, 39, 255, 0.32) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-footer .primary-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 28px rgba(82, 39, 255, 0.42) !important;
+}
+
+/* â”€â”€ Guide Footer â”€â”€ */
+body[data-ui-build] #referralView .referral-guide-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-top: 24px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid rgba(71, 115, 247, 0.10) !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer small {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: #7068a0 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer small::before {
+  content: "â±ï¸" !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer .text-btn {
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+  border: none !important;
+  min-height: auto !important;
+  padding: 4px 0 !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(82, 39, 255, 0.40) !important;
+  text-underline-offset: 3px !important;
+  transition: text-decoration-color 0.18s ease !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-footer .text-btn:hover {
+  text-decoration-color: #4773f7 !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  body[data-ui-build] #referralView .referral-step-panel {
+    grid-template-columns: 1fr !important;
+    align-content: center !important;
+    justify-items: start !important;
+    gap: 16px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-step-icon {
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 18px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-footer {
+    justify-content: stretch !important;
+  }
+
+  body[data-ui-build] #referralView .referral-stepper-footer .secondary-btn,
+  body[data-ui-build] #referralView .referral-stepper-footer .primary-btn {
+    flex: 1 1 0 !important;
+  }
+}
+
+
+/* â”€â”€ Step Indicator Wrapper (label + button) â”€â”€ */
+body[data-ui-build] #referralView .referral-stepper-indicators {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  width: min(100%, 580px) !important;
+  margin: 0 auto !important;
+  padding: 4px 0 12px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-indicator-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-label {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: #9590b8 !important;
+  white-space: nowrap !important;
+  transition: color 0.25s ease !important;
+}
+
+/* Active step label */
+body[data-ui-build] #referralView .referral-step-indicator-wrap:has(button.active) .referral-step-label,
+body[data-ui-build] #referralView .referral-step-indicator-wrap:has(button.complete) .referral-step-label {
+  color: #4773f7 !important;
+}
+
+/* Connector line - stretch between wraps */
+body[data-ui-build] #referralView .referral-stepper-indicators > i {
+  flex: 1 !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  margin: 0 -1px !important;
+  margin-bottom: 26px !important;
+  background: rgba(71, 115, 247, 0.18) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  z-index: 1 !important;
+  align-self: flex-start !important;
+  margin-top: 26px !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators > i::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, #4773f7, #315ee6) !important;
+  width: 0% !important;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body[data-ui-build] #referralView .referral-stepper-indicators .referral-step-indicator-wrap:has(button.complete) + i::after {
+  width: 100% !important;
+}
+
+/* Fallback for browsers without :has() - use sibling selector approach */
+body[data-ui-build] #referralView .referral-stepper-indicators button.complete ~ i::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(90deg, #4773f7, #315ee6) !important;
+  border-radius: inherit !important;
+}
+
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM NAV SVG ICONS â€” Student Sidebar
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* Remove old ::before pseudo icons */
+body[data-ui-build] .nav-item::before,
+.nav-item::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Nav item layout with SVG */
+body[data-ui-build] .nav-item,
+.nav-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  padding: 9px 12px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #3d3761 !important;
+  transition: background 0.18s ease, color 0.18s ease !important;
+}
+
+/* SVG icon base */
+body[data-ui-build] .nav-item .nav-icon,
+.nav-item .nav-icon {
+  display: block !important;
+  flex-shrink: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  transition: stroke 0.18s ease !important;
+  opacity: 0.75 !important;
+}
+
+/* Nav label text */
+body[data-ui-build] .nav-item > span,
+.nav-item > span {
+  flex: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Hover state */
+body[data-ui-build] .nav-item:hover,
+.nav-item:hover {
+  background: rgba(71, 115, 247, 0.09) !important;
+  color: #4773f7 !important;
+}
+
+body[data-ui-build] .nav-item:hover .nav-icon,
+.nav-item:hover .nav-icon {
+  opacity: 1 !important;
+}
+
+/* Active state */
+body[data-ui-build] .nav-item.active,
+.nav-item.active {
+  background: rgba(82, 39, 255, 0.10) !important;
+  color: #4773f7 !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] .nav-item.active .nav-icon,
+.nav-item.active .nav-icon {
+  opacity: 1 !important;
+  stroke: #4773f7 !important;
+}
+
+/* Active left bar indicator */
+body[data-ui-build] .nav-item.active::after,
+.nav-item.active::after {
+  background: #4773f7 !important;
+  border-radius: 0 4px 4px 0 !important;
+}

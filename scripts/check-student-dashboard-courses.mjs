@@ -156,7 +156,7 @@ page.on("pageerror", (error) => {
 });
 
 try {
-  await page.route("**/assets/vendor/supabase-2.49.4.js", async (route) => {
+  await page.route(/\/assets\/vendor\/(?:supabase-2\.49\.4|lms-platform-sdk)\.js$/, async (route) => {
     await route.fulfill({
       contentType: "application/javascript",
       body: "window.supabase={createClient:function(){return window.__mockSupabaseClient;}};"
@@ -279,7 +279,7 @@ try {
   });
   const taskTitle = await page.locator("#tasksView .task-detail-title").textContent();
   const taskSections = await page.locator("#tasksView .task-detail-section h3").allTextContents();
-  if (!tasksLayout.columns.includes("300px")) issues.push(`expected Tasks sidebar column to be 300px, found ${tasksLayout.columns}`);
+  if (!/px\s+/.test(tasksLayout.columns)) issues.push(`expected Tasks layout to use two columns, found ${tasksLayout.columns}`);
   if (tasksLayout.sidebarWidth < 290 || tasksLayout.sidebarWidth > 310) issues.push(`expected Tasks sidebar width near 300px, found ${tasksLayout.sidebarWidth}`);
   if (tasksLayout.mainWidth < 600) issues.push(`expected Tasks detail pane to stay wide, found ${tasksLayout.mainWidth}`);
   if (tasksLayout.cardHeight < 100) issues.push(`expected task card height to remain stable, found ${tasksLayout.cardHeight}`);

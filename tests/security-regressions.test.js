@@ -22,6 +22,13 @@ test("role authorization requires a live Supabase Auth user", () => {
   assert.match(source, /const profile = await profileFromCurrentAuth\(\);/);
 });
 
+test("auth profile fallback preserves auth user id lookup", () => {
+  const source = read("auth-session.js");
+  const fallback = source.slice(source.indexOf("if (response.error && /column"), source.indexOf("if (response.error) throw response.error"));
+  assert.match(fallback, /\.or\(`id\.eq\.\$\{authUser\.id\},auth_user_id\.eq\.\$\{authUser\.id\}`\)/);
+  assert.match(fallback, /\.ilike\("email", authUser\.email \|\| ""\)/);
+});
+
 test("student purchases use the atomic purchase RPC", () => {
   const source = read("student.js");
   const purchase = source.slice(source.indexOf("async function purchaseItem"), source.indexOf("async function saveProfile"));
@@ -52,27 +59,35 @@ test("public forms use the validated RPC and no browser EmailJS call", () => {
   assert.doesNotMatch(engine, /api\.emailjs\.com/);
 });
 
-test("all application pages use the vendored Supabase SDK", () => {
-  for (const file of ["admin.html", "mentor.html", "student.html", "login.html", "join-form.html", "reset-password.html"]) {
+test("all application pages use a vendored platform SDK", () => {
+  for (const file of ["admin.html", "mentor.html", "login.html", "join-form.html", "reset-password.html"]) {
     const source = read(file);
     assert.match(source, /assets\/vendor\/supabase-2\.49\.4\.js/);
     assert.doesNotMatch(source, /cdn\.jsdelivr\.net\/npm\/@supabase/);
   }
+  const student = read("student.html");
+  assert.match(student, /assets\/vendor\/lms-platform-sdk\.js/);
+  assert.doesNotMatch(student, /cdn\.jsdelivr\.net\/npm\/@supabase/);
 });
 test("role portals share the extracted DOM escaping module", () => {
   const domUtils = read("modules/dom-utils.js");
+  const portalUtils = read("modules/portal-utils.js");
   assert.match(domUtils, /window\.JenovateDom/);
   assert.match(domUtils, /function escapeHtml/);
   assert.match(domUtils, /function escapeAttr/);
+  assert.match(portalUtils, /window\.JenovateDom\?\.escapeHtml/);
+  assert.match(portalUtils, /window\.JenovateDom\?\.escapeAttr/);
 
   for (const file of ["admin.html", "mentor.html", "student.html"]) {
     assert.match(read(file), /modules\/dom-utils\.js\?v=20260728-dom-utils-v1/);
+    assert.match(read(file), /modules\/portal-utils\.js\?v=20260731-file-size-v1/);
   }
 
   for (const file of ["admin.js", "mentor.js", "student.js"]) {
     const source = read(file);
-    assert.match(source, /window\.JenovateDom\?\.escapeHtml/);
-    assert.match(source, /window\.JenovateDom\?\.escapeAttr/);
+    assert.match(source, /window\.JenovatePortalUtils/);
+    assert.match(source, /escapeHtml/);
+    assert.match(source, /escapeAttr/);
   }
 });
 
@@ -271,9 +286,12 @@ test("authenticated portal startup bypasses stale Supabase table cache", () => {
   const student = read("student.js");
 
   assert.match(admin, /getCacheScope: \(\) => \[state\.admin\?\.id \|\| state\.admin\?\.email \|\| "", state\.selectedBatchId \|\| ""\]\.join\(":"\)/);
-  assert.match(admin, /await loadAllData\(\{ force: true \}\)/);
-  assert.match(mentor, /await loadAllData\(\{ force: true \}\)/);
+  assert.match(admin, /await loadAllData\(\{ initial: true, force: true \}\)/);
+  assert.match(admin, /window\.setTimeout\(\(\) => void loadAllData\(\{ silent: true, force: true \}\), 0\)/);
+  assert.match(mentor, /await loadAllData\(\{ initial: true, force: true \}\)/);
+  assert.match(mentor, /window\.setTimeout\(\(\) => void loadAllData\(\{ silent: true, force: true \}\), 0\)/);
   assert.match(student, /await loadAllData\(\{ initial: true, force: true \}\)/);
+  assert.match(student, /buildPersonalLeaderboardRows\(\)/);
 });
 
 test("academic dashboard uses real assessment data and protected activity rows", () => {
@@ -302,6 +320,24 @@ test("academic dashboard uses real assessment data and protected activity rows",
   assert.match(migration, /academic_activity_student_read/);
   assert.match(migration, /lms_record_on_time_submission_activity/);
   assert.match(migration, /lms_record_daily_login_activity/);
+});
+
+test("module quizzes use a 15-question bank and store randomized attempt details", () => {
+  const student = read("student.js");
+  const mentor = read("mentor.js");
+  const admin = read("admin.js");
+  const migration = read("supabase/migrations/20260716_lms_academic_metrics.sql");
+
+  assert.match(student, /quiz\.questions\.length < 15/);
+  assert.match(student, /5 \+ Math\.floor\(Math\.random\(\) \* 3\)/);
+  assert.match(student, /time_taken_seconds/);
+  assert.match(student, /selected_question_ids/);
+  assert.match(mentor, /quiz needs at least 15 questions/);
+  assert.match(mentor, /students get 5-7 random questions/);
+  assert.match(admin, /student_quiz_attempts/);
+  assert.match(admin, /adminQuizAttemptRow/);
+  assert.match(migration, /time_taken_seconds integer/);
+  assert.match(migration, /selected_question_ids jsonb/);
 });
 
 test("student course library scales without rendering every enrollment at once", () => {

@@ -1,0 +1,455 @@
+/* YouTube-style learning player layout. */
+body[data-ui-build] #learnView {
+  min-height: calc(100vh - 82px) !important;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(71, 115, 247, 0.08), transparent 30%),
+    radial-gradient(circle at 84% 0%, rgba(126, 67, 255, 0.08), transparent 34%),
+    #f7f8fb !important;
+}
+
+body[data-ui-build] #learnView .learn-udemy-shell {
+  grid-template-columns: minmax(0, 1fr) clamp(320px, 23vw, 390px) !important;
+  align-items: start !important;
+  min-height: calc(100vh - 82px) !important;
+  border-top: 1px solid rgba(226, 222, 239, 0.9) !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #learnView .learn-reference-main {
+  width: 100% !important;
+  max-width: none !important;
+  justify-self: stretch !important;
+  padding: clamp(18px, 2vw, 30px) clamp(18px, 2.6vw, 44px) 48px !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  border: 1px solid rgba(13, 18, 36, 0.08) !important;
+  border-radius: 20px !important;
+  background: #05060a !important;
+  box-shadow: 0 24px 70px rgba(13, 18, 36, 0.18) !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame {
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 190px) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: #05060a !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player video,
+body[data-ui-build] #learnView .reference-video-player iframe {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 20px !important;
+  object-fit: contain !important;
+  background: #05060a !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-empty {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  place-content: center !important;
+  gap: 10px !important;
+  padding: 28px !important;
+  color: #fff !important;
+  text-align: center !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(37, 99, 235, 0.18), transparent 34%),
+    #05060a !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-empty strong {
+  color: #fff !important;
+  font-size: clamp(18px, 2vw, 26px) !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-empty p {
+  max-width: 420px !important;
+  margin: 0 auto !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-ui-build] #learnView .lesson-fullscreen-launch {
+  top: 16px !important;
+  right: 16px !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: rgba(8, 10, 18, 0.72) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22) !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .lesson-fullscreen-launch {
+  display: none !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls {
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  display: grid !important;
+  gap: 8px !important;
+  padding: 0 16px 14px !important;
+  border: 0 !important;
+  border-radius: 0 0 18px 18px !important;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72)) !important;
+  backdrop-filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: opacity 180ms ease, transform 180ms ease !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame:hover .lesson-video-controls,
+body[data-ui-build] #learnView .reference-video-player .media-frame:focus-within .lesson-video-controls {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+body[data-ui-build] #learnView .lesson-video-controls button {
+  border: 0 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-progress {
+  position: relative !important;
+  width: 100% !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.24) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-buffer,
+body[data-ui-build] #learnView .lesson-control-played {
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: 0;
+  border-radius: inherit !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-buffer {
+  background: rgba(255, 255, 255, 0.38) !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-played {
+  background: #ff003d !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-row,
+body[data-ui-build] #learnView .lesson-control-left,
+body[data-ui-build] #learnView .lesson-control-right {
+  display: flex !important;
+  align-items: center !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-row {
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #learnView .lesson-control-left,
+body[data-ui-build] #learnView .lesson-control-right {
+  gap: 10px !important;
+}
+
+body[data-ui-build] #learnView .lesson-icon-control {
+  width: 42px !important;
+  height: 42px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  background: rgba(20, 20, 24, 0.58) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #learnView .lesson-play-toggle {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 22px !important;
+}
+
+body[data-ui-build] #learnView .lesson-speed-chip {
+  min-width: 46px !important;
+  height: 34px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: rgba(20, 20, 24, 0.58) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #learnView .lesson-time-readout {
+  min-width: 98px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(20, 20, 24, 0.58) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #learnView .lesson-icon-control:hover:not(:disabled),
+body[data-ui-build] #learnView .lesson-speed-chip:hover:not(:disabled),
+body[data-ui-build] #learnView .lesson-speed-chip.active {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+body[data-ui-build] #learnView .lesson-icon-control:disabled,
+body[data-ui-build] #learnView .lesson-speed-chip:disabled {
+  opacity: 0.42 !important;
+  cursor: not-allowed !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame:fullscreen,
+body[data-ui-build] #learnView .reference-video-player .media-frame:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame:fullscreen video,
+body[data-ui-build] #learnView .reference-video-player .media-frame:fullscreen iframe,
+body[data-ui-build] #learnView .reference-video-player .media-frame:-webkit-full-screen video,
+body[data-ui-build] #learnView .reference-video-player .media-frame:-webkit-full-screen iframe {
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame:fullscreen .lesson-fullscreen-launch,
+body[data-ui-build] #learnView .reference-video-player .media-frame:-webkit-full-screen .lesson-fullscreen-launch {
+  top: 24px !important;
+  right: 24px !important;
+  background: rgba(8, 10, 18, 0.82) !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .media-frame:fullscreen .lesson-video-controls,
+body[data-ui-build] #learnView .reference-video-player .media-frame:-webkit-full-screen .lesson-video-controls {
+  left: 30px !important;
+  right: 30px !important;
+  bottom: 28px !important;
+  padding: 0 18px 18px !important;
+  opacity: 1 !important;
+  transform: none !important;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.74)) !important;
+}
+
+body[data-ui-build] #learnView .reference-lesson-tabs,
+body[data-ui-build] #learnView .lesson-reference-body,
+body[data-ui-build] #learnView .reference-resource-card {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body[data-ui-build] #learnView .lesson-reference-body {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] #learnView .lesson-tab-panel[data-lesson-panel="notes"] {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: calc(100vh - 230px) !important;
+  padding: clamp(28px, 3vw, 48px) !important;
+}
+
+body[data-ui-build] #learnView .lesson-tab-panel[data-lesson-panel="notes"] > p,
+body[data-ui-build] #learnView .lesson-tab-panel[data-lesson-panel="notes"] .lesson-notes-box {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body[data-ui-build] #learnView .lesson-tab-panel[data-lesson-panel="notes"] .lesson-notes-box p {
+  columns: 2 420px !important;
+  column-gap: clamp(28px, 4vw, 64px) !important;
+  line-height: 1.85 !important;
+}
+
+body[data-ui-build] #learnView .reference-lesson-tabs {
+  margin-top: 20px !important;
+}
+
+body[data-ui-build] #learnView .reference-overview-card p,
+body[data-ui-build] #learnView .learning-outcomes-card,
+body[data-ui-build] #learnView .lesson-mentor-card {
+  width: 100% !important;
+  max-width: 960px !important;
+}
+
+body[data-ui-build] #learnView .lesson-discussion-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-top: 18px !important;
+}
+
+body[data-ui-build] #learnView .lesson-discussion-actions .primary-btn,
+body[data-ui-build] #learnView .lesson-discussion-actions .secondary-btn {
+  width: auto !important;
+  min-width: 170px !important;
+  min-height: 46px !important;
+  padding: 0 22px !important;
+  justify-content: center !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail {
+  position: sticky !important;
+  top: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  height: calc(100vh - 82px) !important;
+  border-left: 1px solid rgba(226, 222, 239, 0.95) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(18px) !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .course-rail-scroll {
+  min-height: 0 !important;
+  overflow: auto !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .rail-progress-card {
+  padding: 24px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .module-card {
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li.active {
+  background: #f1edff !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .course-rail-footer {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  border-top: 1px solid rgba(226, 222, 239, 0.95) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+@media (min-width: 1600px) {
+  body[data-ui-build] #learnView .learn-udemy-shell {
+    grid-template-columns: minmax(0, 1fr) 410px !important;
+  }
+
+  body[data-ui-build] #learnView .learn-reference-main {
+    padding-left: 52px !important;
+    padding-right: 52px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #learnView .learn-udemy-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #learnView .reference-course-rail {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    border-left: 0 !important;
+    border-top: 1px solid rgba(226, 222, 239, 0.95) !important;
+  }
+
+  body[data-ui-build] #learnView .reference-course-rail .course-rail-scroll {
+    max-height: 430px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-ui-build] #learnView .learn-reference-main {
+    padding: 12px 12px 28px !important;
+  }
+
+  body[data-ui-build] #learnView .reference-video-player,
+  body[data-ui-build] #learnView .reference-video-player .media-frame,
+  body[data-ui-build] #learnView .reference-video-player video,
+  body[data-ui-build] #learnView .reference-video-player iframe {
+    border-radius: 14px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-fullscreen-launch {
+    min-height: 34px !important;
+    padding: 0 12px !important;
+    font-size: 10px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-video-controls {
+    position: absolute !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    padding: 0 8px 8px !important;
+    border-radius: 0 0 14px 14px !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-control-row {
+    gap: 8px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-control-right {
+    gap: 6px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-icon-control {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 12px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-play-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 18px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-time-readout {
+    min-width: 76px !important;
+    padding: 7px 9px !important;
+    font-size: 11px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-speed-chip {
+    min-width: 38px !important;
+    height: 32px !important;
+    padding: 0 9px !important;
+    font-size: 11px !important;
+  }
+
+  body[data-ui-build] #learnView .reference-lesson-tabs {
+    gap: 18px !important;
+    overflow-x: auto !important;
+  }
+}

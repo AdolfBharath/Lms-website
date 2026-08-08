@@ -1,0 +1,3816 @@
+/* v16 batch chat polish: contained community workspace and clearer messaging. */
+body[data-ui-build] #batchView {
+  width: min(100%, 1280px) !important;
+  max-width: 1280px !important;
+  padding: 20px clamp(16px, 2.4vw, 30px) 42px !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero {
+  min-height: 190px !important;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 390px) !important;
+  gap: 26px !important;
+  padding: clamp(24px, 3vw, 36px) !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f3ff 100%) !important;
+  box-shadow: 0 18px 44px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero h2 {
+  max-width: 720px !important;
+  font-size: clamp(32px, 3vw, 44px) !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero img {
+  height: 205px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 14px 30px rgba(44, 34, 84, 0.12) !important;
+}
+
+body[data-ui-build] #batchView .batch-layout {
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  padding: 16px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: 0 18px 46px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel,
+body[data-ui-build] #batchView .chat-panel,
+body[data-ui-build] #batchView .batch-task-panel {
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 12px 28px rgba(42, 34, 80, 0.06) !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel .panel-header {
+  margin: -16px -16px 14px !important;
+  padding: 16px !important;
+  border-bottom: 1px solid #eeeaf6 !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-heading {
+  padding: 14px !important;
+  border: 1px solid #e2dcef !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-heading span {
+  color: var(--st-primary) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-heading b {
+  display: inline-flex !important;
+  margin: 10px 0 8px !important;
+  padding: 5px 9px !important;
+  border-radius: 999px !important;
+  background: #e5fbf0 !important;
+  color: #08764a !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #batchView .batch-detail-pills {
+  display: grid !important;
+  gap: 10px !important;
+  margin: 12px 0 !important;
+}
+
+body[data-ui-build] #batchView .batch-detail-pills > div,
+body[data-ui-build] #batchView .next-session-card {
+  border: 1px solid #e2dcef !important;
+  border-radius: 8px !important;
+  background: #f6f3ff !important;
+}
+
+body[data-ui-build] #batchView .batch-instructors,
+body[data-ui-build] #batchView .classmate-list {
+  display: grid !important;
+  gap: 10px !important;
+  margin-top: 12px !important;
+  padding: 12px !important;
+  border: 1px solid #e2dcef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #batchView .batch-classmates-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #batchView .batch-classmates-head small {
+  color: #766f84 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .batch-classmates-head strong {
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  border-radius: 999px !important;
+  background: var(--st-primary) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: center !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row strong,
+body[data-ui-build] #batchView .batch-instructor-row small {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  min-height: 650px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(360px, 1fr) auto auto !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header {
+  padding: 16px 18px !important;
+  border-bottom: 1px solid #eeeaf6 !important;
+  background: linear-gradient(180deg, #ffffff, #fbfcfe) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header h2 {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 0 4px !important;
+  font-size: 22px !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header h2::before {
+  content: "" !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 999px !important;
+  background: #1fca75 !important;
+  box-shadow: 0 0 0 5px rgba(31, 202, 117, 0.12) !important;
+}
+
+body[data-ui-build] #batchView #reloadChatBtn {
+  min-height: 36px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  min-height: 390px !important;
+  max-height: 58vh !important;
+  padding: 18px !important;
+  gap: 12px !important;
+  background:
+    linear-gradient(180deg, rgba(251, 250, 255, 0.96), rgba(246, 243, 255, 0.96)),
+    repeating-linear-gradient(135deg, rgba(71, 115, 247, 0.05) 0 1px, transparent 1px 18px) !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 4px 0 !important;
+  color: #766f84 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider::before,
+body[data-ui-build] #batchView .chat-date-divider::after {
+  content: "" !important;
+  flex: 1 !important;
+  height: 1px !important;
+  background: #ddd7ef !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider span {
+  padding: 5px 9px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble {
+  position: relative !important;
+  max-width: min(680px, 74%) !important;
+  padding: 12px 14px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px 8px 8px 2px !important;
+  background: #fff !important;
+  box-shadow: 0 10px 24px rgba(42, 34, 80, 0.07) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine {
+  border-color: transparent !important;
+  border-radius: 8px 8px 2px 8px !important;
+  background: linear-gradient(135deg, var(--st-primary), #315ee6) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 30px rgba(71, 115, 247, 0.22) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble time {
+  color: #857d93 !important;
+  font-size: 10px !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine time,
+body[data-ui-build] #batchView .chat-bubble.mine p,
+body[data-ui-build] #batchView .chat-bubble.mine strong {
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble p {
+  margin: 10px 0 11px !important;
+  color: #211a35 !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #batchView .reply-preview {
+  border-left-color: var(--st-primary) !important;
+  background: rgba(71, 115, 247, 0.09) !important;
+  color: #43395d !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine .reply-preview {
+  border-left-color: #fff !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+body[data-ui-build] #batchView .chat-actions .text-btn {
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar {
+  padding: 12px 18px !important;
+  border-top: 1px solid #eeeaf6 !important;
+  background: #fffdf8 !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar span {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar strong {
+  max-width: 680px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .composer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  padding: 14px 18px 18px !important;
+  border-top: 1px solid #eeeaf6 !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #batchView .composer input {
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  border: 1px solid #d9d3e8 !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  color: #211a35 !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #batchView .composer input:focus {
+  border-color: #bfb3ff !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.1) !important;
+}
+
+body[data-ui-build] #batchView .composer .primary-btn {
+  min-height: 48px !important;
+  padding: 0 20px !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] #batchView .batch-task-panel {
+  padding: 16px !important;
+  border-radius: 8px !important;
+}
+
+body[data-ui-build] #batchView .batch-pending-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #batchView .batch-task-row {
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 70px !important;
+  padding: 12px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #batchView .batch-task-row:hover {
+  border-color: #c8bfff !important;
+  background: #fff !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #batchView .batch-layout {
+    grid-template-columns: 1fr !important;
+    padding: 12px !important;
+  }
+
+  body[data-ui-build] #batchView .batch-reference-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .chat-bubble,
+  body[data-ui-build] #batchView .chat-bubble.mine {
+    max-width: 92% !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-ui-build] #batchView {
+    padding: 14px 12px 32px !important;
+  }
+
+  body[data-ui-build] #batchView .composer {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .chat-bubble header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+}
+
+/* v17 page fit, multi-batch chat selector, and announcements correction. */
+body[data-ui-build] {
+  overflow: hidden !important;
+}
+
+body[data-ui-build] .student-shell {
+  height: 100vh !important;
+  min-height: 100vh !important;
+}
+
+body[data-ui-build] .student-main {
+  height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+body[data-ui-build] .student-view {
+  min-height: auto !important;
+}
+
+body[data-ui-build] #questionsView,
+body[data-ui-build] #announcementsView,
+body[data-ui-build] #batchView {
+  width: min(100%, 1240px) !important;
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+}
+
+body[data-ui-build] #questionsView {
+  padding: 22px clamp(16px, 2.4vw, 30px) 34px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro,
+body[data-ui-build] #announcementsView .secondary-page-intro {
+  margin-bottom: 16px !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] #questionsView .question-layout {
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel {
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 12px 30px rgba(42, 34, 80, 0.06) !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel {
+  min-height: 420px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero {
+  min-height: 150px !important;
+  padding: 22px 24px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero img {
+  height: 150px !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  min-height: 560px !important;
+  grid-template-rows: auto minmax(300px, 1fr) auto auto !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  min-height: 320px !important;
+  max-height: calc(100vh - 420px) !important;
+}
+
+body[data-ui-build] #batchView .chat-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select {
+  display: grid !important;
+  gap: 4px !important;
+  min-width: min(260px, 100%) !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select span {
+  color: #766f84 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select select {
+  width: 100% !important;
+  min-height: 36px !important;
+  padding: 0 34px 0 10px !important;
+  border: 1px solid #d9d3e8 !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  color: #211a35 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select select:disabled {
+  opacity: 0.72 !important;
+}
+
+body[data-ui-build] #announcementsView {
+  padding: 22px clamp(16px, 2.4vw, 30px) 34px !important;
+}
+
+body[data-ui-build] #announcementsView .toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin: 0 0 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 12px 28px rgba(42, 34, 80, 0.06) !important;
+}
+
+body[data-ui-build] #announcementsView .toolbar h2 {
+  margin: 0 0 4px !important;
+  font-size: 20px !important;
+}
+
+body[data-ui-build] #announcementsView .toolbar p {
+  margin: 0 !important;
+  color: #6d657d !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 14px !important;
+  padding: 16px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: 0 18px 46px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-card {
+  min-height: 160px !important;
+  padding: 16px !important;
+  border: 1px solid #e1dcef !important;
+  border-left: 4px solid var(--st-primary) !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 10px 24px rgba(42, 34, 80, 0.06) !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-topline {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-card h3 {
+  margin: 0 0 10px !important;
+  color: #120c20 !important;
+  font-size: 17px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-card p {
+  margin: 0 !important;
+  color: #3c344f !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #announcementsView .announcement-card .card-footer {
+  margin-top: 14px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #eeeaf6 !important;
+}
+
+body[data-ui-build] #announcementsView .empty-state {
+  grid-column: 1 / -1 !important;
+  min-height: 120px !important;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #questionsView .question-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .chat-panel {
+    min-height: 520px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-list {
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #announcementsView .toolbar,
+  body[data-ui-build] #batchView .chat-panel .panel-header {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #batchView .chat-header-actions {
+    justify-content: stretch !important;
+  }
+}
+
+/* v18 questions/support fit correction: compact panels without oversized blank space. */
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView {
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  min-height: auto !important;
+  margin: 0 auto !important;
+  padding: 18px clamp(14px, 2.2vw, 26px) 32px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro,
+body[data-ui-build] #supportView .secondary-page-intro {
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro h2,
+body[data-ui-build] #supportView .secondary-page-intro h2 {
+  margin: 6px 0 8px !important;
+  font-size: clamp(24px, 2.2vw, 32px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro p,
+body[data-ui-build] #supportView .secondary-page-intro p {
+  max-width: 620px !important;
+  margin: 0 !important;
+  color: #625b72 !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #supportView .support-layout {
+  display: grid !important;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  padding: 14px !important;
+  border: 1px solid #ddd7ef !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: 0 18px 42px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #supportView .support-layout::after {
+  content: none !important;
+  display: none !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-form-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  min-height: 0 !important;
+  padding: 18px !important;
+  border: 1px solid #e1dcef !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 10px 24px rgba(42, 34, 80, 0.05) !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  min-height: 360px !important;
+  max-height: calc(100vh - 210px) !important;
+  overflow: auto !important;
+}
+
+body[data-ui-build] #questionsView .panel-header,
+body[data-ui-build] #supportView .panel-header {
+  margin-bottom: 14px !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #eeeaf6 !important;
+}
+
+body[data-ui-build] #questionsView .panel-header h2,
+body[data-ui-build] #supportView .panel-header h2 {
+  margin: 0 0 5px !important;
+  color: #100a1f !important;
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+}
+
+body[data-ui-build] #questionsView .panel-header p,
+body[data-ui-build] #supportView .panel-header p {
+  margin: 0 !important;
+  color: #6d657d !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form,
+body[data-ui-build] #supportView .stack-form {
+  gap: 11px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form label,
+body[data-ui-build] #supportView .stack-form label {
+  gap: 6px !important;
+  color: #211a35 !important;
+  font-size: 11px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form input,
+body[data-ui-build] #questionsView .stack-form select,
+body[data-ui-build] #questionsView .stack-form textarea,
+body[data-ui-build] #supportView .stack-form input,
+body[data-ui-build] #supportView .stack-form select,
+body[data-ui-build] #supportView .stack-form textarea {
+  min-height: 38px !important;
+  padding: 9px 11px !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form textarea,
+body[data-ui-build] #supportView .stack-form textarea {
+  min-height: 96px !important;
+  resize: vertical !important;
+}
+
+body[data-ui-build] #questionsView .stack-form .primary-btn,
+body[data-ui-build] #supportView .stack-form .primary-btn {
+  min-height: 46px !important;
+  margin-top: 2px !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] #questionsView .compact-list,
+body[data-ui-build] #supportView .compact-list {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #questionsView .question-card,
+body[data-ui-build] #supportView .question-card,
+body[data-ui-build] #supportView .support-ticket-card {
+  padding: 14px !important;
+  border: 1px solid #e1dcef !important;
+  border-left: 4px solid var(--st-primary) !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #questionsView .empty-state,
+body[data-ui-build] #supportView .empty-state {
+  min-height: 110px !important;
+  padding: 18px !important;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #questionsView .question-list-panel,
+  body[data-ui-build] #supportView .question-list-panel {
+    max-height: none !important;
+  }
+}
+
+/* v19 final support/question fit: natural card heights, no oversized empty panel. */
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView {
+  width: min(100%, 1060px) !important;
+  max-width: 1060px !important;
+  padding: 16px clamp(14px, 2vw, 22px) 28px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro,
+body[data-ui-build] #supportView .secondary-page-intro {
+  margin-bottom: 12px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro h2,
+body[data-ui-build] #supportView .secondary-page-intro h2 {
+  font-size: 26px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro p,
+body[data-ui-build] #supportView .secondary-page-intro p {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #supportView .support-layout {
+  grid-template-columns: minmax(280px, 350px) minmax(320px, 1fr) !important;
+  gap: 14px !important;
+  padding: 12px !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-form-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 16px !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  min-height: 0 !important;
+}
+
+body[data-ui-build] #questionsView .compact-list,
+body[data-ui-build] #supportView .compact-list {
+  min-height: 0 !important;
+}
+
+body[data-ui-build] #questionsView .empty-state,
+body[data-ui-build] #supportView .empty-state {
+  min-height: 82px !important;
+  padding: 14px 16px !important;
+}
+
+body[data-ui-build] #questionsView .panel-header,
+body[data-ui-build] #supportView .panel-header {
+  margin-bottom: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+body[data-ui-build] #questionsView .panel-header h2,
+body[data-ui-build] #supportView .panel-header h2 {
+  font-size: 17px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form,
+body[data-ui-build] #supportView .stack-form {
+  gap: 9px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form textarea,
+body[data-ui-build] #supportView .stack-form textarea {
+  min-height: 76px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form .primary-btn,
+body[data-ui-build] #supportView .stack-form .primary-btn {
+  min-height: 42px !important;
+}
+
+@media (max-width: 860px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v20 questions/support wrapper fix: remove the large visible empty container. */
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView {
+  width: min(100%, 1160px) !important;
+  max-width: 1160px !important;
+  padding-top: 18px !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #supportView .support-layout {
+  grid-template-columns: minmax(300px, 420px) minmax(360px, 1fr) !important;
+  gap: 18px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #supportView .question-form-panel {
+  width: 100% !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  width: 100% !important;
+  min-height: 0 !important;
+  height: fit-content !important;
+  align-self: start !important;
+}
+
+body[data-ui-build] #questionsView .empty-state,
+body[data-ui-build] #supportView .empty-state {
+  min-height: 96px !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v21 hard fix: Questions/Support are compact content pages, not full-width canvases. */
+body[data-ui-build][data-student-view="questions"] .student-main::after,
+body[data-ui-build][data-student-view="support"] .student-main::after {
+  content: none !important;
+  display: none !important;
+}
+
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView {
+  width: fit-content !important;
+  max-width: calc(100vw - var(--st-sidebar) - 48px) !important;
+  min-height: 0 !important;
+  padding: 18px 20px 28px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro,
+body[data-ui-build] #supportView .secondary-page-intro {
+  width: min(100%, 940px) !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #supportView .support-layout {
+  width: fit-content !important;
+  max-width: 100% !important;
+  grid-template-columns: 420px 520px !important;
+  align-items: start !important;
+  justify-content: start !important;
+  gap: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #supportView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  width: auto !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  align-self: start !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #questionsView .empty-state,
+body[data-ui-build] #supportView .empty-state {
+  min-height: 72px !important;
+}
+
+@media (max-width: 1120px) {
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    width: 100% !important;
+    grid-template-columns: minmax(280px, 420px) minmax(320px, 1fr) !important;
+  }
+}
+
+@media (max-width: 820px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v22 desktop width utilization: keep the two cards, but use the page properly. */
+@media (min-width: 1024px) {
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView {
+    width: 96% !important;
+    max-width: 1680px !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 18px clamp(16px, 1.8vw, 28px) 28px !important;
+  }
+
+  body[data-ui-build] #questionsView .secondary-page-intro,
+  body[data-ui-build] #supportView .secondary-page-intro {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 16px !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(460px, 0.92fr) minmax(560px, 1.08fr) !important;
+    gap: clamp(18px, 1.8vw, 28px) !important;
+    align-items: start !important;
+    justify-content: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body[data-ui-build] #questionsView .question-form-panel,
+  body[data-ui-build] #questionsView .question-list-panel,
+  body[data-ui-build] #supportView .question-form-panel,
+  body[data-ui-build] #supportView .question-list-panel {
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    align-self: start !important;
+  }
+
+  body[data-ui-build] #questionsView .question-list-panel,
+  body[data-ui-build] #supportView .question-list-panel {
+    overflow: visible !important;
+  }
+}
+
+/* v23 full desktop spread: remove remaining side whitespace on Questions/Support. */
+@media (min-width: 1024px) {
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 18px 24px 28px !important;
+  }
+
+  body[data-ui-build] #questionsView .secondary-page-intro,
+  body[data-ui-build] #supportView .secondary-page-intro {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    width: 100% !important;
+    max-width: none !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 24px !important;
+    justify-content: stretch !important;
+  }
+
+  body[data-ui-build] #questionsView .question-form-panel,
+  body[data-ui-build] #questionsView .question-list-panel,
+  body[data-ui-build] #supportView .question-form-panel,
+  body[data-ui-build] #supportView .question-list-panel {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+/* v25 premium student LMS skin: visual-only modernization, no content/function changes. */
+body[data-ui-build] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(109, 86, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgba(99, 209, 255, 0.10), transparent 30%),
+    linear-gradient(180deg, #fbfcfe 0%, #f6f3ff 46%, #fbfcfe 100%) !important;
+  color: #0f0a1f !important;
+}
+
+body[data-ui-build] .student-shell {
+  background: transparent !important;
+}
+
+body[data-ui-build] .student-sidebar {
+  background: rgba(247, 244, 255, 0.78) !important;
+  border-right: 1px solid rgba(107, 92, 180, 0.16) !important;
+  box-shadow: 18px 0 48px rgba(50, 36, 104, 0.08) !important;
+  backdrop-filter: blur(22px) saturate(1.15) !important;
+}
+
+body[data-ui-build] .brand-panel::before {
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+body[data-ui-build] .student-card {
+  border: 1px solid rgba(112, 94, 203, 0.18) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 16px 38px rgba(48, 36, 92, 0.08) !important;
+}
+
+body[data-ui-build] .student-avatar {
+  background: linear-gradient(135deg, #4773f7, #5680ff) !important;
+  box-shadow: 0 14px 30px rgba(71, 115, 247, 0.26) !important;
+}
+
+body[data-ui-build] .nav-group-label {
+  color: #9b92ad !important;
+  letter-spacing: 0.12em !important;
+}
+
+body[data-ui-build] .nav-item {
+  min-height: 42px !important;
+  border-radius: 12px !important;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease !important;
+}
+
+body[data-ui-build] .nav-item:hover {
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #4773f7 !important;
+  transform: translateX(2px) !important;
+}
+
+body[data-ui-build] .nav-item.active {
+  background: linear-gradient(135deg, rgba(71, 115, 247, 0.16), rgba(86, 128, 255, 0.12)) !important;
+  color: #4773f7 !important;
+  box-shadow: inset 3px 0 0 #4773f7, 0 12px 28px rgba(71, 115, 247, 0.10) !important;
+}
+
+body[data-ui-build] .student-topbar {
+  min-height: 64px !important;
+  padding: 0 28px !important;
+  border-bottom: 1px solid rgba(107, 92, 180, 0.16) !important;
+  background: rgba(255, 255, 255, 0.74) !important;
+  box-shadow: 0 10px 30px rgba(48, 36, 92, 0.05) !important;
+}
+
+body[data-ui-build] .coin-pill {
+  border: 1px solid rgba(217, 151, 38, 0.22) !important;
+  background: linear-gradient(135deg, #fff8e7, #fff1c9) !important;
+  box-shadow: 0 12px 24px rgba(210, 140, 24, 0.12) !important;
+}
+
+body[data-ui-build] #questionsView,
+body[data-ui-build] #supportView {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 24px clamp(24px, 3vw, 48px) 36px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro,
+body[data-ui-build] #supportView .secondary-page-intro {
+  margin: 0 0 20px !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro .reference-eyebrow,
+body[data-ui-build] #supportView .secondary-page-intro .reference-eyebrow {
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro h2,
+body[data-ui-build] #supportView .secondary-page-intro h2 {
+  margin: 8px 0 8px !important;
+  color: #0c061a !important;
+  font-size: clamp(34px, 3vw, 48px) !important;
+  line-height: 0.98 !important;
+}
+
+body[data-ui-build] #questionsView .secondary-page-intro p,
+body[data-ui-build] #supportView .secondary-page-intro p {
+  max-width: 780px !important;
+  color: #5f5870 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #questionsView .question-layout,
+body[data-ui-build] #supportView .question-layout,
+body[data-ui-build] #supportView .support-layout {
+  width: 100% !important;
+  max-width: 1680px !important;
+  display: grid !important;
+  grid-template-columns: minmax(420px, 0.92fr) minmax(520px, 1.08fr) !important;
+  gap: clamp(22px, 2.4vw, 36px) !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel,
+body[data-ui-build] #supportView .question-form-panel,
+body[data-ui-build] #supportView .question-list-panel {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: clamp(22px, 2vw, 30px) !important;
+  border: 1px solid rgba(112, 94, 203, 0.18) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 24px 60px rgba(48, 36, 92, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(18px) saturate(1.08) !important;
+  overflow: hidden !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel:hover,
+body[data-ui-build] #questionsView .question-list-panel:hover,
+body[data-ui-build] #supportView .question-form-panel:hover,
+body[data-ui-build] #supportView .question-list-panel:hover {
+  border-color: rgba(71, 115, 247, 0.28) !important;
+  box-shadow: 0 28px 70px rgba(48, 36, 92, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #questionsView .panel-header,
+body[data-ui-build] #supportView .panel-header {
+  margin: 0 0 18px !important;
+  padding: 0 0 16px !important;
+  border-bottom: 1px solid rgba(112, 94, 203, 0.14) !important;
+}
+
+body[data-ui-build] #questionsView .panel-header h2,
+body[data-ui-build] #supportView .panel-header h2 {
+  margin: 0 0 6px !important;
+  color: #0f0a1f !important;
+  font-size: 23px !important;
+  line-height: 1.1 !important;
+}
+
+body[data-ui-build] #questionsView .panel-header p,
+body[data-ui-build] #supportView .panel-header p {
+  color: #645d73 !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form,
+body[data-ui-build] #supportView .stack-form {
+  gap: 14px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form label,
+body[data-ui-build] #supportView .stack-form label {
+  color: #171126 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #questionsView .stack-form input,
+body[data-ui-build] #questionsView .stack-form select,
+body[data-ui-build] #questionsView .stack-form textarea,
+body[data-ui-build] #supportView .stack-form input,
+body[data-ui-build] #supportView .stack-form select,
+body[data-ui-build] #supportView .stack-form textarea {
+  min-height: 48px !important;
+  padding: 12px 15px !important;
+  border: 1px solid rgba(112, 94, 203, 0.22) !important;
+  border-radius: 14px !important;
+  background: rgba(249, 247, 255, 0.78) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+  color: #171126 !important;
+  font-size: 14px !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease !important;
+}
+
+body[data-ui-build] #questionsView .stack-form textarea,
+body[data-ui-build] #supportView .stack-form textarea {
+  min-height: 126px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form input:focus,
+body[data-ui-build] #questionsView .stack-form select:focus,
+body[data-ui-build] #questionsView .stack-form textarea:focus,
+body[data-ui-build] #supportView .stack-form input:focus,
+body[data-ui-build] #supportView .stack-form select:focus,
+body[data-ui-build] #supportView .stack-form textarea:focus {
+  border-color: rgba(71, 115, 247, 0.72) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  outline: none !important;
+}
+
+body[data-ui-build] #questionsView .stack-form .primary-btn,
+body[data-ui-build] #supportView .stack-form .primary-btn {
+  min-height: 54px !important;
+  border-radius: 15px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  box-shadow: 0 18px 38px rgba(71, 115, 247, 0.24) !important;
+  font-size: 17px !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease !important;
+}
+
+body[data-ui-build] #questionsView .stack-form .primary-btn:hover,
+body[data-ui-build] #supportView .stack-form .primary-btn:hover {
+  transform: translateY(-1px) !important;
+  filter: saturate(1.06) !important;
+  box-shadow: 0 22px 46px rgba(71, 115, 247, 0.30) !important;
+}
+
+body[data-ui-build] #questionsView .compact-list,
+body[data-ui-build] #supportView .compact-list {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #questionsView .question-card,
+body[data-ui-build] #supportView .question-card,
+body[data-ui-build] #supportView .support-ticket-card {
+  border-radius: 16px !important;
+  background: rgba(249, 247, 255, 0.72) !important;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease !important;
+}
+
+body[data-ui-build] #questionsView .question-card:hover,
+body[data-ui-build] #supportView .question-card:hover,
+body[data-ui-build] #supportView .support-ticket-card:hover {
+  background: #fff !important;
+  border-color: rgba(71, 115, 247, 0.28) !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #questionsView .empty-state,
+body[data-ui-build] #supportView .empty-state {
+  min-height: 120px !important;
+  display: grid !important;
+  align-content: center !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, rgba(249, 247, 255, 0.86), rgba(255, 255, 255, 0.86)) !important;
+}
+
+body[data-ui-build] #supportView #refreshSupportBtn {
+  min-height: 38px !important;
+  border-radius: 12px !important;
+  transition: transform 160ms ease, box-shadow 160ms ease !important;
+}
+
+body[data-ui-build] #supportView #refreshSupportBtn:hover {
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: minmax(340px, 0.95fr) minmax(420px, 1.05fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #questionsView,
+  body[data-ui-build] #supportView {
+    padding: 18px 14px 30px !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout,
+  body[data-ui-build] #supportView .question-layout,
+  body[data-ui-build] #supportView .support-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* v26 referral/profile professional layout: visual-only, preserve all content. */
+body[data-ui-build] #referralView,
+body[data-ui-build] #profileView {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px clamp(24px, 3vw, 48px) 38px !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro,
+body[data-ui-build] #profileView .secondary-page-intro {
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro h2,
+body[data-ui-build] #profileView .secondary-page-intro h2 {
+  margin: 8px 0 10px !important;
+  color: #0c061a !important;
+  font-size: clamp(32px, 2.8vw, 46px) !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro p,
+body[data-ui-build] #profileView .secondary-page-intro p {
+  max-width: 760px !important;
+  color: #625b72 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  width: 100% !important;
+  max-width: 1680px !important;
+  display: grid !important;
+  grid-template-columns: minmax(340px, 0.42fr) minmax(620px, 1fr) !important;
+  gap: clamp(22px, 2vw, 32px) !important;
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-guide-card,
+body[data-ui-build] #profileView .profile-summary,
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card {
+  border: 1px solid rgba(112, 94, 203, 0.18) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+  box-shadow: 0 24px 60px rgba(48, 36, 92, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(18px) saturate(1.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card {
+  min-height: 360px !important;
+  padding: clamp(22px, 2vw, 30px) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-top,
+body[data-ui-build] #referralView .referral-share-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row {
+  display: grid !important;
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+
+body[data-ui-build] #referralView .referral-profile-row h2,
+body[data-ui-build] #referralView .referral-share-head h2,
+body[data-ui-build] #referralView .referral-guide-head h2 {
+  margin: 0 0 8px !important;
+  color: #0f0a1f !important;
+  font-size: clamp(22px, 1.8vw, 30px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  display: grid !important;
+  gap: 7px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(243, 239, 255, 0.96), rgba(255, 255, 255, 0.78)) !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  max-width: 100% !important;
+  color: #4773f7 !important;
+  font-size: clamp(28px, 2.3vw, 42px) !important;
+  line-height: 0.98 !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+body[data-ui-build] #referralView #referralCodeValue {
+  width: 100% !important;
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(112, 94, 203, 0.22) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip button,
+body[data-ui-build] #referralView .referral-share-card button {
+  min-height: 46px !important;
+  border-radius: 14px !important;
+}
+
+body[data-ui-build] #referralView .referral-share-card {
+  display: grid !important;
+  grid-template-rows: auto minmax(150px, 1fr) auto !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  min-height: 150px !important;
+  resize: vertical !important;
+  border-radius: 16px !important;
+  background: rgba(249, 247, 255, 0.82) !important;
+}
+
+body[data-ui-build] #referralView .referral-form-link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 16px !important;
+  background: rgba(249, 247, 255, 0.74) !important;
+}
+
+body[data-ui-build] #referralView .referral-form-link strong {
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-card {
+  grid-column: 1 / -1 !important;
+  padding: clamp(22px, 2vw, 30px) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div {
+  padding: 18px !important;
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 18px !important;
+  background: rgba(249, 247, 255, 0.74) !important;
+}
+
+body[data-ui-build] #profileView .profile-layout {
+  width: 100% !important;
+  max-width: 1680px !important;
+  display: grid !important;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) !important;
+  gap: clamp(22px, 2vw, 32px) !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #profileView .profile-summary {
+  grid-row: span 2 !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #profileView .profile-reference-hero {
+  padding: 24px !important;
+  border-radius: 22px 22px 0 0 !important;
+  background: linear-gradient(145deg, #4773f7 0%, #5680ff 100%) !important;
+}
+
+body[data-ui-build] #profileView .profile-meta {
+  padding: 18px !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #profileView .profile-meta > div {
+  padding: 14px !important;
+  border: 1px solid rgba(112, 94, 203, 0.14) !important;
+  border-radius: 16px !important;
+  background: rgba(249, 247, 255, 0.76) !important;
+}
+
+body[data-ui-build] #profileView .profile-id-card {
+  margin: 0 18px 18px !important;
+  padding: 18px !important;
+  border-radius: 18px !important;
+}
+
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card {
+  padding: clamp(22px, 2vw, 30px) !important;
+}
+
+body[data-ui-build] #profileView .panel-header {
+  margin-bottom: 20px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 1px solid rgba(112, 94, 203, 0.14) !important;
+}
+
+body[data-ui-build] #profileView .panel-header h2 {
+  margin: 0 0 8px !important;
+  color: #0f0a1f !important;
+  font-size: clamp(24px, 2vw, 32px) !important;
+}
+
+body[data-ui-build] #profileView .form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .stack-form {
+  gap: 16px !important;
+}
+
+body[data-ui-build] #profileView .stack-form input {
+  min-height: 48px !important;
+  border-radius: 14px !important;
+  background: rgba(249, 247, 255, 0.82) !important;
+}
+
+body[data-ui-build] #profileView .stack-form button {
+  min-height: 54px !important;
+  border-radius: 15px !important;
+}
+
+@media (max-width: 1100px) {
+  body[data-ui-build] #referralView .referral-studio,
+  body[data-ui-build] #profileView .profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #profileView .profile-summary {
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] #referralView,
+  body[data-ui-build] #profileView {
+    padding: 18px 14px 30px !important;
+  }
+
+  body[data-ui-build] #referralView .referral-step-grid,
+  body[data-ui-build] #profileView .form-grid.two {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-share-head,
+  body[data-ui-build] #referralView .referral-form-link {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+}
+
+/* v24 batch chat layout repair: remove giant empty chat canvas and align messages correctly. */
+body[data-ui-build] #batchView {
+  width: min(100%, 1500px) !important;
+  max-width: 1500px !important;
+  padding: 18px 24px 30px !important;
+}
+
+body[data-ui-build] #batchView .batch-reference-hero {
+  min-height: 150px !important;
+  margin-bottom: 16px !important;
+}
+
+body[data-ui-build] #batchView .batch-layout {
+  display: grid !important;
+  grid-template-columns: minmax(290px, 360px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  padding: 14px !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  height: auto !important;
+  max-height: calc(100vh - 250px) !important;
+  overflow-y: auto !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  height: min(620px, calc(100vh - 250px)) !important;
+  min-height: 520px !important;
+  max-height: 620px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto auto !important;
+  align-self: start !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  align-content: start !important;
+  justify-content: start !important;
+  padding: 16px 18px !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble {
+  width: fit-content !important;
+  max-width: min(620px, 70%) !important;
+  margin-right: auto !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider {
+  width: 100% !important;
+}
+
+body[data-ui-build] #batchView .composer {
+  padding: 12px 16px !important;
+}
+
+body[data-ui-build] #batchView .composer input,
+body[data-ui-build] #batchView .composer .primary-btn {
+  min-height: 44px !important;
+}
+
+body[data-ui-build] #batchView .batch-task-panel {
+  margin-top: 16px !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #batchView .batch-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .batch-summary-panel,
+  body[data-ui-build] #batchView .chat-panel {
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  body[data-ui-build] #batchView .chat-list {
+    min-height: 320px !important;
+    max-height: 60vh !important;
+  }
+}
+
+/* v29 enterprise referral/profile refinement: CSS-only, preserve all content and logic. */
+body[data-ui-build] #referralView,
+body[data-ui-build] #profileView {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px clamp(24px, 3vw, 52px) 42px !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro,
+body[data-ui-build] #profileView .secondary-page-intro {
+  max-width: 1680px !important;
+  margin: 0 auto 24px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro h2,
+body[data-ui-build] #profileView .secondary-page-intro h2 {
+  margin: 8px 0 10px !important;
+  color: #0d071b !important;
+  font-size: clamp(34px, 3vw, 48px) !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #referralView .secondary-page-intro p,
+body[data-ui-build] #profileView .secondary-page-intro p {
+  max-width: 760px !important;
+  color: #625b72 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #referralView .referral-studio,
+body[data-ui-build] #profileView .profile-layout {
+  width: 100% !important;
+  max-width: 1680px !important;
+  margin: 0 auto !important;
+  gap: clamp(22px, 2vw, 34px) !important;
+  align-items: start !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  grid-template-columns: minmax(340px, 420px) minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] #profileView .profile-layout {
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-guide-card,
+body[data-ui-build] #profileView .profile-summary,
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card {
+  border: 1px solid rgba(112, 94, 203, 0.18) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 22px 58px rgba(44, 34, 84, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(18px) saturate(1.08) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-guide-card,
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card {
+  padding: clamp(24px, 2vw, 34px) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView .referral-share-card {
+  display: grid !important;
+  grid-template-rows: auto minmax(170px, 1fr) auto !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-top,
+body[data-ui-build] #referralView .referral-share-head,
+body[data-ui-build] #referralView .referral-form-link {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(244, 240, 255, 0.98), rgba(255, 255, 255, 0.82)) !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  max-width: 100% !important;
+  color: #4773f7 !important;
+  font-size: clamp(34px, 2.8vw, 48px) !important;
+  line-height: 0.95 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #referralView #referralCodeValue,
+body[data-ui-build] #referralView #referralShareText {
+  border: 1px solid rgba(112, 94, 203, 0.22) !important;
+  border-radius: 15px !important;
+  background: rgba(249, 247, 255, 0.82) !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  min-height: 170px !important;
+  padding: 16px 18px !important;
+}
+
+body[data-ui-build] #referralView .referral-form-link {
+  align-items: center !important;
+  padding: 16px !important;
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 16px !important;
+  background: rgba(249, 247, 255, 0.74) !important;
+}
+
+body[data-ui-build] #referralView .referral-form-link strong {
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #referralView .referral-guide-card {
+  grid-column: 1 / -1 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div,
+body[data-ui-build] #profileView .profile-meta > div {
+  border: 1px solid rgba(112, 94, 203, 0.16) !important;
+  border-radius: 18px !important;
+  background: rgba(249, 247, 255, 0.74) !important;
+}
+
+body[data-ui-build] #profileView .profile-reference-hero {
+  padding: 26px !important;
+  border-radius: 20px 20px 0 0 !important;
+  background: linear-gradient(145deg, #4773f7 0%, #5680ff 100%) !important;
+}
+
+body[data-ui-build] #profileView .profile-meta {
+  padding: 18px !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #profileView .profile-meta > div {
+  min-height: 74px !important;
+  padding: 14px !important;
+}
+
+body[data-ui-build] #profileView .profile-meta .wide {
+  grid-column: 1 / -1 !important;
+}
+
+body[data-ui-build] #profileView .profile-card-header {
+  margin-bottom: 22px !important;
+  padding-bottom: 18px !important;
+  border-bottom: 1px solid rgba(112, 94, 203, 0.14) !important;
+}
+
+body[data-ui-build] #profileView .profile-card-header h2 {
+  font-size: clamp(26px, 2vw, 34px) !important;
+}
+
+body[data-ui-build] #profileView .form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #profileView .stack-form {
+  gap: 18px !important;
+}
+
+body[data-ui-build] #profileView .stack-form input {
+  min-height: 50px !important;
+  border-radius: 15px !important;
+  background: rgba(249, 247, 255, 0.82) !important;
+}
+
+body[data-ui-build] #profileView .stack-form button,
+body[data-ui-build] #referralView button {
+  min-height: 48px !important;
+  border-radius: 15px !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease !important;
+}
+
+body[data-ui-build] #profileView .stack-form button:hover,
+body[data-ui-build] #referralView button:hover {
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 1120px) {
+  body[data-ui-build] #profileView .profile-layout,
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] #profileView,
+  body[data-ui-build] #referralView {
+    padding: 18px 14px 30px !important;
+  }
+
+  body[data-ui-build] #profileView .form-grid.two,
+  body[data-ui-build] #referralView .referral-step-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-share-head,
+  body[data-ui-build] #referralView .referral-form-link {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* v30 premium LMS profile/referral finish: CSS-only polish, content/functionality unchanged. */
+body[data-ui-build] #profileView,
+body[data-ui-build] #referralView {
+  --premium-card-bg: rgba(255, 255, 255, 0.88);
+  --premium-line: rgba(105, 87, 190, 0.18);
+  --premium-soft: rgba(246, 243, 255, 0.82);
+  --premium-shadow: 0 24px 70px rgba(44, 34, 84, 0.11);
+  --premium-radius: 20px;
+  padding: clamp(24px, 2.6vw, 42px) clamp(28px, 3.2vw, 56px) 44px !important;
+}
+
+body[data-ui-build] #profileView .secondary-page-intro,
+body[data-ui-build] #referralView .secondary-page-intro {
+  max-width: 1720px !important;
+  margin-bottom: clamp(20px, 2.1vw, 30px) !important;
+}
+
+body[data-ui-build] #profileView .secondary-page-intro h2,
+body[data-ui-build] #referralView .secondary-page-intro h2 {
+  letter-spacing: 0 !important;
+  text-wrap: balance !important;
+}
+
+body[data-ui-build] #profileView .secondary-page-intro p,
+body[data-ui-build] #referralView .secondary-page-intro p {
+  color: #5f5870 !important;
+  text-wrap: pretty !important;
+}
+
+body[data-ui-build] #profileView .profile-layout,
+body[data-ui-build] #referralView .referral-studio {
+  max-width: 1720px !important;
+}
+
+body[data-ui-build] #profileView .profile-layout {
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr) !important;
+  gap: clamp(24px, 2.2vw, 38px) !important;
+}
+
+body[data-ui-build] #profileView .profile-summary,
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card,
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-guide-card {
+  border-color: var(--premium-line) !important;
+  border-radius: var(--premium-radius) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), var(--premium-card-bg)) !important;
+  box-shadow: var(--premium-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+}
+
+body[data-ui-build] #profileView .profile-summary:hover,
+body[data-ui-build] #profileView .profile-form-card:hover,
+body[data-ui-build] #profileView .profile-password-card:hover,
+body[data-ui-build] #referralView .referral-pass-card:hover,
+body[data-ui-build] #referralView .referral-share-card:hover,
+body[data-ui-build] #referralView .referral-guide-card:hover {
+  border-color: rgba(71, 115, 247, 0.30) !important;
+  box-shadow: 0 30px 82px rgba(44, 34, 84, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #profileView .profile-reference-hero {
+  display: grid !important;
+  gap: 14px !important;
+  min-height: 240px !important;
+  align-content: start !important;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(255, 255, 255, 0.28), transparent 34%),
+    radial-gradient(circle at 12% 90%, rgba(195, 184, 255, 0.24), transparent 32%),
+    linear-gradient(145deg, #4773f7 0%, #5680ff 100%) !important;
+}
+
+body[data-ui-build] #profileView .profile-reference-hero .student-avatar {
+  width: 54px !important;
+  height: 54px !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 16px 32px rgba(38, 25, 104, 0.22) !important;
+}
+
+body[data-ui-build] #profileView .profile-identity-copy span,
+body[data-ui-build] #profileView .profile-coin-panel span {
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.02em !important;
+}
+
+body[data-ui-build] #profileView .profile-identity-copy p {
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #profileView .profile-coin-panel {
+  align-self: end !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body[data-ui-build] #profileView .profile-meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] #profileView .profile-meta > div {
+  display: grid !important;
+  align-content: center !important;
+  min-height: 78px !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(135deg, rgba(249, 247, 255, 0.92), rgba(255, 255, 255, 0.78)) !important;
+}
+
+body[data-ui-build] #profileView .profile-id-card {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 255, 0.90)) !important;
+  box-shadow: 0 16px 36px rgba(44, 34, 84, 0.08) !important;
+}
+
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-password-card {
+  display: grid !important;
+  align-content: start !important;
+  min-height: 0 !important;
+}
+
+body[data-ui-build] #profileView .profile-card-header h2,
+body[data-ui-build] #referralView .referral-share-head h2,
+body[data-ui-build] #referralView .referral-guide-head h2 {
+  color: #0f0a1f !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #profileView .stack-form input,
+body[data-ui-build] #referralView #referralCodeValue,
+body[data-ui-build] #referralView #referralShareText {
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease !important;
+}
+
+body[data-ui-build] #profileView .stack-form input:focus,
+body[data-ui-build] #referralView #referralCodeValue:focus,
+body[data-ui-build] #referralView #referralShareText:focus {
+  border-color: rgba(71, 115, 247, 0.72) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12) !important;
+  outline: none !important;
+}
+
+body[data-ui-build] #profileView .primary-btn,
+body[data-ui-build] #referralView .primary-btn {
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  box-shadow: 0 18px 38px rgba(71, 115, 247, 0.24) !important;
+}
+
+body[data-ui-build] #profileView .primary-btn:hover,
+body[data-ui-build] #referralView .primary-btn:hover {
+  box-shadow: 0 22px 48px rgba(71, 115, 247, 0.30) !important;
+  filter: saturate(1.06) !important;
+}
+
+body[data-ui-build] #referralView .referral-studio {
+  grid-template-columns: minmax(360px, 430px) minmax(0, 1fr) !important;
+  gap: clamp(24px, 2.2vw, 38px) !important;
+}
+
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card {
+  min-height: 390px !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  position: relative !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(71, 115, 247, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(244, 240, 255, 0.98), rgba(255, 255, 255, 0.84)) !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto -30px -42px auto !important;
+  width: 130px !important;
+  height: 130px !important;
+  border-radius: 999px !important;
+  background: rgba(71, 115, 247, 0.10) !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box small,
+body[data-ui-build] #referralView .referral-form-link small {
+  color: #786f8d !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box span {
+  color: #5f5870 !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #referralView .referral-action-strip {
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #referralView .referral-share-card {
+  grid-template-rows: auto minmax(180px, 1fr) auto !important;
+}
+
+body[data-ui-build] #referralView .referral-form-link {
+  min-height: 76px !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid {
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div {
+  display: grid !important;
+  gap: 8px !important;
+  align-content: start !important;
+  min-height: 150px !important;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid > div:hover {
+  border-color: rgba(71, 115, 247, 0.30) !important;
+  background: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid span {
+  color: #4773f7 !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid strong {
+  color: #120c20 !important;
+}
+
+body[data-ui-build] #referralView .referral-step-grid p {
+  color: #625b72 !important;
+  line-height: 1.55 !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #profileView .profile-layout,
+  body[data-ui-build] #referralView .referral-studio {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #profileView .profile-summary {
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 780px) {
+  body[data-ui-build] #profileView,
+  body[data-ui-build] #referralView {
+    padding: 18px 14px 30px !important;
+  }
+
+  body[data-ui-build] #profileView .form-grid.two,
+  body[data-ui-build] #profileView .profile-meta,
+  body[data-ui-build] #referralView .referral-step-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #referralView .referral-share-head,
+  body[data-ui-build] #referralView .referral-form-link,
+  body[data-ui-build] #referralView .referral-pass-top {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+}
+
+/* v33 premium batch chat: collaboration-platform styling only, no chat logic/content changes. */
+body[data-ui-build] #batchView .batch-layout {
+  align-items: stretch !important;
+  grid-template-columns: minmax(320px, 430px) minmax(0, 1fr) !important;
+  gap: clamp(18px, 1.6vw, 28px) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  display: grid !important;
+  grid-template-rows: auto minmax(430px, 68vh) auto auto !important;
+  overflow: hidden !important;
+  min-height: 680px !important;
+  border: 1px solid rgba(205, 196, 235, 0.92) !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 248, 255, 0.92)) !important;
+  box-shadow: 0 26px 70px rgba(39, 29, 78, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 18px !important;
+  align-items: center !important;
+  min-height: 96px !important;
+  padding: 22px 26px !important;
+  border-bottom: 1px solid rgba(220, 214, 239, 0.92) !important;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(71, 115, 247, 0.12), transparent 35%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(245, 242, 255, 0.90)) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header h2 {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  margin: 0 !important;
+  color: #0f0a1f !important;
+  font-size: clamp(24px, 1.9vw, 32px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header h2::before {
+  content: "" !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 999px !important;
+  background: #31d989 !important;
+  box-shadow: 0 0 0 7px rgba(49, 217, 137, 0.12), 0 0 22px rgba(49, 217, 137, 0.42) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .panel-header p {
+  margin-top: 7px !important;
+  color: #6b627d !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] #batchView .chat-header-actions {
+  display: flex !important;
+  align-items: end !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  min-width: min(520px, 52vw) !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select {
+  display: grid !important;
+  gap: 7px !important;
+  min-width: min(380px, 34vw) !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select span {
+  color: #7a718e !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.11em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select select {
+  height: 48px !important;
+  border: 1px solid rgba(199, 190, 232, 0.95) !important;
+  border-radius: 15px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: #171225 !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  box-shadow: 0 12px 28px rgba(48, 39, 83, 0.07) !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease !important;
+}
+
+body[data-ui-build] #batchView .chat-batch-select select:focus {
+  outline: none !important;
+  border-color: rgba(71, 115, 247, 0.72) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12), 0 14px 34px rgba(48, 39, 83, 0.10) !important;
+}
+
+body[data-ui-build] #batchView #reloadChatBtn {
+  height: 48px !important;
+  min-width: 110px !important;
+  border-radius: 15px !important;
+  border-color: rgba(199, 190, 232, 0.92) !important;
+  background: #fff !important;
+  color: #31294a !important;
+  box-shadow: 0 12px 26px rgba(48, 39, 83, 0.07) !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease !important;
+}
+
+body[data-ui-build] #batchView #reloadChatBtn:hover {
+  border-color: rgba(71, 115, 247, 0.34) !important;
+  box-shadow: 0 16px 34px rgba(48, 39, 83, 0.11) !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 24px 28px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth !important;
+  background:
+    linear-gradient(rgba(246, 243, 255, 0.76), rgba(255, 255, 255, 0.70)),
+    radial-gradient(circle at 8% 8%, rgba(71, 115, 247, 0.06), transparent 30%) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(114, 100, 176, 0.42) transparent !important;
+}
+
+body[data-ui-build] #batchView .chat-list::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+body[data-ui-build] #batchView .chat-list::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+body[data-ui-build] #batchView .chat-list::-webkit-scrollbar-thumb {
+  border: 3px solid transparent !important;
+  border-radius: 999px !important;
+  background: rgba(114, 100, 176, 0.38) !important;
+  background-clip: padding-box !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 12px 0 8px !important;
+  color: #7b728c !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider::before,
+body[data-ui-build] #batchView .chat-date-divider::after {
+  content: "" !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(203, 194, 232, 0.96)) !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider::after {
+  background: linear-gradient(90deg, rgba(203, 194, 232, 0.96), transparent) !important;
+}
+
+body[data-ui-build] #batchView .chat-date-divider span {
+  padding: 7px 13px !important;
+  border: 1px solid rgba(214, 207, 238, 0.95) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 8px 20px rgba(52, 42, 91, 0.06) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble {
+  width: fit-content !important;
+  max-width: min(68%, 720px) !important;
+  margin: 2px auto 2px 0 !important;
+  padding: 12px 14px 10px !important;
+  border: 1px solid rgba(212, 205, 233, 0.96) !important;
+  border-radius: 18px 18px 18px 6px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #181225 !important;
+  box-shadow: 0 12px 30px rgba(45, 35, 88, 0.08) !important;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble:hover {
+  border-color: rgba(71, 115, 247, 0.24) !important;
+  box-shadow: 0 16px 38px rgba(45, 35, 88, 0.11) !important;
+  transform: translateY(-1px) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine {
+  margin-right: 0 !important;
+  margin-left: auto !important;
+  border-color: rgba(71, 115, 247, 0.10) !important;
+  border-radius: 18px 18px 6px 18px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 18px 42px rgba(71, 115, 247, 0.24) !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 8px !important;
+}
+
+body[data-ui-build] #batchView .chat-author {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #batchView .chat-author i {
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 28px !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #eef3ff, #dbe6ff) !important;
+  color: #4773f7 !important;
+  font-style: normal !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine .chat-author i {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-author strong {
+  overflow: hidden !important;
+  color: #191326 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine .chat-author strong,
+body[data-ui-build] #batchView .chat-bubble.mine time,
+body[data-ui-build] #batchView .chat-bubble.mine p {
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble time {
+  flex: 0 0 auto !important;
+  color: #81778f !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble p {
+  margin: 0 !important;
+  color: #251e34 !important;
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #batchView .reply-preview {
+  margin: 4px 0 9px !important;
+  padding: 8px 10px !important;
+  border-left: 3px solid rgba(71, 115, 247, 0.60) !important;
+  border-radius: 10px !important;
+  background: rgba(244, 241, 255, 0.90) !important;
+  color: #5d536f !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine .reply-preview {
+  border-left-color: rgba(255, 255, 255, 0.62) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+body[data-ui-build] #batchView .chat-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin-top: 9px !important;
+}
+
+body[data-ui-build] #batchView .chat-actions .text-btn {
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: rgba(71, 115, 247, 0.08) !important;
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble.mine .chat-actions .text-btn {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin: 0 !important;
+  padding: 11px 24px !important;
+  border-top: 1px solid rgba(220, 214, 239, 0.92) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar[hidden] {
+  display: none !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar span {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar small {
+  display: block !important;
+  color: #4773f7 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #batchView .chat-reply-bar strong {
+  display: block !important;
+  overflow: hidden !important;
+  color: #211a31 !important;
+  font-size: 13px !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .composer {
+  position: sticky !important;
+  bottom: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 18px 24px !important;
+  border-top: 1px solid rgba(220, 214, 239, 0.92) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+body[data-ui-build] #batchView #chatMessage {
+  height: 56px !important;
+  border: 1px solid rgba(199, 190, 232, 0.95) !important;
+  border-radius: 18px !important;
+  background: rgba(248, 246, 255, 0.92) !important;
+  color: #191326 !important;
+  font-size: 15px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease !important;
+}
+
+body[data-ui-build] #batchView #chatMessage:focus {
+  outline: none !important;
+  border-color: rgba(71, 115, 247, 0.72) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .composer .primary-btn {
+  height: 56px !important;
+  min-width: 106px !important;
+  border-radius: 17px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  box-shadow: 0 16px 34px rgba(71, 115, 247, 0.24) !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease !important;
+}
+
+body[data-ui-build] #batchView .chat-panel .composer .primary-btn:hover {
+  box-shadow: 0 22px 44px rgba(71, 115, 247, 0.30) !important;
+  filter: saturate(1.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #batchView .batch-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #batchView .chat-panel {
+    min-height: 620px !important;
+    grid-template-rows: auto minmax(360px, 58vh) auto auto !important;
+  }
+
+  body[data-ui-build] #batchView .chat-header-actions {
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 780px) {
+  body[data-ui-build] #batchView .chat-panel {
+    min-height: 560px !important;
+    border-radius: 18px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-panel .panel-header {
+    grid-template-columns: 1fr !important;
+    padding: 18px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-header-actions {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #batchView .chat-batch-select {
+    min-width: 0 !important;
+  }
+
+  body[data-ui-build] #batchView .chat-list {
+    padding: 18px 14px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-bubble,
+  body[data-ui-build] #batchView .chat-bubble.mine {
+    max-width: 92% !important;
+  }
+
+  body[data-ui-build] #batchView .chat-bubble header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-panel .composer {
+    grid-template-columns: 1fr !important;
+    padding: 14px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-panel .composer .primary-btn {
+    width: 100% !important;
+  }
+}
+
+/* v34 batch left-column repair: keep batch details natural while chat stays tall. */
+body[data-ui-build] #batchView .batch-layout {
+  align-items: start !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border-radius: 22px !important;
+}
+
+body[data-ui-build] #batchView #batchInfo,
+body[data-ui-build] #batchView .classmate-list {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #batchView .batch-instructors,
+body[data-ui-build] #batchView .classmate-list,
+body[data-ui-build] #batchView .next-session-card {
+  margin-bottom: 0 !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel .panel-header,
+body[data-ui-build] #batchView .batch-summary-heading,
+body[data-ui-build] #batchView .batch-detail-pills,
+body[data-ui-build] #batchView .batch-instructors,
+body[data-ui-build] #batchView .next-session-card,
+body[data-ui-build] #batchView .classmate-list {
+  flex-shrink: 0 !important;
+}
+
+/* v35 batch summary balance: hide Next Session and keep remaining left cards even. */
+body[data-ui-build] #batchView .next-session-card {
+  display: none !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  display: grid !important;
+  align-content: start !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #batchView #batchInfo {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructors,
+body[data-ui-build] #batchView .classmate-list {
+  display: grid !important;
+  align-content: start !important;
+  height: 250px !important;
+  min-height: 250px !important;
+  max-height: 250px !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+}
+
+body[data-ui-build] #batchView .classmate-list {
+  overflow-y: auto !important;
+}
+
+body[data-ui-build] #batchView .batch-instructors > div:first-child,
+body[data-ui-build] #batchView .batch-classmates-head {
+  min-height: 42px !important;
+}
+
+body[data-ui-build] #batchView .batch-instructor-row {
+  min-height: 64px !important;
+}
+
+@media (max-width: 780px) {
+  body[data-ui-build] #batchView .batch-instructors,
+  body[data-ui-build] #batchView .classmate-list {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* v37 batch column alignment: make chat bottom match the left summary bottom. */
+body[data-ui-build] #batchView .batch-layout {
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  height: 100% !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  align-self: stretch !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  grid-template-rows: auto minmax(0, 1fr) auto auto !important;
+}
+
+body[data-ui-build] #batchView .chat-list {
+  min-height: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #batchView .batch-summary-panel,
+  body[data-ui-build] #batchView .chat-panel {
+    height: auto !important;
+  }
+}
+
+/* v38 batch compact height: keep columns aligned without an oversized chat block. */
+body[data-ui-build] #batchView .batch-summary-panel,
+body[data-ui-build] #batchView .chat-panel {
+  height: clamp(560px, 66vh, 640px) !important;
+  max-height: clamp(560px, 66vh, 640px) !important;
+}
+
+body[data-ui-build] #batchView .chat-panel {
+  min-height: 560px !important;
+}
+
+body[data-ui-build] #batchView .batch-summary-panel {
+  overflow-y: auto !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #batchView .batch-summary-panel,
+  body[data-ui-build] #batchView .chat-panel {
+    height: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* v39 premium shop catalog: reference-style reward cards, CSS-only. */
+body[data-ui-build] #shopView {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px clamp(20px, 3vw, 52px) 44px !important;
+}
+
+body[data-ui-build] #shopView .compact-intro {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 1500px !important;
+  min-height: 190px !important;
+  margin: 0 auto 28px !important;
+  padding: clamp(34px, 4vw, 58px) clamp(34px, 4vw, 62px) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(229, 224, 246, 0.72) !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at 88% 40%, rgba(71, 115, 247, 0.10), transparent 25%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(249, 247, 255, 0.92)) !important;
+  box-shadow: 0 22px 58px rgba(45, 35, 88, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+}
+
+body[data-ui-build] #shopView .compact-intro::after {
+  content: "" !important;
+  position: absolute !important;
+  right: clamp(28px, 5vw, 76px) !important;
+  top: 34px !important;
+  width: clamp(118px, 13vw, 184px) !important;
+  aspect-ratio: 0.76 !important;
+  border-radius: 30px !important;
+  background: linear-gradient(145deg, rgba(71, 115, 247, 0.09), rgba(232, 237, 246, 0.58)) !important;
+  transform: rotate(13deg) !important;
+}
+
+body[data-ui-build] #shopView .compact-intro > div {
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 620px !important;
+}
+
+body[data-ui-build] #shopView .compact-intro .reference-eyebrow {
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.10em !important;
+}
+
+body[data-ui-build] #shopView .compact-intro h2 {
+  margin: 12px 0 10px !important;
+  color: #100b1f !important;
+  font-size: clamp(34px, 3.1vw, 50px) !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #shopView .compact-intro p {
+  max-width: 520px !important;
+  color: #5d556e !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #shopView .shop-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(300px, 1fr)) !important;
+  gap: clamp(22px, 2.2vw, 34px) !important;
+  width: 100% !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+}
+
+body[data-ui-build] #shopView .shop-card {
+  display: grid !important;
+  grid-template-rows: 270px auto auto !important;
+  min-height: 440px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(229, 224, 246, 0.88) !important;
+  border-radius: 22px !important;
+  background: #fff !important;
+  box-shadow: 0 24px 60px rgba(45, 35, 88, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease !important;
+}
+
+body[data-ui-build] #shopView .shop-card:hover {
+  border-color: rgba(71, 115, 247, 0.26) !important;
+  box-shadow: 0 30px 78px rgba(45, 35, 88, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-2px) !important;
+}
+
+body[data-ui-build] #shopView .shop-card img {
+  width: 100% !important;
+  height: 270px !important;
+  object-fit: cover !important;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(71, 115, 247, 0.10), transparent 40%),
+    #f5f2ff !important;
+}
+
+body[data-ui-build] #shopView .shop-card .card-copy {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 22px 24px 14px !important;
+}
+
+body[data-ui-build] #shopView .shop-card h3 {
+  margin: 0 !important;
+  color: #100b1f !important;
+  font-size: 22px !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #shopView .shop-card p {
+  min-height: 34px !important;
+  margin: 0 !important;
+  color: #6d647d !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #shopView .shop-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 14px 24px 24px !important;
+  margin-top: auto !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .pill {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #4773f7 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .primary-btn {
+  min-width: 92px !important;
+  min-height: 48px !important;
+  padding: 0 22px !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #4773f7 0%, #5680ff 100%) !important;
+  box-shadow: 0 16px 34px rgba(71, 115, 247, 0.24) !important;
+}
+
+body[data-ui-build] #shopView .shop-actions .primary-btn:disabled {
+  background: #eef0f7 !important;
+  color: #8d93a7 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: default !important;
+}
+
+@media (min-width: 1600px) {
+  body[data-ui-build] #shopView .shop-grid {
+    grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] #shopView .shop-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #shopView .shop-card {
+    grid-template-rows: 230px auto auto !important;
+  }
+
+  body[data-ui-build] #shopView .shop-card img {
+    height: 230px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] #shopView {
+    padding: 18px 14px 34px !important;
+  }
+
+  body[data-ui-build] #shopView .compact-intro {
+    min-height: 160px !important;
+    padding: 26px 22px !important;
+  }
+
+  body[data-ui-build] #shopView .compact-intro::after {
+    opacity: 0.42 !important;
+  }
+
+  body[data-ui-build] #shopView .shop-actions {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] #shopView .shop-actions .primary-btn {
+    width: 100% !important;
+  }
+}
+
+/* Final view isolation guard: later page-specific display rules must not leak hidden views. */
+body[data-ui-build] .student-view:not(.active),
+body[data-ui-build] #batchView.student-view:not(.active) {
+  display: none !important;
+}
+
+body[data-ui-build] #batchView.student-view.active {
+  display: grid !important;
+}
+
+/* v43 Q&A reference shell: student LMS aligned to supplied Questions screen. */
+body[data-ui-build] {
+  --qa-bg: #f4f1fd;
+  --qa-sidebar: #f2effb;
+  --qa-panel: #ffffff;
+  --qa-card: #ffffff;
+  --qa-ink: #16122a;
+  --qa-muted: #6f6a83;
+  --qa-line: #d8d1ec;
+  --qa-soft: #eeeafd;
+  --qa-primary: #4773f7;
+  --qa-primary-2: #6658f1;
+  --qa-warn: #f29b38;
+  --qa-ok: #6f62ec;
+  background: var(--qa-bg) !important;
+}
+
+body[data-ui-build]::before {
+  display: none !important;
+}
+
+body[data-ui-build] .student-shell {
+  grid-template-columns: 212px minmax(0, 1fr) !important;
+  min-height: 100vh !important;
+  background: var(--qa-bg) !important;
+}
+
+body[data-ui-build] .student-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 212px !important;
+  height: 100vh !important;
+  padding: 24px 12px 18px 22px !important;
+  border-right: 1px solid #e2def0 !important;
+  background: var(--qa-sidebar) !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] .brand-panel {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 42px !important;
+  margin: 0 0 26px !important;
+  padding: 0 !important;
+}
+
+body[data-ui-build] .brand-panel img {
+  display: none !important;
+}
+
+body[data-ui-build] .brand-mark {
+  display: grid !important;
+  place-items: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9px !important;
+  background: var(--qa-primary) !important;
+  color: #fff !important;
+  font-size: 0 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 10px 20px rgba(81, 70, 230, 0.24) !important;
+}
+
+body[data-ui-build] .brand-mark::before {
+  content: "J";
+  font-size: 15px;
+}
+
+body[data-ui-build] .brand-copy strong,
+body[data-ui-build] .brand-copy small {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] .brand-copy strong {
+  color: var(--qa-primary) !important;
+  font-size: 17px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] .brand-copy small {
+  margin-top: 3px !important;
+  color: #5f5a78 !important;
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+body[data-ui-build] .student-card,
+body[data-ui-build] .nav-group-label,
+body[data-ui-build] .sidebar-promo {
+  display: none !important;
+}
+
+body[data-ui-build] .student-nav {
+  flex: 1 1 auto !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+}
+
+body[data-ui-build] .nav-item {
+  min-height: 38px !important;
+  padding: 9px 10px !important;
+  border-radius: 8px !important;
+  color: #342f49 !important;
+  font-size: 13px !important;
+  font-weight: 550 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] .nav-item::before {
+  content: "" !important;
+  flex: 0 0 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 5px !important;
+  color: #29304c !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] .nav-item.active {
+  background: #dddff0 !important;
+  color: var(--qa-primary) !important;
+}
+
+body[data-ui-build] .nav-item.active::before {
+  background: var(--qa-primary) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] .nav-item.active::after {
+  left: -22px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 3px !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+body[data-ui-build] .sidebar-settings {
+  margin-top: auto !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #d9d3ea !important;
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] .sidebar-footer {
+  margin-top: 0 !important;
+  padding-top: 4px !important;
+  border-top: 0 !important;
+}
+
+body[data-ui-build] .logout-btn {
+  min-height: 38px !important;
+  padding: 9px 10px !important;
+  border-radius: 8px !important;
+  color: #342f49 !important;
+  font-size: 13px !important;
+  font-weight: 550 !important;
+}
+
+body[data-ui-build] .logout-btn::before {
+  content: "LO";
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  color: #29304c;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+body[data-ui-build] .student-main {
+  min-width: 0 !important;
+  background: var(--qa-bg) !important;
+}
+
+body[data-ui-build] .student-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  justify-content: space-between !important;
+  min-height: 65px !important;
+  padding: 0 24px 0 24px !important;
+  border-bottom: 1px solid #e1ddee !important;
+  background: rgba(251, 249, 255, 0.84) !important;
+  backdrop-filter: blur(16px) !important;
+  z-index: 18 !important;
+}
+
+body[data-ui-build] .top-search {
+  width: min(325px, 40vw) !important;
+  height: 34px !important;
+  display: grid !important;
+  grid-template-columns: 26px minmax(0, 1fr) !important;
+  align-items: center !important;
+  margin-left: 0 !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #f0edf9 !important;
+}
+
+body[data-ui-build] .top-search span::before {
+  content: "";
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #8f8aa1;
+  border-radius: 50%;
+  box-shadow: 5px 5px 0 -3px #8f8aa1;
+}
+
+body[data-ui-build] .top-search input {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: #332e48 !important;
+  font: 500 12px "Inter", system-ui, sans-serif !important;
+}
+
+body[data-ui-build] .top-search input::placeholder {
+  color: #77728a !important;
+}
+
+body[data-ui-build] .topbar-actions {
+  gap: 16px !important;
+  margin-left: auto !important;
+}
+
+body[data-ui-build] .top-icon-btn {
+  position: relative !important;
+  width: 22px !important;
+  height: 34px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #1e1930 !important;
+}
+
+body[data-ui-build] .top-icon-btn::before {
+  content: "";
+  width: 13px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+}
+
+body[data-ui-build] .top-icon-btn.bell::before {
+  width: 12px;
+  height: 14px;
+  border-radius: 7px 7px 4px 4px;
+  border-bottom-width: 3px;
+}
+
+body[data-ui-build] .top-icon-btn.bell::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d62635;
+}
+
+body[data-ui-build] .coin-pill {
+  display: none !important;
+}
+
+body[data-ui-build] .top-profile-copy {
+  display: block !important;
+  padding-left: 2px !important;
+  text-align: left !important;
+}
+
+body[data-ui-build] .top-profile-copy strong,
+body[data-ui-build] .top-profile-copy small {
+  display: block !important;
+  max-width: 116px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] .top-profile-copy strong {
+  color: #141124 !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1.05 !important;
+}
+
+body[data-ui-build] .top-profile-copy small {
+  margin-top: 2px !important;
+  color: #352f50 !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #topbarStudentAvatar {
+  width: 34px !important;
+  height: 34px !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 4px 12px rgba(31, 26, 52, 0.14) !important;
+}
+
+body[data-ui-build] .student-view {
+  width: min(100%, 980px) !important;
+  min-height: calc(100vh - 65px) !important;
+  margin: 0 !important;
+  padding: 28px 24px 48px !important;
+}
+
+body[data-ui-build] #questionsView.student-view.active {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: calc(100vh - 65px) !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+body[data-ui-build] #questionsView .discussions-shell {
+  flex: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+}
+
+body[data-ui-build] .qa-page-intro {
+  margin: 0 0 26px !important;
+}
+
+body[data-ui-build] .qa-page-intro h2 {
+  margin: 0 0 8px !important;
+  color: #100d1b !important;
+  font-size: 24px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.05 !important;
+}
+
+body[data-ui-build] .qa-page-intro p {
+  margin: 0 !important;
+  color: #342f4d !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+body[data-ui-build] #questionsView .question-layout {
+  display: grid !important;
+  grid-template-columns: 272px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  max-width: 932px !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel,
+body[data-ui-build] #questionsView .question-list-panel {
+  border: 1px solid #d7d0ea !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  box-shadow: 0 16px 34px rgba(45, 39, 82, 0.08) !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel {
+  display: grid !important;
+  gap: 16px !important;
+  padding: 18px 16px !important;
+}
+
+body[data-ui-build] #questionsView .question-list-panel {
+  padding: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #questionsView .panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin: 0 !important;
+}
+
+body[data-ui-build] #questionsView .question-form-panel .panel-header {
+  justify-content: flex-start !important;
+}
+
+body[data-ui-build] .qa-form-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 7px !important;
+  background: #e8e5ff !important;
+  color: var(--qa-primary) !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #questionsView .panel-header h2 {
+  margin: 0 !important;
+  color: #11101d !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+body[data-ui-build] #questionsView .panel-header p {
+  display: none !important;
+}
+
+body[data-ui-build] .qa-filter-tabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] .qa-filter-tabs button {
+  min-height: 24px !important;
+  padding: 0 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #ebe8f5 !important;
+  color: #544d69 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] .qa-filter-tabs button.active {
+  background: var(--qa-primary) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #questionsView .stack-form {
+  gap: 14px !important;
+}
+
+body[data-ui-build] #questionsView .stack-form label {
+  display: grid !important;
+  gap: 8px !important;
+  color: #25203b !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #questionsView .stack-form input,
+body[data-ui-build] #questionsView .stack-form select,
+body[data-ui-build] #questionsView .stack-form textarea {
+  min-height: 37px !important;
+  padding: 10px 12px !important;
+  border: 1px solid #d1c9e6 !important;
+  border-radius: 8px !important;
+  background: #f2eefb !important;
+  color: #211d35 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+body[data-ui-build] #questionsView .stack-form textarea {
+  min-height: 106px !important;
+  resize: vertical !important;
+}
+
+body[data-ui-build] #questionsView .stack-form input::placeholder,
+body[data-ui-build] #questionsView .stack-form textarea::placeholder {
+  color: #827b9a !important;
+}
+
+body[data-ui-build] #questionsView .stack-form .primary-btn {
+  width: 100% !important;
+  min-height: 40px !important;
+  border-radius: 8px !important;
+  background: var(--qa-primary) !important;
+  box-shadow: 0 12px 20px rgba(81, 70, 230, 0.25) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] .qa-response-card {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin: 2px -16px -18px !important;
+  padding: 16px !important;
+  border-radius: 16px !important;
+  background: #dedaff !important;
+}
+
+body[data-ui-build] .qa-response-card > span {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  color: var(--qa-primary) !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] .qa-response-card strong {
+  display: block !important;
+  color: #282052 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] .qa-response-card p {
+  margin: 3px 0 0 !important;
+  color: #4c42bf !important;
+  font-size: 10.5px !important;
+  line-height: 1.3 !important;
+}
+
+body[data-ui-build] #questionsView .compact-list {
+  gap: 14px !important;
+  margin-top: 18px !important;
+}
+
+body[data-ui-build] #questionsView .question-card {
+  padding: 18px !important;
+  border: 1px solid #d8d0ea !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 30px rgba(43, 37, 76, 0.08) !important;
+}
+
+body[data-ui-build] #questionsView .card-topline {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 14px !important;
+}
+
+body[data-ui-build] .qa-card-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  background: #e3e4ef !important;
+  color: #68708a !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #questionsView .card-topline small {
+  overflow: hidden !important;
+  color: #4c4862 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #questionsView .pill {
+  min-height: 17px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  background: #e4e1ff !important;
+  color: var(--qa-primary) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body[data-ui-build] #questionsView .pill.warning {
+  background: #ffe6cf !important;
+  color: #9a570a !important;
+}
+
+body[data-ui-build] #questionsView .card-copy h3 {
+  margin: 0 0 8px !important;
+  color: #3129e6 !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.18 !important;
+}
+
+body[data-ui-build] #questionsView .qa-question-card.is-pending .card-copy h3 {
+  color: #141024 !important;
+}
+
+body[data-ui-build] #questionsView .card-copy p {
+  margin: 0 !important;
+  color: #413b54 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] #questionsView .question-response {
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  margin-top: 16px !important;
+  padding: 12px !important;
+  border: 1px solid #cbc3e5 !important;
+  border-radius: 10px !important;
+  background: #f1eefc !important;
+}
+
+body[data-ui-build] .mentor-mini-avatar {
+  display: grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #163d3d !important;
+  color: #fff !important;
+  font-size: 8px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #questionsView .question-response small {
+  display: block !important;
+  margin-bottom: 6px !important;
+  color: #111022 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #questionsView .question-response p {
+  margin: 0 !important;
+  color: #3f3852 !important;
+  font-size: 10.5px !important;
+  font-style: italic !important;
+  line-height: 1.45 !important;
+}
+
+body[data-ui-build] .qa-waiting-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-top: 16px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #e5e1ee !important;
+}
+
+body[data-ui-build] .qa-waiting-row span {
+  color: #6d667d !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .qa-waiting-row .text-btn {
+  min-height: 24px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--qa-primary) !important;
+  box-shadow: none !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+@media (max-width: 900px) {
+  body[data-ui-build] .student-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .student-sidebar {
+    position: fixed !important;
+    transform: translateX(-104%) !important;
+    transition: transform 0.2s ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar.mobile-open,
+  body[data-ui-build].sidebar-open .student-sidebar,
+  body[data-ui-build] .student-shell.sidebar-open .student-sidebar {
+    transform: translateX(0) !important;
+  }
+
+  body[data-ui-build] .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
+  body[data-ui-build] .top-search {
+    width: min(360px, 48vw) !important;
+  }
+
+  body[data-ui-build] #questionsView .question-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] .student-topbar {
+    min-height: auto !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+  }
+
+  body[data-ui-build] .top-search {
+    order: 3 !important;
+    width: 100% !important;
+  }
+
+  body[data-ui-build] .top-profile-copy,
+  body[data-ui-build] .top-icon-btn {
+    display: none !important;
+  }
+
+  body[data-ui-build] .student-view {
+    padding: 22px 14px 42px !important;
+  }
+
+  body[data-ui-build] #questionsView .panel-header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+}

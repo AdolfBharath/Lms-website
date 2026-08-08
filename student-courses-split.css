@@ -1,0 +1,1150 @@
+/* v8 compact course pages: match latest Course Discovery and My Courses references. */
+body[data-ui-build] #catalogView,
+body[data-ui-build] #coursesView {
+  max-width: 920px !important;
+  margin: 0 auto !important;
+  padding: 18px 18px 42px !important;
+}
+
+body[data-ui-build] .course-discovery-title {
+  margin: 0 0 14px;
+  color: #1e1830;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+body[data-ui-build] .course-discovery-hero {
+  min-height: 204px !important;
+  padding: 26px 28px !important;
+  border-radius: 20px !important;
+}
+
+body[data-ui-build] .course-discovery-hero h2 {
+  max-width: 440px !important;
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-ui-build] .course-discovery-hero span {
+  font-size: 8px !important;
+}
+
+body[data-ui-build] .catalog-search-pill {
+  width: min(360px, 100%) !important;
+  height: 36px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .course-discovery-hero > button {
+  min-height: 36px !important;
+  padding: 0 18px !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .catalog-control-row {
+  margin: 14px 0 16px !important;
+}
+
+body[data-ui-build] .catalog-chip-row button,
+body[data-ui-build] .catalog-actions button {
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] .catalog-card-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body[data-ui-build] .discovery-course-card {
+  border-radius: 12px !important;
+}
+
+body[data-ui-build] .discovery-media {
+  height: 92px !important;
+}
+
+body[data-ui-build] .discovery-media span {
+  left: 7px !important;
+  top: 7px !important;
+  padding: 4px 7px !important;
+  font-size: 6px !important;
+}
+
+body[data-ui-build] .discovery-body {
+  padding: 9px !important;
+}
+
+body[data-ui-build] .discovery-body .course-category-label {
+  font-size: 7px !important;
+  letter-spacing: 0.08em !important;
+}
+
+body[data-ui-build] .discovery-body h3 {
+  min-height: 30px !important;
+  margin: 5px 0 !important;
+  font-size: 10px !important;
+  line-height: 1.18 !important;
+}
+
+body[data-ui-build] .discovery-rating {
+  font-size: 8px !important;
+}
+
+body[data-ui-build] .discovery-rating small {
+  font-size: 7px !important;
+}
+
+body[data-ui-build] .discovery-actions {
+  gap: 6px !important;
+  margin-top: 8px !important;
+}
+
+body[data-ui-build] .discovery-actions .primary-btn,
+body[data-ui-build] .discovery-actions .secondary-btn {
+  min-height: 28px !important;
+  padding: 0 !important;
+  border-radius: 7px !important;
+  font-size: 7px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card {
+  grid-template-columns: minmax(0, 1fr) 260px !important;
+  margin-top: 42px !important;
+  padding: 26px !important;
+  border-radius: 22px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card h2 {
+  max-width: 300px !important;
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card p {
+  max-width: 320px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card img {
+  height: 170px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card .primary-btn,
+body[data-ui-build] .catalog-accelerator-card .secondary-btn {
+  min-height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 9px !important;
+}
+
+body[data-ui-build] .course-page-intro {
+  margin-bottom: 8px !important;
+}
+
+body[data-ui-build] .course-page-intro h2 {
+  font-size: 26px !important;
+}
+
+body[data-ui-build] .course-page-intro p {
+  max-width: 560px;
+  font-size: 11px;
+}
+
+body[data-ui-build] .course-toolbar {
+  margin: -42px 0 18px !important;
+}
+
+body[data-ui-build] .segmented button {
+  min-height: 28px !important;
+  padding: 0 13px !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] #coursesGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body[data-ui-build] .my-course-card {
+  border-radius: 13px !important;
+}
+
+body[data-ui-build] .my-course-card .course-card-media {
+  height: 108px !important;
+}
+
+body[data-ui-build] .my-course-card .course-card-body {
+  min-height: 196px !important;
+  padding: 12px !important;
+}
+
+body[data-ui-build] .my-course-card h3 {
+  min-height: 34px;
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+}
+
+body[data-ui-build] .my-course-card .course-instructor {
+  min-height: 30px !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] .course-mentor-row {
+  gap: 6px !important;
+  margin: 6px 0 !important;
+}
+
+body[data-ui-build] .course-mentor-row .student-avatar {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+body[data-ui-build] .course-mentor-row small,
+body[data-ui-build] .my-course-card .card-meta {
+  font-size: 7px !important;
+}
+
+body[data-ui-build] .my-course-card .mini-progress {
+  height: 5px !important;
+}
+
+body[data-ui-build] .my-course-card .primary-btn,
+body[data-ui-build] .my-course-card .secondary-btn {
+  min-height: 30px !important;
+  border-radius: 7px !important;
+  font-size: 8px !important;
+}
+
+body[data-ui-build] .recommended-course-card {
+  min-height: 238px !important;
+  padding: 26px !important;
+  border-radius: 13px !important;
+}
+
+body[data-ui-build] .recommended-course-card h3 {
+  max-width: 330px !important;
+  font-size: 28px !important;
+}
+
+body[data-ui-build] .recommended-course-card p {
+  max-width: 340px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .recommended-course-card .primary-btn,
+body[data-ui-build] .recommended-course-card .secondary-btn {
+  min-height: 31px !important;
+  padding: 0 15px !important;
+  border-radius: 7px !important;
+  font-size: 8px !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #catalogView,
+  body[data-ui-build] #coursesView {
+    max-width: none !important;
+  }
+
+  body[data-ui-build] .catalog-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body[data-ui-build] #coursesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-ui-build] .catalog-card-grid,
+  body[data-ui-build] #coursesGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .catalog-accelerator-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .recommended-course-card {
+    grid-column: auto !important;
+  }
+}
+
+/* v6 visual lock: priority screens requested by user - course cards, learning, quiz. */
+body[data-ui-build] #catalogView,
+body[data-ui-build] #coursesView {
+  padding: 28px 34px 44px !important;
+}
+
+body[data-ui-build] #catalogView > .reference-page-intro {
+  display: none !important;
+}
+
+body[data-ui-build] #catalogCoursesGrid,
+body[data-ui-build] #coursesGrid {
+  display: block !important;
+}
+
+body[data-ui-build] .course-discovery-hero {
+  position: relative;
+  min-height: 218px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px;
+  padding: 28px 34px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #101628;
+  color: #fff;
+}
+
+body[data-ui-build] .course-discovery-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+body[data-ui-build] .course-discovery-hero > div,
+body[data-ui-build] .course-discovery-hero > button {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-ui-build] .course-discovery-hero span {
+  color: #b9fff1;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+body[data-ui-build] .course-discovery-hero h2 {
+  max-width: 520px;
+  margin: 8px 0 18px;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+body[data-ui-build] .catalog-search-pill {
+  width: min(430px, 100%);
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #fff;
+  color: #9b95aa;
+  font-size: 12px;
+}
+
+body[data-ui-build] .catalog-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 18px 0;
+}
+
+body[data-ui-build] .catalog-chip-row,
+body[data-ui-build] .catalog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+body[data-ui-build] .catalog-chip-row button,
+body[data-ui-build] .catalog-actions button {
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid var(--st-line);
+  border-radius: 999px;
+  background: #fff;
+  color: #756f89;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+body[data-ui-build] .catalog-chip-row button.active {
+  background: var(--st-primary-soft);
+  color: var(--st-primary);
+}
+
+body[data-ui-build] .catalog-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+body[data-ui-build] .discovery-course-card {
+  overflow: hidden;
+  border: 1px solid var(--st-line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+body[data-ui-build] .discovery-media {
+  position: relative;
+  height: 118px;
+}
+
+body[data-ui-build] .discovery-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body[data-ui-build] .discovery-media span {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #efeaff;
+  color: var(--st-primary);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+body[data-ui-build] .discovery-body {
+  padding: 13px;
+}
+
+body[data-ui-build] .discovery-body h3 {
+  min-height: 36px;
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.18;
+}
+
+body[data-ui-build] .discovery-rating {
+  color: #c87600;
+  font-size: 10px;
+}
+
+body[data-ui-build] .discovery-rating small {
+  display: block;
+  margin-top: 4px;
+  color: var(--st-muted);
+}
+
+body[data-ui-build] .discovery-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+body[data-ui-build] .discovery-actions .primary-btn,
+body[data-ui-build] .discovery-actions .secondary-btn {
+  min-height: 34px !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 26px;
+  align-items: center;
+  margin-top: 28px;
+  padding: 28px;
+  border-radius: 24px;
+  background: #ffdabc;
+}
+
+body[data-ui-build] .catalog-accelerator-card h2 {
+  max-width: 410px;
+  font-size: 26px;
+}
+
+body[data-ui-build] .catalog-accelerator-card p {
+  max-width: 460px;
+  color: #6d4930;
+}
+
+body[data-ui-build] .catalog-accelerator-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+body[data-ui-build] .course-page-intro {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  margin-bottom: 16px !important;
+}
+
+body[data-ui-build] .course-page-intro h2 {
+  font-size: 27px !important;
+}
+
+body[data-ui-build] .overall-course-progress {
+  display: none !important;
+}
+
+body[data-ui-build] .course-toolbar {
+  justify-content: flex-end;
+  margin: -56px 0 18px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+body[data-ui-build] .course-toolbar .secondary-btn {
+  display: none !important;
+}
+
+body[data-ui-build] .segmented {
+  display: flex;
+  gap: 8px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] .segmented button {
+  min-height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #7a7488;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+body[data-ui-build] .segmented button.active {
+  background: var(--st-primary);
+  color: #fff;
+}
+
+body[data-ui-build] #coursesGrid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+body[data-ui-build] .my-course-card {
+  overflow: hidden;
+  border: 1px solid var(--st-line);
+  border-radius: 18px;
+  background: #fff;
+}
+
+body[data-ui-build] .my-course-card .course-card-media {
+  height: 145px !important;
+}
+
+body[data-ui-build] .my-course-card .course-card-body {
+  min-height: 214px !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] .my-course-card .course-category-label {
+  font-size: 9px !important;
+  color: var(--st-primary) !important;
+}
+
+body[data-ui-build] .my-course-card h3 {
+  margin: 8px 0 !important;
+  font-size: 16px !important;
+}
+
+body[data-ui-build] .my-course-card .course-instructor {
+  min-height: 34px;
+  font-size: 10px !important;
+  line-height: 1.35;
+}
+
+body[data-ui-build] .course-mentor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+body[data-ui-build] .course-mentor-row .student-avatar {
+  width: 20px;
+  height: 20px;
+  font-size: 7px;
+}
+
+body[data-ui-build] .my-course-card .card-meta {
+  margin-top: 0 !important;
+  font-size: 9px !important;
+}
+
+body[data-ui-build] .my-course-card .primary-btn,
+body[data-ui-build] .my-course-card .secondary-btn {
+  min-height: 36px !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .recommended-course-card {
+  grid-column: span 2;
+  min-height: 238px;
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 88% 52%, rgba(255,255,255,0.36) 0 70px, transparent 72px),
+    linear-gradient(135deg, #4773f7, #315ee6);
+  color: #fff;
+}
+
+body[data-ui-build] .recommended-course-card h3 {
+  max-width: 360px;
+  color: #fff;
+  font-size: 31px;
+  line-height: 1.02;
+}
+
+body[data-ui-build] .recommended-course-card p {
+  max-width: 420px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+body[data-ui-build] .recommended-course-card .secondary-btn {
+  margin-right: 10px;
+}
+
+body[data-ui-build] .course-grid,
+body[data-ui-build] .catalog-grid {
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)) !important;
+  gap: 26px !important;
+  align-items: stretch;
+}
+
+body[data-ui-build] .course-card {
+  min-height: 0 !important;
+  border-radius: 28px !important;
+  overflow: hidden;
+  background: #fff !important;
+}
+
+body[data-ui-build] .course-card-media {
+  height: clamp(210px, 19vw, 280px) !important;
+}
+
+body[data-ui-build] .course-card-body {
+  min-height: 255px !important;
+  padding: 26px 28px 28px !important;
+}
+
+body[data-ui-build] .course-category-label {
+  font-size: 13px !important;
+  color: #063f8f !important;
+}
+
+body[data-ui-build] .course-card h3 {
+  font-size: clamp(26px, 2.1vw, 36px) !important;
+  line-height: 1.04 !important;
+}
+
+body[data-ui-build] .course-instructor {
+  font-size: 16px !important;
+}
+
+body[data-ui-build] .course-card .card-meta {
+  margin-top: auto !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] .course-card .card-footer {
+  margin-top: 18px !important;
+}
+
+body[data-ui-build] .course-card .primary-btn,
+body[data-ui-build] .course-card .secondary-btn {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-size: 17px !important;
+}
+
+body[data-ui-build] #learnView {
+  overflow: hidden;
+}
+
+body[data-ui-build] .learn-udemy-shell {
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 27vw, 360px) !important;
+  width: 100%;
+  min-height: calc(100vh - 45px);
+}
+
+body[data-ui-build] .stitch-learn-main {
+  max-width: none !important;
+  justify-self: stretch !important;
+  padding: clamp(22px, 3vw, 38px) clamp(22px, 3vw, 42px) 34px !important;
+}
+
+body[data-ui-build] .stitch-lesson-header {
+  grid-template-columns: minmax(0, 1fr) 128px !important;
+  align-items: center;
+}
+
+body[data-ui-build] .stitch-lesson-header h2 {
+  max-width: 650px;
+  font-size: clamp(28px, 3.1vw, 46px) !important;
+}
+
+body[data-ui-build] .stitch-video-player {
+  height: clamp(290px, 38vh, 420px) !important;
+  min-height: clamp(290px, 38vh, 420px) !important;
+  border-radius: 18px !important;
+}
+
+body[data-ui-build] .lesson-tabs {
+  height: 54px !important;
+  gap: 32px !important;
+}
+
+body[data-ui-build] .lesson-tabs button {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .lesson-body-grid {
+  grid-template-columns: minmax(0, 1fr) 150px !important;
+  gap: 34px !important;
+}
+
+body[data-ui-build] .lesson-about-card {
+  max-width: 560px !important;
+}
+
+body[data-ui-build] .lesson-about-card h3,
+body[data-ui-build] .lesson-resource-card h3 {
+  font-size: 18px !important;
+}
+
+body[data-ui-build] .lesson-about-card p {
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .lesson-resource-card {
+  min-height: 190px;
+  padding: 22px 18px !important;
+}
+
+body[data-ui-build] .stitch-course-rail {
+  min-width: 260px !important;
+  background: #f3effd !important;
+}
+
+body[data-ui-build] .stitch-course-rail .module-summary {
+  padding: 20px 18px !important;
+}
+
+body[data-ui-build] .stitch-course-rail .module-summary-main small {
+  font-size: 9px !important;
+}
+
+body[data-ui-build] .stitch-course-rail .module-summary-main strong {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .lesson-list li {
+  min-height: 58px !important;
+  padding: 12px 18px !important;
+}
+
+body[data-ui-build] .lesson-list strong {
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .lesson-list small {
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .course-rail-footer {
+  grid-template-columns: 44px minmax(0, 1fr) 34px !important;
+  min-height: 78px;
+}
+
+body[data-ui-build] .student-modal.quiz-modal #modalTitle {
+  height: 58px !important;
+  padding: 18px 78px !important;
+  font-size: 18px !important;
+}
+
+body[data-ui-build] .stitch-quiz-screen {
+  grid-template-columns: minmax(0, 1fr) clamp(210px, 24vw, 300px) !important;
+  gap: 24px clamp(30px, 5vw, 64px) !important;
+  padding: clamp(26px, 4vw, 48px) clamp(40px, 7vw, 96px) !important;
+}
+
+body[data-ui-build] .quiz-progress-strip {
+  max-width: 920px;
+  justify-self: center;
+  width: 100%;
+}
+
+body[data-ui-build] .quiz-main-card {
+  max-width: 920px !important;
+  padding: clamp(28px, 3vw, 42px) !important;
+  border-radius: 18px !important;
+}
+
+body[data-ui-build] .quiz-question legend {
+  font-size: clamp(22px, 2.1vw, 32px) !important;
+  line-height: 1.28 !important;
+}
+
+body[data-ui-build] .quiz-option {
+  min-height: 58px !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .quiz-overview-panel h3 {
+  font-size: 18px !important;
+}
+
+body[data-ui-build] .quiz-number-grid {
+  grid-template-columns: repeat(5, 40px) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] .quiz-number-grid button {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+body[data-ui-build] .submit-quiz-btn {
+  width: 132px !important;
+  height: 44px !important;
+  font-size: 16px !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] .course-grid,
+  body[data-ui-build] .catalog-grid {
+    grid-template-columns: repeat(2, minmax(280px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] .course-grid,
+  body[data-ui-build] .catalog-grid,
+  body[data-ui-build] .learn-udemy-shell,
+  body[data-ui-build] .stitch-quiz-screen {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .course-card-media {
+    height: 190px !important;
+  }
+
+  body[data-ui-build] .stitch-course-rail {
+    min-width: 0 !important;
+  }
+}
+
+/* v9 page-fit lock: remove the cramped course layout and the old certificate entry. */
+body[data-ui-build] .nav-item[data-view="rewards"],
+body[data-ui-build] #rewardsView {
+  display: none !important;
+}
+
+body[data-ui-build] #catalogView,
+body[data-ui-build] #coursesView {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: clamp(26px, 3vw, 42px) clamp(34px, 4.5vw, 70px) 64px !important;
+}
+
+body[data-ui-build] .course-discovery-title,
+body[data-ui-build] .course-discovery-hero,
+body[data-ui-build] .catalog-control-row,
+body[data-ui-build] .catalog-card-grid,
+body[data-ui-build] .catalog-accelerator-card,
+body[data-ui-build] .course-page-intro,
+body[data-ui-build] .course-toolbar,
+body[data-ui-build] #coursesGrid {
+  width: min(100%, 1320px) !important;
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body[data-ui-build] .course-discovery-title {
+  margin-bottom: 16px !important;
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] .course-discovery-hero {
+  min-height: clamp(245px, 23vw, 330px) !important;
+  padding: clamp(30px, 4vw, 54px) !important;
+  border-radius: 26px !important;
+}
+
+body[data-ui-build] .course-discovery-hero h2 {
+  max-width: 660px !important;
+  font-size: clamp(28px, 3vw, 44px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-ui-build] .course-discovery-hero span {
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .catalog-search-pill {
+  width: min(460px, 100%) !important;
+  height: 50px !important;
+  padding: 0 24px !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .course-discovery-hero > button {
+  min-height: 54px !important;
+  padding: 0 30px !important;
+  border-radius: 14px !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] .catalog-control-row {
+  margin-top: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+body[data-ui-build] .catalog-chip-row button,
+body[data-ui-build] .catalog-actions button {
+  min-height: 44px !important;
+  padding: 0 24px !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .catalog-card-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(280px, 1fr)) !important;
+  gap: 24px !important;
+}
+
+body[data-ui-build] .discovery-course-card {
+  border-radius: 22px !important;
+  box-shadow: 0 18px 36px rgba(50, 38, 91, 0.08) !important;
+}
+
+body[data-ui-build] .discovery-media {
+  height: clamp(170px, 15vw, 220px) !important;
+}
+
+body[data-ui-build] .discovery-media span {
+  left: 16px !important;
+  top: 16px !important;
+  padding: 8px 13px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] .discovery-body {
+  padding: 22px !important;
+}
+
+body[data-ui-build] .discovery-body .course-category-label {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .discovery-body h3 {
+  min-height: 48px !important;
+  margin: 10px 0 18px !important;
+  font-size: clamp(19px, 1.7vw, 25px) !important;
+  line-height: 1.1 !important;
+}
+
+body[data-ui-build] .discovery-rating {
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .discovery-rating small {
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .discovery-actions {
+  gap: 12px !important;
+  margin-top: 18px !important;
+}
+
+body[data-ui-build] .discovery-actions .primary-btn,
+body[data-ui-build] .discovery-actions .secondary-btn {
+  min-height: 48px !important;
+  border-radius: 13px !important;
+  font-size: 14px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 430px) !important;
+  margin-top: 42px !important;
+  padding: clamp(34px, 4vw, 54px) !important;
+  border-radius: 28px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card h2 {
+  max-width: 560px !important;
+  font-size: clamp(34px, 3.4vw, 52px) !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card p {
+  max-width: 560px !important;
+  font-size: 16px !important;
+}
+
+body[data-ui-build] .catalog-accelerator-card img {
+  height: clamp(230px, 19vw, 320px) !important;
+}
+
+body[data-ui-build] .course-page-intro {
+  display: block !important;
+  margin-bottom: 18px !important;
+}
+
+body[data-ui-build] .course-page-intro h2 {
+  margin-bottom: 8px !important;
+  font-size: clamp(34px, 3vw, 50px) !important;
+  line-height: 1.04 !important;
+}
+
+body[data-ui-build] .course-page-intro p {
+  max-width: 760px !important;
+  font-size: 16px !important;
+}
+
+body[data-ui-build] .course-toolbar {
+  justify-content: flex-start !important;
+  margin-top: 0 !important;
+  margin-bottom: 26px !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+
+body[data-ui-build] .segmented button {
+  min-height: 42px !important;
+  padding: 0 22px !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #coursesGrid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(280px, 1fr)) !important;
+  gap: 26px !important;
+}
+
+body[data-ui-build] .my-course-card {
+  border-radius: 24px !important;
+  box-shadow: 0 18px 38px rgba(50, 38, 91, 0.08) !important;
+}
+
+body[data-ui-build] .my-course-card .course-card-media {
+  height: clamp(190px, 16vw, 245px) !important;
+}
+
+body[data-ui-build] .my-course-card .course-card-body {
+  min-height: 292px !important;
+  padding: 24px 26px 26px !important;
+}
+
+body[data-ui-build] .my-course-card .course-category-label {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .my-course-card h3 {
+  min-height: 58px !important;
+  font-size: clamp(24px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+}
+
+body[data-ui-build] .my-course-card .course-instructor,
+body[data-ui-build] .my-course-card .card-meta {
+  min-height: auto !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] .course-mentor-row {
+  margin: 16px 0 12px !important;
+}
+
+body[data-ui-build] .course-mentor-row .student-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] .course-mentor-row small {
+  font-size: 13px !important;
+}
+
+body[data-ui-build] .my-course-card .mini-progress {
+  height: 8px !important;
+  margin: 8px 0 14px !important;
+}
+
+body[data-ui-build] .my-course-card .primary-btn,
+body[data-ui-build] .my-course-card .secondary-btn {
+  width: auto !important;
+  min-height: 52px !important;
+  padding: 0 22px !important;
+  border-radius: 13px !important;
+  font-size: 15px !important;
+}
+
+body[data-ui-build] .recommended-course-card {
+  grid-column: span 2 !important;
+  min-height: 330px !important;
+  padding: clamp(34px, 4vw, 56px) !important;
+  border-radius: 24px !important;
+}
+
+body[data-ui-build] .recommended-course-card h3 {
+  max-width: 560px !important;
+  font-size: clamp(38px, 3.5vw, 58px) !important;
+}
+
+body[data-ui-build] .recommended-course-card p {
+  max-width: 580px !important;
+  font-size: 16px !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] .catalog-card-grid,
+  body[data-ui-build] #coursesGrid {
+    grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] #catalogView,
+  body[data-ui-build] #coursesView {
+    padding: 18px 16px 48px !important;
+  }
+
+  body[data-ui-build] .course-discovery-hero {
+    grid-template-columns: 1fr !important;
+    min-height: 300px !important;
+  }
+
+  body[data-ui-build] .catalog-control-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  body[data-ui-build] .catalog-card-grid,
+  body[data-ui-build] #coursesGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .catalog-accelerator-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .recommended-course-card {
+    grid-column: auto !important;
+  }
+}

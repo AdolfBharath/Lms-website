@@ -17,7 +17,11 @@ alter table public.task_submissions
   add column if not exists deleted_at timestamptz;
 
 alter table public.student_quiz_attempts
-  add column if not exists deleted_at timestamptz;
+  add column if not exists deleted_at timestamptz,
+  add column if not exists time_taken_seconds integer,
+  add column if not exists duration_seconds integer,
+  add column if not exists question_count integer,
+  add column if not exists selected_question_ids jsonb;
 
 create table if not exists public.student_academic_activity (
   id uuid primary key default gen_random_uuid(),

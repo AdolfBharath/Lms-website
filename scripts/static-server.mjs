@@ -53,7 +53,9 @@ function resolveRequestPath(url = "/") {
   const pathname = decodeURIComponent(new URL(url, `http://${host}:${port}`).pathname);
   const normalized = pathname === "/" ? "/index.html" : pathname;
   const segments = normalized.split("/").filter(Boolean);
-  if (segments.some((segment) => segment.startsWith(".") || blockedSegments.has(segment))) return null;
+  const extension = path.extname(normalized).toLowerCase();
+  const isAllowedDocsPdf = segments[0] === "docs" && extension === ".pdf";
+  if (segments.some((segment, index) => segment.startsWith(".") || (blockedSegments.has(segment) && !(isAllowedDocsPdf && index === 0)))) return null;
   const absolutePath = path.resolve(root, ...segments);
   if (!absolutePath.startsWith(root + path.sep)) return null;
   if (!contentTypes.has(path.extname(absolutePath).toLowerCase())) return null;
@@ -121,7 +123,7 @@ server.listen(port, host, () => {
 });
 
 function securityHeaders(contentType) {
-  return {
+  const headers = {
     "Content-Type": contentType,
     "Cross-Origin-Opener-Policy": "same-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
@@ -129,6 +131,10 @@ function securityHeaders(contentType) {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY"
   };
+  if (/^application\/pdf\b/i.test(contentType)) {
+    headers["X-Frame-Options"] = "SAMEORIGIN";
+  }
+  return headers;
 }
 
 function cacheControl(absolutePath) {

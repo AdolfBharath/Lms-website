@@ -8,11 +8,18 @@ alter table if exists public.shop_items
   add column if not exists status text not null default 'active',
   add column if not exists deleted_at timestamptz;
 
-alter table if exists public.shop_items
-  add constraint shop_items_stock_nonnegative check (stock >= 0) not valid;
-
 do $$
 begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'shop_items_stock_nonnegative'
+      and conrelid = 'public.shop_items'::regclass
+  ) then
+    alter table public.shop_items
+      add constraint shop_items_stock_nonnegative check (stock >= 0) not valid;
+  end if;
+
   begin
     alter table public.shop_items validate constraint shop_items_stock_nonnegative;
   exception when others then

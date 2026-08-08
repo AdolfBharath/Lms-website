@@ -1,0 +1,2452 @@
+/* Student LMS premium visual polish: final cosmetic layer only. */
+:root {
+  --st-bg: #f6f7fb;
+  --st-page: #f8f9fc;
+  --st-panel: #ffffff;
+  --st-panel-soft: #f3f5fa;
+  --st-panel-warm: #fbfbfd;
+  --st-line: #e3e7ef;
+  --st-line-strong: #d6dce8;
+  --st-primary: #4773f7;
+  --st-primary-dark: #315ee6;
+  --st-primary-soft: #eef3ff;
+  --st-primary-softer: #f5f8ff;
+  --st-text: #151923;
+  --st-muted: #667085;
+  --st-muted-strong: #475467;
+  --st-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  --st-shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.055);
+  --st-shadow-button: 0 10px 22px rgba(71, 115, 247, 0.22);
+  --premium-card-bg: #ffffff;
+}
+
+html,
+body {
+  background: var(--st-bg) !important;
+}
+
+body {
+  color: var(--st-text) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(246, 247, 251, 0.96) 38%, #f7f8fb 100%),
+    radial-gradient(circle at 18% 0%, rgba(71, 115, 247, 0.045), transparent 30rem) !important;
+  font-family: "Inter", "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  background: var(--st-primary) !important;
+  opacity: 0.92 !important;
+}
+
+.student-main,
+body[data-ui-build] .student-main {
+  background: transparent !important;
+}
+
+.student-sidebar,
+body[data-ui-build] .student-sidebar {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-right: 1px solid rgba(214, 220, 232, 0.86) !important;
+  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.035) !important;
+  backdrop-filter: blur(18px);
+}
+
+.student-topbar,
+body[data-ui-build] .student-topbar {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-bottom: 1px solid rgba(214, 220, 232, 0.78) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 12px 30px rgba(15, 23, 42, 0.035) !important;
+  backdrop-filter: blur(18px);
+}
+
+.brand-panel::before,
+body[data-ui-build] .brand-panel::before {
+  color: var(--st-primary) !important;
+  letter-spacing: -0.035em !important;
+}
+
+.brand-panel::after,
+body[data-ui-build] .brand-panel::after {
+  background: var(--st-primary-soft) !important;
+  color: var(--st-primary-dark) !important;
+  border: 1px solid rgba(71, 115, 247, 0.16) !important;
+}
+
+.student-card,
+.top-search,
+.coin-pill,
+.sync-pill,
+body[data-ui-build] .student-card,
+body[data-ui-build] .top-search,
+body[data-ui-build] .coin-pill,
+body[data-ui-build] .sync-pill {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(214, 220, 232, 0.88) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), var(--st-shadow-soft) !important;
+}
+
+.top-search:focus-within,
+body[data-ui-build] .top-search:focus-within {
+  border-color: rgba(71, 115, 247, 0.42) !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12), var(--st-shadow-soft) !important;
+}
+
+.top-search input,
+body[data-ui-build] .top-search input {
+  color: var(--st-text) !important;
+  font-weight: 560 !important;
+}
+
+.top-search input::placeholder,
+body[data-ui-build] .top-search input::placeholder {
+  color: #98a2b3 !important;
+}
+
+.nav-item,
+body[data-ui-build] .nav-item {
+  color: #344054 !important;
+  font-weight: 660 !important;
+  letter-spacing: -0.005em !important;
+}
+
+.nav-item::before,
+body[data-ui-build] .nav-item::before {
+  color: #667085 !important;
+}
+
+.nav-item:hover,
+body[data-ui-build] .nav-item:hover {
+  background: #f2f5fb !important;
+  color: var(--st-text) !important;
+  box-shadow: inset 0 0 0 1px rgba(214, 220, 232, 0.72) !important;
+}
+
+.nav-item.active,
+body[data-ui-build] .nav-item.active {
+  background: var(--st-primary-soft) !important;
+  color: var(--st-primary-dark) !important;
+  box-shadow: inset 0 0 0 1px rgba(71, 115, 247, 0.15) !important;
+}
+
+.nav-item.active::before,
+.nav-item.active .nav-icon,
+body[data-ui-build] .nav-item.active::before,
+body[data-ui-build] .nav-item.active .nav-icon {
+  color: var(--st-primary) !important;
+}
+
+.nav-item.active::after,
+body[data-ui-build] .nav-item.active::after {
+  background: var(--st-primary) !important;
+  box-shadow: 0 0 0 3px rgba(71, 115, 247, 0.12) !important;
+}
+
+.page-heading h1,
+.dashboard-hero-copy h2,
+.reference-page-intro h2,
+.secondary-page-intro h2,
+.toolbar h2,
+.panel h2,
+.dashboard-card-head h2,
+body[data-ui-build] .page-heading h1,
+body[data-ui-build] .dashboard-hero-copy h2,
+body[data-ui-build] .reference-page-intro h2,
+body[data-ui-build] .secondary-page-intro h2,
+body[data-ui-build] .toolbar h2,
+body[data-ui-build] .panel h2,
+body[data-ui-build] .dashboard-card-head h2 {
+  color: var(--st-text) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.page-heading p,
+.reference-eyebrow,
+.secondary-page-intro p,
+.dashboard-section-title p,
+.panel p,
+.muted,
+body[data-ui-build] .page-heading p,
+body[data-ui-build] .reference-eyebrow,
+body[data-ui-build] .secondary-page-intro p,
+body[data-ui-build] .dashboard-section-title p,
+body[data-ui-build] .panel p,
+body[data-ui-build] .muted {
+  color: var(--st-muted) !important;
+}
+
+.reference-eyebrow,
+body[data-ui-build] .reference-eyebrow {
+  color: var(--st-primary-dark) !important;
+  letter-spacing: 0.11em !important;
+}
+
+.panel,
+.reference-panel,
+.dashboard-hero-card,
+.dashboard-active-course,
+.dashboard-deadline-card,
+.metric-card,
+.student-feature-card,
+.course-card,
+.shop-card,
+.question-card,
+.task-card,
+.achievement-card,
+.owned-card,
+.learn-progress-card,
+.learn-video-card,
+.learn-curriculum-card,
+.module-card,
+.question-form-panel,
+.question-list-panel,
+.support-ticket-card,
+.support-form-card,
+.support-tickets-card,
+.support-quick-card,
+.profile-summary,
+.profile-form-card,
+.profile-password-card,
+.profile-metric-card,
+.profile-banner-container,
+.academic-milestones-card,
+.active-enrollment-card,
+.referral-stats-card,
+.referral-pass-card,
+.referral-share-card,
+.referral-form-card,
+.referral-guide-card,
+.batch-reference-hero,
+.batch-summary-panel,
+.chat-panel,
+.batch-chat-panel,
+.tasks-sidebar,
+.tasks-main,
+.announcement-card,
+body[data-ui-build] .panel,
+body[data-ui-build] .reference-panel,
+body[data-ui-build] .dashboard-hero-card,
+body[data-ui-build] .dashboard-active-course,
+body[data-ui-build] .dashboard-deadline-card,
+body[data-ui-build] .metric-card,
+body[data-ui-build] .student-feature-card,
+body[data-ui-build] .course-card,
+body[data-ui-build] .shop-card,
+body[data-ui-build] .question-card,
+body[data-ui-build] .task-card,
+body[data-ui-build] .achievement-card,
+body[data-ui-build] .owned-card,
+body[data-ui-build] .learn-progress-card,
+body[data-ui-build] .learn-video-card,
+body[data-ui-build] .learn-curriculum-card,
+body[data-ui-build] .module-card,
+body[data-ui-build] .question-form-panel,
+body[data-ui-build] .question-list-panel,
+body[data-ui-build] .support-ticket-card,
+body[data-ui-build] .support-form-card,
+body[data-ui-build] .support-tickets-card,
+body[data-ui-build] .support-quick-card,
+body[data-ui-build] .profile-summary,
+body[data-ui-build] .profile-form-card,
+body[data-ui-build] .profile-password-card,
+body[data-ui-build] .profile-metric-card,
+body[data-ui-build] .profile-banner-container,
+body[data-ui-build] .academic-milestones-card,
+body[data-ui-build] .active-enrollment-card,
+body[data-ui-build] .referral-stats-card,
+body[data-ui-build] .referral-pass-card,
+body[data-ui-build] .referral-share-card,
+body[data-ui-build] .referral-form-card,
+body[data-ui-build] .referral-guide-card,
+body[data-ui-build] .batch-reference-hero,
+body[data-ui-build] .batch-summary-panel,
+body[data-ui-build] .chat-panel,
+body[data-ui-build] .batch-chat-panel,
+body[data-ui-build] .tasks-sidebar,
+body[data-ui-build] .tasks-main,
+body[data-ui-build] .announcement-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(252, 253, 255, 0.92)) !important;
+  border-color: rgba(214, 220, 232, 0.9) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.95), var(--st-shadow-soft) !important;
+}
+
+.dashboard-hero-card,
+.reference-page-intro,
+.secondary-page-intro,
+.shop-hero-banner,
+.referral-hero,
+body[data-ui-build] .dashboard-hero-card,
+body[data-ui-build] .reference-page-intro,
+body[data-ui-build] .secondary-page-intro,
+body[data-ui-build] .shop-hero-banner,
+body[data-ui-build] .referral-hero {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 252, 0.94)) !important;
+  border-color: rgba(214, 220, 232, 0.92) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.94), var(--st-shadow) !important;
+}
+
+.dashboard-active-course b,
+.metric-card i,
+.student-avatar,
+.welcome-avatar,
+.metric-icon-circle,
+.chat-icon-circle,
+.support-upload-icon,
+.task-submit-icon,
+.referral-form-icon,
+.milestones-icon,
+body[data-ui-build] .dashboard-active-course b,
+body[data-ui-build] .metric-card i,
+body[data-ui-build] .student-avatar,
+body[data-ui-build] .welcome-avatar,
+body[data-ui-build] .metric-icon-circle,
+body[data-ui-build] .chat-icon-circle,
+body[data-ui-build] .support-upload-icon,
+body[data-ui-build] .task-submit-icon,
+body[data-ui-build] .referral-form-icon,
+body[data-ui-build] .milestones-icon {
+  background: linear-gradient(135deg, var(--st-primary), var(--st-primary-dark)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(71, 115, 247, 0.20) !important;
+}
+
+.metric-card strong,
+.dashboard-active-course em,
+.text-btn,
+.ticket-view-link,
+.support-quick-link,
+.progress-labels strong,
+.overall-course-progress strong,
+body[data-ui-build] .metric-card strong,
+body[data-ui-build] .dashboard-active-course em,
+body[data-ui-build] .text-btn,
+body[data-ui-build] .ticket-view-link,
+body[data-ui-build] .support-quick-link,
+body[data-ui-build] .progress-labels strong,
+body[data-ui-build] .overall-course-progress strong {
+  color: var(--st-primary-dark) !important;
+}
+
+.primary-btn,
+.upgrade-plan-btn,
+.mobile-menu-btn,
+.support-submit-btn,
+.save-btn,
+.security-action-btn,
+.resume-learning-btn,
+.banner-action-btn.edit-avatar,
+.tasks-refresh-btn,
+button[type="submit"],
+body[data-ui-build] .primary-btn,
+body[data-ui-build] .upgrade-plan-btn,
+body[data-ui-build] .mobile-menu-btn,
+body[data-ui-build] .support-submit-btn,
+body[data-ui-build] .save-btn,
+body[data-ui-build] .security-action-btn,
+body[data-ui-build] .resume-learning-btn,
+body[data-ui-build] .banner-action-btn.edit-avatar,
+body[data-ui-build] .tasks-refresh-btn,
+body[data-ui-build] button[type="submit"] {
+  background: linear-gradient(135deg, var(--st-primary), var(--st-primary-dark)) !important;
+  border: 1px solid rgba(49, 94, 230, 0.72) !important;
+  color: #ffffff !important;
+  box-shadow: var(--st-shadow-button) !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.primary-btn:hover,
+.upgrade-plan-btn:hover,
+.mobile-menu-btn:hover,
+.support-submit-btn:hover,
+.save-btn:hover,
+.security-action-btn:hover,
+.resume-learning-btn:hover,
+.banner-action-btn.edit-avatar:hover,
+button[type="submit"]:hover,
+body[data-ui-build] .primary-btn:hover,
+body[data-ui-build] .upgrade-plan-btn:hover,
+body[data-ui-build] .mobile-menu-btn:hover,
+body[data-ui-build] .support-submit-btn:hover,
+body[data-ui-build] .save-btn:hover,
+body[data-ui-build] .security-action-btn:hover,
+body[data-ui-build] .resume-learning-btn:hover,
+body[data-ui-build] .banner-action-btn.edit-avatar:hover,
+body[data-ui-build] button[type="submit"]:hover {
+  background: linear-gradient(135deg, #5680ff, var(--st-primary-dark)) !important;
+  box-shadow: 0 14px 28px rgba(71, 115, 247, 0.28) !important;
+}
+
+.secondary-btn,
+.hero-outline-btn,
+.reward-hero-btn,
+.cancel-btn,
+.edit-details-btn,
+.support-refresh-btn,
+.top-icon-btn,
+.segmented button,
+.tasks-tab-btn,
+.banner-action-btn.view-portfolio,
+body[data-ui-build] .secondary-btn,
+body[data-ui-build] .hero-outline-btn,
+body[data-ui-build] .reward-hero-btn,
+body[data-ui-build] .cancel-btn,
+body[data-ui-build] .edit-details-btn,
+body[data-ui-build] .support-refresh-btn,
+body[data-ui-build] .top-icon-btn,
+body[data-ui-build] .segmented button,
+body[data-ui-build] .tasks-tab-btn,
+body[data-ui-build] .banner-action-btn.view-portfolio {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(214, 220, 232, 0.95) !important;
+  color: #344054 !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 18px rgba(15, 23, 42, 0.045) !important;
+  font-weight: 720 !important;
+}
+
+.secondary-btn:hover,
+.hero-outline-btn:hover,
+.reward-hero-btn:hover,
+.cancel-btn:hover,
+.edit-details-btn:hover,
+.support-refresh-btn:hover,
+.top-icon-btn:hover,
+.segmented button:hover,
+.tasks-tab-btn:hover,
+.banner-action-btn.view-portfolio:hover,
+body[data-ui-build] .secondary-btn:hover,
+body[data-ui-build] .hero-outline-btn:hover,
+body[data-ui-build] .reward-hero-btn:hover,
+body[data-ui-build] .cancel-btn:hover,
+body[data-ui-build] .edit-details-btn:hover,
+body[data-ui-build] .support-refresh-btn:hover,
+body[data-ui-build] .top-icon-btn:hover,
+body[data-ui-build] .segmented button:hover,
+body[data-ui-build] .tasks-tab-btn:hover,
+body[data-ui-build] .banner-action-btn.view-portfolio:hover {
+  background: #f8fafc !important;
+  border-color: rgba(188, 198, 214, 0.95) !important;
+  color: var(--st-text) !important;
+}
+
+.segmented button.active,
+.tasks-tab-btn.active,
+.referral-stepper-indicators button.active,
+body[data-ui-build] .segmented button.active,
+body[data-ui-build] .tasks-tab-btn.active,
+body[data-ui-build] .referral-stepper-indicators button.active {
+  background: var(--st-primary-soft) !important;
+  border-color: rgba(71, 115, 247, 0.28) !important;
+  color: var(--st-primary-dark) !important;
+  box-shadow: inset 0 0 0 1px rgba(71, 115, 247, 0.1) !important;
+}
+
+input,
+select,
+textarea,
+.profile-input-wrapper,
+.composer input,
+.support-upload-zone,
+.referral-code-box,
+.milestone-pill,
+.security-banner-row,
+.toggle-card,
+body[data-ui-build] input,
+body[data-ui-build] select,
+body[data-ui-build] textarea,
+body[data-ui-build] .profile-input-wrapper,
+body[data-ui-build] .composer input,
+body[data-ui-build] .support-upload-zone,
+body[data-ui-build] .referral-code-box,
+body[data-ui-build] .milestone-pill,
+body[data-ui-build] .security-banner-row,
+body[data-ui-build] .toggle-card {
+  background: #fbfcfe !important;
+  border-color: rgba(214, 220, 232, 0.95) !important;
+  color: var(--st-text) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.profile-input-wrapper:focus-within,
+.composer input:focus,
+body[data-ui-build] input:focus,
+body[data-ui-build] select:focus,
+body[data-ui-build] textarea:focus,
+body[data-ui-build] .profile-input-wrapper:focus-within,
+body[data-ui-build] .composer input:focus {
+  border-color: rgba(71, 115, 247, 0.45) !important;
+  box-shadow: 0 0 0 4px rgba(71, 115, 247, 0.12) !important;
+  outline: none !important;
+}
+
+.mini-progress span,
+.dashboard-active-progress i,
+.course-card .progress span,
+.enrollment-progress-bar i,
+.switch-toggle input:checked + .switch-slider,
+.live-dot,
+body[data-ui-build] .mini-progress span,
+body[data-ui-build] .dashboard-active-progress i,
+body[data-ui-build] .course-card .progress span,
+body[data-ui-build] .enrollment-progress-bar i,
+body[data-ui-build] .switch-toggle input:checked + .switch-slider,
+body[data-ui-build] .live-dot {
+  background: var(--st-primary) !important;
+}
+
+.mini-progress,
+.dashboard-active-progress,
+.course-card .progress,
+.enrollment-progress-bar,
+body[data-ui-build] .mini-progress,
+body[data-ui-build] .dashboard-active-progress,
+body[data-ui-build] .course-card .progress,
+body[data-ui-build] .enrollment-progress-bar {
+  background: #e8edf6 !important;
+}
+
+.course-card:hover,
+.shop-card:hover,
+.metric-card:hover,
+.task-card:hover,
+.question-card:hover,
+.announcement-card:hover,
+.support-quick-card:hover,
+body[data-ui-build] .course-card:hover,
+body[data-ui-build] .shop-card:hover,
+body[data-ui-build] .metric-card:hover,
+body[data-ui-build] .task-card:hover,
+body[data-ui-build] .question-card:hover,
+body[data-ui-build] .announcement-card:hover,
+body[data-ui-build] .support-quick-card:hover {
+  border-color: rgba(188, 198, 214, 0.98) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.95), 0 18px 44px rgba(15, 23, 42, 0.09) !important;
+}
+
+.task-card.active,
+.task-card:hover,
+body[data-ui-build] .task-card.active,
+body[data-ui-build] .task-card:hover {
+  border-left-color: var(--st-primary) !important;
+  background: #ffffff !important;
+}
+
+.course-card .card-footer,
+.panel-header,
+.panel-header-custom,
+.support-tickets-header,
+.batch-chat-header,
+.tasks-sidebar-head,
+body[data-ui-build] .course-card .card-footer,
+body[data-ui-build] .panel-header,
+body[data-ui-build] .panel-header-custom,
+body[data-ui-build] .support-tickets-header,
+body[data-ui-build] .batch-chat-header,
+body[data-ui-build] .tasks-sidebar-head {
+  border-color: rgba(214, 220, 232, 0.86) !important;
+}
+
+.student-alert,
+.empty-state,
+.task-empty-state,
+body[data-ui-build] .student-alert,
+body[data-ui-build] .empty-state,
+body[data-ui-build] .task-empty-state {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(214, 220, 232, 0.9) !important;
+  color: var(--st-muted-strong) !important;
+  box-shadow: var(--st-shadow-soft) !important;
+}
+
+.modal-panel,
+body[data-ui-build] .modal-panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(214, 220, 232, 0.95) !important;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.22) !important;
+}
+
+.modal-close,
+body[data-ui-build] .modal-close {
+  background: #f8fafc !important;
+  border-color: rgba(214, 220, 232, 0.95) !important;
+  color: #344054 !important;
+}
+
+*:focus-visible {
+  outline: 3px solid rgba(71, 115, 247, 0.28) !important;
+  outline-offset: 2px !important;
+}
+
+/*
+ * =========================================================================
+ * JENOVA MARKETPLACE (PRE-LOGIN) STYLE ALIGNMENT ON STUDENT LMS
+ * =========================================================================
+ */
+
+/* Core design tokens of the Marketplace UI */
+:root {
+  --st-primary: #5b4be8 !important;         /* Marketplace Purple */
+  --st-primary-dark: #17145c !important;    /* Primary dark border/shadow variant */
+  --st-primary-soft: #f0edff !important;    /* Marketplace pale purple */
+  --st-primary-softer: #f7f6fb !important;  /* Marketplace background tint */
+  --st-bg: #fff !important;                 /* White backdrop base */
+  --st-page: #fbfbff !important;            /* Page base */
+  --st-panel: #ffffff !important;           /* Clear card panels */
+  --st-panel-soft: #f7f6fb !important;      /* Soft containers */
+  --st-panel-warm: #faf9ff !important;      /* Light tinted lavender background */
+  --st-line: #d9d7e8 !important;            /* Marketplace line border color */
+  --st-line-strong: #bdb7ef !important;     /* Hover card border color */
+  --st-text: #171631 !important;            /* Marketplace deep navy-ink text */
+  --st-muted: #7f7b91 !important;           /* Marketplace lavender muted text */
+  --st-muted-strong: #171631 !important;
+  --st-success: #17c6b5 !important;         /* Marketplace custom teal success */
+  --st-warning: #ffc329 !important;         /* Marketplace custom yellow accent */
+  --st-shadow-soft: 0 16px 36px rgba(66, 50, 160, 0.06) !important; /* Search shadow */
+  --st-shadow: 0 22px 45px rgba(26, 22, 58, 0.12) !important;       /* Course card hover shadow */
+  --st-shadow-strong: 0 34px 70px rgba(33, 31, 99, 0.12) !important; /* Map card shadow */
+  --st-ring: 0 0 0 4px rgba(91, 75, 232, 0.16) !important;
+  --st-font: Poppins, "Segoe UI", Arial, sans-serif !important;
+  --st-radius: 22px !important;
+}
+
+/* Global Font and Base Overrides */
+body {
+  font-family: var(--st-font) !important;
+  color: var(--st-text) !important;
+  background:
+    radial-gradient(circle at 8% 22%, rgba(230, 222, 255, 0.45), transparent 22rem),
+    radial-gradient(circle at 91% 23%, rgba(246, 226, 255, 0.35), transparent 25rem),
+    linear-gradient(180deg, #fcfbff 0%, var(--st-page) 38%, #ffffff 100%) !important;
+}
+
+/* Font Hierarchy Overrides to match Marketplace Boldness */
+h1, h2, h3, h4, h5, h6,
+.page-heading h1,
+.panel-header h2,
+.panel-header-custom h2,
+.support-tickets-header h2,
+.support-form-header h2,
+.course-card h3,
+.shop-card h3,
+.task-card h3,
+.question-card h3,
+.announcement-card h3,
+body[data-ui-build] .page-heading h1,
+body[data-ui-build] .panel-header h2,
+body[data-ui-build] .panel-header-custom h2,
+body[data-ui-build] .support-tickets-header h2,
+body[data-ui-build] .support-form-header h2,
+body[data-ui-build] .course-card h3,
+body[data-ui-build] .shop-card h3,
+body[data-ui-build] .task-card h3,
+body[data-ui-build] .question-card h3,
+body[data-ui-build] .announcement-card h3 {
+  font-family: var(--st-font) !important;
+  font-weight: 900 !important;
+  color: var(--st-text) !important;
+  letter-spacing: -0.025em !important;
+}
+
+p, span, div, a, li, label,
+.course-card p,
+.shop-card p,
+.task-card p,
+.question-card p,
+.announcement-card p,
+body[data-ui-build] .course-card p,
+body[data-ui-build] .shop-card p,
+body[data-ui-build] .task-card p,
+body[data-ui-build] .question-card p,
+body[data-ui-build] .announcement-card p {
+  font-family: var(--st-font) !important;
+  font-weight: 500;
+  line-height: 1.62 !important;
+}
+
+/* Sidebar and Topbar overrides */
+.student-sidebar,
+body[data-ui-build] .student-sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #faf9ff 100%) !important;
+  border-right: 1.5px solid var(--st-line) !important;
+  box-shadow: 8px 0 24px rgba(33, 31, 99, 0.02) !important;
+}
+
+.student-topbar,
+body[data-ui-build] .student-topbar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1.5px solid var(--st-line) !important;
+  box-shadow: 0 12px 30px rgba(33, 31, 99, 0.02) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* Navigation items style mapping */
+.nav-item,
+body[data-ui-build] .nav-item {
+  color: var(--st-text) !important;
+  font-weight: 800 !important;
+  font-size: 12px !important;
+  border-radius: 14px !important;
+  padding: 10px 14px !important;
+  transition: transform 0.22s ease, color 0.22s ease, background-color 0.22s ease !important;
+}
+
+.nav-item:hover,
+body[data-ui-build] .nav-item:hover {
+  color: var(--st-primary) !important;
+  background: var(--st-primary-soft) !important;
+  transform: translateX(4px) !important;
+}
+
+.nav-item.active,
+body[data-ui-build] .nav-item.active {
+  color: var(--st-primary) !important;
+  background: var(--st-primary-soft) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.nav-item.active::after,
+body[data-ui-build] .nav-item.active::after {
+  background: var(--st-primary) !important;
+  width: 3.5px !important;
+  border-radius: 0 8px 8px 0 !important;
+  left: -12px !important;
+  top: 10px !important;
+  bottom: 10px !important;
+}
+
+/* Page heading and sections */
+.page-heading p,
+.reference-eyebrow,
+.shop-hero-eyebrow,
+.enrollment-eyebrow,
+body[data-ui-build] .page-heading p,
+body[data-ui-build] .reference-eyebrow,
+body[data-ui-build] .shop-hero-eyebrow,
+body[data-ui-build] .enrollment-eyebrow {
+  color: var(--st-primary) !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+/* Standard static container panels */
+.student-card,
+.top-search,
+.panel,
+.reference-panel,
+.support-form-card,
+.support-tickets-card,
+.batch-summary-panel,
+.chat-panel,
+.batch-chat-panel,
+.tasks-sidebar,
+.tasks-main,
+.modal-panel,
+body[data-ui-build] .student-card,
+body[data-ui-build] .top-search,
+body[data-ui-build] .panel,
+body[data-ui-build] .reference-panel,
+body[data-ui-build] .support-form-card,
+body[data-ui-build] .support-tickets-card,
+body[data-ui-build] .batch-summary-panel,
+body[data-ui-build] .chat-panel,
+body[data-ui-build] .batch-chat-panel,
+body[data-ui-build] .tasks-sidebar,
+body[data-ui-build] .tasks-main,
+body[data-ui-build] .modal-panel {
+  background: #ffffff !important;
+  border: 1px solid var(--st-line) !important;
+  border-radius: var(--st-radius) !important;
+  box-shadow: var(--st-shadow-soft) !important;
+}
+
+/* Premium Dashboard and Hero Banner Card Glows */
+.dashboard-hero-card,
+.reference-page-intro,
+.secondary-page-intro,
+.shop-hero-banner,
+.referral-hero,
+.profile-banner-container,
+body[data-ui-build] .dashboard-hero-card,
+body[data-ui-build] .reference-page-intro,
+body[data-ui-build] .secondary-page-intro,
+body[data-ui-build] .shop-hero-banner,
+body[data-ui-build] .referral-hero,
+body[data-ui-build] .profile-banner-container {
+  background:
+    radial-gradient(circle at 92% 10%, rgba(91, 75, 232, 0.12), transparent 22rem),
+    radial-gradient(circle at 8% 85%, rgba(23, 198, 181, 0.06), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), #faf9ff) !important;
+  border: 1.5px solid rgba(91, 75, 232, 0.16) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    var(--st-shadow-strong),
+    0 1px 0 rgba(255, 255, 255, 0.98) inset !important;
+}
+
+.dashboard-hero-card::before,
+.shop-hero-banner::before,
+.referral-hero::before,
+.profile-banner-container::before,
+body[data-ui-build] .dashboard-hero-card::before,
+body[data-ui-build] .shop-hero-banner::before,
+body[data-ui-build] .referral-hero::before,
+body[data-ui-build] .profile-banner-container::before {
+  background: linear-gradient(90deg, rgba(91, 75, 232, 0.65), rgba(23, 198, 181, 0.45), transparent) !important;
+}
+
+/* Interactive floating elements on hover */
+.course-card,
+.shop-card,
+.metric-card,
+.question-card,
+.task-card,
+.announcement-card,
+.profile-metric-card,
+.academic-milestones-card,
+.active-enrollment-card,
+.referral-stats-card,
+.referral-pass-card,
+.referral-share-card,
+.referral-form-card,
+.referral-guide-card,
+.dashboard-deadline-card,
+body[data-ui-build] .course-card,
+body[data-ui-build] .shop-card,
+body[data-ui-build] .metric-card,
+body[data-ui-build] .question-card,
+body[data-ui-build] .task-card,
+body[data-ui-build] .announcement-card,
+body[data-ui-build] .profile-metric-card,
+body[data-ui-build] .academic-milestones-card,
+body[data-ui-build] .active-enrollment-card,
+body[data-ui-build] .referral-stats-card,
+body[data-ui-build] .referral-pass-card,
+body[data-ui-build] .referral-share-card,
+body[data-ui-build] .referral-form-card,
+body[data-ui-build] .referral-guide-card,
+body[data-ui-build] .dashboard-deadline-card {
+  background: #ffffff !important;
+  border: 1px solid var(--st-line) !important;
+  border-radius: var(--st-radius) !important;
+  box-shadow: 0 10px 24px rgba(26, 22, 58, 0.03) !important;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.26s ease, box-shadow 0.26s ease !important;
+}
+
+.course-card:hover,
+.shop-card:hover,
+.metric-card:hover,
+.question-card:hover,
+.task-card:hover,
+.announcement-card:hover,
+.profile-metric-card:hover,
+.academic-milestones-card:hover,
+.active-enrollment-card:hover,
+.referral-stats-card:hover,
+.referral-pass-card:hover,
+.referral-share-card:hover,
+.referral-form-card:hover,
+.referral-guide-card:hover,
+.dashboard-deadline-card:hover,
+body[data-ui-build] .course-card:hover,
+body[data-ui-build] .shop-card:hover,
+body[data-ui-build] .metric-card:hover,
+body[data-ui-build] .question-card:hover,
+body[data-ui-build] .task-card:hover,
+body[data-ui-build] .announcement-card:hover,
+body[data-ui-build] .profile-metric-card:hover,
+body[data-ui-build] .academic-milestones-card:hover,
+body[data-ui-build] .active-enrollment-card:hover,
+body[data-ui-build] .referral-stats-card:hover,
+body[data-ui-build] .referral-pass-card:hover,
+body[data-ui-build] .referral-share-card:hover,
+body[data-ui-build] .referral-form-card:hover,
+body[data-ui-build] .referral-guide-card:hover,
+body[data-ui-build] .dashboard-deadline-card:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--st-line-strong) !important;
+  box-shadow: var(--st-shadow) !important;
+}
+
+/* Action button style override */
+.primary-btn,
+.support-submit-btn,
+.save-btn,
+.resume-learning-btn,
+.security-action-btn,
+.banner-action-btn.edit-avatar,
+button[type="submit"],
+body[data-ui-build] .primary-btn,
+body[data-ui-build] .support-submit-btn,
+body[data-ui-build] .save-btn,
+body[data-ui-build] .resume-learning-btn,
+body[data-ui-build] .security-action-btn,
+body[data-ui-build] .banner-action-btn.edit-avatar,
+body[data-ui-build] button[type="submit"] {
+  background: var(--st-primary) !important;
+  border: 1px solid var(--st-primary-dark) !important;
+  border-radius: 20px !important;
+  color: #ffffff !important;
+  font-family: var(--st-font) !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  padding: 10px 22px !important;
+  box-shadow: 0 5px 0 var(--st-primary-dark) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease !important;
+}
+
+.primary-btn:hover,
+.support-submit-btn:hover,
+.save-btn:hover,
+.resume-learning-btn:hover,
+.security-action-btn:hover,
+.banner-action-btn.edit-avatar:hover,
+button[type="submit"]:hover,
+body[data-ui-build] .primary-btn:hover,
+body[data-ui-build] .support-submit-btn:hover,
+body[data-ui-build] .save-btn:hover,
+body[data-ui-build] .resume-learning-btn:hover,
+body[data-ui-build] .security-action-btn:hover,
+body[data-ui-build] .banner-action-btn.edit-avatar:hover,
+body[data-ui-build] button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 4px 5px 0 var(--st-text) !important;
+  background: var(--st-primary) !important;
+}
+
+/* Secondary outline button override */
+.secondary-btn,
+.text-btn,
+.top-icon-btn,
+.support-refresh-btn,
+.edit-details-btn,
+.cancel-btn,
+.segmented button,
+.tasks-tab-btn,
+body[data-ui-build] .secondary-btn,
+body[data-ui-build] .text-btn,
+body[data-ui-build] .top-icon-btn,
+body[data-ui-build] .support-refresh-btn,
+body[data-ui-build] .edit-details-btn,
+body[data-ui-build] .cancel-btn,
+body[data-ui-build] .segmented button,
+body[data-ui-build] .tasks-tab-btn {
+  background: #ffffff !important;
+  border: 1.5px solid var(--st-line) !important;
+  border-radius: 20px !important;
+  color: var(--st-text) !important;
+  font-family: var(--st-font) !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  padding: 8px 18px !important;
+  box-shadow: 0 4px 12px rgba(66, 50, 160, 0.02) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, color 0.22s ease !important;
+}
+
+.secondary-btn:hover,
+.text-btn:hover,
+.top-icon-btn:hover,
+.support-refresh-btn:hover,
+.edit-details-btn:hover,
+.cancel-btn:hover,
+.segmented button:hover,
+.tasks-tab-btn:hover,
+body[data-ui-build] .secondary-btn:hover,
+body[data-ui-build] .text-btn:hover,
+body[data-ui-build] .top-icon-btn:hover,
+body[data-ui-build] .support-refresh-btn:hover,
+body[data-ui-build] .edit-details-btn:hover,
+body[data-ui-build] .cancel-btn:hover,
+body[data-ui-build] .segmented button:hover,
+body[data-ui-build] .tasks-tab-btn:hover {
+  transform: translateY(-1.5px) !important;
+  border-color: var(--st-primary) !important;
+  color: var(--st-primary) !important;
+  box-shadow: 0 10px 22px rgba(91, 75, 232, 0.08) !important;
+}
+
+/* Active Segment/Tab selector alignment */
+.segmented button.active,
+.tasks-tab-btn.active,
+.referral-stepper-indicators button.active,
+body[data-ui-build] .segmented button.active,
+body[data-ui-build] .tasks-tab-btn.active,
+body[data-ui-build] .referral-stepper-indicators button.active {
+  background: var(--st-primary) !important;
+  border-color: var(--st-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(91, 75, 232, 0.2) !important;
+}
+
+/* Form Controls & Inputs */
+input,
+select,
+textarea,
+.profile-input-wrapper,
+.support-upload-zone,
+.composer input,
+body[data-ui-build] input,
+body[data-ui-build] select,
+body[data-ui-build] textarea,
+body[data-ui-build] .profile-input-wrapper,
+body[data-ui-build] .support-upload-zone,
+body[data-ui-build] .composer input {
+  background: #ffffff !important;
+  border: 1.5px solid var(--st-line) !important;
+  border-radius: 19px !important;
+  padding: 10px 16px !important;
+  font-family: var(--st-font) !important;
+  font-size: 12px !important;
+  color: var(--st-text) !important;
+  box-shadow: 0 8px 20px rgba(66, 50, 160, 0.03) !important;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.profile-input-wrapper:focus-within,
+.support-upload-zone:focus-within,
+.composer input:focus,
+body[data-ui-build] input:focus,
+body[data-ui-build] select:focus,
+body[data-ui-build] textarea:focus,
+body[data-ui-build] .profile-input-wrapper:focus-within,
+body[data-ui-build] .support-upload-zone:focus-within,
+body[data-ui-build] .composer input:focus {
+  border-color: var(--st-primary) !important;
+  box-shadow: 0 16px 36px rgba(66, 50, 160, 0.08), var(--st-ring) !important;
+}
+
+/* Coin Badge and Sync Pill custom styles mapping */
+.coin-pill,
+.sync-pill,
+body[data-ui-build] .coin-pill,
+body[data-ui-build] .sync-pill {
+  background: linear-gradient(135deg, #ffc13a, #ffb72e) !important;
+  color: #171631 !important;
+  font-family: var(--st-font) !important;
+  font-weight: 800 !important;
+  border: 1px solid rgba(17, 16, 49, 0.1) !important;
+  box-shadow: 0 4px 10px rgba(255, 195, 41, 0.12) !important;
+}
+
+/* Pills & Badges: Standard color treatment mapping */
+.pill,
+.badge,
+.student-badge,
+.course-status-badge,
+.tasks-tab-badge,
+.ticket-status-badge,
+body[data-ui-build] .pill,
+body[data-ui-build] .badge,
+body[data-ui-build] .student-badge,
+body[data-ui-build] .course-status-badge,
+body[data-ui-build] .tasks-tab-badge,
+body[data-ui-build] .ticket-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 22px !important;
+  padding: 0 12px !important;
+  border-radius: 13px !important;
+  border: 0 !important;
+  background: var(--st-primary-soft) !important;
+  color: var(--st-primary) !important;
+  font-family: var(--st-font) !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  text-transform: capitalize !important;
+  box-shadow: none !important;
+}
+
+/* Ticket status variations */
+.ticket-status-badge.open,
+body[data-ui-build] .ticket-status-badge.open {
+  background: var(--st-primary-soft) !important;
+  color: var(--st-primary) !important;
+}
+
+.ticket-status-badge.solved,
+body[data-ui-build] .ticket-status-badge.solved {
+  background: #effffa !important;
+  color: var(--st-success) !important;
+}
+
+.ticket-status-badge.pending,
+body[data-ui-build] .ticket-status-badge.pending {
+  background: #fff8eb !important;
+  color: var(--st-warning) !important;
+}
+
+/* Progress bars: Premium Marketplace Gradients */
+.mini-progress,
+.dashboard-active-progress,
+.enrollment-progress-bar,
+.course-card .progress,
+body[data-ui-build] .mini-progress,
+body[data-ui-build] .dashboard-active-progress,
+body[data-ui-build] .enrollment-progress-bar,
+body[data-ui-build] .course-card .progress {
+  height: 10px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  background: #eeebff !important;
+  box-shadow: inset 0 1px 2px rgba(33, 31, 99, 0.08) !important;
+}
+
+.mini-progress span,
+.dashboard-active-progress i,
+.enrollment-progress-bar i,
+.course-card .progress span,
+body[data-ui-build] .mini-progress span,
+body[data-ui-build] .dashboard-active-progress i,
+body[data-ui-build] .enrollment-progress-bar i,
+body[data-ui-build] .course-card .progress span {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, var(--st-primary), var(--st-success)) !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Message bubbles in batch chat mapping */
+body[data-ui-build] .chat-bubble {
+  border-radius: 18px !important;
+  border: 1px solid var(--st-line) !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(66, 50, 160, 0.03) !important;
+  color: var(--st-text) !important;
+}
+
+body[data-ui-build] .chat-bubble.mine {
+  background: var(--st-primary) !important;
+  border: 1px solid var(--st-primary-dark) !important;
+  box-shadow: 0 14px 28px rgba(91, 75, 232, 0.15) !important;
+  color: #ffffff !important;
+}
+
+body[data-ui-build] .chat-bubble.mine * {
+  color: #ffffff !important;
+}
+
+/* Custom Scrollbar system colors mapping */
+.student-sidebar::-webkit-scrollbar-thumb,
+.student-main::-webkit-scrollbar-thumb,
+body[data-ui-build] .student-sidebar::-webkit-scrollbar-thumb,
+body[data-ui-build] .student-main::-webkit-scrollbar-thumb {
+  background: rgba(127, 123, 145, 0.28) !important;
+}
+
+/* Sidebar brand panel logo adjustment for wide logonew.png */
+body[data-ui-build] .brand-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 24px 20px 16px !important;
+  margin: 0 0 24px !important;
+  min-height: auto !important;
+}
+
+body[data-ui-build] .brand-panel img {
+  display: block !important;
+  width: 142px !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 48px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] .brand-mark,
+body[data-ui-build] .brand-copy strong {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] .brand-copy {
+  display: block !important;
+  margin: 0 !important;
+}
+
+body[data-ui-build] .brand-copy small {
+  display: block !important;
+  color: var(--st-muted) !important;
+  font-family: var(--st-font) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+}
+
+/* Top Right circular buttons styling mapping */
+.topbar-actions,
+body[data-ui-build] .topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.top-icon-btn,
+body[data-ui-build] .top-icon-btn {
+  position: relative !important;
+  width: 34px !important;
+  height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--st-line) !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  color: var(--st-text) !important;
+  padding: 0 !important;
+  box-shadow: 0 4px 12px rgba(66, 50, 160, 0.02) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease !important;
+  cursor: pointer !important;
+}
+
+.top-icon-btn:hover,
+body[data-ui-build] .top-icon-btn:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--st-primary) !important;
+  box-shadow: 0 10px 18px rgba(91, 75, 232, 0.12) !important;
+}
+
+.top-icon-btn svg,
+body[data-ui-build] .top-icon-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke: var(--st-text) !important;
+  fill: none !important;
+  transition: stroke 0.22s ease !important;
+}
+
+.top-icon-btn:hover svg,
+body[data-ui-build] .top-icon-btn:hover svg {
+  stroke: var(--st-primary) !important;
+}
+
+/* Remove legacy pseudo-elements content */
+.top-icon-btn::before,
+.top-icon-btn::after,
+body[data-ui-build] .top-icon-btn::before,
+body[data-ui-build] .top-icon-btn::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Red notification dot */
+.top-icon-btn .notification-dot,
+body[data-ui-build] .top-icon-btn .notification-dot {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: #ff4d4f !important;
+  border: 1.5px solid #ffffff !important;
+  box-shadow: 0 0 0 1.5px #ffffff !important;
+}
+
+/* Current sidebar nav markers */
+body[data-ui-build] .nav-item[data-view="dashboard"]::before { content: "DB" !important; }
+body[data-ui-build] .nav-item[data-view="catalog"]::before { content: "CO" !important; }
+body[data-ui-build] .nav-item[data-view="courses"]::before { content: "MC" !important; }
+body[data-ui-build] .nav-item[data-view="learn"]::before { content: "LP" !important; }
+body[data-ui-build] .nav-item[data-view="questions"]::before { content: "QA" !important; }
+body[data-ui-build] .nav-item[data-view="tasks"]::before { content: "TK" !important; }
+body[data-ui-build] .nav-item[data-view="batch"]::before { content: "BA" !important; }
+body[data-ui-build] .nav-item[data-view="announcements"]::before { content: "AN" !important; }
+body[data-ui-build] .nav-item[data-view="shop"]::before { content: "SH" !important; }
+body[data-ui-build] .nav-item[data-view="referral"]::before { content: "RF" !important; }
+body[data-ui-build] .nav-item[data-view="support"]::before { content: "SP" !important; }
+body[data-ui-build] .nav-item[data-view="profile"]::before { content: "PR" !important; }
+/* Student UI stabilization: drawer, real search, and mobile fit */
+.student-topbar::before,
+.topbar-actions::before,
+.topbar-actions::after,
+body[data-ui-build] .student-topbar::before,
+body[data-ui-build] .topbar-actions::before,
+body[data-ui-build] .topbar-actions::after {
+  display: none !important;
+  content: none !important;
+}
+
+.top-search,
+body[data-ui-build] .top-search {
+  width: min(460px, 42vw) !important;
+  min-width: 240px !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--st-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #667085 !important;
+  box-shadow: 0 10px 24px rgba(50, 42, 110, 0.05) !important;
+}
+
+.top-search span,
+body[data-ui-build] .top-search span {
+  color: var(--st-primary) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+.top-search input,
+body[data-ui-build] .top-search input {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--st-text) !important;
+  font: 600 13px var(--st-font) !important;
+}
+
+.top-search input::placeholder,
+body[data-ui-build] .top-search input::placeholder {
+  color: #9aa3b2 !important;
+}
+
+.sidebar-scrim,
+body[data-ui-build] .sidebar-scrim {
+  position: fixed !important;
+  inset: 0 !important;
+  display: block !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  border: 0 !important;
+  background: rgba(15, 23, 42, 0.36) !important;
+  backdrop-filter: blur(3px) !important;
+  z-index: 70 !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
+}
+
+.sidebar-scrim.show,
+body.sidebar-open .sidebar-scrim,
+body[data-ui-build] .sidebar-scrim.show,
+body[data-ui-build].sidebar-open .sidebar-scrim {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 900px) {
+  .student-sidebar,
+  body[data-ui-build] .student-sidebar {
+    width: min(286px, 86vw) !important;
+    max-width: 86vw !important;
+    z-index: 90 !important;
+  }
+
+  .student-sidebar.mobile-open,
+  .student-sidebar.open,
+  body.sidebar-open .student-sidebar,
+  body[data-ui-build] .student-sidebar.mobile-open,
+  body[data-ui-build] .student-sidebar.open,
+  body[data-ui-build].sidebar-open .student-sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .student-topbar,
+  body[data-ui-build] .student-topbar {
+    justify-content: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .top-search,
+  body[data-ui-build] .top-search {
+    width: min(420px, 52vw) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-topbar,
+  body[data-ui-build] .student-topbar {
+    position: sticky !important;
+    top: 0 !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+  }
+
+  .top-search,
+  body[data-ui-build] .top-search {
+    grid-column: 1 / -1 !important;
+    order: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 40px !important;
+  }
+
+  .topbar-actions,
+  body[data-ui-build] .topbar-actions {
+    justify-self: end !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+
+  body[data-ui-build] #dashboardView,
+  body[data-ui-build] .student-view {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card,
+  body[data-ui-build] #dashboardView .dashboard-reference-main,
+  body[data-ui-build] #dashboardView .dashboard-reference-metrics,
+  body[data-ui-build] #dashboardView .dashboard-course-overview,
+  body[data-ui-build] #dashboardView .dashboard-leaderboard-list,
+  body[data-ui-build] #dashboardView .dashboard-resume-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+    font-size: clamp(28px, 9vw, 38px) !important;
+    line-height: 1.05 !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-shell,
+  body[data-ui-build] #dashboardView .dashboard-reference-main,
+  body[data-ui-build] #dashboardView .dashboard-reference-left {
+    gap: 14px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-overview-course,
+  body[data-ui-build] #dashboardView .metric-card {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* EOF reference override: keep the supplied dashboard/nav screenshots authoritative. */
+body[data-ui-build] {
+  --st-sidebar: 64px !important;
+  background: #f5f6fa !important;
+}
+
+body[data-ui-build]::before,
+body[data-ui-build] .brand-panel,
+body[data-ui-build] .student-card,
+body[data-ui-build] .sidebar-promo,
+body[data-ui-build] .page-heading,
+body[data-ui-build] #dashboardView .dashboard-active-course,
+body[data-ui-build] #dashboardView .dashboard-hero-actions,
+body[data-ui-build] #dashboardView .dashboard-reference-metrics,
+body[data-ui-build] #dashboardView .dashboard-reference-main > .dashboard-deadline-card,
+body[data-ui-build] .top-profile-copy,
+body[data-ui-build] .coin-pill {
+  display: none !important;
+}
+
+body[data-ui-build] .student-shell {
+  grid-template-columns: 64px minmax(0, 1fr) !important;
+  background: #f5f6fa !important;
+}
+
+body[data-ui-build] .student-sidebar {
+  width: 64px !important;
+  min-width: 64px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 20px 8px 16px !important;
+  overflow: hidden !important;
+  border-right: 0 !important;
+  background: #fbfbff !important;
+  box-shadow: 8px 0 22px rgba(31, 41, 55, 0.04) !important;
+}
+
+body[data-ui-build] .student-nav {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 13px !important;
+}
+
+body[data-ui-build] .student-nav .sidebar-settings {
+  margin-top: auto !important;
+}
+
+body[data-ui-build] .nav-item {
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+  color: #111827 !important;
+  background: transparent !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] .nav-item::before,
+body[data-ui-build] .nav-item::after,
+body[data-ui-build] .nav-item > span {
+  display: none !important;
+}
+
+body[data-ui-build] .nav-item .nav-icon {
+  width: 19px !important;
+  height: 19px !important;
+  display: block !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+body[data-ui-build] .nav-item.active,
+body[data-ui-build] .nav-item:hover {
+  background: #75a3ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(69, 124, 255, 0.24) !important;
+}
+
+body[data-ui-build] .sidebar-footer {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+body[data-ui-build] .logout-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+  font-size: 0 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] .logout-btn::before {
+  content: ">";
+  display: grid !important;
+  place-items: center !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  transform: rotate(180deg);
+}
+
+body[data-ui-build] .student-main {
+  height: 100vh !important;
+  overflow-y: auto !important;
+  padding: 20px 22px 28px !important;
+  background: #f5f6fa !important;
+}
+
+body[data-ui-build] .student-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 15 !important;
+  min-height: 48px !important;
+  display: grid !important;
+  grid-template-columns: auto 1fr auto !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 0 0 18px !important;
+  padding: 8px 12px 8px 14px !important;
+  border: 1.5px solid #111827 !important;
+  border-radius: 10px !important;
+  background: #f7f8fb !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] .student-topbar-title {
+  margin: 0 !important;
+  color: #111111 !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] .mobile-menu-btn {
+  display: none !important;
+}
+
+body[data-ui-build] .top-search {
+  justify-self: end !important;
+  width: min(370px, 42vw) !important;
+  min-width: 220px !important;
+  height: 34px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] .top-search svg {
+  width: 14px !important;
+  height: 14px !important;
+  color: #111827 !important;
+}
+
+body[data-ui-build] .top-search span {
+  display: none !important;
+}
+
+body[data-ui-build] .topbar-actions {
+  gap: 10px !important;
+}
+
+body[data-ui-build] .top-icon-btn,
+body[data-ui-build] #topbarStudentAvatar {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 7px !important;
+  border: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #topbarStudentAvatar {
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #0f4f9e, #8bc0ff) !important;
+  color: #ffffff !important;
+}
+
+body[data-ui-build] #dashboardView {
+  padding: 0 !important;
+}
+
+body[data-ui-build] #learnView .lesson-tab-panel[hidden] {
+  display: none !important;
+}
+
+body[data-ui-build] #learnView .lesson-notes-box {
+  width: min(100%, 760px) !important;
+  margin-top: 16px !important;
+  padding: 16px !important;
+  border: 1px solid #e7e1f5 !important;
+  border-radius: 12px !important;
+  background: #fbfcfe !important;
+}
+
+body[data-ui-build] #learnView .lesson-notes-box strong {
+  display: block !important;
+  margin-bottom: 6px !important;
+  color: #11101f !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #learnView .lesson-discussion-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-shell {
+  width: 100% !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.55fr) minmax(245px, 0.52fr) !important;
+  grid-template-areas:
+    "hero hero streak"
+    "courses courses inbox"
+    "leader assignment deadlines" !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card,
+body[data-ui-build] #dashboardView .dashboard-widget-card,
+body[data-ui-build] #dashboardView .streak-widget-bar {
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.07) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  grid-area: hero !important;
+  min-height: 154px !important;
+  padding: 30px 34px !important;
+  display: block !important;
+}
+
+body[data-ui-build] #dashboardView .streak-widget-bar { grid-area: streak !important; }
+body[data-ui-build] #dashboardView .dashboard-reference-main { display: contents !important; }
+body[data-ui-build] #dashboardView .dashboard-reference-left { grid-area: courses !important; }
+body[data-ui-build] #dashboardView .dashboard-inbox-card { grid-area: inbox !important; }
+body[data-ui-build] #dashboardView .dashboard-leaderboard-card { grid-area: leader !important; }
+body[data-ui-build] #dashboardView .dashboard-assignment-card { grid-area: assignment !important; }
+body[data-ui-build] #dashboardView .dashboard-upcoming-card { grid-area: deadlines !important; }
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy > span {
+  display: inline-flex !important;
+  padding: 7px 18px !important;
+  border-radius: 999px !important;
+  background: #dce8ff !important;
+  color: #2767c9 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  margin: 12px 0 8px !important;
+  color: #064d9e !important;
+  font-size: clamp(30px, 3vw, 44px) !important;
+  line-height: 1.02 !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy p {
+  max-width: 560px !important;
+  margin: 0 0 18px !important;
+  color: #697386 !important;
+  font-size: 13px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-goal-progress {
+  width: min(390px, 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-goal-progress .dashboard-active-progress {
+  flex: 1 1 auto !important;
+  height: 10px !important;
+  background: #e9edf3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-goal-progress strong {
+  color: #6d95da !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title {
+  margin-bottom: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 18px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title p {
+  display: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course {
+  min-height: 196px !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.08) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course img {
+  height: 112px !important;
+  border-radius: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course > div {
+  padding: 12px 18px 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course span,
+body[data-ui-build] #dashboardView .dashboard-overview-course p,
+body[data-ui-build] #dashboardView .dashboard-overview-course .mini-progress,
+body[data-ui-build] #dashboardView .dashboard-overview-course small {
+  display: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course h3 {
+  margin: 0 0 12px !important;
+  color: #303643 !important;
+  font-size: 18px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course .primary-btn {
+  width: 100% !important;
+  min-height: 40px !important;
+  border-radius: 12px !important;
+  background: #004f9f !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-widget-card,
+body[data-ui-build] #dashboardView .streak-widget-bar {
+  padding: 18px !important;
+}
+
+body[data-ui-build] #dashboardView .streak-flame {
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .streak-flame::before {
+  content: "7" !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .streak-widget-right {
+  display: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #dashboardView .rail-list,
+body[data-ui-build] #dashboardView .assignment-stat-list {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 0 !important;
+  border-radius: 50% !important;
+  background: #eef3ff !important;
+  color: #7a869a !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.active,
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.today {
+  background: #dce8ff !important;
+  color: #0758ad !important;
+}
+
+body[data-ui-build] #dashboardView .rail-event,
+body[data-ui-build] #dashboardView .rail-note,
+body[data-ui-build] #dashboardView .deadline-chip-row {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .deadline-chip-row {
+  min-height: 50px !important;
+  padding: 10px !important;
+  border-radius: 12px !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-build] #dashboardView .rail-avatar,
+body[data-ui-build] #dashboardView .rail-note > span,
+body[data-ui-build] #dashboardView .deadline-dot {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #eef1f6 !important;
+  color: #677182 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .deadline-dot {
+  width: 8px !important;
+  height: 8px !important;
+  background: #a9b2c2 !important;
+}
+
+body[data-ui-build] #dashboardView .deadline-chip-row.urgent .deadline-dot {
+  background: #e22d35 !important;
+}
+
+body[data-ui-build] #dashboardView .rail-event strong,
+body[data-ui-build] #dashboardView .rail-note strong,
+body[data-ui-build] #dashboardView .deadline-chip-row strong {
+  color: #374151 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .rail-event small,
+body[data-ui-build] #dashboardView .rail-event time,
+body[data-ui-build] #dashboardView .rail-note small,
+body[data-ui-build] #dashboardView .deadline-chip-row small {
+  display: block !important;
+  color: #8b95a5 !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leaderboard-list {
+  counter-reset: leader-rank;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-row {
+  display: grid !important;
+  grid-template-columns: 20px 32px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 7px 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-row::before {
+  content: counter(leader-rank);
+  counter-increment: leader-rank;
+  color: #b28122;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-row .student-avatar {
+  width: 26px !important;
+  height: 26px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-leader-row b {
+  color: #2867c7 !important;
+  font-size: 12px !important;
+}
+
+body[data-ui-build] #dashboardView .assignment-stat-row > div:first-child {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 6px !important;
+}
+
+body[data-ui-build] #dashboardView .assignment-stat-row span,
+body[data-ui-build] #dashboardView .assignment-stat-row strong {
+  color: #4b5563 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #dashboardView .assignment-stat-row .mini-progress {
+  height: 8px !important;
+}
+
+body[data-ui-build] #dashboardView .assignment-stat-row.green .mini-progress span { background: #28c86f !important; }
+body[data-ui-build] #dashboardView .assignment-stat-row.blue .mini-progress span { background: #004f9f !important; }
+body[data-ui-build] #dashboardView .assignment-stat-row.red .mini-progress span { background: #d92228 !important; }
+
+body[data-ui-build] #dashboardView .deadline-chip-row .primary-btn,
+body[data-ui-build] #dashboardView .deadline-chip-row .secondary-btn {
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  border-radius: 7px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-card-head {
+  margin-bottom: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-card-head h2 {
+  margin: 0 !important;
+  color: #3f4654 !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+}
+
+body[data-ui-build] #dashboardView .text-btn {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #ef6f6c !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+}
+
+@media (max-width: 1100px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.48fr) !important;
+    grid-template-areas:
+      "hero streak"
+      "courses inbox"
+      "leader assignment"
+      "deadlines deadlines" !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] .student-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] .student-sidebar {
+    position: fixed !important;
+    transform: translateX(-110%) !important;
+    z-index: 90 !important;
+  }
+
+  body[data-ui-build] .student-sidebar.mobile-open,
+  body[data-ui-build] .student-sidebar.open,
+  body[data-ui-build].sidebar-open .student-sidebar {
+    transform: translateX(0) !important;
+  }
+
+  body[data-ui-build] .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
+  body[data-ui-build] .student-main {
+    padding: 12px !important;
+  }
+
+  body[data-ui-build] .student-topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+  }
+
+  body[data-ui-build] .student-topbar-title {
+    font-size: 18px !important;
+  }
+
+  body[data-ui-build] .top-search {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    order: 3 !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-shell,
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "hero"
+      "streak"
+      "courses"
+      "inbox"
+      "leader"
+      "assignment"
+      "deadlines" !important;
+  }
+}
+
+/* ABSOLUTE EOF production polish: final student dashboard/mobile fixes. */
+body[data-ui-build] .student-main {
+  padding: 16px 18px 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-shell {
+  max-width: 1240px !important;
+  grid-template-columns: minmax(0, 1fr) 300px !important;
+  grid-template-areas:
+    "hero streak"
+    "courses inbox"
+    "leader assignment"
+    "deadlines deadlines" !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  min-height: 136px !important;
+  padding: 24px 28px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  margin-top: 10px !important;
+  font-size: clamp(28px, 2.8vw, 38px) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .empty-state,
+body[data-ui-build] #dashboardView .rail-list > .empty-state {
+  width: 100% !important;
+  min-height: 128px !important;
+  padding: 18px !important;
+  border: 1px dashed #d6deeb !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] .logout-btn svg {
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  color: currentColor !important;
+}
+
+body[data-ui-build] .logout-btn::before,
+body[data-ui-build] .logout-btn span {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: minmax(0, 1fr) 280px !important;
+    grid-template-areas:
+      "hero hero"
+      "streak inbox"
+      "courses courses"
+      "leader assignment"
+      "deadlines deadlines" !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] .student-main {
+    padding: 10px !important;
+  }
+
+  body[data-ui-build] .student-topbar {
+    gap: 8px !important;
+    padding: 8px !important;
+    border-radius: 9px !important;
+  }
+
+  body[data-ui-build] .student-topbar-title {
+    font-size: clamp(16px, 5vw, 19px) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "hero"
+      "streak"
+      "courses"
+      "inbox"
+      "leader"
+      "assignment"
+      "deadlines" !important;
+    gap: 12px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card {
+    min-height: 0 !important;
+    padding: 18px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+    font-size: clamp(25px, 8vw, 32px) !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ABSOLUTE EOF viewport-fit pass: remove dashboard gaps and use the full page width. */
+body[data-ui-build] .student-main {
+  padding: 14px 16px 18px !important;
+  background: #f4f3fb !important;
+}
+
+body[data-ui-build] .student-topbar {
+  margin: 0 0 12px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.48fr) minmax(260px, 0.36fr) !important;
+  grid-template-areas:
+    "hero hero streak"
+    "courses courses inbox"
+    "leader assignment deadlines" !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card,
+body[data-ui-build] #dashboardView .streak-widget-bar,
+body[data-ui-build] #dashboardView .dashboard-widget-card {
+  border-radius: 14px !important;
+  box-shadow: 0 10px 26px rgba(20, 28, 48, 0.055) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  min-height: 118px !important;
+  padding: 18px 24px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy > span {
+  padding: 6px 14px !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  margin: 8px 0 6px !important;
+  font-size: clamp(28px, 2.6vw, 36px) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy p {
+  margin: 0 0 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-goal-progress {
+  max-width: 430px !important;
+}
+
+body[data-ui-build] #dashboardView .streak-widget-bar {
+  min-height: 118px !important;
+  padding: 16px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title {
+  margin: 0 0 8px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-left {
+  min-height: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-course-overview > .empty-state {
+  min-height: 92px !important;
+  max-width: none !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course {
+  min-height: 150px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-overview-course img {
+  height: 92px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-widget-card {
+  min-height: 0 !important;
+  padding: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-inbox-card,
+body[data-ui-build] #dashboardView .dashboard-upcoming-card,
+body[data-ui-build] #dashboardView .dashboard-leaderboard-card,
+body[data-ui-build] #dashboardView .dashboard-assignment-card {
+  min-height: 150px !important;
+}
+
+body[data-ui-build] #dashboardView .rail-list > .empty-state {
+  min-height: 82px !important;
+  padding: 14px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-card-head {
+  margin-bottom: 10px !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-card-head h2,
+body[data-ui-build] #dashboardView .dashboard-section-title h2 {
+  font-size: 15px !important;
+}
+
+@media (max-width: 1120px) {
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: minmax(0, 1fr) 280px !important;
+    grid-template-areas:
+      "hero streak"
+      "courses inbox"
+      "leader assignment"
+      "deadlines deadlines" !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-build] .student-main {
+    padding: 10px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-reference-shell {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "hero"
+      "streak"
+      "courses"
+      "inbox"
+      "leader"
+      "assignment"
+      "deadlines" !important;
+    gap: 10px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-course-overview {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-hero-card {
+    padding: 16px !important;
+  }
+}
+
+/* Consolidated streak widget: active days show fire only, inactive days show day circles. */
+body[data-ui-build] #dashboardView .streak-widget-bar {
+  min-height: 176px !important;
+  padding: 22px 22px 24px !important;
+  display: grid !important;
+  align-content: center !important;
+  gap: 24px !important;
+  overflow: visible !important;
+  border-radius: 28px !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.08) !important;
+}
+
+body[data-ui-build] #dashboardView .streak-widget-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #dashboardView .streak-flame {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  display: block !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23075fb8' d='M13.5 2.2c.4 2.8-.7 4.4-1.9 5.9-.9 1.1-1.8 2.1-1.8 3.8 0 1.3.8 2.5 2.1 2.9-.5-1.7.2-3 1.2-4.1.8 2.4 3.2 3.6 3.2 6.1 0 2.8-2.2 5-5.3 5-3.7 0-7-2.6-7-6.9 0-3.2 1.8-5.7 3.7-7.7.6 1.9.4 3.3-.1 4.5 1.9-2.1 3-4.8 2.1-8.4 1.5.5 2.7 1.4 3.8 2.9Z'/%3E%3C/svg%3E") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 18px 18px !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-flame::before,
+body[data-ui-build] #dashboardView .streak-widget-label,
+body[data-ui-build] #dashboardView .streak-widget-right {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-widget-count {
+  color: #111111 !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots {
+  width: calc(100% - 4px) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, 26px) !important;
+  justify-content: space-between !important;
+  gap: 0 !important;
+  justify-items: center !important;
+  overflow: visible !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-rows: 26px !important;
+  justify-items: center !important;
+  align-items: center !important;
+  gap: 4px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day-dot {
+  width: 26px !important;
+  height: 26px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background-color: #e8efff !important;
+  background-image: none !important;
+  color: #075fb8 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.active,
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.today {
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.active .streak-day-dot,
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.today.active .streak-day-dot {
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23075fb8' d='M13.5 2.2c.4 2.8-.7 4.4-1.9 5.9-.9 1.1-1.8 2.1-1.8 3.8 0 1.3.8 2.5 2.1 2.9-.5-1.7.2-3 1.2-4.1.8 2.4 3.2 3.6 3.2 6.1 0 2.8-2.2 5-5.3 5-3.7 0-7-2.6-7-6.9 0-3.2 1.8-5.7 3.7-7.7.6 1.9.4 3.3-.1 4.5 1.9-2.1 3-4.8 2.1-8.4 1.5.5 2.7 1.4 3.8 2.9Z'/%3E%3C/svg%3E") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 18px 18px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.active .streak-day-dot::before {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day-label {
+  display: none !important;
+  color: #b9becf !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #dashboardView .streak-week-dots .streak-day.active .streak-day-label {
+  display: none !important;
+}
