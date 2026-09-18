@@ -9,18 +9,19 @@
   <title>Mentor | Jenovate LMS</title>
   <link rel="icon" href="/logos/logooo2.png" type="image/png" />
   <link rel="stylesheet" href="colours.css" />
-  <link rel="stylesheet" href="mentor-new.css?v=20260520-ui" />
-  <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
+  <link rel="stylesheet" href="mentor-new.css?v=20260601-no-top-search-v1" />
+  <link rel="stylesheet" href="role-compact.css?v=20260524-sidebar-actions-v1" />
+  <link rel="stylesheet" href="role-final-fixes.css?v=20260605-device-comfort" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="mentor-redesign-final">
   <div class="mentor-shell">
     <!-- Sidebar Navigation -->
     <aside class="mentor-sidebar">
       <div class="mentor-brand">
-        <img src="image/logo/logo new.png" alt="Jenovate" />
+        <img src="image/logo/logonew.png" alt="Jenovate" />
         <span>MENTOR LMS</span>
       </div>
 
@@ -46,8 +47,10 @@
           <div class="nav-label">MENTORING</div>
           <button class="nav-item" data-view="tasks" type="button" aria-label="Manage tasks"><span>TS</span>Tasks</button>
           <button class="nav-item" data-view="reviews" type="button" aria-label="Review student work"><span>RV</span>Reviews</button>
+          <button class="nav-item" data-view="questions" type="button" aria-label="Manage student questions"><span>QA</span>Questions</button>
           <button class="nav-item" data-view="announcements" type="button" aria-label="Post announcements"><span>AN</span>Announcements</button>
           <button class="nav-item" data-view="chat" type="button" aria-label="View messages"><span>MS</span>Messages</button>
+          <button class="nav-item" data-view="support" type="button" aria-label="Create support tickets"><span>SP</span>Support</button>
         </div>
 
         <div class="nav-section">
@@ -57,7 +60,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="secondary-btn" id="homeBtn" type="button" style="width: 100%; margin-bottom: 8px;" aria-label="Open mentor dashboard">Home</button>
+        <button class="secondary-btn full" id="homeBtn" type="button" aria-label="Open mentor dashboard">Home</button>
         <button class="logout-btn" id="logoutBtn" type="button" aria-label="Logout from your account"><span aria-hidden="true">LO</span>Logout</button>
       </div>
     </aside>
@@ -66,13 +69,12 @@
     <main class="mentor-main">
       <!-- Top Bar -->
       <header class="mentor-topbar">
-        <label class="lms-search" aria-label="Search mentor workspace">
-          <span>Search</span>
-          <input id="globalSearch" type="search" placeholder="Search students, batches, reviews" />
-        </label>
         <div class="topbar-actions">
-          <button class="year-btn" type="button" aria-label="Mentor LMS 2026">Mentor LMS 2026</button>
-          <button class="icon-btn" id="refreshBtn" type="button" aria-label="Refresh data" title="Refresh data">RF</button>
+          <button class="sync-pill hidden-sync-pill" id="refreshBtn" type="button" aria-label="Refresh mentor data" hidden>
+            <span class="live-dot"></span>
+            <span id="syncStatus"></span>
+          </button>
+          <div class="role-pill" aria-label="Mentor role">Mentor</div>
           <div class="avatar" id="mentorAvatar" aria-label="Mentor profile avatar">M</div>
         </div>
       </header>
@@ -82,10 +84,15 @@
         <div>
           <p class="eyebrow">Jenovate Mentor</p>
           <h1 id="viewTitle">Dashboard</h1>
+          <div class="page-tabs" aria-label="Mentor dashboard sections">
+            <button class="active" type="button" data-jump="dashboard">Overview</button>
+            <button type="button" data-jump="courses">Courses</button>
+            <button type="button" data-jump="students">Students</button>
+          </div>
         </div>
-        <div class="heading-status">
-          <span class="live-dot"></span>
-          <span id="syncStatus">Preparing mentor workspace</span>
+        <div class="heading-actions">
+          <button class="primary-btn" type="button" data-jump="courses">Manage Courses</button>
+          <button class="secondary-btn" type="button" data-jump="reviews">Review Work</button>
         </div>
       </div>
 
@@ -95,14 +102,106 @@
       <!-- Page Content Area -->
       <div class="mentor-views">
         <!-- Dashboard View -->
-        <section class="mentor-view active" id="dashboardView" data-title="Dashboard">
+        <section class="mentor-view active report-dashboard-ready" id="dashboardView" data-title="Dashboard" data-report-dashboard="true">
+          <div class="role-report-dashboard">
+            <section class="report-card report-activity-card">
+              <div class="report-card-head">
+                <div>
+                  <h2>Learners activity <span aria-hidden="true">i</span></h2>
+                </div>
+                <button class="report-link" type="button" data-jump="students">View all</button>
+              </div>
+              <div class="report-mini-tabs" aria-label="Activity filters">
+                <button class="active" type="button" data-report-filter="all">All</button>
+                <button type="button" data-report-filter="courses">Course</button>
+                <button type="button" data-report-filter="quiz">Quiz</button>
+                <button type="button" data-report-filter="assignment">Assignment</button>
+              </div>
+              <div class="report-list" id="mentorReportActivityList"></div>
+            </section>
+
+            <section class="report-card report-total-card">
+              <div class="report-card-head">
+                <h2>Total learners <span aria-hidden="true">i</span></h2>
+                <button class="report-select" type="button">My batches</button>
+              </div>
+              <div class="report-total"><strong id="mentorReportTotalLearners">0</strong><span>People</span></div>
+              <div class="report-breakdown" id="mentorReportBreakdown"></div>
+            </section>
+
+            <section class="report-card report-time-card">
+              <div class="report-card-head">
+                <h2>Learning time <span aria-hidden="true">i</span></h2>
+                <button class="report-select" type="button">My courses</button>
+              </div>
+              <div class="report-total"><strong id="mentorReportLearningTime">0</strong><span>Hours</span></div>
+              <small class="report-growth">+ live mentor workspace</small>
+              <div class="report-sparkline" id="mentorReportSparkline"></div>
+            </section>
+
+            <section class="report-card report-line-card">
+              <div class="report-card-head">
+                <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
+                <button class="report-select" type="button">This week</button>
+              </div>
+              <div class="report-chart" id="mentorReportWeeklyChart"></div>
+            </section>
+
+            <section class="report-card report-bars-card">
+              <div class="report-card-head">
+                <h2>Most active learners <span aria-hidden="true">i</span></h2>
+                <button class="report-select" type="button">Last 4 weeks</button>
+              </div>
+              <div class="report-bars" id="mentorReportActiveLearners"></div>
+            </section>
+
+            <section class="report-card report-health-card">
+              <div class="report-card-head">
+                <h2>Course readiness <span aria-hidden="true">i</span></h2>
+                <button class="report-link" type="button" data-jump="courses">Manage</button>
+              </div>
+              <div class="report-kpi-grid" id="mentorReportReadiness"></div>
+            </section>
+
+            <section class="report-card report-workload-card">
+              <div class="report-card-head">
+                <h2>Review workload <span aria-hidden="true">i</span></h2>
+                <button class="report-link" type="button" data-jump="reviews">Open</button>
+              </div>
+              <div class="report-kpi-grid" id="mentorReportWorkload"></div>
+            </section>
+
+            <section class="report-card report-courses-card">
+              <div class="report-card-head">
+                <h2>Assigned courses <span aria-hidden="true">i</span></h2>
+                <button class="report-link" type="button" data-jump="courses">View all</button>
+              </div>
+              <div class="report-compact-list" id="mentorReportCourses"></div>
+            </section>
+
+            <section class="report-card report-batches-card">
+              <div class="report-card-head">
+                <h2>Batch activity <span aria-hidden="true">i</span></h2>
+                <button class="report-link" type="button" data-jump="batches">View all</button>
+              </div>
+              <div class="report-compact-list" id="mentorReportBatches"></div>
+            </section>
+
+            <section class="report-card report-attention-card">
+              <div class="report-card-head">
+                <h2>Needs attention <span aria-hidden="true">i</span></h2>
+                <button class="report-select" type="button">Live</button>
+              </div>
+              <div class="report-compact-list" id="mentorReportAttention"></div>
+            </section>
+          </div>
           <div class="overview-grid">
             <!-- Hero Section -->
             <section class="mentor-hero">
               <div class="hero-copy">
                 <span class="status-pill">Verified Mentor</span>
                 <h2 id="welcomeTitle">Welcome back</h2>
-                <p id="welcomeMeta">Your assigned courses, batches, reviews, and messages are synced from Supabase.</p>
+                <p id="welcomeMeta">Your assigned courses, batches, reviews, and messages are ready.</p>
               </div>
               <div class="hero-stats">
                 <div>
@@ -154,7 +253,7 @@
               <small>Students in your courses</small>
             </article>
             <article class="metric-card">
-              <div class="metric-top"><span class="metric-icon">MD</span><span>Modules</span></div>
+              <div class="metric-top"><span class="metric-icon">PL</span><span>Playlists</span></div>
               <strong id="metricModules">0</strong>
               <small>Across assigned courses</small>
             </article>
@@ -310,7 +409,7 @@
           <div class="view-toolbar">
             <div>
               <h2>Your Courses</h2>
-              <p>Manage curriculum, modules, lessons, and course metadata.</p>
+              <p>Manage playlists, videos, assignments, study materials, quizzes, and course metadata.</p>
             </div>
             <button class="primary-btn" id="addCourseBtn" type="button">New Course</button>
           </div>
@@ -404,6 +503,17 @@
           </div>
         </section>
 
+        <section class="mentor-view" id="questionsView" data-title="Questions & Answers">
+          <div class="view-toolbar">
+            <div>
+              <h2>Questions & Answers</h2>
+              <p>Reply to student course questions and mark them answered.</p>
+            </div>
+            <button class="primary-btn" id="refreshQuestionsBtn" type="button">Refresh</button>
+          </div>
+          <div class="stack-list" id="questionsList"></div>
+        </section>
+
         <!-- Announcements View -->
         <section class="mentor-view" id="announcementsView" data-title="Announcements">
           <div class="view-toolbar">
@@ -417,6 +527,45 @@
             </div>
           </div>
           <div class="announcement-grid" id="announcementsGrid"></div>
+        </section>
+
+        <section class="mentor-view" id="supportView" data-title="Support">
+          <div class="view-toolbar">
+            <div>
+              <h2>Support Tickets</h2>
+              <p>Create private tickets for admin support and track replies.</p>
+            </div>
+            <button class="secondary-btn" id="refreshSupportBtn" type="button">Refresh</button>
+          </div>
+          <div class="support-management-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <div><h2>Create Ticket</h2><p>Only admins receive the alert.</p></div>
+              </div>
+              <form class="form-grid" id="supportTicketForm">
+                <div class="form-row">
+                  <label for="supportCategory">Category</label>
+                  <select id="supportCategory" required>
+                    <option value="technical">Technical Issue</option>
+                    <option value="course">Course Management</option>
+                    <option value="student">Student Support</option>
+                    <option value="account">Account</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="form-row"><label for="supportSubject">Subject</label><input id="supportSubject" required></div>
+                <div class="form-row"><label for="supportMessage">Message</label><textarea id="supportMessage" rows="5" required></textarea></div>
+                <div class="form-row"><label for="supportAttachment">Attachment</label><input id="supportAttachment" type="file"></div>
+                <div class="form-actions"><button class="primary-btn" type="submit">Submit Ticket</button></div>
+              </form>
+            </section>
+            <section class="panel">
+              <div class="panel-heading">
+                <div><h2>My Tickets</h2><p>Admin replies and status updates.</p></div>
+              </div>
+              <div class="compact-list support-ticket-list" id="supportTicketList"></div>
+            </section>
+          </div>
         </section>
 
         <!-- Messages View -->
@@ -532,8 +681,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260520"></script>
-  <script src="session-router.js?v=20260520"></script>
-  <script src="mentor.js?v=20260521-course-module-sync"></script>
+  <script src="supabase-config.js?v=20260615-auth"></script>
+  <script src="session-router.js?v=20260615-auth"></script>
+  <script src="auth-session.js?v=20260616-legacy-fallback"></script>
+  <script src="mentor.js?v=20260609-qa-fix"></script>
 </body>
 </html>

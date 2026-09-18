@@ -1,9 +1,17 @@
 moodledata/
+node_modules/
+form-engine/node_modules/
+*.sql
 .vs/
 .netlify/
 admin-video-frames/
 edge-headless-profile*/
+edge-cdp-audit-profile/
+tmp-edge-*/
+ui-check-shots/
 *.log
 *.tmp
 lms-student-check.png
 lms-ui-redesign.css
+
+.vercel

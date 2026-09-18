@@ -7,8 +7,8 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Login - Jenovate</title>
-  <link rel="stylesheet" href="login.css?v=20260520" />
   <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
+  <link rel="stylesheet" href="login.css?v=20260605-mobile-responsive" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,10 +19,10 @@
     <div class="login-left">
       <div class="logo-container">
         <a href="index.html">
-          <img src="image/logo/logo new.png" alt="Jenovate Logo" class="logo-img" />
+          <img src="image/logo/logonew.png" alt="Jenovate Logo" class="logo-img" />
         </a>
       </div>
-      <img src="image/login/loginimg.png" alt="Learn Engage Succeed" class="illustration-img" />
+      <img src="image/login/loginimg.webp" alt="Learn Engage Succeed" class="illustration-img" />
     </div>
     <div class="login-right">
       <div class="login-form-container">
@@ -52,6 +52,10 @@
           
           <button type="submit" class="submit-btn">LOGIN</button>
           <p class="login-error" id="loginError" role="alert"></p>
+          <p class="join-account">
+            Don't have an account?
+            <a href="join-form.html">Join Now</a>
+          </p>
         </form>
       </div>
     </div>
@@ -59,7 +63,8 @@
 
   <!-- Supabase CDN and Config -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260519-legacy-login"></script>
+  <script src="supabase-config.js?v=20260615-auth"></script>
+  <script src="auth-session.js?v=20260616-legacy-fallback"></script>
   
   <script>
     const APP_SESSION_KEY = 'jenovateCurrentUser';
@@ -70,6 +75,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       clearExistingSession();
+      initializeLoginBackNavigation();
     });
 
     function togglePasswordVisibility() {
@@ -99,9 +105,14 @@
       submitBtn.disabled = true;
 
       try {
-        const profile = await verifyLogin(email, password);
+        let profile = await verifyLogin(email, password);
         if (!profile) {
           throw new Error('Invalid email or password.');
+        }
+
+        const rewardResult = await claimDailyLoginReward(profile);
+        if (rewardResult?.profile) {
+          profile = rewardResult.profile;
         }
 
         const sessionProfile = {
@@ -116,8 +127,13 @@
           coins: profile.coins || 0,
           streak_count: profile.streak_count || 0,
           last_active_date: profile.last_active_date || '',
-          auth_mode: 'users_table'
+          auth_mode: 'supabase_auth'
         };
+
+        if (rewardResult?.claimed) {
+          sessionProfile.daily_login_reward_claimed = true;
+          sessionProfile.daily_login_reward_amount = rewardResult.amount || 10;
+        }
 
         // Use sessionStorage so the session stays in this browser tab until logout or tab close.
         sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(sessionProfile));
@@ -145,46 +161,76 @@
     });
 
     async function verifyLogin(email, password) {
+      return window.JenovateAuth.signInWithPassword(email, password);
+    }
+
+    async function claimDailyLoginReward(profile) {
+      if (!profile?.id) return null;
       const supabaseClient = window.getSupabaseClient?.();
+      if (!supabaseClient?.rpc) return null;
 
-      if (!supabaseClient?.rpc) {
-        throw new Error('Supabase library did not load. Check your internet connection and refresh.');
-      }
-
-      const { data, error } = await supabaseClient.rpc('lms_password_login', {
-        login_email: email,
-        login_password: password
+      const { data, error } = await supabaseClient.rpc('lms_claim_daily_login_reward', {
+        target_user_id: profile.id
       });
 
       if (error) {
-        if (/function .*lms_password_login/i.test(error.message || '') || /could not find/i.test(error.message || '')) {
-          throw new Error('Login is not configured in Supabase yet. Run the latest database update.');
+        if (/function|schema cache|not found|could not find/i.test(error.message || '') || error.code === 'PGRST202') {
+          return null;
         }
         throw error;
       }
 
-      const profile = Array.isArray(data) ? data[0] : data;
-      if (!profile?.email) {
-        throw new Error('Incorrect email or password. Please check your credentials and try again.');
-      }
-
-      return profile;
+      const result = Array.isArray(data) ? data[0] : data;
+      if (!result) return null;
+      return {
+        claimed: Boolean(result.claimed),
+        amount: Number(result.reward_amount || 0),
+        profile: {
+          ...profile,
+          coins: Number(result.coins ?? profile.coins ?? 0),
+          last_login_reward_date: result.last_login_reward_date || profile.last_login_reward_date || ''
+        }
+      };
     }
 
-    function clearExistingSession() {
+    async function clearExistingSession() {
       const hadSession = Boolean(
         sessionStorage.getItem(APP_SESSION_KEY) ||
         sessionStorage.getItem(ADMIN_SESSION_KEY) ||
         sessionStorage.getItem(MENTOR_SESSION_KEY) ||
         sessionStorage.getItem(STUDENT_SESSION_KEY)
       );
-      sessionStorage.removeItem(APP_SESSION_KEY);
-      sessionStorage.removeItem(ADMIN_SESSION_KEY);
-      sessionStorage.removeItem(MENTOR_SESSION_KEY);
-      sessionStorage.removeItem(STUDENT_SESSION_KEY);
+      await window.JenovateAuth?.signOut?.();
       if (hadSession) {
         document.getElementById('loginError').textContent = 'Session ended. Login again to continue.';
       }
+    }
+
+    document.querySelector('.forgot-password')?.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const errorBox = document.getElementById('loginError');
+      if (!email) {
+        errorBox.textContent = 'Enter your email first, then request a password reset.';
+        return;
+      }
+      try {
+        const redirectTo = `${window.location.origin}${window.location.pathname}`;
+        const { error } = await window.getSupabaseClient().auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+        errorBox.textContent = 'Password reset link sent. Please check your email.';
+      } catch (error) {
+        errorBox.textContent = error.message || 'Unable to send reset email.';
+      }
+    });
+
+    function initializeLoginBackNavigation() {
+      if (!window.history?.pushState) return;
+      history.replaceState({ loginView: true }, '', window.location.href);
+      history.pushState({ loginGuard: true }, '', window.location.href);
+      window.addEventListener('popstate', () => {
+        window.location.replace('index.html');
+      });
     }
   </script>
 </body>

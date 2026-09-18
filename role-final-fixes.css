@@ -1,0 +1,431 @@
+/*
+  Final role layout overrides shared by admin and mentor.
+  Removes the top search footprint and keeps header actions aligned.
+*/
+
+body.admin-redesign-final .admin-topbar,
+body.mentor-redesign-final .mentor-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .admin-topbar .topbar-actions,
+body.mentor-redesign-final .mentor-topbar .topbar-actions {
+  margin-left: auto !important;
+}
+
+body.admin-redesign-final .admin-topbar .lms-search,
+body.mentor-redesign-final .mentor-topbar .lms-search,
+body.admin-redesign-final .lms-search:has(#globalSearch),
+body.mentor-redesign-final .lms-search:has(#globalSearch) {
+  display: none !important;
+}
+
+/* Shared premium role polish for admin and mentor workspaces. */
+body.admin-redesign-final,
+body.mentor-redesign-final {
+  background:
+    radial-gradient(circle at 82% 8%, rgba(72, 123, 238, 0.10), transparent 28%),
+    #f5f8fc !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.mentor-redesign-final .page-heading h1,
+body.admin-redesign-final .section-toolbar h2,
+body.mentor-redesign-final .view-toolbar h2 {
+  font-family: "Manrope", "Inter", sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+body.admin-redesign-final .panel,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .task-card,
+body.mentor-redesign-final .panel,
+body.mentor-redesign-final .course-card,
+body.mentor-redesign-final .batch-card,
+body.mentor-redesign-final .task-card {
+  border-radius: 18px !important;
+  border-color: #dbe5f3 !important;
+  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.065) !important;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease !important;
+}
+
+body.admin-redesign-final .course-card:hover,
+body.admin-redesign-final .batch-card:hover,
+body.admin-redesign-final .task-card:hover,
+body.mentor-redesign-final .course-card:hover,
+body.mentor-redesign-final .batch-card:hover,
+body.mentor-redesign-final .task-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: #bbceec !important;
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.10) !important;
+}
+
+body.admin-redesign-final .section-toolbar,
+body.mentor-redesign-final .view-toolbar {
+  padding: 18px 20px !important;
+  border: 1px solid rgba(215, 226, 242, 0.88) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(14px) !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05) !important;
+}
+
+body.admin-redesign-final .primary-btn,
+body.mentor-redesign-final .primary-btn {
+  box-shadow: 0 10px 22px rgba(7, 88, 223, 0.18) !important;
+}
+/* Support ticket system shared role UI. */
+body .support-management-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.4fr);
+  gap: 20px;
+  align-items: start;
+}
+
+body .support-filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+body .support-filters select,
+body .support-filters input {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d7e3f3;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+body .support-ticket-row {
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid #e0e8f5;
+  border-radius: 18px;
+  background: #ffffff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+body .support-ticket-row.active,
+body .support-ticket-row:hover {
+  border-color: #0758df;
+  background: #eef5ff;
+}
+
+body .support-ticket-row em {
+  color: #667085;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+body .support-thread {
+  display: grid;
+  gap: 14px;
+  min-height: 280px;
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid #e0e8f5;
+  border-radius: 18px;
+  background: #f8fbff;
+}
+
+body .support-thread-summary {
+  padding: 16px;
+  border: 1px solid #dfe9f6;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+body .support-thread-summary h3 {
+  margin: 10px 0 8px;
+}
+
+body .message-row {
+  display: grid;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid #e0e8f5;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+body .message-row.mine {
+  border-color: rgba(7, 88, 223, 0.18);
+  background: #eef5ff;
+}
+
+@media (max-width: 900px) {
+  body .support-management-grid,
+  body .support-filters {
+    grid-template-columns: 1fr;
+  }
+}
+button.hidden-sync-pill,
+.hidden-sync-pill {
+  display: none !important;
+}
+
+/* Final responsive pass: admin and mentor dashboards. */
+@media (max-width: 980px) {
+  html,
+  body.admin-redesign-final,
+  body.mentor-redesign-final {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body.admin-redesign-final .admin-shell,
+  body.mentor-redesign-final .mentor-shell {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar,
+  body.mentor-redesign-final .mentor-sidebar {
+    display: none !important;
+  }
+
+  body.admin-redesign-final .admin-main,
+  body.mentor-redesign-final .mentor-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    padding: 16px 14px 96px !important;
+  }
+
+  body.admin-redesign-final .admin-topbar,
+  body.mentor-redesign-final .mentor-topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    min-height: 62px !important;
+    margin: -16px -14px 14px !important;
+    padding: 10px 14px !important;
+    border-radius: 0 !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  body.admin-redesign-final .page-heading,
+  body.mentor-redesign-final .page-heading,
+  body.admin-redesign-final .section-toolbar,
+  body.mentor-redesign-final .view-toolbar,
+  body.admin-redesign-final .panel-heading,
+  body.mentor-redesign-final .panel-heading {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.admin-redesign-final .page-heading h1,
+  body.mentor-redesign-final .page-heading h1,
+  body.admin-redesign-final #viewTitle,
+  body.mentor-redesign-final #viewTitle {
+    font-size: clamp(28px, 8vw, 38px) !important;
+    line-height: 1.08 !important;
+  }
+
+  body.admin-redesign-final .admin-view,
+  body.mentor-redesign-final .mentor-view {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.admin-redesign-final .metric-grid,
+  body.admin-redesign-final .overview-grid,
+  body.admin-redesign-final .dashboard-grid,
+  body.admin-redesign-final .two-column-grid,
+  body.admin-redesign-final .panel-grid,
+  body.admin-redesign-final .course-grid,
+  body.admin-redesign-final .batch-grid,
+  body.admin-redesign-final .user-management-grid,
+  body.admin-redesign-final .support-management-grid,
+  body.mentor-redesign-final .metric-grid,
+  body.mentor-redesign-final .overview-grid,
+  body.mentor-redesign-final .course-grid,
+  body.mentor-redesign-final .batch-grid,
+  body.mentor-redesign-final .task-grid,
+  body.mentor-redesign-final .chat-layout,
+  body.mentor-redesign-final .course-editor-grid,
+  body.mentor-redesign-final .support-management-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.admin-redesign-final .support-filters,
+  body.mentor-redesign-final .support-filters,
+  body.admin-redesign-final .form-grid,
+  body.mentor-redesign-final .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.admin-redesign-final table,
+  body.mentor-redesign-final table {
+    min-width: 720px !important;
+  }
+
+  body.admin-redesign-final .table-wrap,
+  body.mentor-redesign-final .table-wrap,
+  body.admin-redesign-final .data-table,
+  body.mentor-redesign-final .data-table {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body.admin-redesign-final .lms-mobile-nav,
+  body.mentor-redesign-final .lms-mobile-nav {
+    display: flex !important;
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    z-index: 90 !important;
+    min-height: 62px !important;
+    padding: 8px !important;
+    border: 1px solid #dbe5f3 !important;
+    border-radius: 22px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16) !important;
+    backdrop-filter: blur(16px) !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+  }
+
+  body.admin-redesign-final .lms-mobile-nav button,
+  body.mentor-redesign-final .lms-mobile-nav button {
+    flex: 1 0 78px !important;
+    min-height: 46px !important;
+    border-radius: 16px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.admin-redesign-final .admin-main,
+  body.mentor-redesign-final .mentor-main {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  body.admin-redesign-final .panel,
+  body.admin-redesign-final .course-card,
+  body.admin-redesign-final .batch-card,
+  body.admin-redesign-final .task-card,
+  body.mentor-redesign-final .panel,
+  body.mentor-redesign-final .course-card,
+  body.mentor-redesign-final .batch-card,
+  body.mentor-redesign-final .task-card {
+    border-radius: 18px !important;
+  }
+
+  body.admin-redesign-final .topbar-actions,
+  body.mentor-redesign-final .topbar-actions {
+    width: 100% !important;
+    justify-content: flex-end !important;
+    overflow-x: auto !important;
+  }
+}
+
+/* Device comfort layer: admin/mentor tablets and touch ergonomics. */
+@media (max-width: 1180px) and (min-width: 981px) {
+  body.admin-redesign-final .admin-shell,
+  body.mentor-redesign-final .mentor-shell {
+    grid-template-columns: 232px minmax(0, 1fr) !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar,
+  body.mentor-redesign-final .mentor-sidebar {
+    width: 232px !important;
+    min-width: 232px !important;
+  }
+
+  body.admin-redesign-final .admin-main,
+  body.mentor-redesign-final .mentor-main {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  body.admin-redesign-final .metric-grid,
+  body.admin-redesign-final .course-grid,
+  body.admin-redesign-final .batch-grid,
+  body.mentor-redesign-final .metric-grid,
+  body.mentor-redesign-final .course-grid,
+  body.mentor-redesign-final .batch-grid,
+  body.mentor-redesign-final .task-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body.admin-redesign-final .support-management-grid,
+  body.mentor-redesign-final .support-management-grid {
+    grid-template-columns: 0.9fr 1.1fr !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  body.admin-redesign-final button,
+  body.admin-redesign-final a,
+  body.admin-redesign-final input,
+  body.admin-redesign-final select,
+  body.admin-redesign-final textarea,
+  body.mentor-redesign-final button,
+  body.mentor-redesign-final a,
+  body.mentor-redesign-final input,
+  body.mentor-redesign-final select,
+  body.mentor-redesign-final textarea {
+    min-height: 44px;
+  }
+
+  body.admin-redesign-final input,
+  body.admin-redesign-final select,
+  body.admin-redesign-final textarea,
+  body.mentor-redesign-final input,
+  body.mentor-redesign-final select,
+  body.mentor-redesign-final textarea {
+    font-size: 16px !important;
+  }
+
+  body.admin-redesign-final .course-card:hover,
+  body.admin-redesign-final .batch-card:hover,
+  body.admin-redesign-final .task-card:hover,
+  body.mentor-redesign-final .course-card:hover,
+  body.mentor-redesign-final .batch-card:hover,
+  body.mentor-redesign-final .task-card:hover {
+    transform: none !important;
+  }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  body.admin-redesign-final .admin-main,
+  body.mentor-redesign-final .mentor-main {
+    padding-bottom: 78px !important;
+  }
+
+  body.admin-redesign-final .lms-mobile-nav,
+  body.mentor-redesign-final .lms-mobile-nav {
+    min-height: 54px !important;
+  }
+}

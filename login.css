@@ -5,24 +5,34 @@
   font-family: 'Inter', sans-serif;
 }
 
+html {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
-  background-color: #ffffff;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #0b1226;
+  overflow: hidden;
 }
 
 .login-container {
   display: flex;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  background: #ffffff !important;
 }
 
 .login-left {
-  width: 50%;
+  width: 58%;
   position: relative;
-  background: #ffffff;
+  min-height: 100vh;
+  background: #ffffff !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,65 +42,75 @@ body {
 
 .logo-container {
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 28px;
+  left: 28px;
   z-index: 10;
 }
 
 .logo-img {
-  height: 45px;
+  height: 48px;
+  width: auto;
   object-fit: contain;
 }
 
 .illustration-img {
   position: absolute;
   top: 0;
-  left: -5%; /* Moved slightly left */
-  width: 105%; /* Increased width to prevent blank space on the right */
+  left: 0;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: left center;
   z-index: 0;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .login-right {
-  width: 50%;
+  width: 42%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
+  padding: 48px 7.2vw 48px 4.8vw;
 }
 
 .login-form-container {
   width: 100%;
-  max-width: 420px;
-  padding: 20px;
+  max-width: 430px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .welcome-title {
-  font-size: 38px;
+  font-size: clamp(40px, 4vw, 52px) !important;
+  line-height: 1.04;
   font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 12px;
+  color: #0b1226 !important;
+  margin-bottom: 18px;
+  letter-spacing: 0 !important;
 }
 
 .welcome-subtitle {
-  font-size: 16px;
-  color: #475569;
-  margin-bottom: 45px;
+  font-size: 19px;
+  color: #263b5c !important;
+  margin-bottom: 54px;
   font-weight: 500;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 label {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #071022;
+  margin-bottom: 10px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -102,8 +122,8 @@ label {
 }
 
 .forgot-password {
-  font-size: 13px;
-  color: #2563eb;
+  font-size: 16px;
+  color: #0758df;
   text-decoration: none;
   font-weight: 500;
   text-transform: none;
@@ -121,18 +141,20 @@ label {
 
 .input-icon {
   position: absolute;
-  left: 16px;
-  color: #64748b;
-  font-size: 16px;
+  left: 20px;
+  color: #5f789a;
+  font-size: 18px;
+  z-index: 1;
 }
 
 .toggle-password {
   position: absolute;
-  right: 16px;
-  color: #64748b;
-  font-size: 16px;
+  right: 20px;
+  color: #5f789a;
+  font-size: 20px;
   cursor: pointer;
   transition: color 0.2s;
+  z-index: 1;
 }
 
 .toggle-password:hover {
@@ -141,43 +163,46 @@ label {
 
 input {
   width: 100%;
-  padding: 16px 45px;
-  border: 1px solid #e2e8f0;
+  min-height: 64px;
+  padding: 0 56px;
+  border: 1px solid #d7e3f3;
   border-radius: 8px;
-  background-color: #f8fafc;
-  font-size: 15px;
-  color: #0f172a;
+  background-color: #eaf2ff;
+  font-size: 18px;
+  color: #071022;
   transition: all 0.2s ease;
   outline: none;
 }
 
 input:focus {
-  border-color: #2563eb;
+  border-color: #8fb3ff;
   background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 4px rgba(7, 88, 223, 0.1);
 }
 
 input::placeholder {
-  color: #94a3b8;
+  color: #8ba0bd;
   font-weight: 400;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 16px;
-  background-color: #2563eb;
+  min-height: 64px;
+  padding: 0 18px;
+  background: #2f66ea !important;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 22px;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: none !important;
 }
 
 .submit-btn:hover {
-  background-color: #1d4ed8;
+  background-color: #0758df !important;
 }
 
 .submit-btn:active {
@@ -185,35 +210,133 @@ input::placeholder {
 }
 
 .login-error {
-  min-height: 22px;
-  margin-top: 14px;
+  min-height: 24px;
+  margin-top: 16px;
   color: #dc2626;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.join-account {
+  margin-top: 18px;
+  color: #53627a;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.join-account a {
+  color: #0758df;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.join-account a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+  .login-left {
+    width: 54%;
+  }
+
+  .login-right {
+    width: 46%;
+    padding: 44px 5vw;
+  }
 }
 
 @media (max-width: 900px) {
+  body {
+    overflow: auto;
+  }
+
   .login-container {
     flex-direction: column;
+    min-height: 100vh;
   }
+
   .login-left {
     width: 100%;
-    height: auto;
-    min-height: 40vh;
-    padding: 30px;
+    min-height: 44vh;
   }
+
   .logo-container {
     top: 20px;
     left: 20px;
-    position: relative;
-    top: auto;
-    left: auto;
-    align-self: flex-start;
-    margin-bottom: 20px;
   }
+
+  .logo-img {
+    height: 40px;
+  }
+
+  .illustration-img {
+    object-position: left center;
+  }
+
   .login-right {
     width: 100%;
     height: auto;
-    padding: 40px 20px;
+    padding: 44px 22px 52px;
+  }
+
+  .login-form-container {
+    max-width: 520px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .login-left {
+    min-height: 34vh;
+  }
+
+  .welcome-title {
+    font-size: 38px !important;
+  }
+
+  .welcome-subtitle {
+    margin-bottom: 34px;
+    font-size: 17px;
+  }
+
+  .label-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .forgot-password {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  input,
+  .submit-btn {
+    min-height: 56px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-right {
+    padding: 32px 16px 44px;
+  }
+
+  .login-left {
+    min-height: 28vh;
+  }
+
+  .welcome-title {
+    font-size: 32px !important;
+  }
+
+  .welcome-subtitle,
+  .join-account {
+    font-size: 14px;
+  }
+
+  input {
+    padding-left: 48px;
+    padding-right: 48px;
   }
 }

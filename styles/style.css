@@ -2024,7 +2024,7 @@ body {
 
 .signup-content {
   position: relative;
-  background-image: url("image/Photo/WhatsApp\ Image\ 2025-05-18\ at\ 16.38.13_2f695776.jpg"); /* adjust path based on file */
+  background-image: url("../image/Photo/WhatsApp/Image/2025-05-18/at/16.38.13_2f695776.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

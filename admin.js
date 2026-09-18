@@ -2,32 +2,60 @@
   const SESSION_KEY = "jenovateAdminSession";
   const LEGACY_SESSION_KEY = "jenovateCurrentUser";
   const getClient = () => window.getSupabaseClient?.();
+  const PAGE_SIZE = 20;
+  const CHAT_PAGE_SIZE = 30;
+  const QUERY_CACHE_TTL = 45_000;
+  const QUERY_CACHE_PREFIX = "jenovate:lms:admin:";
+  const SELECTS = {
+    users: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,last_login_reward_date,status,deleted_at,courseNames,created_at",
+    courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
+    batches: "id,name,course_id,mentor_id,capacity,enroll_limit,smart_waitlist,status,start_date,end_date,progress,enrolled_count,created_at",
+    userCourses: "id,user_id,student_id,learner_id,course_id,batch_id,created_at,status,deleted_at",
+    progress: "student_id,course_id,completed_lessons,completed_modules,rewarded_modules,quiz_completed,quiz_score,updated_at,quiz_attempts,quiz_failed_attempts,quiz_locked,quiz_rewatch_required,quiz_last_score,quiz_last_total,quiz_best_score,module_quiz_state",
+    shopItems: "id,name,price,image_url,created_at",
+    projects: "id,title,description,status,student_id,batch_id,file_urls,review_notes",
+    batchTasks: "id,batch_id,title,description,file_url,drive_link,deadline,status,created_by,created_at",
+    taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,submitted_at,created_at,feedback",
+    chats: "id,batch_id,user_id,message,parent_id,created_at",
+    announcements: "id,title,message,audience,priority,batch_id,course_id,created_by,created_by_role,status,published_at,expires_at,created_at,updated_at",
+    supportTickets: "id,ticket_id,user_id,user_role,category,subject,message,attachment_url,status,priority,created_at,updated_at",
+    supportMessages: "id,ticket_id,sender_id,sender_role,message,attachment_url,is_read,read_at,created_at",
+    supportNotifications: "id,ticket_id,recipient_user_id,recipient_role,title,body,channel,is_read,read_at,created_at"
+  };
   const TABLE_SPECS = [
     {
       key: "users",
       table: "users",
-      select: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,courseNames,created_at",
-      limit: 500
+      select: SELECTS.users,
+      fallbackSelect: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,courseNames,created_at",
+      limit: 1000
     },
-    { key: "courses", table: "courses", select: "*", limit: 200 },
-    { key: "batches", table: "batches", select: "*", limit: 200 },
-    { key: "userCourses", table: "user_courses", select: "*", limit: 1000 },
-    { key: "progress", table: "student_course_progress", select: "*", limit: 1000 },
-    { key: "shopItems", table: "shop_items", select: "*", limit: 100 },
-    { key: "projects", table: "projects", select: "*", limit: 500 },
-    { key: "batchTasks", table: "batch_tasks", select: "*", limit: 500 },
-    { key: "taskSubmissions", table: "task_submissions", select: "*", limit: 500 },
-    { key: "chats", table: "batch_chats", select: "*", limit: 200 },
-    { key: "announcements", table: "announcements", select: "*", limit: 100 }
+    { key: "courses", table: "courses", select: SELECTS.courses, limit: 30 },
+    { key: "batches", table: "batches", select: SELECTS.batches, limit: 30 },
+    { key: "userCourses", table: "user_courses", select: SELECTS.userCourses, fallbackSelect: "user_id,course_id,created_at,status", limit: 1000 },
+    { key: "progress", table: "student_course_progress", select: SELECTS.progress, limit: 1000 },
+    { key: "shopItems", table: "shop_items", select: SELECTS.shopItems, limit: PAGE_SIZE },
+    { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,batch_id,file_urls,review_notes", limit: 500 },
+    { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, order: "created_at.desc" },
+    { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 500, order: "submitted_at.desc" },
+    { key: "chats", table: "batch_chats", select: SELECTS.chats, limit: CHAT_PAGE_SIZE, scope: "selectedBatch", order: "created_at.desc" },
+    { key: "announcements", table: "announcements", select: SELECTS.announcements, limit: 30, order: "published_at.desc" },
+    { key: "supportTickets", table: "support_tickets", select: SELECTS.supportTickets, optional: true, limit: 60, order: "updated_at.desc" },
+    { key: "supportMessages", table: "support_messages", select: SELECTS.supportMessages, optional: true, limit: 160, order: "created_at.desc" },
+    { key: "supportNotifications", table: "support_notifications", select: SELECTS.supportNotifications, optional: true, limit: 60, scope: "adminNotifications", order: "created_at.desc" }
   ];
 
   const state = {
     admin: null,
     activeView: "dashboard",
     dashboardRole: "student",
+    reportActivityFilter: "all",
     userRole: "all",
     analyticsRange: "daily",   // daily | weekly | monthly
     globalQuery: "",
+    supportStatusFilter: "all",
+    supportSearch: "",
+    selectedSupportTicketId: "",
     selectedBatchId: null,
     realtimeChannel: null,
     refreshTimer: null,
@@ -43,8 +71,13 @@
       batchTasks: [],
       taskSubmissions: [],
       chats: [],
-      announcements: []
-    }
+      announcements: [],
+      supportTickets: [],
+      supportMessages: [],
+      supportNotifications: []
+    },
+    queryCache: new Map(),
+    inFlightRequests: new Map()
   };
 
   const views = {
@@ -58,6 +91,7 @@
     shop: document.getElementById("shopView"),
     reviews: document.getElementById("reviewsView"),
     announcements: document.getElementById("announcementsView"),
+    support: document.getElementById("supportView"),
     profile: document.getElementById("profileView")
   };
 
@@ -98,6 +132,7 @@
     // on normal in-tab navigation. Session is cleared only on explicit logout.
     
     renderAdminIdentity();
+    initializeHistoryNavigation();
     await loadAllData();
     setupRealtime();
   }
@@ -136,15 +171,18 @@
       button.addEventListener("click", () => setView(button.dataset.jump));
     });
 
+    wireReportTabs();
+
     document.querySelectorAll("[data-close-modal]").forEach((button) => {
       button.addEventListener("click", closeModal);
     });
   }
 
   function wireActions() {
-    document.getElementById("refreshBtn").addEventListener("click", loadAllData);
-    document.getElementById("refreshReviewsBtn").addEventListener("click", loadAllData);
+    document.getElementById("refreshBtn").addEventListener("click", () => loadAllData({ force: true }));
+    document.getElementById("refreshReviewsBtn").addEventListener("click", () => loadAllData({ force: true }));
     document.getElementById("reloadChatBtn").addEventListener("click", loadChats);
+    document.getElementById("refreshSupportBtn")?.addEventListener("click", () => loadAllData({ force: true }));
     document.getElementById("homeBtn")?.addEventListener("click", () => {
       closeModal();
       setView("dashboard");
@@ -172,6 +210,15 @@
     document.getElementById("dashboardUserSearch").addEventListener("input", renderDashboardUsers);
     document.getElementById("userSearch").addEventListener("input", renderUsers);
     document.getElementById("chatComposer").addEventListener("submit", postChatMessage);
+    document.getElementById("supportStatusFilter")?.addEventListener("change", (event) => {
+      state.supportStatusFilter = event.target.value || "all";
+      renderSupport();
+    });
+    document.getElementById("supportSearch")?.addEventListener("input", (event) => {
+      state.supportSearch = event.target.value.trim().toLowerCase();
+      renderSupport();
+    });
+    document.getElementById("supportReplyForm")?.addEventListener("submit", submitAdminSupportReply);
 
     document.querySelectorAll("#dashboardUserTabs button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -204,8 +251,28 @@
     });
   }
 
+  function wireReportTabs() {
+    document.querySelectorAll("#dashboardView [data-report-filter]").forEach((button) => {
+      if (button.dataset.wired === "true") return;
+      button.dataset.wired = "true";
+      button.addEventListener("click", () => {
+        state.reportActivityFilter = button.dataset.reportFilter || "all";
+        document.querySelectorAll("#dashboardView [data-report-filter]").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+        renderAdminReportActivity();
+      });
+    });
+  }
+
   async function resolveAdminSession() {
-    return readStoredRoleSession("admin");
+    try {
+      const profile = await window.JenovateAuth?.requireRole?.("admin");
+      if (profile) return normalizeUser(profile);
+    } catch (error) {
+      console.warn("Admin auth check failed", error);
+    }
+    return null;
   }
 
   function readStoredRoleSession(expectedRole) {
@@ -223,8 +290,8 @@
     return null;
   }
 
-  function enforceLiveSession() {
-    if (!readStoredRoleSession("admin")) {
+  async function enforceLiveSession() {
+    if (!(await resolveAdminSession())) {
       if (redirectToActiveSession("admin")) return;
       window.location.replace("login.html?next=admin");
     }
@@ -247,10 +314,11 @@
 
   async function loadAllData(options = {}) {
     const silent = options?.silent === true;
+    if (options.force === true) clearQueryCache();
     setSyncStatus("Connecting to Supabase...");
     setLoading(!silent);
     try {
-      const results = await Promise.all(TABLE_SPECS.map(fetchTableSafe));
+      const results = await Promise.all(TABLE_SPECS.map((spec) => fetchTableSafe(spec, { force: options.force === true })));
       const rows = Object.fromEntries(results.map((result) => [result.key, result.rows]));
       const failed = results.filter((result) => result.error);
 
@@ -266,6 +334,12 @@
       state.data.taskSubmissions = rows.taskSubmissions;
       state.data.chats = rows.chats;
       state.data.announcements = rows.announcements;
+      state.data.supportTickets = rows.supportTickets || [];
+      state.data.supportMessages = rows.supportMessages || [];
+      state.data.supportNotifications = rows.supportNotifications || [];
+      if (state.selectedSupportTicketId && !state.data.supportTickets.some((ticket) => sameId(ticket.id || ticket.ticket_id, state.selectedSupportTicketId))) {
+        state.selectedSupportTicketId = "";
+      }
 
       if (!state.selectedBatchId && state.data.batches[0]) {
         state.selectedBatchId = state.data.batches[0].id;
@@ -275,7 +349,7 @@
       const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
       if (failed.length) {
         setSyncStatus(`Synced with ${failed.length} table warning${failed.length === 1 ? "" : "s"} at ${stamp}`);
-        if (!silent) showAlert(`Some Supabase tables need attention: ${failed.map((item) => item.table).join(", ")}`, true);
+        if (!silent) showAlert(`Some Supabase tables need attention: ${failed.map((item) => `${item.table}: ${friendlySupabaseError(item.error)}`).join("; ")}`, true);
       } else {
         setSyncStatus(`Live Supabase data synced ${stamp}`);
         if (!silent) showAlert("Admin data synced from Supabase.");
@@ -288,26 +362,128 @@
     }
   }
 
-  async function fetchTableSafe(spec) {
+  async function fetchTableSafe(spec, options = {}) {
     try {
-      const rows = await fetchTable(spec.table, spec.select, spec.limit);
+      const rows = await fetchTable(spec, options);
       return { ...spec, rows, error: null };
     } catch (error) {
+      if (spec.fallbackSelect && isMissingColumnError(error)) {
+        try {
+          const rows = await fetchTable({ ...spec, select: spec.fallbackSelect, fallbackSelect: null }, { ...options, force: true });
+          return { ...spec, rows, error: null };
+        } catch (fallbackError) {
+          error = fallbackError;
+        }
+      }
       console.error(`Supabase fetch failed for ${spec.table}`, error);
       return { ...spec, rows: [], error };
     }
   }
 
-  async function fetchTable(table, select, limit = 500) {
+  function isMissingColumnError(error) {
+    return ["42703", "PGRST204"].includes(String(error?.code || ""))
+      || /column .* does not exist|schema cache|could not find .* column|could not find .* in the schema/i.test(String(error?.message || ""));
+  }
+
+  async function fetchTable(spec, options = {}) {
     const supabaseClient = getClient();
-    const { data, error } = await supabaseClient.from(table).select(select).limit(limit);
+    const limit = normalizeLimit(spec.limit);
+    const cacheKey = queryCacheKey(spec, limit);
+    if (!options.force) {
+      const memory = state.queryCache.get(cacheKey);
+      if (memory && Date.now() - memory.timestamp < QUERY_CACHE_TTL) return memory.rows;
+      const stored = readCachedRows(cacheKey);
+      if (stored) {
+        revalidateTable(spec, limit, cacheKey);
+        return stored.rows;
+      }
+      if (state.inFlightRequests.has(cacheKey)) return state.inFlightRequests.get(cacheKey);
+    }
+
+    const promise = runSupabaseQuery(supabaseClient, spec, limit).then((rows) => {
+      writeCachedRows(cacheKey, rows);
+      return rows;
+    }).finally(() => state.inFlightRequests.delete(cacheKey));
+    state.inFlightRequests.set(cacheKey, promise);
+    return promise;
+  }
+
+  async function runSupabaseQuery(supabaseClient, spec, limit) {
+    let query = supabaseClient.from(spec.table).select(spec.select);
+    if (spec.scope === "selectedBatch" && state.selectedBatchId) {
+      query = query.eq("batch_id", state.selectedBatchId);
+    } else if (spec.scope === "adminNotifications") {
+      query = query.eq("recipient_role", "admin");
+    }
+    if (spec.order) {
+      const [column, direction = "desc"] = spec.order.split(".");
+      query = query.order(column, { ascending: direction === "asc" });
+    } else if (["batch_chats", "announcements", "batch_tasks"].includes(spec.table)) {
+      query = query.order("created_at", { ascending: false });
+    }
+    const { data, error } = await query.range(0, limit - 1);
+    if (error && spec.table === "users") {
+      const fallback = await supabaseClient.rpc("lms_public_active_users");
+      if (!fallback.error) return (fallback.data || []).slice(0, limit);
+    }
     if (error) throw error;
     return data || [];
   }
 
+  function normalizeLimit(limit = PAGE_SIZE) {
+    const num = Number(limit);
+    if (!isNaN(num) && num > 0) return num;
+    return PAGE_SIZE;
+  }
+
+  function queryCacheKey(spec, limit) {
+    return `${QUERY_CACHE_PREFIX}${spec.table}:${spec.select}:${spec.scope || "all"}:${spec.order || ""}:${limit}:${state.selectedBatchId || ""}`;
+  }
+
+  function readCachedRows(cacheKey) {
+    const memory = state.queryCache.get(cacheKey);
+    if (memory) return memory;
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
+      if (!cached || Date.now() - cached.timestamp > QUERY_CACHE_TTL * 4) return null;
+      state.queryCache.set(cacheKey, cached);
+      return cached;
+    } catch (error) {
+      sessionStorage.removeItem(cacheKey);
+      return null;
+    }
+  }
+
+  function writeCachedRows(cacheKey, rows) {
+    const cached = { timestamp: Date.now(), rows };
+    state.queryCache.set(cacheKey, cached);
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(cached));
+    } catch (error) {
+      // Memory cache still prevents duplicate requests when storage is full.
+    }
+  }
+
+  function revalidateTable(spec, limit, cacheKey) {
+    if (state.inFlightRequests.has(cacheKey)) return;
+    const promise = runSupabaseQuery(getClient(), spec, limit)
+      .then((rows) => writeCachedRows(cacheKey, rows))
+      .catch((error) => console.warn(`Background refresh failed for ${spec.table}`, error))
+      .finally(() => state.inFlightRequests.delete(cacheKey));
+    state.inFlightRequests.set(cacheKey, promise);
+  }
+
+  function clearQueryCache() {
+    state.queryCache.clear();
+    state.inFlightRequests.clear();
+    Object.keys(sessionStorage)
+      .filter((key) => key.startsWith(QUERY_CACHE_PREFIX))
+      .forEach((key) => sessionStorage.removeItem(key));
+  }
+
   async function loadChats() {
     try {
-      state.data.chats = await fetchTable("batch_chats", "*");
+      state.data.chats = await fetchTable(TABLE_SPECS.find((spec) => spec.key === "chats"), { force: true });
       renderChat();
       showAlert("Chat refreshed.");
     } catch (error) {
@@ -319,19 +495,7 @@
     const supabaseClient = getClient();
     if (!supabaseClient?.channel || state.realtimeChannel) return;
 
-    const liveTables = [
-      "users",
-      "courses",
-      "batches",
-      "user_courses",
-      "student_course_progress",
-      "shop_items",
-      "projects",
-      "batch_tasks",
-      "task_submissions",
-      "batch_chats",
-      "announcements"
-    ];
+    const liveTables = ["batch_chats", "announcements", "support_tickets", "support_messages", "support_notifications"];
 
     const channel = supabaseClient.channel("admin-lms-realtime");
     liveTables.forEach((table) => {
@@ -351,14 +515,24 @@
     });
 
     state.realtimeChannel = channel;
+    window.addEventListener("pagehide", cleanupRealtime, { once: true });
+    window.addEventListener("beforeunload", cleanupRealtime, { once: true });
   }
 
   function queueRealtimeRefresh(table) {
     setSyncStatus(`Live update from ${formatTableName(table)}`);
     window.clearTimeout(state.refreshTimer);
     state.refreshTimer = window.setTimeout(() => {
-      loadAllData({ silent: true });
-    }, 450);
+      loadAllData({ silent: true, force: true });
+    }, 900);
+  }
+
+  async function cleanupRealtime() {
+    window.clearTimeout(state.refreshTimer);
+    if (state.realtimeChannel && getClient()?.removeChannel) {
+      await getClient().removeChannel(state.realtimeChannel);
+    }
+    state.realtimeChannel = null;
   }
 
   function renderAll() {
@@ -374,6 +548,7 @@
     renderShop();
     renderReviews();
     renderAnnouncements();
+    renderSupport();
     renderProfile();
   }
 
@@ -413,6 +588,14 @@
   }
 
   function renderDashboard() {
+    ensureAdminReportDashboard();
+    const heroTitle = document.querySelector(".review-spotlight h2");
+    const heroCopy = document.querySelector(".review-spotlight p");
+    const heroStatus = document.querySelector(".review-spotlight .status-pill");
+    if (heroTitle) heroTitle.textContent = "Admin Workspace";
+    if (heroCopy) heroCopy.textContent = "Manage users, courses, enrollments, reviews, batches, and rewards from one clean control center.";
+    if (heroStatus) heroStatus.textContent = "Live Operations";
+
     const users = state.data.users;
     const students = users.filter((user) => user.role === "student" && String(user.email).toLowerCase() !== "adolf@gmail.com" && !sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7")).length;
     const mentors = users.filter((user) => user.role === "mentor").length;
@@ -434,22 +617,497 @@
     setText("liveCourseCount", `${publishedCourses} live`);
     setText("draftCourseCount", `${draftCourses} draft`);
     setText("activeBatchCount", activeBatches);
-    document.getElementById("metricUsers").textContent = users.length;
-    document.getElementById("metricUsersMeta").textContent = `${students} students, ${mentors} mentors`;
-    document.getElementById("metricCourses").textContent = state.data.courses.length;
-    document.getElementById("metricBatches").textContent = state.data.batches.length;
-    document.getElementById("metricShop").textContent = state.data.shopItems.length;
-    document.getElementById("metricTasks").textContent = state.data.batchTasks.length;
-    document.getElementById("metricEnrollments").textContent = state.data.userCourses.length;
-    document.getElementById("metricTasksMeta").textContent = `${state.data.taskSubmissions.length} submitted reviews`;
-    document.getElementById("metricEnrollmentsMeta").textContent = `${state.data.progress.length} progress records`;
+    setText("metricUsers", users.length);
+    setText("metricUsersMeta", `${students} students, ${mentors} mentors`);
+    setText("metricCourses", state.data.courses.length);
+    setText("metricBatches", state.data.batches.length);
+    setText("metricShop", state.data.shopItems.length);
+    setText("metricTasks", state.data.batchTasks.length);
+    setText("metricEnrollments", state.data.userCourses.length);
+    setText("metricTasksMeta", `${state.data.taskSubmissions.length} submitted reviews`);
+    setText("metricEnrollmentsMeta", `${state.data.progress.length} progress records`);
 
-    renderDashboardUsers();
-    renderCourseProgress();
-    renderDashboardReviews();
-    renderDashboardShop();
-    renderDashboardTasks();
+    renderAdminReportDashboard({ users, students, mentors, publishedCourses, draftCourses, activeBatches, pendingReviews, reviewedItems });
+
+    if (document.getElementById("dashboardUsersList")) renderDashboardUsers();
+    if (document.getElementById("courseProgressList")) renderCourseProgress();
+    if (document.getElementById("dashboardReviewsList")) renderDashboardReviews();
+    if (document.getElementById("dashboardShopList")) renderDashboardShop();
+    if (document.getElementById("dashboardTasksList")) renderDashboardTasks();
     renderAnalyticsChart();
+  }
+
+  function ensureAdminReportDashboard() {
+    const view = document.getElementById("dashboardView");
+    if (!view || view.dataset.reportDashboard === "true") return;
+    view.dataset.reportDashboard = "true";
+    view.innerHTML = `
+      <div class="role-report-dashboard">
+        <section class="report-card report-activity-card">
+          <div class="report-card-head">
+            <div>
+              <h2>Learners activity <span aria-hidden="true">i</span></h2>
+            </div>
+            <button class="report-link" type="button" data-jump="users">View all</button>
+          </div>
+          <div class="report-mini-tabs" aria-label="Activity filters">
+            <button class="active" type="button" data-report-filter="all">All</button>
+            <button type="button" data-report-filter="courses">Courses</button>
+            <button type="button" data-report-filter="tasks">Tasks</button>
+            <button type="button" data-report-filter="reviews">Reviews</button>
+          </div>
+          <div class="report-list" id="adminReportActivityList"></div>
+        </section>
+
+        <section class="report-card report-total-card">
+          <div class="report-card-head">
+            <h2>Total learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">All roles</button>
+          </div>
+          <div class="report-total"><strong id="adminReportTotalLearners">0</strong><span>People</span></div>
+          <div class="report-breakdown" id="adminReportBreakdown"></div>
+        </section>
+
+        <section class="report-card report-time-card">
+          <div class="report-card-head">
+            <h2>Learning time <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">All courses</button>
+          </div>
+          <div class="report-total"><strong id="adminReportLearningTime">0</strong><span>Hours</span></div>
+          <small class="report-growth">+ synced from active LMS data</small>
+          <div class="report-sparkline" id="adminReportSparkline"></div>
+        </section>
+
+        <section class="report-card report-line-card">
+          <div class="report-card-head">
+            <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">This week</button>
+          </div>
+          <div class="report-chart" id="adminReportWeeklyChart"></div>
+        </section>
+
+        <section class="report-card report-bars-card">
+          <div class="report-card-head">
+            <h2>Most active learners <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">Last 4 weeks</button>
+          </div>
+          <div class="report-bars" id="adminReportActiveLearners"></div>
+        </section>
+
+        <section class="report-card report-health-card">
+          <div class="report-card-head">
+            <h2>Content health <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="courses">Manage</button>
+          </div>
+          <div class="report-kpi-grid" id="adminReportContentHealth"></div>
+        </section>
+
+        <section class="report-card report-workload-card">
+          <div class="report-card-head">
+            <h2>Operations queue <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="reviews">Open</button>
+          </div>
+          <div class="report-kpi-grid" id="adminReportWorkload"></div>
+        </section>
+
+        <section class="report-card report-courses-card">
+          <div class="report-card-head">
+            <h2>Course snapshot <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="courses">View all</button>
+          </div>
+          <div class="report-compact-list" id="adminReportCourses"></div>
+        </section>
+
+        <section class="report-card report-batches-card">
+          <div class="report-card-head">
+            <h2>Batch snapshot <span aria-hidden="true">i</span></h2>
+            <button class="report-link" type="button" data-jump="batches">View all</button>
+          </div>
+          <div class="report-compact-list" id="adminReportBatches"></div>
+        </section>
+
+        <section class="report-card report-attention-card">
+          <div class="report-card-head">
+            <h2>Needs attention <span aria-hidden="true">i</span></h2>
+            <button class="report-select" type="button">Live</button>
+          </div>
+          <div class="report-compact-list" id="adminReportAttention"></div>
+        </section>
+      </div>
+    `;
+    view.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", () => setView(button.dataset.jump));
+    });
+    wireReportTabs();
+  }
+
+  function renderAdminReportDashboard(summary) {
+    const activeLearners = adminLearnerRows();
+    const weekly = weeklyEventSeries();
+    const contentHealth = adminContentHealth(summary);
+    const workload = adminWorkload(summary);
+    const courseRows = adminCourseSnapshotRows();
+    const batchRows = adminBatchSnapshotRows();
+    const attentionRows = adminAttentionRows(summary);
+    const learningHours = Math.max(
+      state.data.courses.length * 8,
+      state.data.progress.length * 2 + state.data.taskSubmissions.length + state.data.projects.length
+    );
+
+    setText("adminReportTotalLearners", summary.students + summary.mentors);
+    setText("adminReportLearningTime", learningHours);
+    renderAdminReportActivity();
+    setHtml("adminReportBreakdown", [
+      { label: "Students", value: summary.students, color: "#12b981" },
+      { label: "Mentors", value: summary.mentors, color: "#ef4444" },
+      { label: "Courses", value: state.data.courses.length, color: "#4f46e5" },
+      { label: "Batches", value: state.data.batches.length, color: "#0ea5e9" },
+      { label: "Tasks", value: state.data.batchTasks.length, color: "#f59e0b" },
+      { label: "Reviews", value: summary.pendingReviews + summary.reviewedItems, color: "#a855f7" }
+    ].map(reportBreakdownItem).join(""));
+    setHtml("adminReportSparkline", reportSparklineSvg(weekly.current));
+    setHtml("adminReportWeeklyChart", reportLineSvg(weekly.labels, weekly.current, weekly.previous));
+    setHtml("adminReportActiveLearners", activeLearners.length ? activeLearners.map(reportBarRow).join("") : emptyState("Learner activity will appear after enrollments."));
+    setHtml("adminReportContentHealth", contentHealth.map(reportKpiItem).join(""));
+    setHtml("adminReportWorkload", workload.map(reportKpiItem).join(""));
+    setHtml("adminReportCourses", courseRows.length ? courseRows.map(reportCompactItem).join("") : emptyState("Courses added by admin or mentor will appear here."));
+    setHtml("adminReportBatches", batchRows.length ? batchRows.map(reportCompactItem).join("") : emptyState("Live batches will appear here."));
+    setHtml("adminReportAttention", attentionRows.length ? attentionRows.map(reportCompactItem).join("") : emptyState("No urgent admin actions right now."));
+  }
+
+  function renderAdminReportActivity() {
+    const activityRows = adminActivityRows(state.reportActivityFilter);
+    const label = state.reportActivityFilter === "all" ? "Live user activity" : `${state.reportActivityFilter} activity`;
+    setHtml("adminReportActivityList", activityRows.length ? activityRows.map(reportActivityRow).join("") : emptyState(`${label} will appear here.`));
+  }
+
+  function adminContentHealth(summary) {
+    const modules = state.data.courses.reduce((sum, course) => sum + adminCourseModules(course).length, 0);
+    const quizzes = state.data.courses.reduce((sum, course) => sum + adminCourseQuizzes(course).length, 0);
+    return [
+      { label: "Courses", value: state.data.courses.length, tone: "blue" },
+      { label: "Published", value: summary.publishedCourses, tone: "green" },
+      { label: "Draft", value: summary.draftCourses, tone: "amber" },
+      { label: "Modules", value: modules, tone: "violet" },
+      { label: "Quizzes", value: quizzes, tone: "cyan" },
+      { label: "Shop items", value: state.data.shopItems.length, tone: "rose" }
+    ];
+  }
+
+  function adminWorkload(summary) {
+    const overdueTasks = state.data.batchTasks.filter((task) => {
+      if (!task.deadline) return false;
+      const deadline = new Date(task.deadline);
+      return !isNaN(deadline.getTime()) && deadline < new Date();
+    }).length;
+    return [
+      { label: "Pending reviews", value: summary.pendingReviews, tone: summary.pendingReviews ? "rose" : "green" },
+      { label: "Reviewed", value: summary.reviewedItems, tone: "green" },
+      { label: "Task submissions", value: state.data.taskSubmissions.length, tone: "blue" },
+      { label: "Project uploads", value: state.data.projects.length, tone: "violet" },
+      { label: "Overdue tasks", value: overdueTasks, tone: overdueTasks ? "rose" : "green" },
+      { label: "Announcements", value: state.data.announcements.length, tone: "amber" }
+    ];
+  }
+
+  function adminCourseSnapshotRows() {
+    return state.data.courses.slice(0, 6).map((course) => {
+      const modules = adminCourseModules(course).length;
+      const quizzes = adminCourseQuizzes(course).length;
+      const enrolled = activeEnrollments().filter((row) => sameId(row.course_id, course.id)).length;
+      const avg = averageCourseProgress(course.id);
+      return {
+        badge: "CO",
+        title: course.title || "Untitled course",
+        meta: `${modules} modules - ${quizzes} quizzes - ${enrolled} enrolled`,
+        value: `${avg}%`,
+        progress: avg
+      };
+    });
+  }
+
+  function adminBatchSnapshotRows() {
+    return state.data.batches.slice(0, 6).map((batch) => {
+      const course = findById(state.data.courses, batch.course_id);
+      const mentor = findById(state.data.users, batch.mentor_id);
+      const tasks = state.data.batchTasks.filter((task) => sameId(task.batch_id, batch.id)).length;
+      const students = state.data.users.filter((user) => sameId(user.batch_id, batch.id) || String(user.batch_id || "").toLowerCase() === String(batch.name || "").toLowerCase()).length;
+      return {
+        badge: "BA",
+        title: batch.name || "Untitled batch",
+        meta: `${course?.title || "No course"} - ${mentor?.name || "No mentor"} - ${tasks} tasks`,
+        value: `${students}/${batch.capacity || "-"}`,
+        progress: Math.min(100, Number(batch.progress || 0))
+      };
+    });
+  }
+
+  function adminAttentionRows(summary) {
+    const rows = [];
+    if (summary.pendingReviews) rows.push({ badge: "RV", title: "Review pending work", meta: `${summary.pendingReviews} submissions/projects need checking`, value: "Open" });
+    const unassignedBatches = state.data.batches.filter((batch) => !batch.mentor_id).length;
+    if (unassignedBatches) rows.push({ badge: "BA", title: "Assign mentors", meta: `${unassignedBatches} batches without mentor`, value: "Fix" });
+    const draftCourses = summary.draftCourses;
+    if (draftCourses) rows.push({ badge: "CO", title: "Publish course drafts", meta: `${draftCourses} courses are still draft`, value: "Edit" });
+    const noModuleCourses = state.data.courses.filter((course) => !adminCourseModules(course).length).length;
+    if (noModuleCourses) rows.push({ badge: "MD", title: "Add module content", meta: `${noModuleCourses} courses missing modules`, value: "Build" });
+    const noQuizCourses = state.data.courses.filter((course) => !adminCourseQuizzes(course).length).length;
+    if (noQuizCourses) rows.push({ badge: "QZ", title: "Add quiz checks", meta: `${noQuizCourses} courses missing quizzes`, value: "Build" });
+    return rows.slice(0, 5);
+  }
+
+  function averageCourseProgress(courseId) {
+    const rows = state.data.progress.filter((row) => sameId(row.course_id, courseId));
+    if (!rows.length) return 0;
+    return Math.round(rows.reduce((sum, row) => sum + estimateProgress(row), 0) / rows.length);
+  }
+
+  function adminCourseModules(course, includeDeleted = false) {
+    const modules = course?.modules;
+    if (Array.isArray(modules)) return includeDeleted ? modules : modules.filter((module) => !module?.deleted_at);
+    if (typeof modules === "string") {
+      try {
+        const parsed = JSON.parse(modules);
+        return Array.isArray(parsed) ? (includeDeleted ? parsed : parsed.filter((module) => !module?.deleted_at)) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  function adminCourseQuizzes(course) {
+    return adminCourseModules(course).filter((module) => {
+      const quiz = module?.quiz || module?.module_quiz || module?.quizQuestions || module?.questions;
+      if (Array.isArray(quiz)) return quiz.length > 0;
+      if (Array.isArray(quiz?.questions)) return quiz.questions.length > 0;
+      return Boolean(quiz && Object.keys(quiz).length);
+    });
+  }
+
+  function adminActivityRows(filter = "all") {
+    const rows = [
+      ...state.data.users.map((user) => ({
+        name: user.name || user.email || "User",
+        detail: `Joined as ${user.role || "learner"}`,
+        time: user.created_at,
+        badge: initials(user.name || user.email || "US"),
+        type: "all"
+      })),
+      ...state.data.courses.map((course) => ({
+        name: course.title || "Course",
+        detail: `Course ${course.status || "created"}`,
+        time: course.created_at,
+        badge: "CO",
+        type: "courses"
+      })),
+      ...state.data.userCourses.map((row) => {
+        const user = findById(state.data.users, row.user_id || row.student_id);
+        const course = findById(state.data.courses, row.course_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Enrolled in ${course?.title || "a course"}`,
+          time: row.enrolled_at || row.created_at,
+          badge: "CO",
+          type: "courses"
+        };
+      }),
+      ...state.data.batchTasks.map((task) => ({
+        name: task.title || task.name || "Batch task",
+        detail: "Task assigned to a batch",
+        time: task.created_at,
+        badge: "TS",
+        type: "tasks"
+      })),
+      ...state.data.taskSubmissions.map((row) => {
+        const user = findById(state.data.users, row.student_id || row.user_id);
+        const task = findById(state.data.batchTasks, row.task_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Submitted ${task?.title || task?.name || "a task"}`,
+          time: row.submitted_at || row.created_at,
+          badge: "TS",
+          type: "tasks"
+        };
+      }),
+      ...state.data.projects.map((project) => {
+        const user = findById(state.data.users, project.student_id || project.user_id);
+        return {
+          name: user?.name || user?.email || "Learner",
+          detail: `Project review: ${project.title || "submitted work"}`,
+          time: project.submitted_at || project.created_at,
+          badge: "RV",
+          type: "reviews"
+        };
+      }),
+      ...state.data.chats.map((chat) => {
+        const user = findById(state.data.users, chat.user_id || chat.sender_id);
+        return {
+          name: user?.name || user?.email || chat.sender_name || "Chat",
+          detail: "Posted in batch chat",
+          time: chat.created_at,
+          badge: "MS",
+          type: "all"
+        };
+      })
+    ].filter((row) => row.time)
+      .filter((row) => filter === "all" || row.type === filter)
+      .sort((a, b) => new Date(b.time) - new Date(a.time))
+      .slice(0, 7);
+    return rows;
+  }
+
+  function adminLearnerRows() {
+    const students = state.data.users.filter((user) => user.role === "student");
+    return students.map((student) => {
+      const userId = String(student.id || "");
+      const progressScore = state.data.progress
+        .filter((row) => sameId(row.user_id || row.student_id, userId))
+        .reduce((sum, row) => sum + estimateProgress(row), 0);
+      const submissions = state.data.taskSubmissions.filter((row) => sameId(row.student_id || row.user_id, userId)).length;
+      const projects = state.data.projects.filter((row) => sameId(row.student_id || row.user_id, userId)).length;
+      const enrollments = activeEnrollments().filter((row) => sameId(row.user_id || row.student_id, userId)).length;
+      return {
+        name: student.name || student.email || "Learner",
+        value: progressScore + submissions * 25 + projects * 30 + enrollments * 15,
+        meta: `${enrollments} courses`
+      };
+    }).filter((row) => row.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 5);
+  }
+
+  function weeklyEventSeries() {
+    const labels = ["M", "T", "W", "T", "F", "S", "S"];
+    const current = Array(7).fill(0);
+    const previous = Array(7).fill(0);
+    const today = new Date();
+    const weekStart = startOfDay(new Date(today));
+    const day = weekStart.getDay() || 7;
+    weekStart.setDate(weekStart.getDate() - day + 1);
+    const prevStart = new Date(weekStart);
+    prevStart.setDate(prevStart.getDate() - 7);
+    const events = [
+      ...state.data.users.map((item) => item.created_at),
+      ...state.data.userCourses.map((item) => item.enrolled_at || item.created_at),
+      ...state.data.taskSubmissions.map((item) => item.submitted_at || item.created_at),
+      ...state.data.projects.map((item) => item.submitted_at || item.created_at),
+      ...state.data.chats.map((item) => item.created_at)
+    ].filter(Boolean);
+
+    events.forEach((value) => {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return;
+      const diff = Math.floor((startOfDay(date) - weekStart) / 86400000);
+      const prevDiff = Math.floor((startOfDay(date) - prevStart) / 86400000);
+      if (diff >= 0 && diff < 7) current[diff] += 1;
+      if (prevDiff >= 0 && prevDiff < 7) previous[prevDiff] += 1;
+    });
+    return { labels, current, previous };
+  }
+
+  function reportActivityRow(row) {
+    return `
+      <article class="report-row">
+        <span class="report-avatar">${escapeHtml(row.badge || initials(row.name))}</span>
+        <div>
+          <strong>${escapeHtml(row.name)}</strong>
+          <small>${escapeHtml(row.detail)}</small>
+        </div>
+        <time>${escapeHtml(relativeTime(row.time))}</time>
+      </article>
+    `;
+  }
+
+  function reportBreakdownItem(item) {
+    return `
+      <div class="report-breakdown-item">
+        <span style="--dot:${item.color}"></span>
+        <strong>${escapeHtml(item.label)}</strong>
+        <small>${Number(item.value || 0)}</small>
+      </div>
+    `;
+  }
+
+  function reportBarRow(row) {
+    const width = Math.min(100, Math.max(8, Number(row.value || 0)));
+    return `
+      <div class="report-bar-row">
+        <span class="report-avatar small">${escapeHtml(initials(row.name))}</span>
+        <strong>${escapeHtml(row.name)}</strong>
+        <div class="report-bar-track"><span style="width:${width}%"></span></div>
+        <small>${escapeHtml(row.meta || `${row.value} pts`)}</small>
+      </div>
+    `;
+  }
+
+  function reportKpiItem(item) {
+    return `
+      <article class="report-kpi ${escapeAttr(item.tone || "blue")}">
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${escapeHtml(item.value)}</strong>
+      </article>
+    `;
+  }
+
+  function reportCompactItem(item) {
+    const progress = Number.isFinite(Number(item.progress)) ? Math.max(0, Math.min(100, Number(item.progress))) : null;
+    return `
+      <article class="report-compact-row">
+        <span class="report-avatar small">${escapeHtml(item.badge || initials(item.title))}</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.meta || "")}</small>
+          ${progress === null ? "" : `<div class="report-mini-track"><span style="width:${progress}%"></span></div>`}
+        </div>
+        <b>${escapeHtml(item.value || "")}</b>
+      </article>
+    `;
+  }
+
+  function reportLineSvg(labels, current, previous) {
+    const max = Math.max(1, ...current, ...previous);
+    const points = (values) => values.map((value, index) => {
+      const x = 18 + index * 46;
+      const y = 118 - (Number(value || 0) / max) * 96;
+      return `${x},${y}`;
+    }).join(" ");
+    const labelsSvg = labels.map((label, index) => `<text x="${18 + index * 46}" y="143">${escapeHtml(label)}</text>`).join("");
+    return `
+      <svg viewBox="0 0 320 150" role="img" aria-label="Weekly active learners chart">
+        <line x1="16" y1="118" x2="296" y2="118" class="axis"></line>
+        <line x1="16" y1="72" x2="296" y2="72" class="grid"></line>
+        <line x1="16" y1="26" x2="296" y2="26" class="grid"></line>
+        <polyline points="${points(previous)}" class="previous"></polyline>
+        <polyline points="${points(current)}" class="current"></polyline>
+        ${labelsSvg}
+      </svg>
+    `;
+  }
+
+  function reportSparklineSvg(values) {
+    const max = Math.max(1, ...values);
+    const points = values.map((value, index) => {
+      const x = 4 + index * 22;
+      const y = 44 - (Number(value || 0) / max) * 34;
+      return `${x},${y}`;
+    }).join(" ");
+    return `<svg viewBox="0 0 150 52" role="img" aria-label="Learning trend"><polyline points="${points}" class="current"></polyline></svg>`;
+  }
+
+  function relativeTime(value) {
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return "Now";
+    const diffMinutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
+    if (diffMinutes < 60) return `${diffMinutes || 1}m ago`;
+    const diffHours = Math.round(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return formatDate(value);
+  }
+
+  function setHtml(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.innerHTML = value;
   }
 
   // ─── REAL ANALYTICS CHART ────────────────────────────────────────────────
@@ -664,7 +1322,7 @@
 
   function renderCourseProgress() {
     const rows = state.data.courses.map((course) => {
-      const enrolled = state.data.userCourses.filter((row) => row.course_id === course.id).length;
+      const enrolled = activeEnrollments().filter((row) => row.course_id === course.id).length;
       const progressRows = state.data.progress.filter((row) => row.course_id === course.id);
       const avg = progressRows.length
         ? Math.round(progressRows.reduce((sum, row) => sum + estimateProgress(row), 0) / progressRows.length)
@@ -753,6 +1411,232 @@
     `;
   }
 
+  function renderSupport() {
+    const list = document.getElementById("supportTicketList");
+    const thread = document.getElementById("supportThread");
+    if (!list || !thread) return;
+    const rows = filteredSupportTickets();
+    setText("supportTicketCount", `${rows.length} ticket${rows.length === 1 ? "" : "s"}`);
+    if (!state.selectedSupportTicketId && rows[0]) {
+      state.selectedSupportTicketId = rows[0].id || rows[0].ticket_id;
+    }
+    list.innerHTML = rows.length ? rows.map(adminSupportTicketCard).join("") : emptyState("No support tickets match this view.");
+    list.querySelectorAll("[data-select-support-ticket]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.selectedSupportTicketId = button.dataset.selectSupportTicket;
+        renderSupport();
+        markAdminSupportNotificationsRead(button.dataset.selectSupportTicket);
+      });
+    });
+    renderSupportThread();
+  }
+
+  function filteredSupportTickets() {
+    const statusFilter = state.supportStatusFilter || "all";
+    const query = state.supportSearch || "";
+    return state.data.supportTickets
+      .filter((ticket) => statusFilter === "all" || String(ticket.status || "open").toLowerCase() === statusFilter)
+      .filter((ticket) => matchesText(query, ticket.subject, ticket.message, ticket.category, ticket.user_role, ticket.status, supportUser(ticket)?.name, supportUser(ticket)?.email))
+      .sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+  }
+
+  function adminSupportTicketCard(ticket) {
+    const user = supportUser(ticket);
+    const selected = sameId(ticket.id || ticket.ticket_id, state.selectedSupportTicketId);
+    const unread = supportUnreadForAdmin(ticket).length;
+    return `
+      <button class="support-ticket-row ${selected ? "active" : ""}" type="button" data-select-support-ticket="${escapeAttr(ticket.id || ticket.ticket_id)}">
+        <span class="badge ${statusColor(ticket.status || "open")}">${escapeHtml(humanizeSupportStatus(ticket.status))}</span>
+        <strong>${escapeHtml(ticket.subject || "Support ticket")}</strong>
+        <small>${escapeHtml(user?.name || user?.email || "Unknown user")} - ${escapeHtml(ticket.user_role || "user")} - ${escapeHtml(ticket.category || "general")}</small>
+        <em>${escapeHtml(ticket.priority || "normal")}${unread ? ` - ${unread} unread` : ""}</em>
+      </button>
+    `;
+  }
+
+  function renderSupportThread() {
+    const target = document.getElementById("supportThread");
+    if (!target) return;
+    const ticket = selectedSupportTicket();
+    const form = document.getElementById("supportReplyForm");
+    if (!ticket) {
+      target.innerHTML = emptyState("Choose a ticket to view the support conversation.");
+      if (form) form.querySelectorAll("textarea,input,select,button").forEach((field) => { field.disabled = true; });
+      setText("supportThreadMeta", "Choose a ticket to reply.");
+      return;
+    }
+
+    if (form) form.querySelectorAll("textarea,input,select,button").forEach((field) => { field.disabled = false; });
+    setValue("supportStatusUpdate", ticket.status || "open");
+    setValue("supportPriorityUpdate", ticket.priority || "normal");
+    const user = supportUser(ticket);
+    setText("supportThreadMeta", `${user?.name || user?.email || "Unknown user"} - ${humanizeSupportStatus(ticket.status)} - ${ticket.priority || "normal"}`);
+    const messages = supportMessagesForTicket(ticket).sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+    target.innerHTML = `
+      <div class="support-thread-summary">
+        <span class="badge ${statusColor(ticket.status || "open")}">${escapeHtml(humanizeSupportStatus(ticket.status))}</span>
+        <h3>${escapeHtml(ticket.subject || "Support ticket")}</h3>
+        <p>${escapeHtml(ticket.message || "")}</p>
+        ${ticket.attachment_url ? `<a class="ghost-btn" href="${escapeAttr(ticket.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+      </div>
+      ${messages.length ? messages.map(adminSupportMessageBubble).join("") : emptyState("No thread messages yet.")}
+    `;
+  }
+
+  async function submitAdminSupportReply(event) {
+    event.preventDefault();
+    const ticket = selectedSupportTicket();
+    if (!ticket) return;
+    const message = valueOf("supportReplyMessage");
+    const status = valueOf("supportStatusUpdate") || ticket.status || "open";
+    const priority = valueOf("supportPriorityUpdate") || ticket.priority || "normal";
+    const file = document.getElementById("supportReplyAttachment")?.files?.[0] || null;
+    if (!message && status === ticket.status && priority === ticket.priority && !file) return;
+    try {
+      const attachmentUrl = file ? await uploadSupportAttachment(file) : null;
+      await sendAdminSupportReply(ticket, message, attachmentUrl, status, priority);
+      document.getElementById("supportReplyMessage").value = "";
+      document.getElementById("supportReplyAttachment").value = "";
+      showAlert(String(status).toLowerCase() === "resolved" ? "Support ticket resolved and deleted." : "Support ticket updated.");
+      await loadAllData({ force: true, silent: true });
+      state.selectedSupportTicketId = String(status).toLowerCase() === "resolved" ? null : ticket.id || ticket.ticket_id;
+      renderSupport();
+    } catch (error) {
+      showAlert(error.message || "Support update failed.", true);
+    }
+  }
+
+  async function sendAdminSupportReply(ticket, message, attachmentUrl, status, priority) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    const resolved = String(status || "").toLowerCase() === "resolved";
+    if (getClient()?.rpc) {
+      const { error } = await getClient().rpc("lms_support_reply", {
+        actor_user_id: state.admin.id,
+        actor_role: "admin",
+        target_ticket_id: ticketId,
+        reply_message: message || "",
+        reply_attachment_url: attachmentUrl,
+        next_status: status,
+        next_priority: priority
+      });
+      if (!error) {
+        if (resolved) await permanentlyDeleteSupportTicket(ticketId);
+        return;
+      }
+      if (!isMissingRpcError(error)) throw error;
+    }
+    if (message || attachmentUrl) {
+      const { error: messageError } = await getClient().from("support_messages").insert({
+        ticket_id: ticketId,
+        sender_id: state.admin.id,
+        sender_role: "admin",
+        message: message || "",
+        attachment_url: attachmentUrl,
+        created_at: new Date().toISOString()
+      });
+      if (messageError) throw messageError;
+      await createSupportOwnerNotification(ticket, "Admin has replied to your support request.");
+    }
+    if (resolved) {
+      await permanentlyDeleteSupportTicket(ticketId);
+      return;
+    }
+    const { error } = await getClient().from("support_tickets").update({
+      status,
+      priority,
+      updated_at: new Date().toISOString()
+    }).eq("id", ticketId);
+    if (error) throw error;
+  }
+
+  async function createSupportOwnerNotification(ticket, body) {
+    if (!ticket?.user_id) return;
+    const { error } = await getClient().from("support_notifications").insert({
+      ticket_id: ticket.id || ticket.ticket_id,
+      recipient_user_id: ticket.user_id,
+      recipient_role: ticket.user_role || "student",
+      title: "Support Ticket Reply",
+      body,
+      channel: "in_app",
+      is_read: false,
+      created_at: new Date().toISOString()
+    });
+    if (error && !isSchemaShapeError(error)) throw error;
+  }
+
+  async function permanentlyDeleteSupportTicket(ticketId) {
+    const client = getClient();
+    if (client?.rpc) {
+      const { error } = await client.rpc("lms_delete_resolved_support_ticket", { target_ticket_id: ticketId });
+      if (!error) return;
+      if (!isMissingRpcError(error)) throw error;
+    }
+    await deleteSupportChildRows("support_notifications", ticketId);
+    await deleteSupportChildRows("support_attachments", ticketId);
+    await deleteSupportChildRows("support_messages", ticketId);
+    const { error } = await client.from("support_tickets").delete().eq("id", ticketId);
+    if (error) throw error;
+  }
+
+  async function deleteSupportChildRows(table, ticketId) {
+    const { error } = await getClient().from(table).delete().eq("ticket_id", ticketId);
+    if (error && !isSchemaShapeError(error)) throw error;
+  }
+
+  async function uploadSupportAttachment(file) {
+    const safeName = String(file.name || "support-file").replace(/[^a-z0-9._-]+/gi, "-");
+    const path = `admin/${state.admin.id}/${Date.now()}-${safeName}`;
+    const { error } = await getClient().storage.from("support-attachments").upload(path, file, { cacheControl: "3600", upsert: false });
+    if (error) throw error;
+    const { data } = getClient().storage.from("support-attachments").getPublicUrl(path);
+    return data?.publicUrl || "";
+  }
+
+  function selectedSupportTicket() {
+    return state.data.supportTickets.find((ticket) => sameId(ticket.id || ticket.ticket_id, state.selectedSupportTicketId)) || null;
+  }
+
+  function supportMessagesForTicket(ticket) {
+    const ticketId = ticket.id || ticket.ticket_id;
+    return state.data.supportMessages.filter((message) => sameId(message.ticket_id, ticketId));
+  }
+
+  function supportUnreadForAdmin(ticket) {
+    return supportMessagesForTicket(ticket).filter((message) => !message.is_read && String(message.sender_role || "").toLowerCase() !== "admin");
+  }
+
+  function supportUser(ticket) {
+    return findById(state.data.users, ticket?.user_id);
+  }
+
+  function adminSupportMessageBubble(message) {
+    const user = findById(state.data.users, message.sender_id);
+    const senderRole = String(message.sender_role || "").toLowerCase();
+    const mine = senderRole === "admin";
+    return `
+      <div class="message-row ${mine ? "mine" : ""}">
+        <strong>${escapeHtml(mine ? "Admin" : user?.name || senderRole || "User")}</strong>
+        <p>${escapeHtml(message.message || "")}</p>
+        ${message.attachment_url ? `<a class="ghost-btn" href="${escapeAttr(message.attachment_url)}" target="_blank" rel="noopener">Open attachment</a>` : ""}
+        <small>${escapeHtml(formatDateTime(message.created_at))} - ${message.is_read ? "Read" : "Unread"}</small>
+      </div>
+    `;
+  }
+
+  function humanizeSupportStatus(status) {
+    return String(status || "open").replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  async function markAdminSupportNotificationsRead(ticketId) {
+    const unreadIds = state.data.supportNotifications
+      .filter((item) => sameId(item.ticket_id, ticketId) && String(item.recipient_role || "").toLowerCase() === "admin" && !item.is_read)
+      .map((item) => item.id)
+      .filter(Boolean);
+    if (unreadIds.length) {
+      await getClient().from("support_notifications").update({ is_read: true, read_at: new Date().toISOString() }).in("id", unreadIds);
+    }
+  }
+
   function renderDashboardTasks() {
     const rows = state.data.batchTasks.slice(0, 5);
     document.getElementById("dashboardTasksList").innerHTML = rows.length
@@ -813,9 +1697,12 @@
       ? rows.map((course) => {
         const enrolled = courseAssignedUserIds(course, "student").size;
         const coursePrice = formatCoursePrice(course.price);
+        const allModules = adminCourseModules(course, true);
+        const archivedContent = allModules.filter((module) => module?.deleted_at).length
+          + allModules.reduce((sum, module) => sum + (module?.lessons || []).filter((lesson) => lesson?.deleted_at).length, 0);
         return `
           <article class="course-card">
-            <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.png")}" alt="">
+            <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.webp")}" alt="">
             <div class="course-body">
               <div class="list-row">
                 <div>
@@ -830,7 +1717,10 @@
                 <button class="primary-btn" type="button" data-assign-course="${course.id}">Assign</button>
                 <button class="ghost-btn" type="button" data-edit-course="${course.id}">Edit</button>
                 <button class="soft-btn" type="button" data-toggle-course="${course.id}">${course.status === "Published" ? "Unpublish" : "Publish"}</button>
-                <button class="danger-btn" type="button" data-delete-course="${course.id}">Delete</button>
+                ${String(course.status || "").toLowerCase() === "archived"
+                  ? `<button class="soft-btn" type="button" data-restore-course="${course.id}">Restore</button>`
+                  : `<button class="danger-btn" type="button" data-delete-course="${course.id}">Archive</button>`}
+                ${archivedContent ? `<button class="soft-btn" type="button" data-restore-course-content="${course.id}">Recover Content (${archivedContent})</button>` : ""}
               </div>
             </div>
           </article>
@@ -849,6 +1739,12 @@
     });
     grid.querySelectorAll("[data-delete-course]").forEach((button) => {
       button.addEventListener("click", () => deleteRecord("courses", button.dataset.deleteCourse));
+    });
+    grid.querySelectorAll("[data-restore-course]").forEach((button) => {
+      button.addEventListener("click", () => restoreRecord("courses", button.dataset.restoreCourse, "Draft"));
+    });
+    grid.querySelectorAll("[data-restore-course-content]").forEach((button) => {
+      button.addEventListener("click", () => restoreCourseContent(button.dataset.restoreCourseContent));
     });
   }
 
@@ -884,7 +1780,9 @@
             <div class="batch-actions">
               <button class="ghost-btn" type="button" data-edit-batch="${batch.id}">Edit</button>
               <button class="soft-btn" type="button" data-open-chat="${batch.id}">Chat</button>
-              <button class="danger-btn" type="button" data-delete-batch="${batch.id}">Delete</button>
+              ${String(batch.status || "").toLowerCase() === "archived"
+                ? `<button class="soft-btn" type="button" data-restore-batch="${batch.id}">Restore</button>`
+                : `<button class="danger-btn" type="button" data-delete-batch="${batch.id}">Archive</button>`}
             </div>
           </article>
         `;
@@ -905,6 +1803,9 @@
     grid.querySelectorAll("[data-delete-batch]").forEach((button) => {
       button.addEventListener("click", () => deleteRecord("batches", button.dataset.deleteBatch));
     });
+    grid.querySelectorAll("[data-restore-batch]").forEach((button) => {
+      button.addEventListener("click", () => restoreRecord("batches", button.dataset.restoreBatch, "draft"));
+    });
   }
 
   function renderEnrollments() {
@@ -912,6 +1813,7 @@
     if (!table) return;
     const query = searchQuery();
     const rows = state.data.userCourses.filter((enrollment) => {
+      if (enrollment.deleted_at || ["archived", "removed"].includes(String(enrollment.status || "").toLowerCase())) return false;
       const user = enrollmentUser(enrollment);
       // Only show students — mentors/admins enrolled in courses should not appear here
       if (!user || String(user.role).toLowerCase() !== "student") return false;
@@ -990,7 +1892,9 @@
             <div class="row-actions">
               <button class="ghost-btn" type="button" data-edit-task="${task.id}">Edit</button>
               <button class="soft-btn" type="button" data-review-task="${task.id}">Submissions</button>
-              <button class="danger-btn" type="button" data-delete-task="${task.id}">Delete</button>
+              ${String(task.status || "").toLowerCase() === "archived"
+                ? `<button class="soft-btn" type="button" data-restore-task="${task.id}">Restore</button>`
+                : `<button class="danger-btn" type="button" data-delete-task="${task.id}">Archive</button>`}
             </div>
           </article>
         `;
@@ -1005,6 +1909,9 @@
     });
     grid.querySelectorAll("[data-delete-task]").forEach((button) => {
       button.addEventListener("click", () => deleteRecord("batch_tasks", button.dataset.deleteTask));
+    });
+    grid.querySelectorAll("[data-restore-task]").forEach((button) => {
+      button.addEventListener("click", () => restoreRecord("batch_tasks", button.dataset.restoreTask, "active"));
     });
   }
 
@@ -1083,7 +1990,7 @@
     grid.innerHTML = rows.length
       ? rows.map((item) => `
         <article class="shop-card">
-          <img class="shop-thumb" src="${escapeAttr(item.image_url || "image/icon/star.png")}" alt="">
+          ${item.image_url ? `<img class="shop-thumb" src="${escapeAttr(item.image_url)}" alt="${escapeAttr(item.name || "Shop item")}">` : `<div class="shop-thumb no-image">No Image Available</div>`}
           <div>
             <h3>${escapeHtml(item.name || "Shop item")}</h3>
             <p>${Number(item.price || 0).toLocaleString("en-IN")} coins</p>
@@ -1108,14 +2015,19 @@
   function renderReviews() {
     const query = searchQuery();
     const projects = state.data.projects.filter((project) => matchesText(query, project.title, project.student_name, project.batch_name, project.status));
-    const submissions = state.data.taskSubmissions.filter((submission) => matchesText(query, submission.title, submission.student_name, submission.student_email, submission.status));
+    const submissions = state.data.taskSubmissions.filter((submission) => {
+      const task = findById(state.data.batchTasks, submission.task_id);
+      const student = findById(state.data.users, submission.student_id || submission.user_id);
+      return matchesText(query, task?.title, student?.name, student?.email, submission.status, submission.drive_link, submission.file_url);
+    });
 
     document.getElementById("projectsList").innerHTML = projects.length
       ? projects.map(projectCardCompact).join("")
       : emptyState(hasQuery(query) ? "No projects match your search." : "No project submissions.");
 
     document.getElementById("submissionsList").innerHTML = submissions.length
-      ? submissions.map((submission) => `
+      ? submissions.map(adminSubmissionRow).join("")
+      : emptyState(hasQuery(query) ? "No submissions match your search." : "No task submissions."); /*
         <div class="list-row">
           <div>
             <strong>${escapeHtml(submission.title || "Task submission")}</strong>
@@ -1127,7 +2039,7 @@
           </div>
         </div>
       `).join("")
-      : emptyState(hasQuery(query) ? "No submissions match your search." : "No task submissions.");
+      */
 
     document.querySelectorAll("[data-review-project]").forEach((button) => {
       button.addEventListener("click", () => openProjectReviewModal(findById(state.data.projects, button.dataset.reviewProject)));
@@ -1135,6 +2047,29 @@
     document.querySelectorAll("[data-review-submission]").forEach((button) => {
       button.addEventListener("click", () => openSubmissionReviewModal(findById(state.data.taskSubmissions, button.dataset.reviewSubmission)));
     });
+  }
+
+  function adminSubmissionRow(submission) {
+    const task = findById(state.data.batchTasks, submission.task_id);
+    const student = findById(state.data.users, submission.student_id || submission.user_id);
+    const link = taskSubmissionLink(submission);
+    return `
+      <div class="list-row">
+        <div>
+          <strong>${escapeHtml(task?.title || "Task submission")}</strong>
+          <small>${escapeHtml(student?.name || "Unknown student")} - ${formatDate(submission.submitted_at || submission.created_at)}</small>
+          ${link ? `<small><a href="${escapeAttr(link)}" target="_blank" rel="noopener">Open Google Drive Link</a></small>` : ""}
+        </div>
+        <div class="row-actions">
+          <span class="badge ${statusColor(submission.status)}">${escapeHtml(submission.status || "pending")}</span>
+          <button class="ghost-btn" type="button" data-review-submission="${submission.id}">Review</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function taskSubmissionLink(submission) {
+    return String(submission?.drive_link || submission?.submission_url || submission?.file_url || "").trim();
   }
 
   function projectCardCompact(project) {
@@ -1235,10 +2170,14 @@
     const assignedMentors = courseAssignedUserIds(course, "mentor");
 
     openModal("Course Assignment", `
-      <form class="assignment-form" id="courseAssignmentForm">
+      <form class="assignment-form assignment-form-pro" id="courseAssignmentForm">
         <div class="assignment-course-head">
           <span class="badge ${statusColor(course.status)}">${escapeHtml(course.status || "Draft")}</span>
           <h3>${escapeHtml(course.title || "Untitled course")}</h3>
+          <div class="assignment-head-stats">
+            <span><strong id="assignedStudentsCount">${assignedStudents.size}</strong> Students</span>
+            <span><strong id="assignedMentorsCount">${assignedMentors.size}</strong> Mentors</span>
+          </div>
           <p>${escapeHtml(course.category || "General")} · ${escapeHtml(formatCoursePrice(course.price))}</p>
         </div>
 
@@ -1247,7 +2186,11 @@
             <h4>Assign Students</h4>
             <small>${students.length} available</small>
           </div>
-          <div class="assignment-list">
+          <label class="assignment-search">
+            <span>Search student</span>
+            <input id="assignmentStudentSearch" placeholder="Name or email">
+          </label>
+          <div class="assignment-list" data-assignment-list="students">
             ${students.length ? students.map((user) => assignmentOption(user, assignedStudents.has(String(user.id)), "assignedStudents")).join("") : `<div class="assignment-empty">No student users found.</div>`}
           </div>
         </section>
@@ -1257,7 +2200,11 @@
             <h4>Assign Mentors</h4>
             <small>${mentors.length} available</small>
           </div>
-          <div class="assignment-list">
+          <label class="assignment-search">
+            <span>Search mentor</span>
+            <input id="assignmentMentorSearch" placeholder="Name or email">
+          </label>
+          <div class="assignment-list" data-assignment-list="mentors">
             ${mentors.length ? mentors.map((user) => assignmentOption(user, assignedMentors.has(String(user.id)), "assignedMentors")).join("") : `<div class="assignment-empty">No mentor users found.</div>`}
           </div>
         </section>
@@ -1268,6 +2215,13 @@
         </div>
       </form>
     `);
+
+    bindAssignmentSearch("assignmentStudentSearch", "students");
+    bindAssignmentSearch("assignmentMentorSearch", "mentors");
+    modalBody.querySelectorAll("input[name='assignedStudents'], input[name='assignedMentors']").forEach((input) => {
+      input.addEventListener("change", updateAssignmentCounts);
+    });
+    updateAssignmentCounts();
 
     document.getElementById("courseAssignmentForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -1353,6 +2307,87 @@
   }
 
   function openEnrollmentModal(enrollment = null) {
+    const students = state.data.users.filter((user) => (
+      user.role === "student"
+      && String(user.email).toLowerCase() !== "adolf@gmail.com"
+      && !sameId(user.id, "59d6149c-976e-4657-904e-b8a5d99a2bb7")
+    ));
+    const user = enrollmentUser(enrollment || {});
+    const batch = enrollmentBatch(enrollment || {}, user);
+    const course = enrollmentCourse(enrollment || {});
+    const isEdit = Boolean(enrollment);
+
+    openModal(`${isEdit ? "Edit" : "Assign"} Enrollment`, `
+      <form class="form-grid" id="enrollmentForm">
+        <div class="import-callout">
+          Search, select a student, then assign a course. The list shows only name and email to keep assignment clean.
+        </div>
+        <div class="form-row two">
+          <div>
+            <label for="enrollmentSearch">Search Student</label>
+            <input id="enrollmentSearch" placeholder="Type name or email">
+          </div>
+          <div>
+            <label for="enrollmentUser">Select Student</label>
+            <select id="enrollmentUser" required>
+              ${students.map((student) => option(student.id, user?.id, `${student.name || "Student"} - ${student.email || ""}`)).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="enrollmentCourse">Assign Course</label>
+            <select id="enrollmentCourse" required>
+              ${state.data.courses.map((item) => option(item.id, course?.id, item.title)).join("")}
+            </select>
+          </div>
+        </div>
+        <details class="advanced-form-options">
+          <summary>Advanced assignment options</summary>
+          <div class="form-row two">
+            <div>
+              <label for="enrollmentBatch">Batch</label>
+              <select id="enrollmentBatch">
+                <option value="">No batch</option>
+                ${state.data.batches.map((item) => option(item.id, batch?.id, item.name)).join("")}
+              </select>
+            </div>
+            <div>
+              <label for="enrollmentStatus">Status</label>
+              <select id="enrollmentStatus">
+                ${option("active", enrollment?.status)}
+                ${option("completed", enrollment?.status)}
+                ${option("paused", enrollment?.status)}
+                ${option("cancelled", enrollment?.status)}
+              </select>
+            </div>
+          </div>
+        </details>
+        <div class="form-actions">
+          <button class="ghost-btn" type="button" data-close-modal>Cancel</button>
+          <button class="primary-btn" type="submit">${isEdit ? "Save" : "Assign Course"}</button>
+        </div>
+      </form>
+    `);
+
+    document.getElementById("enrollmentSearch")?.addEventListener("input", (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      const select = document.getElementById("enrollmentUser");
+      const rows = students.filter((student) => matchesText(query, student.name, student.email));
+      select.innerHTML = rows.map((student) => option(student.id, user?.id, `${student.name || "Student"} - ${student.email || ""}`)).join("");
+    });
+
+    document.getElementById("enrollmentForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await saveEnrollment({
+        user_id: valueOf("enrollmentUser"),
+        course_id: valueOf("enrollmentCourse"),
+        status: valueOf("enrollmentStatus") || "active"
+      }, valueOf("enrollmentBatch"), enrollment);
+    });
+  }
+
+  function openEnrollmentModalLegacy(enrollment = null) {
     const students = state.data.users.filter((user) => (
       user.role === "student"
       && String(user.email).toLowerCase() !== "adolf@gmail.com"
@@ -1495,7 +2530,7 @@
           batchId: valueOf("createUserBatch") || null
         });
         closeModal();
-        await loadAllData();
+        await loadAllData({ force: true });
         showAlert("User added and assigned.");
       } catch (error) {
         showAlert(error.message || "Unable to add user.", true);
@@ -1570,7 +2605,7 @@
           batchId: valueOf("importDefaultBatch") || null
         });
         closeModal();
-        await loadAllData();
+        await loadAllData({ force: true });
         showAlert(`Imported ${result.created} user${result.created === 1 ? "" : "s"}${result.failed ? `, ${result.failed} skipped` : ""}.`, Boolean(result.failed));
       } catch (error) {
         showAlert(error.message || "Unable to import users.", true);
@@ -1627,9 +2662,8 @@
         title: valueOf("taskTitle"),
         description: valueOf("taskDescription"),
         batch_id: valueOf("taskBatch"),
-        due_date: valueOf("taskDueDate") || null,
-        drive_link: valueOf("taskDriveLink") || null,
-        status: valueOf("taskStatus")
+        deadline: valueOf("taskDueDate") ? new Date(`${valueOf("taskDueDate")}T23:59:59`).toISOString() : null,
+        drive_link: valueOf("taskDriveLink") || null
       }, task?.id);
     });
   }
@@ -1899,7 +2933,7 @@
           batchId: valueOf("userBatch") || null
         });
         closeModal();
-        await loadAllData();
+        await loadAllData({ force: true });
         showAlert("User details updated.");
       } catch (error) {
         showAlert(error.message || "Unable to update user.", true);
@@ -1943,11 +2977,7 @@
       status: project.status,
       notes: project.review_notes,
       noteField: "review_notes",
-      statusOptions: ["pending", "approved", "changes_requested", "rejected"],
-      extraPayload: {
-        reviewed_by: state.admin.id,
-        reviewed_date: new Date().toISOString()
-      }
+      statusOptions: ["pending", "approved", "changes_requested", "rejected"]
     });
   }
 
@@ -2028,7 +3058,7 @@
     try {
       await writeEnrollmentRecord(payload.user_id, payload.course_id, batchId, payload.status || "active", existingEnrollment);
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Enrollment saved.");
     } catch (error) {
       showAlert(error.message || "Enrollment save failed.", true);
@@ -2047,6 +3077,7 @@
       email,
       name: payload.name || email,
       role: String(payload.role || "student").toLowerCase(),
+      coins: existingUser ? Number(payload.coins ?? existingUser.coins ?? 0) : Number(payload.coins ?? 0),
       batch_id: assignment.batchId || payload.batch_id || existingUser?.batch_id || null,
       course_ids: courseIds.length ? courseIds : undefined
     });
@@ -2072,18 +3103,18 @@
   }
 
   async function deleteAdminUser(user) {
-    if (!user?.id || !window.confirm(`Delete ${user.name || user.email || "this user"}?`)) return;
+    if (!user?.id || !window.confirm(`Archive ${user.name || user.email || "this user"}? You can recover the account later.`)) return;
     try {
-      const rpcDeleted = await deleteAdminUserViaRpc(user.id);
-      if (!rpcDeleted) {
-        const { error } = await getClient().from("users").delete().eq("id", user.id);
+      const rpcArchived = await archiveRecordViaRpc("users", user.id);
+      if (!rpcArchived) {
+        const { error } = await getClient().from("users").update(softDeletePayload("users")).eq("id", user.id);
         if (error) throw error;
       }
       closeModal();
-      await loadAllData();
-      showAlert("User deleted.");
+      await loadAllData({ force: true });
+      showAlert("User archived.");
     } catch (error) {
-      showAlert(error.message || "Unable to delete user.", true);
+      showAlert(error.message || "Unable to archive user.", true);
     }
   }
 
@@ -2100,7 +3131,7 @@
 
   async function saveAdminUserViaRpc(userPayload, assignment) {
     if (!state.admin?.id || !getClient()?.rpc) return null;
-    const { data, error } = await getClient().rpc("lms_admin_save_user", {
+    let { data, error } = await getClient().rpc("lms_admin_save_auth_user", {
       admin_user_id: state.admin.id,
       target_user_id: assignment.targetUserId,
       user_payload: userPayload,
@@ -2108,7 +3139,9 @@
       assign_batch_id: assignment.batchId
     });
     if (!error) return Array.isArray(data) ? data[0] : data;
-    if (isMissingRpcError(error)) return null;
+    if (isMissingRpcError(error)) {
+      throw new Error("Supabase Auth user creation is not configured yet. Run supabase-auth-production-setup.sql before adding LMS users.");
+    }
     throw error;
   }
 
@@ -2139,8 +3172,8 @@
     for (const payload of payloads) {
       const writePayload = compactObject(payload);
       const request = id
-        ? getClient().from("users").update(writePayload).eq("id", id).select()
-        : getClient().from("users").insert(writePayload).select();
+        ? getClient().from("users").update(writePayload).eq("id", id).select(SELECTS.users)
+        : getClient().from("users").insert(writePayload).select(SELECTS.users);
       const { data, error } = await request;
       if (!error) return normalizeUser(Array.isArray(data) ? data[0] : data);
       lastError = error;
@@ -2160,26 +3193,26 @@
     let request = null;
 
     if (current?.id) {
-      request = supabaseClient.from("user_courses").update(payload).eq("id", current.id).select();
+      request = supabaseClient.from("user_courses").update(payload).eq("id", current.id).select(SELECTS.userCourses);
     } else if (current) {
       request = supabaseClient
         .from("user_courses")
         .update(payload)
         .eq("user_id", current.user_id)
         .eq("course_id", current.course_id)
-        .select();
+        .select(SELECTS.userCourses);
     } else {
-      request = supabaseClient.from("user_courses").insert(payload).select();
+      request = supabaseClient.from("user_courses").insert(payload).select(SELECTS.userCourses);
     }
 
     let { error } = await request;
     if (error && isSchemaShapeError(error)) {
       const compatiblePayload = stripKeys(payload, ["status"]);
       request = current?.id
-        ? supabaseClient.from("user_courses").update(compatiblePayload).eq("id", current.id).select()
+        ? supabaseClient.from("user_courses").update(compatiblePayload).eq("id", current.id).select(SELECTS.userCourses)
         : current
-          ? supabaseClient.from("user_courses").update(compatiblePayload).eq("user_id", current.user_id).eq("course_id", current.course_id).select()
-          : supabaseClient.from("user_courses").insert(compatiblePayload).select();
+          ? supabaseClient.from("user_courses").update(compatiblePayload).eq("user_id", current.user_id).eq("course_id", current.course_id).select(SELECTS.userCourses)
+          : supabaseClient.from("user_courses").insert(compatiblePayload).select(SELECTS.userCourses);
       ({ error } = await request);
     }
     if (error) throw error;
@@ -2209,7 +3242,7 @@
       }
 
       const supabaseClient = getClient();
-      let request = supabaseClient.from("users").update(payload).select();
+      let request = supabaseClient.from("users").update(payload).select(SELECTS.users);
       request = state.admin?.id
         ? request.eq("id", state.admin.id)
         : request.eq("email", state.admin.email);
@@ -2242,15 +3275,15 @@
     try {
       const supabaseClient = getClient();
       const request = enrollment.id
-        ? supabaseClient.from("user_courses").delete().eq("id", enrollment.id)
+        ? supabaseClient.from("user_courses").update(softDeletePayload("user_courses")).eq("id", enrollment.id)
         : supabaseClient
           .from("user_courses")
-          .delete()
+          .update(softDeletePayload("user_courses"))
           .eq("user_id", enrollment.user_id)
           .eq("course_id", enrollment.course_id);
       const { error } = await request;
       if (error) throw error;
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Enrollment removed.");
     } catch (error) {
       showAlert(error.message || "Enrollment remove failed.", true);
@@ -2261,7 +3294,7 @@
     try {
       await writeCourseRecord(payload, id);
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Course saved successfully.");
     } catch (error) {
       showAlert(error.message || "Course save failed.", true);
@@ -2280,8 +3313,8 @@
     for (const candidate of candidates) {
       const writePayload = compactObject(candidate);
       const request = id
-        ? getClient().from("courses").update(writePayload).eq("id", id).select()
-        : getClient().from("courses").insert(writePayload).select();
+        ? getClient().from("courses").update(writePayload).eq("id", id).select(SELECTS.courses)
+        : getClient().from("courses").insert(writePayload).select(SELECTS.courses);
       const { data, error } = await request;
       if (!error) return Array.isArray(data) ? data[0] : data;
       lastError = error;
@@ -2330,7 +3363,7 @@
       }, courseId);
 
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Course assignment saved.");
     } catch (error) {
       showAlert(error.message || "Course assignment failed.", true);
@@ -2338,7 +3371,7 @@
   }
 
   async function removeCourseAssignment(userId, courseId) {
-    const rows = state.data.userCourses.filter((row) => (
+    const rows = activeEnrollments().filter((row) => (
       String(row.user_id || row.student_id || "") === String(userId)
       && String(row.course_id || "") === String(courseId)
     ));
@@ -2357,11 +3390,11 @@
     const supabaseClient = getClient();
     let request = null;
     if (enrollment.id) {
-      request = supabaseClient.from("user_courses").delete().eq("id", enrollment.id);
+      request = supabaseClient.from("user_courses").update(softDeletePayload("user_courses")).eq("id", enrollment.id);
     } else if (enrollment.user_id) {
-      request = supabaseClient.from("user_courses").delete().eq("user_id", enrollment.user_id).eq("course_id", enrollment.course_id);
+      request = supabaseClient.from("user_courses").update(softDeletePayload("user_courses")).eq("user_id", enrollment.user_id).eq("course_id", enrollment.course_id);
     } else {
-      request = supabaseClient.from("user_courses").delete().eq("student_id", enrollment.student_id).eq("course_id", enrollment.course_id);
+      request = supabaseClient.from("user_courses").update(softDeletePayload("user_courses")).eq("student_id", enrollment.student_id).eq("course_id", enrollment.course_id);
     }
     const { error } = await request;
     if (error) throw error;
@@ -2370,41 +3403,132 @@
   async function upsertRecord(table, payload, id = null) {
     try {
       const supabaseClient = getClient();
+      const returning = selectForTable(table);
       const request = id
-        ? supabaseClient.from(table).update(payload).eq("id", id).select()
-        : supabaseClient.from(table).insert(payload).select();
+        ? supabaseClient.from(table).update(payload).eq("id", id).select(returning)
+        : supabaseClient.from(table).insert(payload).select(returning);
       const { error } = await request;
       if (error) throw error;
       closeModal();
-      await loadAllData();
+      await loadAllData({ force: true });
       showAlert("Saved successfully.");
     } catch (error) {
       showAlert(error.message || "Save failed.", true);
     }
   }
 
+  function selectForTable(table) {
+    const spec = TABLE_SPECS.find((item) => item.table === table);
+    return spec?.select || "id,created_at";
+  }
+
   async function deleteRecord(table, id) {
-    if (!id || !window.confirm("Delete this item?")) return;
+    if (!id || !window.confirm("Archive this item? You can restore it later.")) return;
     try {
-      const supabaseClient = getClient();
-      const { error } = await supabaseClient.from(table).delete().eq("id", id);
-      if (error) throw error;
-      await loadAllData();
-      showAlert("Deleted successfully.");
+      const rpcArchived = await archiveRecordViaRpc(table, id);
+      if (!rpcArchived) {
+        const supabaseClient = getClient();
+        const request = supabaseClient.from(table).update(softDeletePayload(table)).eq("id", id);
+        const { error } = await request;
+        if (error) throw error;
+      }
+      await loadAllData({ force: true });
+      showAlert("Archived successfully.");
     } catch (error) {
-      showAlert(error.message || "Delete failed.", true);
+      showAlert(error.message || "Archive failed.", true);
+    }
+  }
+
+  function softDeletePayload(table) {
+    const now = new Date().toISOString();
+    if (table === "batch_chats") return { deleted_at: now, status: "archived" };
+    return { status: "archived", deleted_at: now };
+  }
+
+  async function restoreRecord(table, id, status) {
+    if (!id || !window.confirm("Restore this item?")) return;
+    try {
+      const rpcRestored = await restoreRecordViaRpc(table, id, status);
+      if (!rpcRestored) {
+        const { error } = await getClient().from(table).update({ status, deleted_at: null }).eq("id", id);
+        if (error) throw error;
+      }
+      await loadAllData({ force: true });
+      showAlert("Restored successfully.");
+    } catch (error) {
+      showAlert(error.message || "Restore failed.", true);
+    }
+  }
+
+  async function archiveRecordViaRpc(table, id) {
+    if (!state.admin?.id || !getClient()?.rpc) return false;
+    const { error } = await getClient().rpc("lms_soft_delete", {
+      actor_user_id: state.admin.id,
+      target_table: table,
+      target_id: id
+    });
+    if (!error) return true;
+    if (isMissingRpcError(error)) return false;
+    throw error;
+  }
+
+  async function restoreRecordViaRpc(table, id, status = "active") {
+    if (!state.admin?.id || !getClient()?.rpc) return false;
+    const { error } = await getClient().rpc("lms_restore_record", {
+      actor_user_id: state.admin.id,
+      target_table: table,
+      target_id: id,
+      restored_status: status || "active"
+    });
+    if (!error) return true;
+    if (isMissingRpcError(error)) return false;
+    throw error;
+  }
+
+  async function restoreCourseContent(courseId) {
+    const course = findById(state.data.courses, courseId);
+    if (!course || !window.confirm("Recover all archived playlists and playlist content in this course?")) return;
+    const modules = adminCourseModules(course, true).map((module) => ({
+      ...module,
+      deleted_at: null,
+      lessons: (module.lessons || []).map((lesson) => ({ ...lesson, deleted_at: null }))
+    }));
+    try {
+      const { error } = await getClient().from("courses").update({ modules }).eq("id", course.id);
+      if (error) throw error;
+      await loadAllData({ force: true });
+      showAlert("Archived course content recovered.");
+    } catch (error) {
+      showAlert(error.message || "Content recovery failed.", true);
     }
   }
 
   async function logout() {
-    clearStoredSessions();
-    const supabaseClient = getClient();
-    await supabaseClient?.auth?.signOut?.();
-    window.location.replace("login.html");
+    if (window.JenovateAuth?.signOut) await window.JenovateAuth.signOut();
+    else clearStoredSessions();
+    window.location.replace("login.html?from=logout");
   }
 
-  function setView(view) {
+  function initializeHistoryNavigation() {
+    if (!history.state?.adminView || !views[history.state.adminView]) {
+      history.replaceState({ adminView: "dashboard" }, "", window.location.href);
+    }
+    history.pushState({ adminView: "dashboard", adminGuard: true }, "", window.location.href);
+    window.addEventListener("popstate", () => {
+      if (state.activeView !== "dashboard") {
+        setView("dashboard", { historyMode: "none" });
+        history.pushState({ adminView: "dashboard", adminGuard: true }, "", window.location.href);
+      } else if (window.confirm("Go back to the login page?")) {
+        window.location.replace("login.html?from=back");
+      } else {
+        history.pushState({ adminView: "dashboard", adminGuard: true }, "", window.location.href);
+      }
+    });
+  }
+
+  function setView(view, options = {}) {
     if (!views[view]) view = "dashboard";
+    const previousView = state.activeView;
     state.activeView = view;
     Object.entries(views).forEach(([key, element]) => {
       if (!element) return;
@@ -2416,6 +3540,9 @@
     document.getElementById("sidebarProfileBtn")?.classList.toggle("active", view === "profile");
     viewTitle.textContent = views[view]?.dataset.title || "Dashboard";
     renderActiveView();
+    if (options.historyMode !== "none" && previousView !== view) {
+      history.pushState({ adminView: view }, "", window.location.href);
+    }
   }
 
   function renderActiveView() {
@@ -2450,6 +3577,9 @@
         break;
       case "announcements":
         renderAnnouncements();
+        break;
+      case "support":
+        renderSupport();
         break;
       case "profile":
         renderProfile();
@@ -2511,8 +3641,9 @@
   }
 
   function assignmentOption(user, checked, groupName) {
+    const searchText = `${user.name || ""} ${user.email || ""} ${user.username || ""}`.toLowerCase();
     return `
-      <label class="assignment-option">
+      <label class="assignment-option" data-assignment-option data-assignment-search="${escapeAttr(searchText)}">
         <span>
           <strong>${escapeHtml(user.name || user.email || "User")}</strong>
           <small>${escapeHtml(user.email || user.username || "")}</small>
@@ -2520,6 +3651,23 @@
         <input type="checkbox" name="${escapeAttr(groupName)}" value="${escapeAttr(user.id)}" ${checked ? "checked" : ""}>
       </label>
     `;
+  }
+
+  function bindAssignmentSearch(inputId, listName) {
+    const input = document.getElementById(inputId);
+    const list = modalBody.querySelector(`[data-assignment-list="${listName}"]`);
+    if (!input || !list) return;
+    input.addEventListener("input", () => {
+      const query = input.value.trim().toLowerCase();
+      list.querySelectorAll("[data-assignment-option]").forEach((optionNode) => {
+        optionNode.hidden = Boolean(query) && !String(optionNode.dataset.assignmentSearch || "").includes(query);
+      });
+    });
+  }
+
+  function updateAssignmentCounts() {
+    text("assignedStudentsCount", checkedValues("assignedStudents").length);
+    text("assignedMentorsCount", checkedValues("assignedMentors").length);
   }
 
   function checkedValues(name) {
@@ -2533,6 +3681,7 @@
 
     state.data.userCourses.forEach((enrollment) => {
       if (String(enrollment.course_id || "") !== courseId) return;
+      if (enrollment.deleted_at || ["archived", "removed", "cancelled"].includes(String(enrollment.status || "active").toLowerCase())) return;
       const user = findById(state.data.users, enrollment.user_id || enrollment.student_id);
       if (user?.role === role) {
         if (role === "student") {
@@ -2591,12 +3740,19 @@
     };
   }
 
+  function activeEnrollments() {
+    return state.data.userCourses.filter((enrollment) => (
+      !enrollment.deleted_at
+      && !["archived", "removed", "cancelled"].includes(String(enrollment.status || "active").toLowerCase())
+    ));
+  }
+
   function matchesUser(user, query) {
     return matchesText(query, user.name, user.email, user.username, user.role);
   }
 
   function userLearningSummary(user) {
-    const enrollments = state.data.userCourses.filter((row) => String(row.user_id || row.student_id || "") === String(user.id));
+    const enrollments = activeEnrollments().filter((row) => String(row.user_id || row.student_id || "") === String(user.id));
     const courseNames = enrollments
       .map((row) => enrollmentCourse(row)?.title || enrollmentCourse(row)?.name)
       .filter(Boolean);
@@ -2773,6 +3929,14 @@
 
   function isMissingRpcError(error) {
     return /function|schema cache|not found|could not find/i.test(error?.message || "") || error?.code === "PGRST202";
+  }
+
+  function friendlySupabaseError(error) {
+    const message = error?.message || "Unable to fetch";
+    if (/permission|policy|rls/i.test(message)) return "permission/RLS blocked";
+    if (/relation|table|does not exist/i.test(message)) return "table is missing";
+    if (/column|schema cache|could not find/i.test(message)) return "schema cache/column mismatch";
+    return message;
   }
 
   function matchesAnnouncement(item, query) {
@@ -2977,6 +4141,16 @@
       day: "2-digit",
       month: "short",
       year: "numeric"
+    }).format(new Date(value));
+  }
+
+  function formatDateTime(value) {
+    if (!value) return "Not set";
+    return new Intl.DateTimeFormat("en-IN", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit"
     }).format(new Date(value));
   }
 

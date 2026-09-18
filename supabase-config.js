@@ -18,7 +18,15 @@ window.getSupabaseClient = function getSupabaseClient() {
 
   window.supabaseClient = window.supabase.createClient(
     window.SUPABASE_URL,
-    window.SUPABASE_ANON_KEY
+    window.SUPABASE_ANON_KEY,
+    {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storageKey: "jenovate-supabase-auth"
+      }
+    }
   );
 
   return window.supabaseClient;

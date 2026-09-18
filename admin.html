@@ -9,17 +9,18 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="/logos/logooo2.png" type="image/png" />
   <link rel="stylesheet" href="colours.css" />
-  <link rel="stylesheet" href="admin.css?v=20260520-course-assignment" />
-  <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
+  <link rel="stylesheet" href="admin.css?v=20260604-task-support-shop-fixes" />
+  <link rel="stylesheet" href="role-compact.css?v=20260524-sidebar-actions-v1" />
+  <link rel="stylesheet" href="role-final-fixes.css?v=20260605-device-comfort" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="admin-redesign-final">
   <div class="admin-shell">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
-        <img src="image/logo/logo new.png" alt="Jenovate" />
+        <img src="image/logo/logonew.png" alt="Jenovate" />
         <span>ADMIN LMS</span>
       </div>
 
@@ -60,6 +61,7 @@
           </div>
           <button class="nav-item" data-view="chat" type="button" aria-label="View batch chat"><span>CH</span>Batch Chat</button>
           <button class="nav-item" data-view="announcements" type="button" aria-label="Manage announcements"><span>AN</span>Announcements</button>
+          <button class="nav-item" data-view="support" type="button" aria-label="Manage support tickets"><span>SP</span>Support</button>
           <button class="nav-item" data-view="reviews" type="button" aria-label="Review student projects"><span>RV</span>Reviews</button>
           <button class="nav-item" data-view="shop" type="button" aria-label="Manage shop items"><span>SH</span>Shop</button>
         </div>
@@ -86,13 +88,12 @@
 
     <main class="admin-main">
       <header class="admin-topbar">
-        <label class="lms-search" aria-label="Search admin workspace">
-          <span>Search</span>
-          <input id="globalSearch" type="search" placeholder="Search users, courses, batches" />
-        </label>
         <div class="topbar-actions">
-          <button class="year-btn" type="button" aria-label="LMS 2026">LMS 2026</button>
-          <button class="icon-btn" id="refreshBtn" type="button" aria-label="Refresh data" title="Refresh data">RF</button>
+          <button class="sync-pill" id="refreshBtn" type="button" aria-label="Refresh admin data">
+            <span class="live-dot"></span>
+            <span id="syncStatus">Realtime connected</span>
+          </button>
+          <div class="role-pill" aria-label="Admin role">Admin</div>
           <button class="avatar" id="adminAvatar" type="button" aria-label="Open admin profile">A</button>
         </div>
       </header>
@@ -101,26 +102,123 @@
         <div>
           <p class="eyebrow">Jenovate LMS</p>
           <h1 id="viewTitle">Dashboard</h1>
+          <div class="page-tabs" aria-label="Admin dashboard sections">
+            <button class="active" type="button" data-jump="dashboard">Overview</button>
+            <button type="button" data-jump="users">Users</button>
+            <button type="button" data-jump="courses">Courses</button>
+          </div>
         </div>
-        <div class="heading-status">
-          <span class="live-dot"></span>
-          <span id="syncStatus">Admin workspace synced</span>
+        <div class="heading-actions">
+          <button class="primary-btn" type="button" data-jump="courses">Manage Courses</button>
+          <button class="secondary-btn" type="button" data-jump="users">Manage Users</button>
         </div>
       </div>
 
       <div class="admin-alert" id="adminAlert" role="status" aria-live="polite"></div>
       <div class="loading-panel" id="loadingPanel">Loading admin data...</div>
 
-      <section class="admin-view active" id="dashboardView" data-title="Dashboard">
+      <section class="admin-view active report-dashboard-ready" id="dashboardView" data-title="Dashboard" data-report-dashboard="true">
+        <div class="role-report-dashboard">
+          <section class="report-card report-activity-card">
+            <div class="report-card-head">
+              <div>
+                <h2>Learners activity <span aria-hidden="true">i</span></h2>
+              </div>
+              <button class="report-link" type="button" data-jump="users">View all</button>
+            </div>
+            <div class="report-mini-tabs" aria-label="Activity filters">
+              <button class="active" type="button" data-report-filter="all">All</button>
+              <button type="button" data-report-filter="courses">Courses</button>
+              <button type="button" data-report-filter="tasks">Tasks</button>
+              <button type="button" data-report-filter="reviews">Reviews</button>
+            </div>
+            <div class="report-list" id="adminReportActivityList"></div>
+          </section>
+
+          <section class="report-card report-total-card">
+            <div class="report-card-head">
+              <h2>Total learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">All roles</button>
+            </div>
+            <div class="report-total"><strong id="adminReportTotalLearners">0</strong><span>People</span></div>
+            <div class="report-breakdown" id="adminReportBreakdown"></div>
+          </section>
+
+          <section class="report-card report-time-card">
+            <div class="report-card-head">
+              <h2>Learning time <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">All courses</button>
+            </div>
+            <div class="report-total"><strong id="adminReportLearningTime">0</strong><span>Hours</span></div>
+            <small class="report-growth">+ synced from active LMS data</small>
+            <div class="report-sparkline" id="adminReportSparkline"></div>
+          </section>
+
+          <section class="report-card report-line-card">
+            <div class="report-card-head">
+              <h2>Weekly active learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">This week</button>
+            </div>
+            <div class="report-chart" id="adminReportWeeklyChart"></div>
+          </section>
+
+          <section class="report-card report-bars-card">
+            <div class="report-card-head">
+              <h2>Most active learners <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">Last 4 weeks</button>
+            </div>
+            <div class="report-bars" id="adminReportActiveLearners"></div>
+          </section>
+
+          <section class="report-card report-health-card">
+            <div class="report-card-head">
+              <h2>Content health <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="courses">Manage</button>
+            </div>
+            <div class="report-kpi-grid" id="adminReportContentHealth"></div>
+          </section>
+
+          <section class="report-card report-workload-card">
+            <div class="report-card-head">
+              <h2>Operations queue <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="reviews">Open</button>
+            </div>
+            <div class="report-kpi-grid" id="adminReportWorkload"></div>
+          </section>
+
+          <section class="report-card report-courses-card">
+            <div class="report-card-head">
+              <h2>Course snapshot <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="courses">View all</button>
+            </div>
+            <div class="report-compact-list" id="adminReportCourses"></div>
+          </section>
+
+          <section class="report-card report-batches-card">
+            <div class="report-card-head">
+              <h2>Batch snapshot <span aria-hidden="true">i</span></h2>
+              <button class="report-link" type="button" data-jump="batches">View all</button>
+            </div>
+            <div class="report-compact-list" id="adminReportBatches"></div>
+          </section>
+
+          <section class="report-card report-attention-card">
+            <div class="report-card-head">
+              <h2>Needs attention <span aria-hidden="true">i</span></h2>
+              <button class="report-select" type="button">Live</button>
+            </div>
+            <div class="report-compact-list" id="adminReportAttention"></div>
+          </section>
+        </div>
         <div class="overview-grid">
           <section class="review-spotlight">
             <div class="spotlight-top">
               <span class="spotlight-icon">RV</span>
-              <span class="status-pill">Review Pending</span>
+              <span class="status-pill">Live Operations</span>
             </div>
             <div>
-              <h2>Project Submissions</h2>
-              <p>Review student projects and task work from one admin queue.</p>
+              <h2>Admin Workspace</h2>
+              <p>Manage users, courses, enrollments, reviews, batches, and rewards from one clean control center.</p>
             </div>
             <div class="spotlight-stats">
               <div>
@@ -518,6 +616,65 @@
         <div class="announcement-grid" id="announcementsGrid"></div>
       </section>
 
+      <section class="admin-view" id="supportView" data-title="Support Tickets">
+        <div class="section-toolbar">
+          <div>
+            <h2>Support Management</h2>
+            <p>View, prioritize, reply, close, and reopen user support tickets.</p>
+          </div>
+          <button class="secondary-btn" id="refreshSupportBtn" type="button">Refresh</button>
+        </div>
+        <div class="support-filters">
+          <select id="supportStatusFilter" aria-label="Filter support tickets by status">
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <input id="supportSearch" type="search" placeholder="Search tickets..." />
+        </div>
+        <div class="support-management-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div><h2>Tickets</h2><p id="supportTicketCount">0 active tickets</p></div>
+            </div>
+            <div class="compact-list support-ticket-list" id="supportTicketList"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <div><h2>Conversation</h2><p id="supportThreadMeta">Choose a ticket to reply.</p></div>
+            </div>
+            <div class="support-thread" id="supportThread"></div>
+            <form class="form-grid support-reply-form" id="supportReplyForm">
+              <div class="form-row"><label for="supportReplyMessage">Admin Reply</label><textarea id="supportReplyMessage" rows="4" placeholder="Write a reply..."></textarea></div>
+              <div class="form-row two">
+                <div>
+                  <label for="supportStatusUpdate">Status</label>
+                  <select id="supportStatusUpdate">
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="supportPriorityUpdate">Priority</label>
+                  <select id="supportPriorityUpdate">
+                    <option value="normal">Normal</option>
+                    <option value="low">Low</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row"><label for="supportReplyAttachment">Attachment</label><input id="supportReplyAttachment" type="file"></div>
+              <div class="form-actions"><button class="primary-btn" type="submit">Send Reply / Update</button></div>
+            </form>
+          </section>
+        </div>
+      </section>
+
       <section class="admin-view" id="reviewsView" data-title="Reviews">
         <div class="section-toolbar">
           <div>
@@ -668,9 +825,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260520"></script>
-  <script src="session-router.js?v=20260520"></script>
-  <script src="admin.js?v=20260521-batch-period"></script>
+  <script src="supabase-config.js?v=20260615-auth"></script>
+  <script src="session-router.js?v=20260615-auth"></script>
+  <script src="auth-session.js?v=20260616-legacy-fallback"></script>
+  <script src="admin.js?v=20260604-support-nav"></script>
 
   <!-- Scroll-to-top / Scroll-to-bottom floating buttons -->
   <div class="scroll-fab-group" id="scrollFabGroup" aria-label="Page navigation">

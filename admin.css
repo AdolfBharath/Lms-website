@@ -2,6 +2,572 @@
   box-sizing: border-box;
 }
 
+/* V3 final: no outside black/blue frame; student-style admin navigation. */
+html,
+body.admin-redesign-final {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.admin-redesign-final {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  grid-template-columns: 318px minmax(0, 1fr) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 318px !important;
+  min-width: 318px !important;
+  padding: 24px 16px 18px !important;
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  padding: 12px !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 52px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 116px !important;
+  max-height: 34px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  gap: 8px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 9px 10px 4px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding-left: 42px !important;
+  border-radius: 7px !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 14px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+body.admin-redesign-final .admin-main {
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-topbar,
+body.admin-redesign-final .page-heading,
+body.admin-redesign-final .admin-view {
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
+/* V4 tail: force admin to student-scale proportions. */
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 318px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 318px !important;
+  min-width: 318px !important;
+  padding: 24px 16px 18px !important;
+  background: #fbfcfe !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 54px !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  margin-bottom: 18px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 8px 20px 6px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding: 8px 12px 8px 52px !important;
+  font-size: 16px !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 24px !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  font-size: 38px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 230px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: 44px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 118px !important;
+}
+
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: 36px !important;
+}
+
+/* V5 exact student scale: compact admin, no oversized role UI. */
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 248px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 248px !important;
+  min-width: 248px !important;
+  padding: 18px 12px 16px !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 54px !important;
+  padding: 12px 8px 10px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 112px !important;
+  max-height: 32px !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 70px !important;
+  padding: 10px !important;
+  margin: 0 0 14px !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final #sidebarAdminAvatar,
+body.admin-redesign-final .profile-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .admin-profile-card strong {
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-profile-card small {
+  font-size: 11px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  gap: 4px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  margin: 12px 10px 5px !important;
+  padding: 0 !important;
+  font-size: 11px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 30px !important;
+  padding: 7px 10px 7px 32px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 10px !important;
+  width: 13px !important;
+  height: 13px !important;
+  min-width: 13px !important;
+  border-width: 2px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  min-height: 42px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  min-height: 74px !important;
+  padding: 18px 28px 10px !important;
+}
+
+body.admin-redesign-final .lms-search {
+  width: min(100%, 450px) !important;
+  min-height: 44px !important;
+}
+
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill,
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn {
+  min-height: 42px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .topbar-actions .avatar {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+}
+
+body.admin-redesign-final .page-heading {
+  min-height: 94px !important;
+  padding: 0 28px 16px !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  margin-top: 8px !important;
+  font-size: 30px !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .heading-actions {
+  padding-top: 22px !important;
+}
+
+body.admin-redesign-final .admin-view {
+  padding: 22px 28px 28px !important;
+}
+
+body.admin-redesign-final .overview-grid,
+body.admin-redesign-final .chat-layout {
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 220px !important;
+  padding: 20px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: 34px !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  gap: 14px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 104px !important;
+  padding: 14px !important;
+}
+
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: 30px !important;
+}
+
+body.admin-redesign-final .panel,
+body.admin-redesign-final .chat-batches,
+body.admin-redesign-final .chat-panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .batch-card {
+  padding: 18px !important;
+  border-radius: 14px !important;
+}
+
+/* V4: student-scale admin UI. Keep everything compact and calm. */
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 318px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 318px !important;
+  min-width: 318px !important;
+  padding: 24px 16px 18px !important;
+  background: #fbfcfe !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 54px !important;
+  padding-bottom: 12px !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  margin: 0 0 18px !important;
+  border-radius: 10px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  gap: 10px !important;
+  padding-right: 8px !important;
+}
+
+body.admin-redesign-final .nav-section {
+  gap: 4px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  margin-top: 8px !important;
+  padding: 8px 20px 6px !important;
+  color: #050914 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding: 8px 12px 8px 52px !important;
+  border-radius: 7px !important;
+  font-size: 16px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 24px !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+}
+
+body.admin-redesign-final .sidebar-footer {
+  padding-top: 12px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  min-height: 54px !important;
+  font-size: 16px !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  min-height: 96px !important;
+  padding: 24px 36px 10px !important;
+}
+
+body.admin-redesign-final .lms-search {
+  width: min(100%, 720px) !important;
+  min-height: 56px !important;
+}
+
+body.admin-redesign-final .page-heading {
+  min-height: 124px !important;
+  padding: 8px 36px 20px !important;
+  align-items: flex-start !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  margin-top: 14px !important;
+  font-size: 38px !important;
+  line-height: 1.05 !important;
+}
+
+body.admin-redesign-final .heading-actions {
+  padding-top: 34px !important;
+}
+
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn,
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill {
+  min-height: 54px !important;
+  padding: 0 22px !important;
+  border-radius: 10px !important;
+  font-size: 16px !important;
+}
+
+body.admin-redesign-final .topbar-actions .avatar {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+}
+
+body.admin-redesign-final .admin-view {
+  padding: 26px 36px 36px !important;
+}
+
+body.admin-redesign-final .overview-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.85fr) !important;
+  gap: 22px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary,
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel,
+body.admin-redesign-final .review-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .shop-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .profile-card,
+body.admin-redesign-final .admin-card {
+  border-radius: 16px !important;
+  box-shadow: 0 12px 30px rgba(31, 70, 112, 0.055) !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 230px !important;
+  padding: 22px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: 44px !important;
+  line-height: 1.02 !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 118px !important;
+  padding: 18px 20px !important;
+}
+
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: 36px !important;
+}
+
+body.admin-redesign-final .chat-layout {
+  grid-template-columns: 380px minmax(0, 1fr) !important;
+  gap: 20px !important;
+  min-height: 0 !important;
+}
+
+body.admin-redesign-final .chat-batches,
+body.admin-redesign-final .chat-panel,
+body.admin-redesign-final .panel {
+  padding: 22px !important;
+}
+
+body.admin-redesign-final .chat-feed {
+  min-height: 280px !important;
+}
+
+/* V3: remove outer frame and align admin navigation with student shell proportions. */
+html,
+body.admin-redesign-final {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.admin-redesign-final {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  grid-template-columns: 292px minmax(0, 1fr) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 292px !important;
+  min-width: 292px !important;
+  padding: 18px 14px !important;
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  padding: 12px !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 52px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 116px !important;
+  max-height: 34px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  gap: 8px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 9px 10px 4px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding-left: 42px !important;
+  border-radius: 7px !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 14px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+body.admin-redesign-final .admin-main {
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
+body.admin-redesign-final .page-heading,
+body.admin-redesign-final .admin-view {
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
 :root {
   --app-bg: #eeeff4;
   --surface: #ffffff;
@@ -1929,6 +2495,18 @@ tr:last-child td {
   height: 88px;
 }
 
+.shop-thumb.no-image {
+  display: grid;
+  place-items: center;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
 .modal {
   position: fixed;
   inset: 0;
@@ -2929,4 +3507,3212 @@ body {
     align-items: stretch;
     flex-direction: column;
   }
+}
+/* FINAL ADMIN REDESIGN - student-style professional LMS UI. */
+:root {
+  --admin-role-bg: #dff4ff;
+  --admin-role-card: #ffffff;
+  --admin-role-line: #dbe8f7;
+  --admin-role-line-strong: #c7d8ee;
+  --admin-role-text: #10162a;
+  --admin-role-muted: #6d7a90;
+  --admin-role-soft: #f7fbff;
+  --admin-role-blue: #2f73ee;
+  --admin-role-purple: #5345f5;
+  --admin-role-green: #20b981;
+  --admin-role-red: #dc2626;
+  --admin-role-shadow: 0 18px 42px rgba(25, 56, 92, 0.11);
+  --admin-role-shadow-soft: 0 10px 24px rgba(25, 56, 92, 0.075);
+  --admin-role-font: Inter, Manrope, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html,
+body {
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  font-family: var(--admin-role-font) !important;
+  color: var(--admin-role-text) !important;
+  background:
+    radial-gradient(circle at 12% -10%, rgba(101, 208, 255, 0.46), transparent 26%),
+    radial-gradient(circle at 96% 0%, rgba(83, 69, 245, 0.12), transparent 25%),
+    linear-gradient(180deg, var(--admin-role-bg) 0%, #f7fbff 48%, #ffffff 100%) !important;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--admin-role-font) !important;
+  letter-spacing: 0 !important;
+}
+
+.admin-shell {
+  width: calc(100vw - 40px) !important;
+  max-width: 1540px !important;
+  height: calc(100vh - 40px) !important;
+  min-height: 0 !important;
+  margin: 20px auto !important;
+  display: grid !important;
+  grid-template-columns: 248px minmax(0, 1fr) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(194, 213, 236, 0.92) !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 28px 74px rgba(27, 74, 118, 0.18) !important;
+}
+
+.admin-sidebar {
+  width: 248px !important;
+  min-width: 248px !important;
+  height: 100% !important;
+  padding: 0 12px 16px !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 1px solid var(--admin-role-line) !important;
+  border-radius: 0 !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: none !important;
+}
+
+.admin-brand {
+  min-height: 74px !important;
+  padding: 18px 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+}
+
+.admin-brand img {
+  width: 128px !important;
+  max-height: 38px !important;
+  object-fit: contain !important;
+}
+
+.admin-brand span,
+.profile-switch,
+.sidebar-profile-link {
+  display: none !important;
+}
+
+.admin-profile-card {
+  min-height: 70px !important;
+  margin: 8px 0 18px !important;
+  padding: 12px !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 16px !important;
+  background: var(--admin-role-card) !important;
+  box-shadow: var(--admin-role-shadow-soft) !important;
+}
+
+.profile-avatar,
+.avatar,
+.profile-page-avatar,
+.metric-icon,
+.spotlight-icon {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-role-blue), var(--admin-role-purple)) !important;
+  box-shadow: 0 12px 24px rgba(47, 115, 238, 0.24) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.admin-profile-card strong {
+  color: var(--admin-role-text) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+.admin-profile-card small {
+  color: var(--admin-role-muted) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+.admin-nav {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 4px 12px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow-y: auto !important;
+}
+
+.admin-nav::-webkit-scrollbar,
+.admin-main::-webkit-scrollbar,
+.table-shell::-webkit-scrollbar,
+.chat-panel::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.admin-nav::-webkit-scrollbar-thumb,
+.admin-main::-webkit-scrollbar-thumb,
+.table-shell::-webkit-scrollbar-thumb,
+.chat-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: #c8d6eb !important;
+}
+
+.nav-section {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+.nav-label,
+.nav-label span {
+  margin: 8px 8px 4px !important;
+  color: #8c98ad !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+.nav-label button {
+  display: none !important;
+}
+
+.nav-item {
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  color: #657288 !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  text-align: left !important;
+  box-shadow: none !important;
+}
+
+.nav-item span {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 11px !important;
+  color: var(--admin-role-blue) !important;
+  background: #edf4ff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.nav-item:hover {
+  color: var(--admin-role-blue) !important;
+  background: #edf4ff !important;
+}
+
+.nav-item.active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-role-blue), var(--admin-role-purple)) !important;
+  box-shadow: 0 16px 30px rgba(47, 115, 238, 0.24) !important;
+}
+
+.nav-item.active span {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+.sidebar-footer {
+  padding: 12px 0 0 !important;
+  display: grid !important;
+  gap: 10px !important;
+  border-top: 1px solid var(--admin-role-line) !important;
+  background: #ffffff !important;
+}
+
+.sidebar-action-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+.sidebar-footer .secondary-btn,
+.sidebar-footer .logout-btn,
+.sidebar-action-btn {
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  justify-content: center !important;
+  border-radius: 13px !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+.sidebar-footer .secondary-btn,
+.sidebar-action-btn:not(.danger) {
+  color: #ffffff !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, var(--admin-role-blue), var(--admin-role-purple)) !important;
+  box-shadow: 0 14px 28px rgba(47, 115, 238, 0.22) !important;
+}
+
+.sidebar-footer .logout-btn,
+.sidebar-action-btn.danger {
+  color: var(--admin-role-red) !important;
+  border: 1px solid #ffd8d8 !important;
+  background: #fff5f5 !important;
+  box-shadow: none !important;
+}
+
+.admin-main {
+  min-width: 0 !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  background: linear-gradient(180deg, rgba(247, 251, 255, 0.94), #ffffff 48%) !important;
+}
+
+.admin-topbar {
+  min-height: 74px !important;
+  padding: 18px 28px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.lms-search {
+  width: min(450px, 100%) !important;
+  height: 44px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 15px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 8px 20px rgba(31, 70, 112, 0.06) !important;
+}
+
+.lms-search span {
+  display: none !important;
+}
+
+.lms-search input {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+}
+
+.topbar-actions,
+.heading-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+.sync-pill,
+.role-pill,
+.year-btn,
+.icon-btn,
+.heading-status {
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 15px !important;
+  color: var(--admin-role-text) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 8px 20px rgba(31, 70, 112, 0.06) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+}
+
+.role-pill {
+  min-width: 82px !important;
+}
+
+.icon-btn,
+.avatar {
+  width: 42px !important;
+  min-width: 42px !important;
+  padding: 0 !important;
+}
+
+.admin-main .page-heading {
+  min-height: 126px !important;
+  padding: 0 28px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  border-bottom: 1px solid var(--admin-role-line) !important;
+}
+
+.page-heading .eyebrow,
+.page-heading p {
+  margin: 0 0 10px !important;
+  color: #7d8aa2 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+.page-heading h1,
+#viewTitle {
+  margin: 0 !important;
+  color: var(--admin-role-text) !important;
+  font-size: 38px !important;
+  line-height: 1.1 !important;
+  font-weight: 900 !important;
+}
+
+.page-tabs {
+  margin-top: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 26px !important;
+}
+
+.page-tabs button {
+  position: relative !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: #59667a !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+.page-tabs button::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -8px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+}
+
+.page-tabs button.active {
+  color: #080c17 !important;
+}
+
+.page-tabs button.active::after {
+  background: #080c17 !important;
+}
+
+.live-dot {
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: var(--admin-role-green) !important;
+  box-shadow: 0 0 0 6px rgba(32, 185, 129, 0.12) !important;
+}
+
+.admin-view {
+  display: none !important;
+}
+
+.admin-view.active {
+  display: block !important;
+  padding: 28px !important;
+}
+
+.admin-view#dashboardView.active {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.52fr) minmax(320px, 0.86fr) !important;
+  grid-template-areas:
+    "activity status"
+    "metrics metrics"
+    "content content" !important;
+  gap: 20px !important;
+}
+
+.admin-view#dashboardView > .overview-grid {
+  display: contents !important;
+}
+
+.review-spotlight {
+  grid-area: activity !important;
+  min-height: 324px !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  overflow: hidden !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 86% 18%, rgba(101, 208, 255, 0.32), transparent 30%),
+    linear-gradient(180deg, #ffffff, #f7fbff) !important;
+  box-shadow: var(--admin-role-shadow-soft) !important;
+}
+
+.library-summary {
+  grid-area: status !important;
+  min-height: 324px !important;
+  padding: 22px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 18px !important;
+  background: var(--admin-role-card) !important;
+  box-shadow: var(--admin-role-shadow-soft) !important;
+}
+
+.status-pill,
+.badge,
+.pill {
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-role-blue), var(--admin-role-purple)) !important;
+  box-shadow: 0 10px 22px rgba(47, 115, 238, 0.22) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.review-spotlight h2 {
+  max-width: 720px !important;
+  margin: 18px 0 8px !important;
+  color: var(--admin-role-text) !important;
+  font-size: clamp(38px, 4vw, 64px) !important;
+  line-height: 1.02 !important;
+  font-weight: 900 !important;
+}
+
+.review-spotlight p {
+  max-width: 680px !important;
+  color: #536176 !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  font-weight: 650 !important;
+}
+
+.spotlight-top,
+.panel-heading,
+.panel-header,
+.table-toolbar,
+.view-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.spotlight-stats {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin-top: 22px !important;
+}
+
+.spotlight-stats > div,
+.library-row,
+.profile-hero-stats > div,
+.profile-status-list div {
+  min-height: 76px !important;
+  padding: 16px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 15px !important;
+  background: linear-gradient(180deg, #ffffff, #f8fbff) !important;
+  box-shadow: none !important;
+}
+
+.spotlight-stats span,
+.library-row small {
+  color: #7b879b !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.spotlight-stats strong,
+.library-row strong {
+  color: var(--admin-role-text) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+
+.library-row {
+  margin-top: 12px !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.library-row b {
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  color: #05824f !important;
+  background: #dffbea !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.admin-view#dashboardView > .metric-grid {
+  grid-area: metrics !important;
+  margin: 0 !important;
+}
+
+.metric-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.metric-card {
+  min-height: 126px !important;
+  padding: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 18px !important;
+  background: var(--admin-role-card) !important;
+  box-shadow: var(--admin-role-shadow-soft) !important;
+}
+
+.metric-card strong {
+  color: var(--admin-role-text) !important;
+  font-size: 38px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+
+.metric-top span:not(.metric-icon),
+.metric-footer,
+.metric-card small {
+  color: var(--admin-role-muted) !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+
+.admin-view#dashboardView > .dashboard-grid {
+  grid-area: content !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.admin-view#dashboardView .lms-side-rail {
+  display: none !important;
+}
+
+.panel,
+.table-shell,
+.table-wrap,
+.view-toolbar,
+.toolbar,
+.section-toolbar,
+.chat-panel,
+.profile-card,
+.profile-form-panel,
+.profile-status-panel,
+.profile-hero-panel,
+.course-card,
+.batch-card,
+.task-card,
+.student-card,
+.announcement-card,
+.shop-card {
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: var(--admin-role-shadow-soft) !important;
+}
+
+.panel,
+.table-shell,
+.view-toolbar,
+.toolbar,
+.chat-panel,
+.profile-card,
+.profile-form-panel,
+.profile-status-panel,
+.profile-hero-panel {
+  padding: 20px !important;
+}
+
+.panel:hover,
+.metric-card:hover,
+.course-card:hover,
+.batch-card:hover,
+.task-card:hover,
+.student-card:hover,
+.announcement-card:hover,
+.shop-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--admin-role-line-strong) !important;
+  box-shadow: var(--admin-role-shadow) !important;
+}
+
+.admin-view#dashboardView .dashboard-grid > .panel,
+.admin-view#dashboardView .dashboard-grid > section {
+  grid-column: auto !important;
+  min-height: 280px !important;
+}
+
+.panel-heading,
+.panel-header,
+.table-toolbar,
+.view-toolbar {
+  padding-bottom: 14px !important;
+  margin-bottom: 14px !important;
+  border-bottom: 1px solid var(--admin-role-line) !important;
+}
+
+.view-toolbar {
+  margin-bottom: 18px !important;
+}
+
+.panel h2,
+.panel-heading h2,
+.panel-header h2,
+.view-toolbar h2,
+.table-toolbar h2 {
+  margin: 0 !important;
+  color: var(--admin-role-text) !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+.panel p,
+.panel-heading p,
+.panel-header p,
+.view-toolbar p {
+  margin: 4px 0 0 !important;
+  color: var(--admin-role-muted) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+
+.chart-shell {
+  min-height: 230px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(180deg, #ffffff, #f7fbff) !important;
+}
+
+.compact-list,
+.stack-list,
+.class-list,
+.bar-list,
+.progress-list,
+.score-list,
+.detail-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.course-grid,
+.batch-grid,
+.task-grid,
+#coursesGrid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.course-card {
+  min-height: 320px !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+.course-card img,
+.course-thumb {
+  width: 100% !important;
+  height: 156px !important;
+  border-radius: 16px !important;
+  object-fit: cover !important;
+  background: #edf4ff !important;
+}
+
+.course-card h3 {
+  margin: 4px 0 2px !important;
+  color: var(--admin-role-text) !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+}
+
+.course-card p {
+  margin: 0 !important;
+  color: #536176 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.course-card .card-footer,
+.course-actions,
+.card-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-top: auto !important;
+  padding-top: 12px !important;
+  border-top: 1px solid var(--admin-role-line) !important;
+}
+
+.primary-btn,
+.soft-btn,
+.segmented button.active,
+.mini-tabs button.active {
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-role-blue), var(--admin-role-purple)) !important;
+  box-shadow: 0 14px 28px rgba(47, 115, 238, 0.24) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+.secondary-btn,
+.ghost-btn,
+.text-btn,
+.danger-btn {
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 13px !important;
+  color: var(--admin-role-blue) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+.danger-btn {
+  color: var(--admin-role-red) !important;
+  border-color: #ffd8d8 !important;
+  background: #fff5f5 !important;
+}
+
+.table-shell,
+.table-wrap {
+  overflow: auto !important;
+}
+
+table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+thead th,
+th {
+  height: 46px !important;
+  padding: 0 14px !important;
+  color: #718099 !important;
+  border-bottom: 1px solid var(--admin-role-line) !important;
+  background: #f4f8ff !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-align: left !important;
+}
+
+td {
+  padding: 14px !important;
+  border-bottom: 1px solid var(--admin-role-line) !important;
+  color: var(--admin-role-text) !important;
+  font-size: 13px !important;
+}
+
+tr:hover td {
+  background: #f8fbff !important;
+}
+
+input,
+select,
+textarea {
+  min-height: 42px !important;
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 13px !important;
+  background: #ffffff !important;
+  color: var(--admin-role-text) !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+textarea {
+  min-height: 110px !important;
+  padding: 12px 14px !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--admin-role-blue) !important;
+  box-shadow: 0 0 0 4px rgba(47, 115, 238, 0.12) !important;
+}
+
+label {
+  color: var(--admin-role-text) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.form-grid,
+.stack-form {
+  gap: 14px !important;
+}
+
+.modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+}
+
+.modal.active,
+.modal.open {
+  display: flex !important;
+}
+
+.modal-card,
+.modal-panel {
+  border: 1px solid var(--admin-role-line) !important;
+  border-radius: 22px !important;
+  background: #ffffff !important;
+  box-shadow: 0 30px 80px rgba(10, 30, 60, 0.26) !important;
+}
+
+.modal-backdrop {
+  background: rgba(15, 31, 55, 0.46) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.modal-body {
+  max-height: min(72vh, 760px) !important;
+  overflow: auto !important;
+}
+
+.loading-panel,
+.admin-alert {
+  display: none !important;
+  margin: 0 28px 18px !important;
+  border-radius: 15px !important;
+}
+
+.loading-panel.show,
+.loading-panel.active,
+.admin-alert.show {
+  display: block !important;
+  min-height: 56px !important;
+  padding: 18px !important;
+  border: 1px solid #fecaca !important;
+  background: #fff1f2 !important;
+  color: #d11231 !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+.loading-panel.show,
+.loading-panel.active {
+  border-color: var(--admin-role-line) !important;
+  background: #edf4ff !important;
+  color: #52637c !important;
+}
+
+.admin-alert.error {
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+  background: #fff1f2 !important;
+}
+
+.lms-mobile-nav,
+.sidebar-scrim,
+.admin-scrim {
+  display: none !important;
+}
+
+@media (max-width: 1180px) {
+  .admin-view#dashboardView.active {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "activity"
+      "status"
+      "metrics"
+      "content" !important;
+  }
+
+  .admin-view#dashboardView > .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 40 !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.22s ease !important;
+  }
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .admin-topbar,
+  .admin-main .page-heading,
+  .admin-view.active {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+}
+
+/* ADMIN FINAL OVERRIDE - scoped so the old admin skin cannot win. */
+body.admin-redesign-final {
+  --admin-final-blue: #2f6df3;
+  --admin-final-indigo: #5b45f5;
+  --admin-final-text: #0f172a;
+  --admin-final-muted: #66738a;
+  --admin-final-line: #dbe6f4;
+  --admin-final-soft: #f7fbff;
+  --admin-final-card: #ffffff;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: var(--admin-final-text) !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(111, 214, 255, 0.42), transparent 30%),
+    radial-gradient(circle at 86% 4%, rgba(91, 69, 245, 0.22), transparent 28%),
+    #eef7ff !important;
+  font-family: Inter, Manrope, Poppins, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+body.admin-redesign-final * {
+  box-sizing: border-box !important;
+  letter-spacing: 0 !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  display: grid !important;
+  grid-template-columns: 326px minmax(0, 1fr) !important;
+  width: calc(100vw - 32px) !important;
+  height: calc(100vh - 32px) !important;
+  margin: 16px auto !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(187, 211, 238, 0.92) !important;
+  border-radius: 22px !important;
+  background: #ffffff !important;
+  box-shadow: 0 28px 70px rgba(24, 57, 103, 0.18) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 326px !important;
+  min-width: 326px !important;
+  height: 100% !important;
+  padding: 26px 16px 16px !important;
+  overflow: hidden !important;
+  border-right: 1px solid var(--admin-final-line) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  height: auto !important;
+  min-height: 58px !important;
+  margin: 0 0 20px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 134px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+body.admin-redesign-final .admin-brand span {
+  display: none !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 86px !important;
+  margin: 0 0 18px !important;
+  padding: 14px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(25, 52, 89, 0.06) !important;
+}
+
+body.admin-redesign-final .profile-avatar,
+body.admin-redesign-final #sidebarAdminAvatar,
+body.admin-redesign-final #footerAdminAvatar,
+body.admin-redesign-final .avatar,
+body.admin-redesign-final .metric-icon,
+body.admin-redesign-final .spotlight-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  flex: 0 0 42px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-final-blue), var(--admin-final-indigo)) !important;
+  box-shadow: 0 14px 28px rgba(47, 109, 243, 0.22) !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .admin-profile-card strong {
+  display: block !important;
+  color: var(--admin-final-text) !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+}
+
+body.admin-redesign-final .admin-profile-card small {
+  display: block !important;
+  margin-top: 5px !important;
+  color: var(--admin-final-muted) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+body.admin-redesign-final .profile-switch {
+  display: none !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  padding: 8px 2px 16px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #c4cedc transparent !important;
+}
+
+body.admin-redesign-final .nav-section {
+  display: grid !important;
+  gap: 8px !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body.admin-redesign-final .nav-label {
+  margin: 0 0 4px !important;
+  padding: 0 18px !important;
+  color: #8a97aa !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+}
+
+body.admin-redesign-final .nav-label button {
+  display: none !important;
+}
+
+body.admin-redesign-final .nav-item {
+  width: 100% !important;
+  min-height: 48px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 13px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  text-align: left !important;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  border: 2px solid #5f6672 !important;
+  border-radius: 5px !important;
+  color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 0 !important;
+}
+
+body.admin-redesign-final .nav-item:nth-of-type(1) span,
+body.admin-redesign-final .nav-section:nth-of-type(3) .nav-item:nth-of-type(2) span,
+body.admin-redesign-final .nav-section:nth-of-type(3) .nav-item:nth-of-type(3) span {
+  border-radius: 999px !important;
+}
+
+body.admin-redesign-final .nav-item:hover,
+body.admin-redesign-final .nav-item.active {
+  background: #edeef2 !important;
+  color: #050914 !important;
+  transform: translateX(2px) !important;
+}
+
+body.admin-redesign-final .sidebar-footer {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 14px 0 0 !important;
+  border-top: 1px solid var(--admin-final-line) !important;
+  background: #ffffff !important;
+}
+
+body.admin-redesign-final .sidebar-profile-link {
+  display: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 8px !important;
+  color: var(--admin-final-text) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn span {
+  display: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn:not(.danger) {
+  color: #ffffff !important;
+  border-color: transparent !important;
+  background: linear-gradient(135deg, var(--admin-final-blue), var(--admin-final-indigo)) !important;
+  box-shadow: 0 16px 30px rgba(47, 109, 243, 0.24) !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn.danger {
+  color: #dc2626 !important;
+  border-color: #fecaca !important;
+  background: #fff6f6 !important;
+}
+
+body.admin-redesign-final .admin-main {
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  overflow: auto !important;
+  background: linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%) !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  min-height: 96px !important;
+  padding: 26px 34px 14px !important;
+  border: 0 !important;
+  background: rgba(251, 253, 255, 0.94) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+body.admin-redesign-final .lms-search {
+  width: min(470px, 100%) !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(30, 64, 120, 0.05) !important;
+}
+
+body.admin-redesign-final .lms-search span {
+  position: relative !important;
+  display: inline-block !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  overflow: hidden !important;
+  border: 2px solid #9aa6ba !important;
+  border-radius: 999px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+body.admin-redesign-final .lms-search span::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 11px !important;
+  top: 12px !important;
+  width: 7px !important;
+  height: 2px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  background: #9aa6ba !important;
+  transform: rotate(45deg) !important;
+}
+
+body.admin-redesign-final .lms-search input {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--admin-final-text) !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+}
+
+body.admin-redesign-final .topbar-actions,
+body.admin-redesign-final .heading-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 42px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 10px !important;
+  color: var(--admin-final-text) !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 30px rgba(29, 61, 118, 0.07) !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .live-dot {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 999px !important;
+  background: #1fa463 !important;
+  box-shadow: 0 0 0 6px rgba(31, 164, 99, 0.12) !important;
+}
+
+body.admin-redesign-final .page-heading {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  min-height: 132px !important;
+  margin: 0 !important;
+  padding: 6px 34px 24px !important;
+  border-bottom: 1px solid var(--admin-final-line) !important;
+  background: transparent !important;
+}
+
+body.admin-redesign-final .eyebrow {
+  margin: 0 0 6px !important;
+  color: #7d8aa0 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  margin: 0 !important;
+  color: var(--admin-final-text) !important;
+  font-size: clamp(34px, 3.1vw, 46px) !important;
+  line-height: 1.03 !important;
+  font-weight: 950 !important;
+}
+
+body.admin-redesign-final .page-tabs {
+  display: flex !important;
+  gap: 24px !important;
+  margin: 24px 0 -25px !important;
+}
+
+body.admin-redesign-final .page-tabs button {
+  position: relative !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #4a5568 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .page-tabs button.active {
+  color: #050914 !important;
+}
+
+body.admin-redesign-final .page-tabs button.active::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -1px !important;
+  height: 2px !important;
+  border-radius: 99px !important;
+  background: #050914 !important;
+}
+
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn,
+body.admin-redesign-final .text-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+body.admin-redesign-final .primary-btn {
+  color: #ffffff !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, var(--admin-final-blue), var(--admin-final-indigo)) !important;
+  box-shadow: 0 18px 32px rgba(47, 109, 243, 0.28) !important;
+}
+
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn,
+body.admin-redesign-final .text-btn {
+  color: #050914 !important;
+  border: 1px solid var(--admin-final-line) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-alert,
+body.admin-redesign-final .loading-panel {
+  display: none !important;
+  margin: 18px 34px 0 !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  color: #1456e8 !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .admin-alert:not(:empty),
+body.admin-redesign-final .admin-alert.show,
+body.admin-redesign-final .loading-panel.show,
+body.admin-redesign-final .loading-panel.active {
+  display: block !important;
+}
+
+body.admin-redesign-final .admin-alert.error {
+  color: #d11231 !important;
+  border-color: #fecaca !important;
+  background: #fff5f5 !important;
+}
+
+body.admin-redesign-final .admin-view {
+  display: none !important;
+  min-width: 0 !important;
+  padding: 28px 34px 36px !important;
+}
+
+body.admin-redesign-final .admin-view.active {
+  display: block !important;
+}
+
+body.admin-redesign-final .admin-view#dashboardView.active {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 22px !important;
+}
+
+body.admin-redesign-final .overview-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.75fr) minmax(340px, 0.95fr) !important;
+  gap: 24px !important;
+  align-items: stretch !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary,
+body.admin-redesign-final .metric-card,
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel,
+body.admin-redesign-final .review-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .shop-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .profile-card,
+body.admin-redesign-final .admin-card {
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 22px 48px rgba(30, 64, 120, 0.07) !important;
+}
+
+body.admin-redesign-final .review-spotlight {
+  min-height: 430px !important;
+  padding: 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 28px !important;
+  background:
+    linear-gradient(120deg, #ffffff 0%, #ffffff 48%, #e8f8ff 100%) !important;
+}
+
+body.admin-redesign-final .spotlight-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .status-pill,
+body.admin-redesign-final .library-row b,
+body.admin-redesign-final .pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 34px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--admin-final-blue), var(--admin-final-indigo)) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  margin: 0 0 12px !important;
+  color: var(--admin-final-text) !important;
+  font-size: clamp(50px, 5vw, 76px) !important;
+  line-height: 0.98 !important;
+  font-weight: 950 !important;
+  max-width: 860px !important;
+}
+
+body.admin-redesign-final .review-spotlight p,
+body.admin-redesign-final .panel-heading p,
+body.admin-redesign-final .metric-footer small {
+  margin: 0 !important;
+  color: #52637a !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  font-weight: 800 !important;
+}
+
+body.admin-redesign-final .spotlight-stats {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body.admin-redesign-final .spotlight-stats > div,
+body.admin-redesign-final .library-row {
+  min-height: 92px !important;
+  padding: 18px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.74) !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .spotlight-stats span,
+body.admin-redesign-final .library-row small,
+body.admin-redesign-final .metric-top span {
+  color: #778399 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong,
+body.admin-redesign-final .metric-card > strong {
+  color: #050914 !important;
+  font-size: 36px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+}
+
+body.admin-redesign-final .library-summary {
+  min-height: 430px !important;
+  padding: 26px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .panel-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding-bottom: 18px !important;
+  border-bottom: 1px solid var(--admin-final-line) !important;
+}
+
+body.admin-redesign-final .panel-heading h2,
+body.admin-redesign-final .library-summary h2,
+body.admin-redesign-final .panel h2,
+body.admin-redesign-final .content-card h2,
+body.admin-redesign-final .form-card h2 {
+  margin: 0 0 6px !important;
+  color: #050914 !important;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  font-weight: 950 !important;
+}
+
+body.admin-redesign-final .library-row {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .library-row b {
+  min-height: 30px !important;
+  color: #047857 !important;
+  background: #dcfce7 !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(180px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 160px !important;
+  padding: 22px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+body.admin-redesign-final .metric-top,
+body.admin-redesign-final .metric-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+body.admin-redesign-final .dashboard-grid,
+body.admin-redesign-final .two-column-grid,
+body.admin-redesign-final .panel-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+}
+
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel {
+  padding: 22px !important;
+}
+
+body.admin-redesign-final .table-shell,
+body.admin-redesign-final .table-wrap {
+  overflow: auto !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+}
+
+body.admin-redesign-final table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+body.admin-redesign-final th {
+  padding: 14px 16px !important;
+  border-bottom: 1px solid var(--admin-final-line) !important;
+  color: #7d8aa0 !important;
+  background: #f8fbff !important;
+  font-size: 12px !important;
+  font-weight: 950 !important;
+  text-align: left !important;
+}
+
+body.admin-redesign-final td {
+  padding: 16px !important;
+  border-bottom: 1px solid #edf2f8 !important;
+  color: var(--admin-final-text) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+body.admin-redesign-final tr:hover td {
+  background: #f8fbff !important;
+}
+
+body.admin-redesign-final input,
+body.admin-redesign-final select,
+body.admin-redesign-final textarea {
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 10px !important;
+  color: var(--admin-final-text) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+}
+
+body.admin-redesign-final textarea {
+  min-height: 118px !important;
+  padding: 12px 14px !important;
+}
+
+body.admin-redesign-final input:focus,
+body.admin-redesign-final select:focus,
+body.admin-redesign-final textarea:focus {
+  border-color: var(--admin-final-blue) !important;
+  box-shadow: 0 0 0 4px rgba(47, 109, 243, 0.12) !important;
+  outline: 0 !important;
+}
+
+body.admin-redesign-final .modal-card {
+  width: min(760px, calc(100vw - 36px)) !important;
+  max-height: min(84vh, 820px) !important;
+  overflow: auto !important;
+  border: 1px solid var(--admin-final-line) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 34px 90px rgba(12, 25, 48, 0.26) !important;
+}
+
+body.admin-redesign-final .modal-card:has(.assignment-form-pro) {
+  width: min(980px, calc(100vw - 36px)) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body.admin-redesign-final .modal-card:has(.assignment-form-pro) > h2 {
+  margin: 0 !important;
+  padding: 24px 28px 10px !important;
+  font-size: 24px !important;
+  letter-spacing: -0.03em !important;
+}
+
+body.admin-redesign-final .assignment-form-pro {
+  gap: 18px !important;
+  padding: 0 28px 24px !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-course-head {
+  position: relative !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: end !important;
+  gap: 18px !important;
+  border: 1px solid rgba(47, 109, 243, 0.18) !important;
+  border-radius: 24px !important;
+  padding: 22px !important;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(37, 99, 235, 0.18), transparent 34%),
+    linear-gradient(135deg, #f8fbff 0%, #eef5ff 52%, #ffffff 100%) !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-course-head h3 {
+  margin-top: 10px !important;
+  font-size: clamp(22px, 3vw, 32px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.055em !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-head-stats {
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-head-stats span {
+  min-width: 118px !important;
+  border: 1px solid rgba(47, 109, 243, 0.16) !important;
+  border-radius: 18px !important;
+  padding: 12px 14px !important;
+  color: #475569 !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.10) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-head-stats strong {
+  display: block !important;
+  color: #0f172a !important;
+  font-size: 22px !important;
+}
+
+body.admin-redesign-final .assignment-panel-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-section {
+  min-width: 0 !important;
+  border: 1px solid #e4eaf5 !important;
+  border-radius: 22px !important;
+  padding: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06) !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-section-head h4 {
+  font-size: 18px !important;
+  letter-spacing: -0.02em !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-search {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-search span {
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-search input {
+  width: 100% !important;
+  border: 1px solid #dbe5f2 !important;
+  border-radius: 16px !important;
+  padding: 13px 14px !important;
+  background: #f8fafc !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-list {
+  max-height: min(42vh, 360px) !important;
+  padding-right: 4px !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-option {
+  border-radius: 17px !important;
+  border-color: #e5edf7 !important;
+  background: #fbfdff !important;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-option:hover {
+  border-color: rgba(47, 109, 243, 0.36) !important;
+  box-shadow: 0 12px 28px rgba(47, 109, 243, 0.10) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-option:has(input:checked) {
+  border-color: rgba(47, 109, 243, 0.55) !important;
+  background: linear-gradient(135deg, #f7fbff, #edf5ff) !important;
+}
+
+body.admin-redesign-final .assignment-form-pro .assignment-actions {
+  position: sticky !important;
+  bottom: 0 !important;
+  margin: 0 -28px -24px !important;
+  padding: 16px 28px 22px !important;
+  border-top: 1px solid #e4eaf5 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+body.admin-redesign-final .advanced-form-options {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
+  padding: 12px 14px !important;
+  background: #f8fafc !important;
+}
+
+body.admin-redesign-final .advanced-form-options summary {
+  cursor: pointer !important;
+  color: #1d4ed8 !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .scroll-fab-group {
+  display: none !important;
+}
+
+@media (max-width: 1180px) {
+  body.admin-redesign-final .admin-shell {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  body.admin-redesign-final .overview-grid,
+  body.admin-redesign-final .dashboard-grid,
+  body.admin-redesign-final .two-column-grid,
+  body.admin-redesign-final .panel-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.admin-redesign-final .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 860px) {
+  body.admin-redesign-final .assignment-panel-grid,
+  body.admin-redesign-final .assignment-form-pro .assignment-course-head {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.admin-redesign-final .assignment-form-pro .assignment-head-stats {
+    justify-content: stretch !important;
+  }
+
+  body.admin-redesign-final .assignment-form-pro .assignment-head-stats span {
+    flex: 1 1 120px !important;
+  }
+
+  body.admin-redesign-final .admin-shell {
+    display: block !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar {
+    position: fixed !important;
+    z-index: 60 !important;
+    inset: 0 auto 0 0 !important;
+    width: min(326px, 88vw) !important;
+    min-width: 0 !important;
+    transform: translateX(-104%) !important;
+    transition: transform 0.22s ease !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  body.admin-redesign-final .admin-topbar,
+  body.admin-redesign-final .page-heading,
+  body.admin-redesign-final .admin-view {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  body.admin-redesign-final .admin-topbar,
+  body.admin-redesign-final .page-heading {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  body.admin-redesign-final .lms-search {
+    width: 100% !important;
+  }
+
+  body.admin-redesign-final .metric-grid,
+  body.admin-redesign-final .spotlight-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ADMIN COMPACT FIX - matches the current student UI scale. */
+body.admin-redesign-final {
+  background: linear-gradient(135deg, #c8f2ff 0%, #edf6ff 45%, #ffffff 100%) !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 300px !important;
+  min-width: 300px !important;
+  height: 100vh !important;
+  padding: 18px 14px 14px !important;
+  background: #fafafa !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 54px !important;
+  margin-bottom: 14px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 124px !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  padding: 12px !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+  border-radius: 9px !important;
+}
+
+body.admin-redesign-final .profile-avatar,
+body.admin-redesign-final #sidebarAdminAvatar,
+body.admin-redesign-final #footerAdminAvatar,
+body.admin-redesign-final .avatar,
+body.admin-redesign-final .metric-icon,
+body.admin-redesign-final .spotlight-icon {
+  width: 38px !important;
+  height: 38px !important;
+  flex-basis: 38px !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-profile-card strong {
+  font-size: 15px !important;
+}
+
+body.admin-redesign-final .admin-profile-card small {
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  padding: 4px 0 12px !important;
+}
+
+body.admin-redesign-final .nav-section {
+  gap: 6px !important;
+  margin-bottom: 18px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 0 12px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 38px !important;
+  padding: 0 12px !important;
+  gap: 10px !important;
+  border-radius: 7px !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  width: 18px !important;
+  height: 18px !important;
+  flex-basis: 18px !important;
+  border-width: 2px !important;
+}
+
+body.admin-redesign-final .sidebar-footer {
+  padding-top: 10px !important;
+}
+
+body.admin-redesign-final .sidebar-action-grid {
+  gap: 8px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  min-height: 42px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  min-height: 82px !important;
+  padding: 22px 30px 8px !important;
+  background: rgba(251, 253, 255, 0.92) !important;
+}
+
+body.admin-redesign-final .lms-search {
+  width: min(460px, 100%) !important;
+  height: 42px !important;
+  border-radius: 9px !important;
+}
+
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill {
+  min-height: 40px !important;
+  padding: 0 14px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .page-heading {
+  min-height: 118px !important;
+  padding: 4px 30px 20px !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  font-size: 34px !important;
+  line-height: 1.08 !important;
+}
+
+body.admin-redesign-final .eyebrow {
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .page-tabs {
+  gap: 24px !important;
+  margin: 18px 0 -21px !important;
+}
+
+body.admin-redesign-final .page-tabs button {
+  min-height: 34px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-view {
+  padding: 22px 30px 32px !important;
+}
+
+body.admin-redesign-final .admin-view#dashboardView.active {
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .overview-grid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.9fr) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary,
+body.admin-redesign-final .metric-card,
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel,
+body.admin-redesign-final .review-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .shop-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .profile-card,
+body.admin-redesign-final .admin-card {
+  border-radius: 14px !important;
+  box-shadow: 0 16px 34px rgba(30, 64, 120, 0.055) !important;
+}
+
+body.admin-redesign-final .review-spotlight {
+  min-height: 282px !important;
+  padding: 24px !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: clamp(30px, 3vw, 42px) !important;
+  line-height: 1.04 !important;
+  margin-bottom: 10px !important;
+}
+
+body.admin-redesign-final .review-spotlight p,
+body.admin-redesign-final .panel-heading p,
+body.admin-redesign-final .metric-footer small {
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 750 !important;
+}
+
+body.admin-redesign-final .status-pill,
+body.admin-redesign-final .library-row b,
+body.admin-redesign-final .pill {
+  min-height: 28px !important;
+  padding: 0 11px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .spotlight-stats {
+  gap: 12px !important;
+}
+
+body.admin-redesign-final .spotlight-stats > div,
+body.admin-redesign-final .library-row {
+  min-height: 74px !important;
+  padding: 14px !important;
+  border-radius: 12px !important;
+}
+
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong,
+body.admin-redesign-final .metric-card > strong {
+  font-size: 30px !important;
+}
+
+body.admin-redesign-final .library-summary {
+  min-height: 282px !important;
+  padding: 22px !important;
+  gap: 14px !important;
+}
+
+body.admin-redesign-final .panel-heading {
+  padding-bottom: 14px !important;
+}
+
+body.admin-redesign-final .panel-heading h2,
+body.admin-redesign-final .library-summary h2,
+body.admin-redesign-final .panel h2,
+body.admin-redesign-final .content-card h2,
+body.admin-redesign-final .form-card h2 {
+  font-size: 17px !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  grid-template-columns: repeat(3, minmax(170px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 126px !important;
+  padding: 18px !important;
+}
+
+body.admin-redesign-final .dashboard-grid,
+body.admin-redesign-final .two-column-grid,
+body.admin-redesign-final .panel-grid {
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel {
+  padding: 18px !important;
+}
+
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn,
+body.admin-redesign-final .text-btn {
+  min-height: 40px !important;
+  padding: 0 15px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final th {
+  height: 42px !important;
+  padding: 12px 14px !important;
+  font-size: 11px !important;
+}
+
+body.admin-redesign-final td {
+  padding: 13px 14px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final input,
+body.admin-redesign-final select,
+body.admin-redesign-final textarea {
+  min-height: 40px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 1180px) {
+  body.admin-redesign-final .overview-grid,
+  body.admin-redesign-final .dashboard-grid,
+  body.admin-redesign-final .two-column-grid,
+  body.admin-redesign-final .panel-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 920px) {
+  body.admin-redesign-final .admin-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar {
+    width: min(300px, 86vw) !important;
+    min-width: 0 !important;
+  }
+
+  body.admin-redesign-final .admin-topbar,
+  body.admin-redesign-final .page-heading,
+  body.admin-redesign-final .admin-view {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  body.admin-redesign-final .metric-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ADMIN GENZ POLISH - final product skin aligned to student UI. */
+body.admin-redesign-final {
+  --role-blue: #2f6df3;
+  --role-accent: #6246f5;
+  --role-bg: #eff8ff;
+  --role-text: #090d19;
+  --role-muted: #66738a;
+  --role-line: #d9e6f5;
+  --role-shadow: 0 18px 46px rgba(27, 74, 118, 0.11);
+  background:
+    radial-gradient(circle at 12% -10%, rgba(101, 208, 255, 0.44), transparent 26%),
+    linear-gradient(180deg, #dff6ff 0%, #f7fbff 44%, #ffffff 100%) !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 248px minmax(0, 1fr) !important;
+  width: calc(100vw - 40px) !important;
+  max-width: 1540px !important;
+  height: calc(100vh - 40px) !important;
+  margin: 20px auto !important;
+  border: 1px solid rgba(194, 213, 236, 0.9) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 26px 70px rgba(27, 74, 118, 0.16) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 248px !important;
+  min-width: 248px !important;
+  height: 100% !important;
+  padding: 0 12px 14px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-right: 1px solid var(--role-line) !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 64px !important;
+  margin: 0 !important;
+  padding: 16px 8px 10px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 110px !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  margin: 8px 0 18px !important;
+  padding: 12px !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  border-color: var(--role-line) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 12px 26px rgba(31, 70, 112, 0.05) !important;
+}
+
+body.admin-redesign-final .admin-profile-card strong {
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-profile-card small {
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .profile-avatar,
+body.admin-redesign-final #sidebarAdminAvatar,
+body.admin-redesign-final #footerAdminAvatar,
+body.admin-redesign-final .avatar,
+body.admin-redesign-final .metric-icon,
+body.admin-redesign-final .spotlight-icon {
+  width: 40px !important;
+  height: 40px !important;
+  flex-basis: 40px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, var(--role-accent), #5146f2) !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  padding: 0 0 14px !important;
+}
+
+body.admin-redesign-final .nav-section {
+  gap: 4px !important;
+  margin-bottom: 18px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 0 8px !important;
+  color: #050914 !important;
+  font-size: 12px !important;
+  text-transform: none !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding: 0 10px 0 34px !important;
+  border-radius: 7px !important;
+  color: #050914 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  position: relative !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  width: 17px !important;
+  height: 17px !important;
+  flex-basis: 17px !important;
+  border: 2px solid #5f6672 !important;
+  border-radius: 4px !important;
+  transform: translateY(-50%) !important;
+}
+
+body.admin-redesign-final .nav-item.active,
+body.admin-redesign-final .nav-item:hover {
+  background: #ececf0 !important;
+  transform: none !important;
+}
+
+body.admin-redesign-final .nav-item.active span,
+body.admin-redesign-final .nav-item:hover span {
+  border-color: #111827 !important;
+}
+
+body.admin-redesign-final .sidebar-footer {
+  padding: 14px 0 0 !important;
+  background: transparent !important;
+  border-top: 1px solid var(--role-line) !important;
+}
+
+body.admin-redesign-final .sidebar-profile-link {
+  display: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-grid {
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  width: 100% !important;
+  min-height: 42px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn:not(.danger) {
+  background: #ffffff !important;
+  color: #050914 !important;
+  border: 1px solid var(--role-line) !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn.danger {
+  color: #e01b1b !important;
+  border: 1px solid #ffd2d2 !important;
+  background: #fff6f6 !important;
+}
+
+body.admin-redesign-final .admin-main {
+  background: linear-gradient(180deg, rgba(247, 251, 255, 0.94), #ffffff 48%) !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  min-height: 74px !important;
+  padding: 18px 28px 10px !important;
+  background: rgba(247, 251, 255, 0.9) !important;
+}
+
+body.admin-redesign-final .page-heading {
+  min-height: 94px !important;
+  padding: 0 28px 16px !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  font-size: 30px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .page-tabs {
+  margin: 16px 0 -17px !important;
+}
+
+body.admin-redesign-final .admin-view {
+  padding: 28px !important;
+}
+
+body.admin-redesign-final .overview-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr) !important;
+  gap: 20px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary,
+body.admin-redesign-final .metric-card,
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel,
+body.admin-redesign-final .review-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .shop-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .profile-card,
+body.admin-redesign-final .admin-card {
+  border: 1px solid var(--role-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: var(--role-shadow) !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 322px !important;
+  padding: 24px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: clamp(34px, 4vw, 54px) !important;
+  line-height: 1.02 !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 126px !important;
+  padding: 18px !important;
+}
+
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: 38px !important;
+}
+
+body.admin-redesign-final .dashboard-grid,
+body.admin-redesign-final .two-column-grid,
+body.admin-redesign-final .panel-grid,
+body.admin-redesign-final .course-grid,
+body.admin-redesign-final .batch-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .lms-search,
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill,
+body.admin-redesign-final .avatar,
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn,
+body.admin-redesign-final .text-btn {
+  border-radius: 10px !important;
+}
+
+body.admin-redesign-final .primary-btn {
+  background: linear-gradient(135deg, var(--role-blue), var(--role-accent)) !important;
+  box-shadow: 0 14px 28px rgba(47, 115, 238, 0.25) !important;
+}
+
+@media (max-width: 900px) {
+  body.admin-redesign-final .admin-shell {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  body.admin-redesign-final .overview-grid,
+  body.admin-redesign-final .dashboard-grid,
+  body.admin-redesign-final .two-column-grid,
+  body.admin-redesign-final .panel-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* V2 final cleanup: compact student-style admin shell, no dashboard tab strip. */
+body.admin-redesign-final {
+  --role-bg: #dff4ff !important;
+  --role-shell: #ffffff !important;
+  --role-side: #fafbfc !important;
+  --role-line: #dce7f4 !important;
+  --role-text: #070b18 !important;
+  --role-muted: #6b778f !important;
+  --role-blue: #2563eb !important;
+  --role-accent: #5b4ff2 !important;
+  margin: 0 !important;
+  padding: 10px 16px !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #bdefff 0%, #eef7ff 44%, #dfe8ff 100%) !important;
+  font-family: Inter, Manrope, Poppins, ui-sans-serif, system-ui, sans-serif !important;
+  color: var(--role-text) !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  width: min(100%, 1840px) !important;
+  height: calc(100vh - 20px) !important;
+  min-height: 720px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 310px minmax(0, 1fr) !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #c7daf1 !important;
+  border-radius: 24px !important;
+  background: var(--role-shell) !important;
+  box-shadow: 14px 22px 46px rgba(37, 55, 100, 0.16) !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  position: relative !important;
+  inset: auto !important;
+  width: 310px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 18px 16px !important;
+  gap: 16px !important;
+  border: 0 !important;
+  border-right: 1px solid var(--role-line) !important;
+  border-radius: 0 !important;
+  background: var(--role-side) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+body.admin-redesign-final .admin-sidebar::before,
+body.admin-redesign-final .admin-sidebar::after {
+  display: none !important;
+  content: none !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 56px !important;
+  padding: 0 0 8px !important;
+  justify-content: center !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 126px !important;
+  height: auto !important;
+  max-height: 38px !important;
+  object-fit: contain !important;
+}
+
+body.admin-redesign-final .admin-brand span,
+body.admin-redesign-final .nav-label button,
+body.admin-redesign-final .profile-switch {
+  display: none !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 86px !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  display: grid !important;
+  grid-template-columns: 50px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  border: 1px solid var(--role-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 32px rgba(31, 70, 112, 0.06) !important;
+}
+
+body.admin-redesign-final #sidebarAdminAvatar,
+body.admin-redesign-final #footerAdminAvatar,
+body.admin-redesign-final .profile-avatar,
+body.admin-redesign-final .avatar,
+body.admin-redesign-final .metric-icon,
+body.admin-redesign-final .spotlight-icon {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex-basis: 42px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #2563eb, #5b4ff2) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-profile-card strong {
+  color: var(--role-text) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .admin-profile-card small {
+  color: var(--role-muted) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  padding: 8px 0 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  overflow-y: auto !important;
+}
+
+body.admin-redesign-final .nav-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin: 0 !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 10px 12px 5px !important;
+  color: #0a1020 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body.admin-redesign-final .nav-item {
+  width: 100% !important;
+  min-height: 36px !important;
+  padding: 8px 12px 8px 42px !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #111827 !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  position: relative !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  border: 2px solid #5f6672 !important;
+  border-radius: 4px !important;
+  transform: translateY(-50%) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+body.admin-redesign-final .nav-item[data-view="dashboard"] span,
+body.admin-redesign-final .nav-item[data-view="reviews"] span,
+body.admin-redesign-final .nav-item[data-view="profile"] span {
+  border-radius: 999px !important;
+}
+
+body.admin-redesign-final .nav-item.active,
+body.admin-redesign-final .nav-item:hover {
+  background: #ececf1 !important;
+  color: #000000 !important;
+}
+
+body.admin-redesign-final .nav-item.active span,
+body.admin-redesign-final .nav-item:hover span {
+  border-color: #111827 !important;
+}
+
+body.admin-redesign-final .sidebar-footer {
+  flex: 0 0 auto !important;
+  padding: 12px 0 0 !important;
+  border-top: 1px solid var(--role-line) !important;
+  background: transparent !important;
+}
+
+body.admin-redesign-final .sidebar-profile-link {
+  display: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn {
+  min-height: 44px !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .sidebar-action-btn span {
+  display: none !important;
+}
+
+body.admin-redesign-final .admin-main {
+  height: 100% !important;
+  min-width: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: linear-gradient(180deg, #f8fcff 0%, #ffffff 38%) !important;
+}
+
+body.admin-redesign-final .admin-topbar {
+  min-height: 72px !important;
+  padding: 18px 34px 8px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  background: rgba(248, 252, 255, 0.96) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 0 !important;
+}
+
+body.admin-redesign-final .lms-search {
+  width: min(100%, 575px) !important;
+  min-height: 52px !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  border: 1px solid var(--role-line) !important;
+  box-shadow: 0 14px 30px rgba(31, 70, 112, 0.05) !important;
+}
+
+body.admin-redesign-final .lms-search span {
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 14px !important;
+  border: 2px solid #9aa5b8 !important;
+  border-radius: 999px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  position: relative !important;
+}
+
+body.admin-redesign-final .lms-search input {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+body.admin-redesign-final .topbar-actions {
+  gap: 10px !important;
+}
+
+body.admin-redesign-final .sync-pill,
+body.admin-redesign-final .role-pill,
+body.admin-redesign-final .topbar-actions .avatar,
+body.admin-redesign-final .primary-btn,
+body.admin-redesign-final .secondary-btn,
+body.admin-redesign-final .ghost-btn {
+  min-height: 44px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body.admin-redesign-final .page-heading {
+  min-height: 116px !important;
+  padding: 10px 34px 22px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  border-bottom: 1px solid var(--role-line) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.admin-redesign-final .eyebrow {
+  display: none !important;
+}
+
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  margin: 8px 0 0 !important;
+  color: #050914 !important;
+  font-size: clamp(30px, 3vw, 38px) !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+}
+
+body.admin-redesign-final .page-tabs {
+  display: none !important;
+}
+
+body.admin-redesign-final .heading-actions {
+  padding-top: 28px !important;
+  gap: 12px !important;
+}
+
+body.admin-redesign-final .admin-alert,
+body.admin-redesign-final .loading-panel {
+  margin: 16px 34px 0 !important;
+  padding: 12px 16px !important;
+  min-height: 0 !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+}
+
+body.admin-redesign-final .admin-alert:not(.show),
+body.admin-redesign-final .loading-panel:not(.show) {
+  display: none !important;
+}
+
+body.admin-redesign-final .admin-view {
+  padding: 24px 34px 34px !important;
+}
+
+body.admin-redesign-final .overview-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr) !important;
+  gap: 22px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 260px !important;
+  padding: 24px 30px !important;
+}
+
+body.admin-redesign-final .review-spotlight h2 {
+  max-width: 720px !important;
+  font-size: clamp(34px, 4vw, 48px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: 0 !important;
+}
+
+body.admin-redesign-final .review-spotlight p,
+body.admin-redesign-final .library-summary p,
+body.admin-redesign-final .panel-heading p {
+  color: #546178 !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+}
+
+body.admin-redesign-final .spotlight-stats {
+  gap: 14px !important;
+}
+
+body.admin-redesign-final .spotlight-stats > div,
+body.admin-redesign-final .library-row {
+  min-height: 86px !important;
+  padding: 16px 18px !important;
+  border-radius: 12px !important;
+}
+
+body.admin-redesign-final .metric-grid {
+  margin-top: 22px !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body.admin-redesign-final .metric-card {
+  min-height: 116px !important;
+  padding: 18px !important;
+  border-radius: 14px !important;
+}
+
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: clamp(30px, 3vw, 40px) !important;
+  line-height: 1 !important;
+}
+
+body.admin-redesign-final .dashboard-grid,
+body.admin-redesign-final .two-column-grid,
+body.admin-redesign-final .panel-grid,
+body.admin-redesign-final .course-grid,
+body.admin-redesign-final .batch-grid {
+  margin-top: 22px !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary,
+body.admin-redesign-final .metric-card,
+body.admin-redesign-final .panel,
+body.admin-redesign-final .content-card,
+body.admin-redesign-final .form-card,
+body.admin-redesign-final .analytics-panel,
+body.admin-redesign-final .review-card,
+body.admin-redesign-final .batch-card,
+body.admin-redesign-final .shop-card,
+body.admin-redesign-final .course-card,
+body.admin-redesign-final .profile-card,
+body.admin-redesign-final .admin-card {
+  border: 1px solid var(--role-line) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 18px 42px rgba(31, 70, 112, 0.06) !important;
+}
+
+@media (max-width: 980px) {
+  body.admin-redesign-final {
+    padding: 0 !important;
+  }
+
+  body.admin-redesign-final .admin-shell {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 0 !important;
+    grid-template-columns: 1fr !important;
+    border-radius: 0 !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.2s ease !important;
+    z-index: 80 !important;
+  }
+
+  body.admin-redesign-final .admin-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  body.admin-redesign-final .admin-topbar,
+  body.admin-redesign-final .page-heading,
+  body.admin-redesign-final .admin-view {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  body.admin-redesign-final .overview-grid,
+  body.admin-redesign-final .dashboard-grid,
+  body.admin-redesign-final .two-column-grid,
+  body.admin-redesign-final .panel-grid,
+  body.admin-redesign-final .course-grid,
+  body.admin-redesign-final .batch-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* V3 final: no outside black/blue frame; student-style admin navigation. */
+html,
+body.admin-redesign-final {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.admin-redesign-final {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+body.admin-redesign-final .admin-shell {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  grid-template-columns: 292px minmax(0, 1fr) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.admin-redesign-final .admin-sidebar {
+  width: 292px !important;
+  min-width: 292px !important;
+  padding: 18px 14px !important;
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-profile-card {
+  min-height: 72px !important;
+  padding: 12px !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+}
+
+body.admin-redesign-final .admin-brand {
+  min-height: 52px !important;
+}
+
+body.admin-redesign-final .admin-brand img {
+  width: 116px !important;
+  max-height: 34px !important;
+}
+
+body.admin-redesign-final .admin-nav {
+  gap: 8px !important;
+}
+
+body.admin-redesign-final .nav-label {
+  padding: 9px 10px 4px !important;
+  font-size: 12px !important;
+}
+
+body.admin-redesign-final .nav-item {
+  min-height: 36px !important;
+  padding-left: 42px !important;
+  border-radius: 7px !important;
+}
+
+body.admin-redesign-final .nav-item span {
+  left: 14px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+body.admin-redesign-final .admin-main {
+  border-radius: 0 !important;
+}
+
+body.admin-redesign-final .admin-topbar,
+body.admin-redesign-final .page-heading,
+body.admin-redesign-final .admin-view {
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+/* EOF student-scale override */
+body.admin-redesign-final .admin-shell {
+  grid-template-columns: 318px minmax(0, 1fr) !important;
+}
+body.admin-redesign-final .admin-sidebar {
+  width: 318px !important;
+  min-width: 318px !important;
+  padding: 24px 16px 18px !important;
+}
+body.admin-redesign-final .nav-label {
+  padding: 8px 20px 6px !important;
+  font-size: 13px !important;
+}
+body.admin-redesign-final .nav-item {
+  padding: 8px 12px 8px 52px !important;
+  font-size: 16px !important;
+}
+body.admin-redesign-final .nav-item span {
+  left: 24px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+body.admin-redesign-final .page-heading h1,
+body.admin-redesign-final #viewTitle {
+  font-size: 38px !important;
+}
+body.admin-redesign-final .review-spotlight,
+body.admin-redesign-final .library-summary {
+  min-height: 230px !important;
+}
+body.admin-redesign-final .review-spotlight h2 {
+  font-size: 44px !important;
+}
+body.admin-redesign-final .metric-card {
+  min-height: 118px !important;
+}
+body.admin-redesign-final .metric-card > strong,
+body.admin-redesign-final .spotlight-stats strong,
+body.admin-redesign-final .library-row strong {
+  font-size: 36px !important;
 }

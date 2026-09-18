@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jenovate - Built for Gen Z. Designed for Growth</title>
+  <meta name="description" content="Jenovate is built for Gen Z learners with guided courses, mentors, projects, and career-ready growth.">
+  <link rel="icon" type="image/png" href="assets/img/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260602-course-categories-v19">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html#home" aria-label="Jenovate home">
+      <img src="assets/img/logo/favicon.png" alt="">
+    </a>
+    <nav class="nav">
+      <a class="active" href="#home">Home</a>
+      <a href="#courses">Courses</a>
+      <a href="campus-ambassador.html">Campus Ambassador</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="about-us.html">About Us</a>
+    </nav>
+
+    <div class="header-actions">
+      <form class="search" id="courseSearch">
+        <button class="category-btn" id="categoryButton" type="button" aria-expanded="false">
+          <span class="grid-dot" aria-hidden="true"></span>
+          <span class="category-label">Categories</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <label class="sr-only" for="searchInput">Search for course</label>
+        <input id="searchInput" type="search" placeholder="Search For Course . . .">
+        <button class="search-btn" type="submit" aria-label="Search">
+          <span aria-hidden="true"></span>
+        </button>
+      </form>
+      <button class="login" type="button">Log in</button>
+      <button class="join-us" type="button">Join Us</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section-glow" id="home">
+      <span class="scribble" aria-hidden="true"></span>
+      <div class="hero-copy">
+        <h1 class="job-headline">Let's Land Your<br><mark>Dream Job</mark><br>Together.</h1>
+        <p>Unlock the power of our comprehensive suite of programs designed to transform your upskilling journey. We have everything you need to stand out in today's competitive job market.</p>
+        <div class="hero-buttons">
+          <a class="btn primary" href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true">Start Free Trial <span></span></a>
+          <a class="btn yellow" href="#courses">Learn More</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Live skill map preview">
+        <div class="hero-3d-stage" data-hero-3d aria-hidden="true"></div>
+        <div class="skill-map">
+          <span class="map-orbit" aria-hidden="true"></span>
+          <span class="map-grid" aria-hidden="true"></span>
+          <span class="map-halo halo-left" aria-hidden="true"></span>
+          <span class="map-halo halo-right" aria-hidden="true"></span>
+          <span class="map-dot dot-one" aria-hidden="true"></span>
+          <span class="map-dot dot-two" aria-hidden="true"></span>
+          <span class="map-dot dot-three" aria-hidden="true"></span>
+          <div class="map-card">
+            <span class="map-pill">Career Launch Hub</span>
+            <h2>Build. Prove. Get Hired.</h2>
+            <p>Follow one guided path with mentor sessions, portfolio projects, and interview-ready proof.</p>
+            <div class="map-progress"><span></span></div>
+          </div>
+          <div class="map-chip chip-projects"><b>01</b>Live Projects</div>
+          <div class="map-chip chip-mentors"><b>02</b>Mentor Calls</div>
+          <div class="map-chip chip-career"><b>03</b>Career Prep</div>
+          <div class="map-chip chip-certs"><b>04</b>Certificates</div>
+          <div class="map-tag tag-ai">Guided roadmap</div>
+          <div class="map-tag tag-sync">Weekly progress</div>
+          <span class="map-blob" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-section" id="categories">
+      <div class="section-title">
+        <span class="pill">Popular Learning Paths</span>
+        <h2>Choose A Skill Track</h2>
+        <p>Explore focused categories designed for practical career growth</p>
+      </div>
+      <div class="category-carousel">
+        <button class="arrow left" type="button" aria-label="Previous category"></button>
+        <div class="category-item">
+          <span class="cat-icon pen"></span>
+          <h3>Graphic Design</h3>
+          <p>(22)</p>
+        </div>
+        <div class="category-item">
+          <span class="cat-icon finance"></span>
+          <h3>Finance</h3>
+          <p>(41)</p>
+        </div>
+        <div class="category-item">
+          <span class="cat-icon code"></span>
+          <h3>Development</h3>
+          <p>(29)</p>
+        </div>
+        <div class="category-item">
+          <span class="cat-icon mail"></span>
+          <h3>Marketing</h3>
+          <p>(31)</p>
+        </div>
+        <div class="category-item">
+          <span class="cat-icon bag"></span>
+          <h3>Life Style</h3>
+          <p>(23)</p>
+        </div>
+        <div class="category-item">
+          <span class="cat-icon users"></span>
+          <h3>Management</h3>
+          <p>(19)</p>
+        </div>
+        <button class="arrow right" type="button" aria-label="Next category"></button>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="video-blob">
+        <img class="about-main" src="assets/img/others/about_img.png" alt="">
+        <img class="about-shape" src="assets/img/others/about_shape.svg" alt="">
+        <img class="student-group" src="assets/img/others/student_grp.png" alt="">
+        <button class="play" type="button" aria-label="Play video"></button>
+      </div>
+      <div class="about-copy">
+        <span class="pill">Why Learners Stay</span>
+        <h2>Guided <mark>Courses</mark><br>For Every Milestone</h2>
+        <p>Learn from structured lessons, mentor-led checkpoints, and flexible plans that keep your progress clear from day one.</p>
+        <ul class="check-list">
+          <li>The Most World Class Instructors</li>
+          <li>Access Your Class anywhere</li>
+          <li>Flexible Course Plan</li>
+        </ul>
+        <a class="btn primary" href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true">Start Free Trial <span></span></a>
+      </div>
+    </section>
+
+    <section class="courses-section section-glow" id="courses">
+      <div class="section-title">
+        <span class="pill">Featured Courses</span>
+        <h2>Explore Courses Built For Outcomes</h2>
+        <p>Shortlist the programs that match your pace, goals, and skill level</p>
+      </div>
+      <div class="course-toolbar" aria-label="Course display options">
+        <div class="currency-switcher" data-course-currency role="group" aria-label="Course price currency">
+          <span>Price in</span>
+          <button class="active" type="button" data-currency="USD" aria-pressed="true">USD</button>
+          <button type="button" data-currency="INR" aria-pressed="false">INR</button>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Course categories">
+        <button class="active" type="button">All Courses</button>
+        <button type="button">Design</button>
+        <button type="button">Business</button>
+        <button type="button">Development</button>
+      </div>
+      <button class="side-arrow prev" type="button" aria-label="Previous courses"></button>
+      <button class="side-arrow next" type="button" aria-label="Next courses"></button>
+      <div class="course-grid">
+        <article class="course-card orange" data-course-category="Development" data-course-slug="javascript-imagination">
+          <div class="course-visual"><img src="course/1. Technology & Software Development/mk.avif" alt=""></div>
+          <div class="course-meta"><span>Development</span><b>★ <em>(4.8 Reviews)</em></b></div>
+          <h3>Learning JavaScript With Imagination</h3>
+          <p>By Arjun Mehta</p>
+          <div class="course-bottom"><a href="course-detail.html?course=javascript-imagination">Enroll Now</a><strong>$15.00</strong></div>
+        </article>
+        <article class="course-card green" data-course-category="Design" data-course-slug="graphic-design-beginners">
+          <div class="course-visual"><img src="course/6. Design & Creative Arts/premium_photo-1661310081873-.avif" alt=""></div>
+          <div class="course-meta"><span>Design</span><b>★ <em>(4.5 Reviews)</em></b></div>
+          <h3>The Complete Graphic Design for Beginners</h3>
+          <p>By Nandita Iyer</p>
+          <div class="course-bottom"><a href="course-detail.html?course=graphic-design-beginners">Enroll Now</a><strong>$19.00</strong></div>
+        </article>
+        <article class="course-card pink" data-course-category="Marketing" data-course-slug="facebook-digital-marketing">
+          <div class="course-visual"><img src="course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif" alt=""></div>
+          <div class="course-meta"><span>Marketing</span><b>★ <em>(4.3 Reviews)</em></b></div>
+          <h3>Learning Digital Marketing on Facebook</h3>
+          <p>By Priya Nair</p>
+          <div class="course-bottom"><a href="course-detail.html?course=facebook-digital-marketing">Enroll Now</a><strong>$24.00</strong></div>
+        </article>
+        <article class="course-card blue" data-course-category="Business" data-course-slug="financial-analyst-investing">
+          <div class="course-visual"><img src="course/5. Business, Finance & Marketing/premium_photo-1663040328859.avif" alt=""></div>
+          <div class="course-meta"><span>Business</span><b>★ <em>(4.8 Reviews)</em></b></div>
+          <h3>Financial Analyst Training & Investing Course</h3>
+          <p>By Rohan Kulkarni</p>
+          <div class="course-bottom"><a href="course-detail.html?course=financial-analyst-investing">Enroll Now</a><strong>$12.00</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="subscribe">
+      <div class="subscribe-person"><img src="assets/img/others/newsletter_img.png" alt=""></div>
+      <h2>Join Our <strong>WhatsApp Group</strong><br>For Course Drops And Study Notes</h2>
+      <div class="subscribe-form">
+        <a class="whatsapp-join" href="https://api.whatsapp.com/send?phone=919579598632&text=Hi%20Jenovate%20team" target="_blank" rel="noopener">
+          <img src="logos/whatsapp-logo.png" alt="" aria-hidden="true">
+          Join WhatsApp Group
+        </a>
+      </div>
+    </section>
+
+    <section class="instructors" id="mentors">
+      <div class="instructor-copy">
+        <span class="pill">Mentor Network</span>
+        <h2>Meet The Experts<br>Behind Your<br>Learning Plan</h2>
+        <p>Work with instructors who combine clear teaching, portfolio projects, and field experience.</p>
+      </div>
+      <div class="instructor-grid">
+        <article><img class="avatar-lg" src="assets/img/instructor/instructor01.png" alt=""><div><h3>Mark Jukarbarg</h3><p>UX Design Lead</p><b>★ <em>(4.8 Ratings)</em></b></div></article>
+        <article><img class="avatar-lg" src="assets/img/instructor/instructor02.png" alt=""><div><h3>Web Design</h3><p>Olivia Mia</p><b>★ <em>(4.8 Ratings)</em></b></div></article>
+        <article><img class="avatar-lg" src="assets/img/instructor/instructor03.png" alt=""><div><h3>William Hope</h3><p>Digital Marketing</p><b>★ <em>(4.8 Ratings)</em></b></div></article>
+        <article><img class="avatar-lg" src="assets/img/instructor/instructor04.png" alt=""><div><h3>Sophia Ava</h3><p>Web Development</p><b>★ <em>(4.8 Ratings)</em></b></div></article>
+      </div>
+    </section>
+
+    <section class="stats" id="testimonials">
+      <div><strong>45K+</strong><span>Active Students</span></div>
+      <div><strong>89+</strong><span>Faculty Courses</span></div>
+      <div><strong>156K</strong><span>Best Professors</span></div>
+      <div><strong>42K</strong><span>Award Achieved</span></div>
+    </section>
+
+    <section class="home-testimonials">
+      <div class="section-title">
+        <span class="pill">Student Reviews</span>
+        <h2>Words From Our Learners</h2>
+        <p>Real feedback from students who joined Jenovate sessions, workshops, and learning programs.</p>
+      </div>
+      <div class="flying-reviews" data-flying-reviews aria-label="Student review carousel">
+        <div class="flying-review-row">
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>The session was really informative and engaging. Suvidha ma'am who conducted the class was very kind, patient, and easy to understand. She explained the concepts clearly and was very helpful throughout the session.</p>
+            <div class="review-author"><b>S</b><span><strong>~sheefa sharuk</strong><small>St Josephs College</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>It's great to learn something new every single day. The way they teach everything in a fun and detailed manner, including case studies and assignments, is just amazing.</p>
+            <div class="review-author"><b>P</b><span><strong>Parul</strong><small>Amity Noida</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>The online course on psych with Ms. Suvidha gave deep insight into how fun, challenging, and intriguing psychology can be in our day-to-day lives.</p>
+            <div class="review-author"><b>A</b><span><strong>Aananditha</strong><small>Christ University</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The course helped me understand concepts clearly and gave me an opportunity to learn through practical examples, discussions, and guided activities.</p>
+            <div class="review-author"><b>J</b><span><strong>Joju KJ</strong><small>Workshop Learner</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The activities made the class more useful than a normal lecture. I could understand the topic step by step and ask doubts without hesitation.</p>
+            <div class="review-author"><b>M</b><span><strong>Meera Thomas</strong><small>Psychology Learner</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>Jenovate sessions helped me stay consistent. The examples were relatable, and the mentor explained each point in a very clear way.</p>
+            <div class="review-author"><b>R</b><span><strong>Rithvik S</strong><small>Student Participant</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>I liked how the course balanced theory and real situations. The assignments helped me think deeper about the subject.</p>
+            <div class="review-author"><b>K</b><span><strong>Kavya Nair</strong><small>Workshop Learner</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The session flow was smooth and interactive. I felt comfortable participating, and the examples made the concepts easy to remember.</p>
+            <div class="review-author"><b>D</b><span><strong>Devika Rao</strong><small>Course Learner</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>The teaching style was friendly and practical. I enjoyed the discussions and felt more confident after completing the session.</p>
+            <div class="review-author"><b>L</b><span><strong>Lakshmi P</strong><small>College Student</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The classes were helpful and well organized. I would love to attend more sessions because the learning felt simple and useful.</p>
+            <div class="review-author"><b>V</b><span><strong>Varun Menon</strong><small>Active Learner</small></span></div>
+          </article>
+        </div>
+        <div class="flying-review-row reverse">
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>I'm really loving this course as it's giving me a new perspective into the topic and helping me connect what I learn with real-life situations.</p>
+            <div class="review-author"><b>H</b><span><strong>Hannah George</strong><small>Career Growth</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>Great platform for practical learning. The instructors were industry experts and the sessions felt useful, warm, and easy to follow.</p>
+            <div class="review-author"><b>P</b><span><strong>Poojaa Niveditha</strong><small>Certificate of Participation</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>It's very interesting to learn something new and the learning is not just theory. The team is supportive, and every class feels interactive.</p>
+            <div class="review-author"><b>A</b><span><strong>Angel Kalamadugu</strong><small>Course Learner</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>The program gave me confidence to speak, ask questions, and understand the subject better. I would recommend Jenovate to my friends.</p>
+            <div class="review-author"><b>N</b><span><strong>Nisha R</strong><small>Student Review</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The mentor made every topic feel approachable. I liked the way difficult ideas were broken into small examples and activities.</p>
+            <div class="review-author"><b>I</b><span><strong>Ishaan Verma</strong><small>Online Learner</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The class was clear, engaging, and useful for beginners. I especially liked the assignments because they helped me revise properly.</p>
+            <div class="review-author"><b>T</b><span><strong>Tanvi Raj</strong><small>Course Participant</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>I had a great experience with Jenovate. The sessions were interactive, and the instructor encouraged everyone to participate.</p>
+            <div class="review-author"><b>A</b><span><strong>Arjun K</strong><small>College Learner</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>4.5</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The learning experience felt personal. I could connect the lessons with my own studies and understand the subject with more clarity.</p>
+            <div class="review-author"><b>S</b><span><strong>Sandra Joy</strong><small>Christ University</small></span></div>
+          </article>
+          <article class="flying-review-card blue">
+            <div class="stars"><span>4.0</span>&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>The program was well structured and easy to follow. It gave me useful knowledge and helped me stay interested throughout.</p>
+            <div class="review-author"><b>Y</b><span><strong>Yash Patel</strong><small>Student Review</small></span></div>
+          </article>
+          <article class="flying-review-card pink">
+            <div class="stars"><span>5.0</span>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>The sessions were fun, practical, and informative. I liked how the team kept the class active with questions and examples.</p>
+            <div class="review-author"><b>R</b><span><strong>Riya Sharma</strong><small>Workshop Learner</small></span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq section-glow">
+      <div class="faq-art">
+        <div class="circle-photo">
+          <img src="assets/img/others/faq_img.png" alt="">
+        </div>
+        <span class="faq-float-chip chip-live">Live mentor help</span>
+        <span class="faq-float-chip chip-project">Project based</span>
+        <span class="faq-float-chip chip-cert">Certificate ready</span>
+      </div>
+      <div class="faq-copy">
+        <span class="pill">Questions</span>
+        <h2>Start Confidently With<br>Clear Learning Support</h2>
+        <p>Find quick answers about classes, mentorship, certificates, and course access.</p>
+        <div class="accordion">
+          <details open>
+            <summary>What does Jenovate give you?</summary>
+            <p>Jenovate gives you structured courses, mentor support, practical projects, certificates, and a clear learning path so every student knows what to study next.</p>
+          </details>
+          <details>
+            <summary>Why choose Jenovate for your education?</summary>
+            <p>Choose Jenovate because the learning is practical, guided, and career focused. Students get mentor-led support, real assignments, progress tracking, and a friendly space to build skills with confidence.</p>
+          </details>
+          <details>
+            <summary>How do we provide service for you?</summary>
+            <p>We support students through live sessions, doubt clearing, guided assignments, progress updates, and mentor feedback so learning stays clear from start to finish.</p>
+          </details>
+          <details>
+            <summary>Are your courses affordable?</summary>
+            <p>Yes. Jenovate keeps courses beginner friendly and budget conscious, with focused programs that give practical value without unnecessary extra cost.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="journey" id="journey">
+      <div class="section-title light">
+        <span class="pill">How It Works</span>
+        <h2>Start Your Learning Journey Today!</h2>
+        <p>Pick a goal, follow a curated path, and build proof of your progress<br>with expert support along the way.</p>
+      </div>
+      <div class="journey-features">
+        <article><img class="jicon" src="assets/img/icons/features_icon01.svg" alt=""><h3>Learn with Experts</h3><p>Follow mentor-led paths built around practical goals.</p></article>
+        <article><img class="jicon" src="assets/img/icons/features_icon02.svg" alt=""><h3>Learn Anything</h3><p>Explore flexible programs across design, business, and tech.</p></article>
+        <article><img class="jicon" src="assets/img/icons/features_icon03.svg" alt=""><h3>Get Online Certificate</h3><p>Complete projects and earn credentials for your portfolio.</p></article>
+        <article><img class="jicon" src="assets/img/icons/features_icon04.svg" alt=""><h3>Career Support</h3><p>Build confidence with structured milestones and feedback.</p></article>
+      </div>
+      <div class="apply-cards">
+        <article>
+          <span class="apply-person"><img src="assets/img/instructor/instructor_two01.png" alt=""></span>
+          <div><h3>Become a Instructor</h3><p>To take a trivial example, which of us undertakes physical exercise yes is this happen here.</p><a class="btn primary" href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true">Apply Now <span></span></a></div>
+        </article>
+        <article>
+          <span class="apply-person"><img src="assets/img/instructor/instructor_two02.png" alt=""></span>
+          <div><h3>Become a Student</h3><p>Join millions of people from around the world learning together. Online learning</p><a class="btn primary" href="https://docs.google.com/forms/d/1fWo_iwZ2IIyUPmsu1fX0NvT63ukIQ6w7hF1pAH1YyGk/viewform?edit_requested=true">Apply Now <span></span></a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="news section-glow">
+      <div class="section-title">
+        <span class="pill">Insights</span>
+        <h2>Latest Learning Journal</h2>
+        <p>Ideas, guides, and stories to keep your skill-building momentum alive</p>
+      </div>
+      <div class="news-grid">
+        <article><div class="news-img"><img src="assets/img/blog/blog_post01.jpg" alt=""><span>Marketing</span></div><p class="date">20 July, 2024 <b>by Admin</b></p><h3>How To Become idiculously Self-Aware In 20 Minutes</h3></article>
+        <article><div class="news-img"><img src="assets/img/blog/blog_post02.jpg" alt=""><span>Students</span></div><p class="date">20 July, 2024 <b>by Admin</b></p><h3>Get Started With UI Design With Tips To Speed</h3></article>
+        <article><div class="news-img"><img src="assets/img/blog/blog_post03.jpg" alt=""><span>Science</span></div><p class="date">20 July, 2024 <b>by Admin</b></p><h3>Make Your Own Expanding Contracting Content</h3></article>
+        <article><div class="news-img"><img src="assets/img/blog/blog_post04.jpg" alt=""><span>Agency</span></div><p class="date">20 July, 2024 <b>by Admin</b></p><h3>What we are capable to usually discovered</h3></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer simple-footer">
+    <div class="simple-footer-inner">
+      <a class="footer-brand" href="index.html#home">
+        <img src="assets/img/logo/favicon.png" alt="">
+        <span>Jenovate</span>
+      </a>
+      <p>Think campus, Shanthipura Main Road, Electronic City Phase 2 -560100<br>Bengaluru, Karnataka, India</p>
+      <p>&copy; 2026 Jenovate. All rights reserved.</p>
+    </div>
+    <nav class="footer-policy-links" aria-label="Policy documents">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="refund-policy.html">Refund Policy</a>
+    </nav>
+    <div class="footer-main">
+      <div>
+        <a class="footer-brand" href="index.html#home">
+          <img src="assets/img/logo/favicon.png" alt="">
+        </a>
+        <h3>Useful Links</h3>
+        <a href="#">Our values</a>
+        <a href="#">Our advisory board</a>
+        <a href="#">Our partners</a>
+        <a href="#">Become a partner</a>
+        <a href="#">Work at Future Learn</a>
+        <a href="#">Quizlet Plus</a>
+      </div>
+      <div>
+        <h3>Our Company</h3>
+        <a href="#">Contact Us</a>
+        <a href="#">Become Teacher</a>
+        <a href="#">Blog</a>
+        <a href="#">Instructor</a>
+        <a href="#">Events</a>
+      </div>
+      <div>
+        <h3>Get In Touch</h3>
+        <p>when an unknown printer took<br>galley type and scrambled</p>
+        <div class="socials"><span>f</span><span>t</span><span>◎</span><span>▶</span></div>
+        <div class="stores"><img src="assets/img/others/google-play.svg" alt="Google Play"><img src="assets/img/others/apple-store.svg" alt="Apple Store"></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 jenovate.com. All rights reserved.</p>
+      <p><a href="terms-of-service.html">Terms of Service</a> <span>|</span> <a href="privacy-policy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
+  <script src="script.js?v=20260604-course-local-images"></script>
+  <script src="effects-loader.js?v=20260602-course-categories-v19"></script>
+</body>
+</html>
