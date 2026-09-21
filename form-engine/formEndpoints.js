@@ -18,9 +18,5 @@ window.JENOVATE_FORM_ENDPOINTS = {
   event_registration: {
     type: "supabase",
     table: "form_event_registrations"
-  },
-  campus_ambassador: {
-    type: "supabase",
-    table: "form_campus_ambassadors"
   }
 };

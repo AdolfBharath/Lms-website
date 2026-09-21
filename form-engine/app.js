@@ -34,7 +34,7 @@ const els = {
 const apiBase = window.location.protocol === "file:" ? "http://localhost:3000" : "";
 const query = new URLSearchParams(window.location.search);
 state.lockedCategory = query.get("category") || document.body.dataset.formCategory || "train_deploy_enquiry";
-const instantCategories = new Set(["train_deploy_enquiry", "student_registration", "launchpad_purchase", "mentor_registration", "hiring_application", "event_registration", "campus_ambassador"]);
+const instantCategories = new Set(["train_deploy_enquiry", "launchpad_purchase", "mentor_registration", "hiring_application", "event_registration"]);
 
 const fieldTypes = new Set(["text", "email", "phone", "number", "date", "textarea", "select", "radio", "checkbox", "file"]);
 
@@ -237,41 +237,6 @@ const fallbackConfig = {
         { type: "number", name: "openings", label: "Number of Openings", required: true, min: 1, placeholder: "Enter number of openings" },
         { type: "date", name: "start_date", label: "Expected Start Date", required: false },
         { type: "textarea", name: "job_summary", label: "Brief Role Description", required: true, placeholder: "Tell us about the role, skills, and hiring timeline" }
-      ]
-    },
-    campus_ambassador: {
-      title: "Campus Ambassador Application",
-      description: "Apply to represent Jenovate on your campus and help students discover practical learning opportunities.",
-      endpoint: {
-        type: "supabase",
-        table: "form_campus_ambassadors"
-      },
-      steps: [
-        {
-          title: "Your Details",
-          fields: [
-            { type: "text", name: "full_name", label: "Full Name", required: true, placeholder: "Enter your full name" },
-            { type: "email", name: "email", label: "Email", required: true, placeholder: "you@example.com" },
-            { type: "phone", name: "phone", label: "Phone Number", required: true, placeholder: "+91 xxxxxxxxxx" },
-            { type: "text", name: "college", label: "College / University", required: true, placeholder: "Institution name" }
-          ]
-        },
-        {
-          title: "Campus Reach",
-          fields: [
-            { type: "text", name: "city", label: "City", required: true, placeholder: "Your city" },
-            { type: "select", name: "year_of_study", label: "Year of Study", required: true, options: ["1st Year", "2nd Year", "3rd Year", "4th Year", "Graduate", "Other"] },
-            { type: "text", name: "social_profile", label: "Instagram / LinkedIn Profile", required: false, placeholder: "Optional profile link" },
-            { type: "number", name: "campus_reach", label: "Approx. Campus Reach", required: false, min: 0, placeholder: "e.g. 500" }
-          ]
-        },
-        {
-          title: "Motivation",
-          fields: [
-            { type: "textarea", name: "why_join", label: "Why do you want to become a Campus Ambassador?", required: true, placeholder: "Tell us how you will promote Jenovate on campus..." },
-            { type: "text", name: "reference_id", label: "Reference ID", required: false, placeholder: "Optional referral/reference code" }
-          ]
-        }
       ]
     },
     event_registration: {
@@ -491,8 +456,8 @@ const renderForm = () => {
     return `
       <div class="field${full}" data-field="${field.name}" data-field-icon="${fieldIconName(field)}">
         ${field.type === "radio" || field.type === "checkbox"
-          ? `<legend>${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : `<span class="optional">Optional</span>`}</legend>`
-          : `<label for="${field.name}">${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : `<span class="optional">Optional</span>`}</label>`}
+          ? `<legend>${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : ""}</legend>`
+          : `<label for="${field.name}">${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : ""}</label>`}
         ${renderInput(field)}
         <span class="error-text" data-error-for="${field.name}"></span>
       </div>
@@ -531,7 +496,6 @@ const validateStep = () => {
   let ok = true;
   const step = state.steps[state.stepIndex];
   els.fields.querySelectorAll(".error-text").forEach((node) => { node.textContent = ""; });
-  els.fields.querySelectorAll(".field").forEach((node) => node.classList.remove("has-error"));
 
   (step.fields || []).forEach((field) => {
     if (!shouldShowField(field)) return;
@@ -540,18 +504,12 @@ const validateStep = () => {
     const error = els.fields.querySelector(`[data-error-for="${CSS.escape(field.name)}"]`);
     if (field.required && empty) {
       ok = false;
-      if (error) {
-        error.textContent = `${field.label} is required.`;
-        error.closest(".field")?.classList.add("has-error");
-      }
+      if (error) error.textContent = `${field.label} is required.`;
       return;
     }
     if (field.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       ok = false;
-      if (error) {
-        error.textContent = "Enter a valid email address.";
-        error.closest(".field")?.classList.add("has-error");
-      }
+      if (error) error.textContent = "Enter a valid email address.";
     }
     if (field.name === "full_name" && value && !/^[A-Za-z][A-Za-z .'-]{1,79}$/.test(value)) {
       ok = false;

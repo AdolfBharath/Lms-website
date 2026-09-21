@@ -11,13 +11,13 @@
   <script>
     (() => {
       const category = new URLSearchParams(window.location.search).get("category");
-      const allowed = new Set(["train_deploy_enquiry", "student_registration", "launchpad_purchase", "mentor_registration", "hiring_application", "event_registration", "campus_ambassador"]);
+      const allowed = new Set(["train_deploy_enquiry", "launchpad_purchase", "mentor_registration", "hiring_application", "event_registration"]);
       if (allowed.has(category)) document.body.dataset.formCategory = category;
     })();
   </script>
   <header class="form-page-header" aria-label="Form page controls">
     <a class="form-logo" href="../index.html" aria-label="Jenovate home">
-      <img src="../image/logo/logonew.png" alt="Jenovate" onerror="this.onerror=null;this.src='../assets/img/logo/favicon.png';">
+      <img src="../image/logo/logonew.png" alt="Jenovate">
     </a>
     <button class="page-close-form" type="button" data-close-form aria-label="Close page">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round">

@@ -35,16 +35,6 @@
   --accent-soft: #fdf2fa;
 }
 
-[data-form-category="student_registration"] {
-  --accent: #235ed8;
-  --accent-soft: #edf4ff;
-}
-
-[data-form-category="campus_ambassador"] {
-  --accent: #7a2ee6;
-  --accent-soft: #f3efff;
-}
-
 * { box-sizing: border-box; }
 
 html {
@@ -327,32 +317,11 @@ button {
 .required {
   color: var(--danger);
 }
-.optional {
-  margin-left: 8px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.field.has-error .field-control,
-.field.has-error .choice {
-  border-color: var(--danger);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 11%, transparent);
-}
-
-.field.has-error label,
-.field.has-error legend {
-  color: var(--danger);
-}
 
 .field-control {
   width: 100%;
-  min-height: 50px;
-  padding: 0 14px;
+  min-height: 48px;
+  padding: 0 13px;
   border: 1px solid #d0d5dd;
   border-radius: 10px;
   background: var(--field);
@@ -390,11 +359,11 @@ textarea.field-control {
 }
 
 .choice {
-  min-height: 44px;
+  min-height: 42px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0 13px;
   border: 1px solid #d0d5dd;
   border-radius: 10px;
   background: #fff;
@@ -405,18 +374,6 @@ textarea.field-control {
 
 .choice input {
   accent-color: var(--accent);
-}
-.choice:hover,
-.choice:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 42%, #d0d5dd);
-  background: var(--accent-soft);
-}
-
-.choice:has(input:checked) {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .error-text {
@@ -571,12 +528,9 @@ textarea.field-control {
   }
 }
 
-body[data-form-category="student_registration"],
 body[data-form-category="launchpad_purchase"],
 body[data-form-category="mentor_registration"],
-body[data-form-category="hiring_application"],
-body[data-form-category="event_registration"],
-body[data-form-category="campus_ambassador"] {
+body[data-form-category="hiring_application"] {
   --page: #eef4fb;
   --card: #ffffff;
   --ink: #172033;
@@ -603,24 +557,9 @@ body[data-form-category="hiring_application"] {
   --accent: #1570ef;
 }
 
-body[data-form-category="student_registration"] {
-  --accent: #235ed8;
-}
-
-body[data-form-category="event_registration"] {
-  --accent: #c11574;
-}
-
-body[data-form-category="campus_ambassador"] {
-  --accent: #7a2ee6;
-}
-
-body[data-form-category="student_registration"] .app-shell,
 body[data-form-category="launchpad_purchase"] .app-shell,
 body[data-form-category="mentor_registration"] .app-shell,
-body[data-form-category="hiring_application"] .app-shell,
-body[data-form-category="event_registration"] .app-shell,
-body[data-form-category="campus_ambassador"] .app-shell {
+body[data-form-category="hiring_application"] .app-shell {
   width: min(1420px, calc(100% - 80px));
   min-height: 100vh;
   display: grid;
@@ -631,12 +570,9 @@ body[data-form-category="campus_ambassador"] .app-shell {
   padding: 118px 0 56px;
 }
 
-body[data-form-category="student_registration"] .hero-panel,
 body[data-form-category="launchpad_purchase"] .hero-panel,
 body[data-form-category="mentor_registration"] .hero-panel,
-body[data-form-category="hiring_application"] .hero-panel,
-body[data-form-category="event_registration"] .hero-panel,
-body[data-form-category="campus_ambassador"] .hero-panel {
+body[data-form-category="hiring_application"] .hero-panel {
   position: sticky;
   top: 48px;
   margin: 0;
@@ -647,12 +583,9 @@ body[data-form-category="campus_ambassador"] .hero-panel {
   box-shadow: none;
 }
 
-body[data-form-category="student_registration"] .hero-panel::before,
 body[data-form-category="launchpad_purchase"] .hero-panel::before,
 body[data-form-category="mentor_registration"] .hero-panel::before,
-body[data-form-category="hiring_application"] .hero-panel::before,
-body[data-form-category="event_registration"] .hero-panel::before,
-body[data-form-category="campus_ambassador"] .hero-panel::before {
+body[data-form-category="hiring_application"] .hero-panel::before {
   content: "Jenovate Form";
   display: inline-flex;
   align-items: center;
@@ -681,21 +614,15 @@ body[data-form-category="hiring_application"] .hero-panel::before {
   content: "Hire Talent";
 }
 
-body[data-form-category="student_registration"] .hero-copy,
 body[data-form-category="launchpad_purchase"] .hero-copy,
 body[data-form-category="mentor_registration"] .hero-copy,
-body[data-form-category="hiring_application"] .hero-copy,
-body[data-form-category="event_registration"] .hero-copy,
-body[data-form-category="campus_ambassador"] .hero-copy {
+body[data-form-category="hiring_application"] .hero-copy {
   margin: 0;
 }
 
-body[data-form-category="student_registration"] .hero-copy h1,
 body[data-form-category="launchpad_purchase"] .hero-copy h1,
 body[data-form-category="mentor_registration"] .hero-copy h1,
-body[data-form-category="hiring_application"] .hero-copy h1,
-body[data-form-category="event_registration"] .hero-copy h1,
-body[data-form-category="campus_ambassador"] .hero-copy h1 {
+body[data-form-category="hiring_application"] .hero-copy h1 {
   max-width: 620px;
   margin: 0 0 18px;
   color: #111827;
@@ -704,45 +631,30 @@ body[data-form-category="campus_ambassador"] .hero-copy h1 {
   font-weight: 900;
 }
 
-body[data-form-category="student_registration"] .hero-copy p,
 body[data-form-category="launchpad_purchase"] .hero-copy p,
 body[data-form-category="mentor_registration"] .hero-copy p,
-body[data-form-category="hiring_application"] .hero-copy p,
-body[data-form-category="event_registration"] .hero-copy p,
-body[data-form-category="campus_ambassador"] .hero-copy p {
+body[data-form-category="hiring_application"] .hero-copy p {
   max-width: 540px;
   color: var(--muted);
   font-size: 20px;
   line-height: 1.65;
 }
 
-body[data-form-category="student_registration"] .close-form,
 body[data-form-category="launchpad_purchase"] .close-form,
 body[data-form-category="mentor_registration"] .close-form,
 body[data-form-category="hiring_application"] .close-form,
-body[data-form-category="event_registration"] .close-form,
-body[data-form-category="campus_ambassador"] .close-form,
-body[data-form-category="student_registration"] .category-bar,
 body[data-form-category="launchpad_purchase"] .category-bar,
 body[data-form-category="mentor_registration"] .category-bar,
 body[data-form-category="hiring_application"] .category-bar,
-body[data-form-category="event_registration"] .category-bar,
-body[data-form-category="campus_ambassador"] .category-bar,
-body[data-form-category="student_registration"] .progress-wrap,
 body[data-form-category="launchpad_purchase"] .progress-wrap,
 body[data-form-category="mentor_registration"] .progress-wrap,
-body[data-form-category="hiring_application"] .progress-wrap,
-body[data-form-category="event_registration"] .progress-wrap,
-body[data-form-category="campus_ambassador"] .progress-wrap {
+body[data-form-category="hiring_application"] .progress-wrap {
   display: none;
 }
 
-body[data-form-category="student_registration"] .form-panel,
 body[data-form-category="launchpad_purchase"] .form-panel,
 body[data-form-category="mentor_registration"] .form-panel,
-body[data-form-category="hiring_application"] .form-panel,
-body[data-form-category="event_registration"] .form-panel,
-body[data-form-category="campus_ambassador"] .form-panel {
+body[data-form-category="hiring_application"] .form-panel {
   margin: 0;
   padding: clamp(24px, 4vw, 44px);
   border: 1px solid var(--line);
@@ -752,56 +664,38 @@ body[data-form-category="campus_ambassador"] .form-panel {
   backdrop-filter: blur(18px);
 }
 
-body[data-form-category="student_registration"] .form-grid,
 body[data-form-category="launchpad_purchase"] .form-grid,
 body[data-form-category="mentor_registration"] .form-grid,
-body[data-form-category="hiring_application"] .form-grid,
-body[data-form-category="event_registration"] .form-grid,
-body[data-form-category="campus_ambassador"] .form-grid {
+body[data-form-category="hiring_application"] .form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 22px;
 }
 
-body[data-form-category="student_registration"] .field,
 body[data-form-category="launchpad_purchase"] .field,
 body[data-form-category="mentor_registration"] .field,
 body[data-form-category="hiring_application"] .field,
-body[data-form-category="event_registration"] .field,
-body[data-form-category="campus_ambassador"] .field,
-body[data-form-category="student_registration"] .field.full,
 body[data-form-category="launchpad_purchase"] .field.full,
 body[data-form-category="mentor_registration"] .field.full,
-body[data-form-category="hiring_application"] .field.full,
-body[data-form-category="event_registration"] .field.full,
-body[data-form-category="campus_ambassador"] .field.full {
+body[data-form-category="hiring_application"] .field.full {
   grid-column: 1 / -1;
   gap: 10px;
 }
 
-body[data-form-category="student_registration"] .field label,
 body[data-form-category="launchpad_purchase"] .field label,
 body[data-form-category="mentor_registration"] .field label,
 body[data-form-category="hiring_application"] .field label,
-body[data-form-category="event_registration"] .field label,
-body[data-form-category="campus_ambassador"] .field label,
-body[data-form-category="student_registration"] .field legend,
 body[data-form-category="launchpad_purchase"] .field legend,
 body[data-form-category="mentor_registration"] .field legend,
-body[data-form-category="hiring_application"] .field legend,
-body[data-form-category="event_registration"] .field legend,
-body[data-form-category="campus_ambassador"] .field legend {
+body[data-form-category="hiring_application"] .field legend {
   color: var(--ink);
   font-size: 16px;
   font-weight: 800;
 }
 
-body[data-form-category="student_registration"] .field-control,
 body[data-form-category="launchpad_purchase"] .field-control,
 body[data-form-category="mentor_registration"] .field-control,
-body[data-form-category="hiring_application"] .field-control,
-body[data-form-category="event_registration"] .field-control,
-body[data-form-category="campus_ambassador"] .field-control {
+body[data-form-category="hiring_application"] .field-control {
   min-height: 66px;
   padding: 0 18px;
   border: 1px solid var(--line);
@@ -811,32 +705,23 @@ body[data-form-category="campus_ambassador"] .field-control {
   font-weight: 500;
 }
 
-body[data-form-category="student_registration"] textarea.field-control,
 body[data-form-category="launchpad_purchase"] textarea.field-control,
 body[data-form-category="mentor_registration"] textarea.field-control,
-body[data-form-category="hiring_application"] textarea.field-control,
-body[data-form-category="event_registration"] textarea.field-control,
-body[data-form-category="campus_ambassador"] textarea.field-control {
+body[data-form-category="hiring_application"] textarea.field-control {
   min-height: 140px;
   padding-top: 16px;
 }
 
-body[data-form-category="student_registration"] .choice-group,
 body[data-form-category="launchpad_purchase"] .choice-group,
 body[data-form-category="mentor_registration"] .choice-group,
-body[data-form-category="hiring_application"] .choice-group,
-body[data-form-category="event_registration"] .choice-group,
-body[data-form-category="campus_ambassador"] .choice-group {
+body[data-form-category="hiring_application"] .choice-group {
   display: grid;
   gap: 14px;
 }
 
-body[data-form-category="student_registration"] .choice,
 body[data-form-category="launchpad_purchase"] .choice,
 body[data-form-category="mentor_registration"] .choice,
-body[data-form-category="hiring_application"] .choice,
-body[data-form-category="event_registration"] .choice,
-body[data-form-category="campus_ambassador"] .choice {
+body[data-form-category="hiring_application"] .choice {
   width: max-content;
   min-height: 34px;
   padding: 0;
@@ -847,33 +732,24 @@ body[data-form-category="campus_ambassador"] .choice {
   font-weight: 700;
 }
 
-body[data-form-category="student_registration"] .choice input,
 body[data-form-category="launchpad_purchase"] .choice input,
 body[data-form-category="mentor_registration"] .choice input,
-body[data-form-category="hiring_application"] .choice input,
-body[data-form-category="event_registration"] .choice input,
-body[data-form-category="campus_ambassador"] .choice input {
+body[data-form-category="hiring_application"] .choice input {
   width: 20px;
   height: 20px;
   accent-color: var(--accent);
 }
 
-body[data-form-category="student_registration"] .form-actions,
 body[data-form-category="launchpad_purchase"] .form-actions,
 body[data-form-category="mentor_registration"] .form-actions,
-body[data-form-category="hiring_application"] .form-actions,
-body[data-form-category="event_registration"] .form-actions,
-body[data-form-category="campus_ambassador"] .form-actions {
+body[data-form-category="hiring_application"] .form-actions {
   margin-top: 22px;
   padding-top: 24px;
 }
 
-body[data-form-category="student_registration"] .primary-btn,
 body[data-form-category="launchpad_purchase"] .primary-btn,
 body[data-form-category="mentor_registration"] .primary-btn,
-body[data-form-category="hiring_application"] .primary-btn,
-body[data-form-category="event_registration"] .primary-btn,
-body[data-form-category="campus_ambassador"] .primary-btn {
+body[data-form-category="hiring_application"] .primary-btn {
   min-width: 118px;
   min-height: 56px;
   border: 0;
@@ -883,12 +759,9 @@ body[data-form-category="campus_ambassador"] .primary-btn {
   font-weight: 900;
 }
 
-body[data-form-category="student_registration"] .status,
 body[data-form-category="launchpad_purchase"] .status,
 body[data-form-category="mentor_registration"] .status,
-body[data-form-category="hiring_application"] .status,
-body[data-form-category="event_registration"] .status,
-body[data-form-category="campus_ambassador"] .status {
+body[data-form-category="hiring_application"] .status {
   margin: 0 0 22px;
   padding: 16px 18px;
   border-radius: 8px;
