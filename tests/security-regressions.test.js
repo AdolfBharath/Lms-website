@@ -51,6 +51,11 @@ test("course purchase flow verifies payment server-side before enrollment", () =
   assert.match(edge, /verifyCashfreeWebhook/);
   assert.match(edge, /Webhook amount or currency mismatch/);
   assert.match(edge, /grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(edge, /const enrollment = await activeEnrollment\(admin, profile\.id, order\.course_id\)\s*\|\| await grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(edge, /not\("status", "in", "\(archived,removed,cancelled,inactive,deleted,disabled\)"\)/);
+  assert.match(edge, /await syncProfileCourseIds\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(edge, /lms_admin_update_user_assignment/);
+  assert.match(edge, /function parseCourseIds\(value: unknown\)/);
   assert.match(migration, /lms_course_orders/);
   assert.match(migration, /lms_course_payments/);
   assert.match(migration, /user_courses_user_course_active_unique_idx/);

@@ -325,7 +325,11 @@ async function createProviderOrder(env: ReturnType<typeof loadEnv>, order: Recor
 async function verifyPayment(admin: ReturnType<typeof createClient>, env: ReturnType<typeof loadEnv>, profile: ProfileRow, orderId: string, providerOrderId = "") {
   const order = await findOwnedOrder(admin, profile.id, orderId, providerOrderId);
   if (order.status === "success") {
-    return { order, payment_status: "success", enrollment: await activeEnrollment(admin, profile.id, order.course_id) };
+    // Heal a legacy successful order only when its protected enrollment row is absent.
+    const enrollment = await activeEnrollment(admin, profile.id, order.course_id)
+      || await grantEnrollment(admin, String(order.user_id), String(order.course_id));
+    await syncProfileCourseIds(admin, String(order.user_id), String(order.course_id));
+    return { order, payment_status: "success", enrollment };
   }
 
   const provider = await fetchProviderOrder(env, String(order.provider_order_id || ""));
@@ -421,6 +425,7 @@ async function completeOrder(admin: ReturnType<typeof createClient>, order: Reco
   }).eq("id", order.id).select("*").single();
   if (error) throw error;
   const enrollment = await grantEnrollment(admin, String(order.user_id), String(order.course_id));
+  await syncProfileCourseIds(admin, String(order.user_id), String(order.course_id));
   return { order: updatedOrder, payment_status: "success", enrollment };
 }
 
@@ -453,6 +458,39 @@ async function grantEnrollment(admin: ReturnType<typeof createClient>, userId: s
   return data;
 }
 
+async function syncProfileCourseIds(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
+  const { data: profile, error: profileError } = await admin.from("users")
+    .select("id,course_ids")
+    .eq("id", userId)
+    .maybeSingle();
+  if (profileError) throw profileError;
+  if (!profile?.id) throw httpError("Student profile not found", 404, "profile_not_found");
+
+  const courseIds = parseCourseIds(profile.course_ids);
+  if (courseIds.includes(courseId)) return;
+
+  // Assignment fields are protected by a database trigger. Use the existing
+  // service-only RPC so this post-payment update is explicit and auditable.
+  const { error } = await admin.rpc("lms_admin_update_user_assignment", {
+    target_user_id: userId,
+    target_batch_id: null,
+    target_course_ids: [...courseIds, courseId],
+  });
+  if (error) throw error;
+}
+
+function parseCourseIds(value: unknown): string[] {
+  if (Array.isArray(value)) return [...new Set(value.map(String).filter(Boolean))];
+  if (typeof value === "string") {
+    try {
+      return parseCourseIds(JSON.parse(value));
+    } catch {
+      return [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))];
+    }
+  }
+  return [];
+}
+
 async function pendingOrder(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
   const { data, error } = await admin.from("lms_course_orders")
     .select("*")
@@ -472,7 +510,7 @@ async function activeEnrollment(admin: ReturnType<typeof createClient>, userId: 
     .eq("course_id", courseId)
     .or(`user_id.eq.${userId},student_id.eq.${userId},learner_id.eq.${userId}`)
     .is("deleted_at", null)
-    .not("status", "in", "(archived,removed,cancelled)")
+    .not("status", "in", "(archived,removed,cancelled,inactive,deleted,disabled)")
     .limit(1)
     .maybeSingle();
   if (error) throw error;
