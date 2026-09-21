@@ -1,7 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const baseCorsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-signature, x-webhook-timestamp",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
@@ -48,15 +47,18 @@ type ProfileRow = {
 type PaymentEnv = ReturnType<typeof loadEnv>;
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return jsonResponse({ ok: true });
-  if (request.method !== "POST") return jsonError("Method not allowed", 405, "method_not_allowed");
+  const corsHeaders = corsHeadersFor(request);
+  const respond = (body: unknown, status = 200) => jsonResponse(body, status, corsHeaders);
+  const fail = (message: string, status: number, code: string) => respond({ error: message, code }, status);
+  if (request.method === "OPTIONS") return respond({ ok: true });
+  if (request.method !== "POST") return fail("Method not allowed", 405, "method_not_allowed");
 
   const rawBody = await request.text();
   let body: Record<string, unknown> = {};
   try {
     body = rawBody ? JSON.parse(rawBody) : {};
   } catch {
-    return jsonError("Invalid JSON body", 400, "invalid_json");
+    return fail("Invalid JSON body", 400, "invalid_json");
   }
 
   const action = String(body.action || "") as Action;
@@ -68,7 +70,7 @@ Deno.serve(async (request) => {
     const isCashfreeWebhook = Boolean(request.headers.get("x-webhook-signature") || request.headers.get("x-webhook-timestamp"));
     if (action === "webhook" || isCashfreeWebhook) {
       await handleWebhook(admin, env, request, rawBody, body);
-      return jsonResponse({ ok: true });
+      return respond({ ok: true });
     }
 
     const caller = createClient(env.url, env.anonKey, {
@@ -78,41 +80,41 @@ Deno.serve(async (request) => {
 
     if (action === "course") {
       const course = await findCourse(admin, String(body.course_id || body.course_slug || body.course || ""));
-      return jsonResponse({ course: publicCourse(course) });
+      return respond({ course: publicCourse(course) });
     }
 
     if (action === "config_check") {
-      return jsonResponse(paymentConfigCheck(env));
+      return respond(paymentConfigCheck(env));
     }
 
     const authUser = await requireAuth(caller);
 
     if (action === "create_student_profile") {
       const profile = await ensureStudentProfile(admin, authUser, body.profile || {});
-      return jsonResponse({ profile: publicProfile(profile) });
+      return respond({ profile: publicProfile(profile) });
     }
 
     const profile = await ensureStudentProfile(admin, authUser, {});
 
     if (action === "create_order") {
       const result = await createCourseOrder(admin, env, profile, String(body.course_id || body.course_slug || body.course || ""));
-      return jsonResponse(result);
+      return respond(result);
     }
 
     if (action === "verify_payment") {
       const result = await verifyPayment(admin, env, profile, String(body.order_id || ""), String(body.provider_order_id || ""));
-      return jsonResponse(result);
+      return respond(result);
     }
 
     if (action === "mark_cancelled") {
       const result = await markCancelled(admin, profile, String(body.order_id || ""));
-      return jsonResponse(result);
+      return respond(result);
     }
 
-    return jsonError("Unknown action", 400, "unknown_action");
+    return fail("Unknown action", 400, "unknown_action");
   } catch (error) {
     const err = error as Error & { status?: number; code?: string };
-    return jsonError(err.message || "Purchase request failed", err.status || 500, err.code || "purchase_failed");
+    return fail(err.message || "Purchase request failed", err.status || 500, err.code || "purchase_failed");
   }
 });
 
@@ -754,7 +756,22 @@ function httpError(message: string, status = 500, code = "error") {
   return error;
 }
 
-function jsonResponse(body: unknown, status = 200) {
+function corsHeadersFor(request: Request) {
+  const origin = String(request.headers.get("origin") || "").replace(/\/$/, "");
+  const configured = [
+    "https://jenovate.in",
+    "https://www.jenovate.in",
+    "https://lms-website-zeta-vert.vercel.app",
+    Deno.env.get("SITE_URL") || "",
+    Deno.env.get("PUBLIC_SITE_URL") || "",
+    ...(Deno.env.get("CORS_ALLOWED_ORIGINS") || "").split(","),
+  ].map((value) => value.trim().replace(/\/$/, "")).filter(Boolean);
+  return origin && configured.includes(origin)
+    ? { ...baseCorsHeaders, "Access-Control-Allow-Origin": origin, "Vary": "Origin" }
+    : baseCorsHeaders;
+}
+
+function jsonResponse(body: unknown, status = 200, corsHeaders = baseCorsHeaders) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },

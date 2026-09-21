@@ -34,3 +34,4 @@ tmp-login-check.png
 debug.log
 supabase/.temp/
 *.tsbuildinfo
+.env*

@@ -18,6 +18,7 @@ docs
 qa-artifacts
 qa-report
 scripts
+backup
 supabase
 test-results
 tests

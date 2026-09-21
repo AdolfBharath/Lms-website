@@ -1,7 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const baseCorsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
@@ -48,8 +47,11 @@ const allowedProfileFields = [
 ] as const;
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return jsonResponse({ ok: true });
-  if (request.method !== "POST") return jsonError("Method not allowed", 405, "method_not_allowed");
+  const corsHeaders = corsHeadersFor(request);
+  const respond = (body: unknown, status = 200) => jsonResponse(body, status, corsHeaders);
+  const fail = (message: string, status: number, code: string) => respond({ error: message, code }, status);
+  if (request.method === "OPTIONS") return respond({ ok: true });
+  if (request.method !== "POST") return fail("Method not allowed", 405, "method_not_allowed");
 
   let createdAuthUserId: string | null = null;
 
@@ -157,7 +159,7 @@ Deno.serve(async (request) => {
       mergeCourseIds(payload.course_ids, body.assign_course_id),
     );
 
-    return jsonResponse(savedProfile);
+    return respond(savedProfile);
   } catch (error) {
     if (createdAuthUserId) {
       try {
@@ -169,7 +171,7 @@ Deno.serve(async (request) => {
       }
     }
     const typed = error as EdgeError;
-    return jsonError(typed.message || "Unable to save user", typed.status || 400, typed.code || "admin_save_user_failed");
+    return fail(typed.message || "Unable to save user", typed.status || 400, typed.code || "admin_save_user_failed");
   }
 });
 
@@ -401,7 +403,16 @@ function httpError(message: string, status: number, code: string) {
   return error;
 }
 
-function jsonResponse(body: unknown, status = 200) {
+function corsHeadersFor(request: Request) {
+  const origin = String(request.headers.get("origin") || "").replace(/\/$/, "");
+  const configured = ["https://jenovate.in", "https://www.jenovate.in", "https://lms-website-zeta-vert.vercel.app", Deno.env.get("SITE_URL") || "", Deno.env.get("PUBLIC_SITE_URL") || "", ...(Deno.env.get("CORS_ALLOWED_ORIGINS") || "").split(",")]
+    .map((value) => value.trim().replace(/\/$/, "")).filter(Boolean);
+  return origin && configured.includes(origin)
+    ? { ...baseCorsHeaders, "Access-Control-Allow-Origin": origin, "Vary": "Origin" }
+    : baseCorsHeaders;
+}
+
+function jsonResponse(body: unknown, status = 200, corsHeaders = baseCorsHeaders) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
