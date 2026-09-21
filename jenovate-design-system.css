@@ -1,0 +1,842 @@
+:root {
+  --jv-ink: #101935;
+  --jv-muted: #68728a;
+  --jv-blue: #3864f6;
+  --jv-blue-dark: #2447e8;
+  --jv-teal: #28b7a5;
+  --jv-soft-blue: #eef4ff;
+  --jv-line: #dfe7f4;
+  --jv-surface: #f7f9fd;
+  --jv-white: #ffffff;
+  --jv-success: #12b76a;
+  --jv-danger: #d92d20;
+  --jv-warning: #f59e0b;
+  --jv-radius: 16px;
+  --jv-shadow: 0 22px 58px rgba(28, 46, 82, .12);
+  --jv-shadow-soft: 0 12px 32px rgba(28, 46, 82, .08);
+  --jv-focus: 0 0 0 4px rgba(56, 100, 246, .14);
+}
+
+* {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 0;
+  box-shadow: var(--jv-focus);
+}
+
+.purchase-form input,
+.purchase-form textarea,
+.login-form input,
+#profileView input,
+#profileView textarea {
+  min-height: 52px;
+  width: 100%;
+  border: 1px solid #d8e2f2;
+  border-radius: 12px;
+  background: #fbfdff;
+  color: var(--jv-ink);
+  font-weight: 650;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.purchase-form input:focus,
+.purchase-form textarea:focus,
+.login-form input:focus,
+#profileView input:focus,
+#profileView textarea:focus {
+  border-color: var(--jv-blue);
+  background: #fff;
+  box-shadow: var(--jv-focus);
+}
+
+.purchase-primary,
+.submit-btn,
+#profileView .save-btn,
+#profileView .profile-copy-btn,
+#referralView .primary-btn {
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--jv-blue), var(--jv-blue-dark)) !important;
+  color: #fff;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(56, 100, 246, .24);
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.purchase-primary:hover,
+.submit-btn:hover,
+#profileView .save-btn:hover,
+#profileView .profile-copy-btn:hover,
+#referralView .primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 42px rgba(56, 100, 246, .28);
+}
+
+.purchase-primary:disabled,
+.submit-btn:disabled,
+#profileView .profile-copy-btn:disabled {
+  opacity: .56;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.purchase-link,
+#profileView .cancel-btn,
+#referralView .secondary-btn {
+  min-height: 46px;
+  border: 1px solid #dfe7f4;
+  border-radius: 12px;
+  background: #f3f6ff;
+  color: var(--jv-blue);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+body:has(.login-container) {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(56, 100, 246, .14), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(40, 183, 165, .13), transparent 24%),
+    linear-gradient(135deg, #f8fbff, #eef4ff 52%, #ffffff) !important;
+}
+
+.login-container {
+  width: min(100%, 1180px) !important;
+  min-width: 0 !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  padding: clamp(24px, 5vw, 60px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, .92fr) minmax(360px, .72fr) !important;
+  gap: clamp(24px, 5vw, 70px) !important;
+  align-items: center !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+.login-left {
+  position: relative !important;
+  min-height: 620px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(223, 231, 244, .9) !important;
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, .9), transparent 24%),
+    linear-gradient(135deg, #edf4ff, #ffffff 48%, #dfeaff) !important;
+  box-shadow: var(--jv-shadow-soft) !important;
+}
+
+.login-left::before,
+.login-left::after {
+  display: none !important;
+}
+
+.logo-container {
+  position: absolute !important;
+  top: 24px !important;
+  left: 26px !important;
+  z-index: 2 !important;
+  padding: 8px 12px !important;
+  border: 1px solid rgba(223, 231, 244, .9) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, .92) !important;
+  box-shadow: 0 12px 30px rgba(28, 46, 82, .08) !important;
+}
+
+.logo-img {
+  height: 38px !important;
+}
+
+.illustration-img {
+  position: absolute !important;
+  inset: auto 0 0 !important;
+  width: 100% !important;
+  height: 88% !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+  opacity: .96 !important;
+  filter: drop-shadow(0 28px 45px rgba(44, 73, 134, .16)) !important;
+}
+
+.login-right {
+  position: relative !important;
+  z-index: 1 !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.login-form-container {
+  position: relative;
+  max-width: 480px !important;
+  padding: clamp(28px, 4vw, 44px) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--jv-line) !important;
+  border-radius: var(--jv-radius) !important;
+  background: rgba(255, 255, 255, .96) !important;
+  box-shadow: var(--jv-shadow) !important;
+  backdrop-filter: blur(16px);
+}
+
+.login-form-container::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: linear-gradient(90deg, var(--jv-blue), var(--jv-teal)) !important;
+}
+
+.welcome-title {
+  margin: 0 0 8px !important;
+  color: var(--jv-ink) !important;
+  font-size: clamp(34px, 4vw, 46px) !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  text-shadow: none !important;
+  background: none !important;
+}
+
+.welcome-subtitle {
+  margin: 0 0 30px !important;
+  color: var(--jv-muted) !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
+}
+
+.login-form label {
+  margin-bottom: 8px !important;
+  color: #24324a !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-transform: none !important;
+}
+
+.form-group {
+  margin-bottom: 20px !important;
+}
+
+.login-form .input-icon {
+  left: 16px !important;
+  color: var(--jv-blue) !important;
+}
+
+.login-form input {
+  min-height: 56px !important;
+  padding: 0 54px !important;
+  border-radius: 12px !important;
+  background: #fbfdff !important;
+  box-shadow: none !important;
+  font-size: 15px !important;
+}
+
+.toggle-password {
+  right: 14px !important;
+  color: var(--jv-blue) !important;
+}
+
+.auth-options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 2px 0 20px;
+}
+
+.remember-choice {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  color: var(--jv-muted) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.remember-choice input {
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  padding: 0 !important;
+  accent-color: var(--jv-blue);
+}
+
+.forgot-password {
+  color: var(--jv-blue) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+}
+
+.submit-btn {
+  min-height: 56px !important;
+  margin-top: 4px !important;
+}
+
+.login-error:not(:empty) {
+  min-height: auto !important;
+  margin-top: 16px !important;
+  padding: 12px 14px !important;
+  border: 1px solid #fecdca !important;
+  border-radius: 12px !important;
+  background: #fff1f3 !important;
+  color: #b42318 !important;
+  font-size: 13px !important;
+}
+
+.join-account {
+  color: var(--jv-muted) !important;
+  font-size: 14px !important;
+}
+
+.join-account a {
+  color: var(--jv-blue) !important;
+  font-weight: 850 !important;
+}
+
+.purchase-modal {
+  padding: clamp(10px, 2vw, 24px) !important;
+  background: rgba(10, 18, 48, .46) !important;
+  backdrop-filter: blur(12px);
+}
+
+.purchase-dialog {
+  width: min(1080px, 100%) !important;
+  max-height: min(92vh, 900px) !important;
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  overflow: hidden !important;
+  border: 1px solid var(--jv-line) !important;
+  border-radius: var(--jv-radius) !important;
+  background: #fff !important;
+  box-shadow: var(--jv-shadow) !important;
+}
+
+.purchase-close {
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 4;
+  border-radius: 12px !important;
+}
+
+.purchase-summary {
+  grid-template-columns: 1fr !important;
+  align-content: start;
+  gap: 18px !important;
+  padding: clamp(24px, 3vw, 34px) !important;
+  border-right: 1px solid var(--jv-line);
+  border-bottom: 0 !important;
+  background:
+    radial-gradient(circle at 88% 4%, rgba(56, 100, 246, .13), transparent 30%),
+    linear-gradient(180deg, #f8fbff, #eef4ff);
+}
+
+.purchase-summary img {
+  aspect-ratio: 16 / 10 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, .8);
+  box-shadow: 0 18px 38px rgba(28, 46, 82, .13);
+}
+
+.purchase-summary span,
+.purchase-eyebrow {
+  color: var(--jv-blue) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
+  text-transform: uppercase;
+}
+
+.purchase-summary h2,
+.purchase-panel h3 {
+  margin: 8px 0 6px !important;
+  color: var(--jv-ink) !important;
+  font-size: clamp(26px, 3vw, 34px) !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+}
+
+.purchase-summary h3 {
+  margin: 0 0 6px !important;
+  color: #24324a !important;
+  font-size: 18px !important;
+  line-height: 1.25 !important;
+}
+
+.purchase-summary p,
+.purchase-summary small,
+.purchase-panel p {
+  color: var(--jv-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+.purchase-summary dl,
+.purchase-order-summary {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid #dde6f5;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .8);
+}
+
+.purchase-summary dl div,
+.purchase-order-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.purchase-total,
+.purchase-order-total {
+  padding-top: 12px;
+  border-top: 1px solid #dbe4f2;
+  font-weight: 900;
+}
+
+.purchase-panel {
+  min-width: 0;
+  padding: clamp(26px, 4vw, 42px) !important;
+  overflow: auto;
+}
+
+.purchase-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px !important;
+}
+
+.purchase-form .purchase-form-header,
+.purchase-form .purchase-referral-note,
+.purchase-form .purchase-message,
+.purchase-form .purchase-form-actions,
+.purchase-form .purchase-wide {
+  grid-column: 1 / -1;
+}
+
+.purchase-form label {
+  display: grid;
+  gap: 8px;
+  margin: 0 !important;
+  color: #24324a !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.purchase-password-wrap {
+  position: relative;
+}
+
+.purchase-password-wrap input {
+  padding-right: 48px;
+}
+
+.purchase-toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: #eef4ff;
+  color: var(--jv-blue);
+  font-size: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.purchase-toggle-password::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  display: block;
+  margin: auto;
+  border: 2px solid currentColor;
+  border-radius: 50% 70%;
+  transform: rotate(-35deg);
+}
+
+.purchase-form-actions,
+.purchase-checkout-actions,
+.purchase-status-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.purchase-checkout {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.purchase-checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(240px, .72fr);
+  gap: 18px;
+}
+
+.purchase-mini-course,
+.purchase-pay-card {
+  padding: 18px;
+  border: 1px solid var(--jv-line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--jv-shadow-soft);
+}
+
+.purchase-mini-course img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--jv-soft-blue);
+}
+
+.purchase-mini-course h4,
+.purchase-pay-card h4 {
+  margin: 14px 0 8px;
+  color: var(--jv-ink);
+  font-size: 18px;
+}
+
+.purchase-secure-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  background: #ecfdf3 !important;
+  color: #067647 !important;
+  font-weight: 800;
+}
+
+.purchase-secure-note::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.purchase-status {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.purchase-status [data-status-tone] {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: clamp(24px, 4vw, 40px) !important;
+  border-radius: 16px !important;
+}
+
+.purchase-status-mark {
+  width: 64px !important;
+  height: 64px !important;
+  margin-bottom: 8px;
+  font-size: 0 !important;
+  animation: jv-status-pop .42s ease both;
+}
+
+.purchase-status-mark::before {
+  content: "...";
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.purchase-status [data-status-tone="success"] .purchase-status-mark::before,
+.purchase-status [data-status-tone="owned"] .purchase-status-mark::before {
+  content: "OK";
+}
+
+.purchase-status [data-status-tone="failed"] .purchase-status-mark::before {
+  content: "!";
+}
+
+.purchase-status [data-status-tone="cancelled"] .purchase-status-mark::before {
+  content: "x";
+}
+
+.purchase-status-details {
+  width: min(100%, 520px);
+  margin-top: 20px !important;
+  padding: 14px;
+  border: 1px solid rgba(223, 231, 244, .9);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .76);
+  text-align: left;
+}
+
+.purchase-status-actions {
+  width: min(100%, 520px);
+  margin: 0 auto;
+}
+
+@keyframes jv-status-pop {
+  from {
+    opacity: 0;
+    transform: scale(.82);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.course-detail-refresh .course-header,
+.course-detail-refresh main > section,
+.course-detail-refresh footer {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.course-detail-refresh {
+  background: #fbfdff;
+}
+
+.course-detail-refresh .course-hero {
+  width: min(100% - 40px, 1280px);
+  min-height: 520px;
+  margin-top: 24px;
+  padding: clamp(32px, 5vw, 66px);
+  border: 1px solid var(--jv-line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(56, 100, 246, .13), transparent 28%),
+    linear-gradient(135deg, #ffffff, #eef4ff);
+  box-shadow: var(--jv-shadow-soft);
+}
+
+.course-detail-refresh .primary-action,
+.course-detail-refresh .enroll-card > a {
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--jv-blue), var(--jv-blue-dark));
+}
+
+.course-detail-refresh .enroll-card,
+.course-detail-refresh .community-card,
+.course-detail-refresh .course-facts article,
+.course-detail-refresh .curriculum-card,
+.course-detail-refresh .roadmap-list article > div,
+.course-detail-refresh .certificate-note {
+  border-radius: 14px;
+}
+
+body[data-ui-build] #profileView,
+body[data-ui-build] #referralView {
+  max-width: 1280px !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-container,
+body[data-ui-build] #profileView .profile-form-card,
+body[data-ui-build] #profileView .profile-security-card,
+body[data-ui-build] #profileView .academic-milestones-card,
+body[data-ui-build] #profileView .active-enrollment-card,
+body[data-ui-build] #referralView .referral-pass-card,
+body[data-ui-build] #referralView .referral-share-card,
+body[data-ui-build] #referralView .referral-form-card,
+body[data-ui-build] #referralView .referral-guide-card,
+body[data-ui-build] #referralView .referral-stats-card {
+  border: 1px solid var(--jv-line) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: var(--jv-shadow-soft) !important;
+}
+
+body[data-ui-build] #profileView .profile-banner-glass {
+  min-height: 180px !important;
+  padding: clamp(24px, 3vw, 34px) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255, 255, 255, .22), transparent 26%),
+    linear-gradient(135deg, #3864f6, #28b7a5) !important;
+  color: #fff;
+}
+
+body[data-ui-build] #profileView .student-avatar-square,
+body[data-ui-build] #referralView .referral-avatar {
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, var(--jv-blue), #6f8cff) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #profileView .profile-refer-key-group {
+  grid-column: 1 / -1;
+}
+
+body[data-ui-build] #profileView .refer-key-wrapper {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #profileView #profileReferKey {
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-weight: 900;
+  color: var(--jv-blue);
+  letter-spacing: .06em;
+}
+
+body[data-ui-build] #profileView .profile-copy-btn {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+body[data-ui-build] #referralView .referral-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px) !important;
+  min-height: 240px !important;
+  border: 1px solid rgba(255, 255, 255, .32) !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(255, 255, 255, .22), transparent 28%),
+    linear-gradient(135deg, #3864f6, #28b7a5) !important;
+}
+
+body[data-ui-build] #referralView .referral-hero h2 {
+  letter-spacing: 0 !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  text-align: left !important;
+}
+
+body[data-ui-build] #referralView .referral-code-box small {
+  grid-column: 1 / -1;
+}
+
+body[data-ui-build] #referralView .referral-code-box strong {
+  font-family: Consolas, "SFMono-Regular", monospace;
+  color: var(--jv-blue) !important;
+  font-size: clamp(22px, 3vw, 36px) !important;
+  letter-spacing: .06em !important;
+  overflow-wrap: anywhere;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  min-height: 150px !important;
+  font-style: normal !important;
+}
+
+body[data-ui-build] #referralView .referral-status:not(:empty) {
+  background: #ecfdf3 !important;
+  color: #067647 !important;
+}
+
+@media (max-width: 1024px) {
+  .login-container {
+    grid-template-columns: 1fr !important;
+    padding: 28px !important;
+  }
+
+  .login-left {
+    min-height: 300px !important;
+  }
+
+  .purchase-dialog {
+    grid-template-columns: 1fr;
+    overflow: auto !important;
+  }
+
+  .purchase-summary {
+    border-right: 0;
+    border-bottom: 1px solid var(--jv-line) !important;
+  }
+
+  .purchase-checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.course-detail-refresh .course-header nav,
+  body.course-detail-refresh .header-search {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-container {
+    padding: 16px !important;
+  }
+
+  .login-left {
+    min-height: 180px !important;
+    border-radius: 18px !important;
+  }
+
+  .login-form-container {
+    padding: 24px 18px !important;
+    border-radius: 16px !important;
+  }
+
+  .auth-options-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .purchase-form {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-panel,
+  .purchase-summary {
+    padding: 20px !important;
+  }
+
+  .purchase-primary,
+  .purchase-link,
+  .purchase-checkout .purchase-primary {
+    width: 100%;
+  }
+
+  .course-detail-refresh .course-hero {
+    width: calc(100% - 24px);
+    margin-top: 12px;
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  body[data-ui-build] #profileView .refer-key-wrapper,
+  body[data-ui-build] #referralView .referral-hero,
+  body[data-ui-build] #referralView .referral-code-box {
+    grid-template-columns: 1fr !important;
+  }
+}

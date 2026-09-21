@@ -3,6 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 type Role = "admin" | "mentor" | "student";
 type MockOptions = {
   chats?: unknown[];
+  courses?: unknown[];
+  profile?: Record<string, unknown>;
 };
 
 declare global {
@@ -21,7 +23,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
     });
   });
 
-  await page.addInitScript(({ activeRole, mockChats }) => {
+  await page.addInitScript(({ activeRole, mockChats, mockCourses, profileOverrides }) => {
     const profile = {
       id: `${activeRole}-user`,
       auth_user_id: `${activeRole}-auth`,
@@ -31,7 +33,8 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
       batch_id: "batch-1",
       course_ids: ["course-1"],
       coins: 25,
-      status: "active"
+      status: "active",
+      ...profileOverrides
     };
 
     const tableRows: Record<string, unknown[]> = {
@@ -50,7 +53,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
         published_at: "2026-07-01T00:00:00Z"
       }],
       batches: [{ id: "batch-1", name: "Batch One", course_id: "course-1", mentor_id: "mentor-user", status: "active" }],
-      courses: [{ id: "course-1", title: "Smoke Course", mentor_id: "mentor-user", status: "published", modules: [] }],
+      courses: mockCourses.length ? mockCourses : [{ id: "course-1", title: "Smoke Course", mentor_id: "mentor-user", status: "published", modules: [] }],
       projects: [],
       shop_items: [],
       shop_purchases: [],
@@ -109,7 +112,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
         from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" }, error: null }), upload: async () => ({ error: null }) })
       }
     };
-  }, { activeRole: role, mockChats: options.chats || [] });
+  }, { activeRole: role, mockChats: options.chats || [], mockCourses: options.courses || [], profileOverrides: options.profile || {} });
 }
 
 async function waitForLegacyScripts(page: Page) {
@@ -164,6 +167,36 @@ for (const role of ["student", "mentor", "admin"] as const) {
     await expect(page.locator(`.${role}-shell`)).toBeVisible();
   });
 }
+
+test("student shell uses username fallback and Courses shows all available courses", async ({ page }) => {
+  await mockSupabase(page, "student", {
+    profile: { name: "Student", username: "ajay-learner", email: "ajay@example.test" },
+    courses: [
+      { id: "course-1", title: "Assigned Python", category: "Technology", mentor_id: "mentor-user", status: "published", modules: [] },
+      { id: "course-2", title: "Available Design", category: "Design", mentor_id: "mentor-user", status: "published", modules: [] },
+      { id: "course-3", title: "Available Marketing", category: "Business", mentor_id: "mentor-user", status: "published", modules: [] }
+    ]
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/student.html");
+  await expect(page.locator("#sidebarStudentName")).toHaveText("ajay-learner");
+  await expect(page.locator("#panelStudentName")).toHaveText("ajay-learner");
+  await expect(page.locator("#heroGreeting")).toContainText("ajay-learner");
+  await expect(page.locator("#heroGreeting")).not.toContainText("ð");
+  await expect(page.locator("#heroSessionText")).not.toContainText("ð");
+
+  await page.locator('[data-view="catalog"]').first().click();
+  await expect(page.locator("#catalogView.active .discovery-course-card")).toHaveCount(3);
+  await expect(page.locator("#catalogView")).toContainText("Assigned Python");
+  await expect(page.locator("#catalogView")).toContainText("Available Design");
+  await expect(page.locator("#catalogView")).toContainText("Available Marketing");
+  await expect(page.locator('#catalogView [data-catalog-course-card="course-1"] .discovery-status')).toHaveText("Assigned");
+
+  await page.locator('[data-view="referral"]').first().click();
+  await expect(page.locator("#referralStudentName")).toHaveText("ajay-learner");
+  await expect(page.locator("#referralShareText")).toHaveValue(/ajay-learner invited you/);
+  await expect(page.locator("#referralCodeValue")).not.toHaveValue(/^JNV-(?:PENDING|ACCOUNT|0+)$/);
+});
 
 test("student task page fits the viewport without horizontal overflow", async ({ page }) => {
   await mockSupabase(page, "student");
@@ -443,4 +476,48 @@ test("student batch chat handles active-room message volume without layout overf
   expect(metrics.composerHeight).toBeGreaterThan(30);
   expect(metrics.composerBottom).toBeLessThanOrEqual(metrics.viewportHeight + 2);
   expect(metrics.widestBubble).toBeLessThan(metrics.listWidth * 0.86);
+});
+
+test("student referral screen shows code and share text without layout overflow", async ({ page }) => {
+  await mockSupabase(page, "student");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/student.html");
+  await page.locator('[data-view="referral"]').first().click();
+  await expect(page.locator("#referralView.active .referral-pass-card")).toBeVisible();
+
+  const codeValue = await page.locator("#referralCodeValue").inputValue();
+  const shareText = await page.locator("#referralShareText").inputValue();
+  expect(codeValue).toMatch(/^JNV-/);
+  expect(codeValue).not.toMatch(/^JNV-(?:PENDING|ACCOUNT|0+)$/);
+  expect(shareText).toContain(codeValue);
+
+  const metrics = await page.evaluate(() => {
+    const view = document.querySelector("#referralView") as HTMLElement | null;
+    const codeText = document.querySelector("#referralCodeText") as HTMLElement | null;
+    const codeInput = document.querySelector("#referralCodeValue") as HTMLInputElement | null;
+    const shareTextArea = document.querySelector("#referralShareText") as HTMLTextAreaElement | null;
+    const codeStyle = codeInput ? getComputedStyle(codeInput) : null;
+    const shareStyle = shareTextArea ? getComputedStyle(shareTextArea) : null;
+    return {
+      bodyOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      viewOverflow: view ? view.scrollWidth - view.clientWidth : 0,
+      codeTextHeight: codeText?.getBoundingClientRect().height || 0,
+      codeInputHeight: codeInput?.getBoundingClientRect().height || 0,
+      shareHeight: shareTextArea?.getBoundingClientRect().height || 0,
+      codeColor: codeStyle?.color || "",
+      shareColor: shareStyle?.color || "",
+      codeOpacity: codeStyle?.opacity || "",
+      shareOpacity: shareStyle?.opacity || ""
+    };
+  });
+
+  expect(metrics.bodyOverflow).toBeLessThanOrEqual(2);
+  expect(metrics.viewOverflow).toBeLessThanOrEqual(2);
+  expect(metrics.codeTextHeight).toBeGreaterThan(20);
+  expect(metrics.codeInputHeight).toBeGreaterThan(30);
+  expect(metrics.shareHeight).toBeGreaterThan(120);
+  expect(metrics.codeColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect(metrics.shareColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect(metrics.codeOpacity).toBe("1");
+  expect(metrics.shareOpacity).toBe("1");
 });

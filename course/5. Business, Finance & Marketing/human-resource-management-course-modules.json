@@ -1,0 +1,224 @@
+{
+  "course": {
+    "title": "Human Resource Management",
+    "slug": "human-resource-management",
+    "category": "Business, Management & Finance",
+    "description": "A structured Human Resource Management course built from 10 recorded lectures covering SHRM, workforce planning, job analysis, recruitment, selection, performance, compensation, engagement, and change management.",
+    "duration": "9 hours 2 minutes / 10 video lessons",
+    "module_type": "Recorded video + module quiz",
+    "instructor_name": "mentor1",
+    "thumbnail_url": "course/5. Business, Finance & Marketing/vitaly-gariev-pg2eJwNVpvY.jpg",
+    "rating": "4.8",
+    "price": "INR 5,999",
+    "difficulty": "Beginner Friendly",
+    "status": "published",
+    "quiz_pass_score": 9,
+    "modules": [
+      {
+        "id": "hrm-module-1",
+        "title": "Module 1: Strategic HRM and Workforce Planning",
+        "description": "Understand strategic human resource management, HR strategy alignment, digital HR transformation, HR metrics, and manpower demand forecasting.",
+        "type": "Recorded Video Lessons",
+        "order_index": 1,
+        "lessons": [
+          {
+            "id": "hrm-lesson-1",
+            "title": "Lecture 1: Strategic Human Resource Management, Objectives, and HR Metrics",
+            "description": "Learn why SHRM matters, how HR supports business goals, and how turnover, training ROI, engagement, and cost-per-hire indicate strategic HR impact.",
+            "content_type": "video",
+            "duration": "54:05",
+            "order_index": 1,
+            "video_drive_link": "https://drive.google.com/file/d/1PPXFnNUlM6NWNZ236tcKPj6xuM97lzbO/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1PPXFnNUlM6NWNZ236tcKPj6xuM97lzbO/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-2",
+            "title": "Lecture 2: HR Strategy, Digital HR Transformation, and Implementation",
+            "description": "Connect organisational strategy to HR strategy through environmental scanning, workforce capability review, HR implications, implementation, monitoring, and digital HR challenges.",
+            "content_type": "video",
+            "duration": "57:52",
+            "order_index": 2,
+            "video_drive_link": "https://drive.google.com/file/d/1bKn2tnY7NqXQKBnz_PLbC1BAJb115nvr/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1bKn2tnY7NqXQKBnz_PLbC1BAJb115nvr/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-3",
+            "title": "Lecture 3: Manpower Demand Forecasting and Workforce Planning Factors",
+            "description": "Study how organisational growth, technology, economic conditions, regulation, seasonal workforce patterns, strategy, competition, and digital transformation shape manpower demand.",
+            "content_type": "video",
+            "duration": "57:14",
+            "order_index": 3,
+            "video_drive_link": "https://drive.google.com/file/d/19Q2kUrd7ML3KUqbIcOBjWfL4WHR3DVNs/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/19Q2kUrd7ML3KUqbIcOBjWfL4WHR3DVNs/view?usp=drivesdk"
+          }
+        ],
+        "quiz": {
+          "id": "hrm-module-1-quiz",
+          "title": "Strategic HRM and Workforce Planning Quiz",
+          "pass_marks": 9,
+          "random_count": 15,
+          "max_attempts": 3,
+          "timer_minutes": 20,
+          "status": "published",
+          "questions": [
+            { "id": "m1-q01", "question": "What is the main purpose of Strategic Human Resource Management?", "option_a": "To handle only payroll records", "option_b": "To align people practices with organisational goals", "option_c": "To remove performance targets", "option_d": "To avoid workforce planning", "answer": "B", "marks": 1 },
+            { "id": "m1-q02", "question": "Strategic alignment in HR means HR policies should support:", "option_a": "Only office decoration", "option_b": "The organisation's long-term business direction", "option_c": "Random hiring decisions", "option_d": "Unmeasured employee activities", "answer": "B", "marks": 1 },
+            { "id": "m1-q03", "question": "Which HR metric directly indicates how many employees leave over a period?", "option_a": "Employee turnover", "option_b": "Cost of goods sold", "option_c": "Market share", "option_d": "Inventory ageing", "answer": "A", "marks": 1 },
+            { "id": "m1-q04", "question": "Training ROI helps HR evaluate:", "option_a": "The financial return from learning investments", "option_b": "The colour of training slides", "option_c": "The number of meeting rooms", "option_d": "The age of office equipment", "answer": "A", "marks": 1 },
+            { "id": "m1-q05", "question": "In the HR strategy framework, environmental scanning is used to identify:", "option_a": "External and internal factors that affect people plans", "option_b": "Only employee birthdays", "option_c": "Unrelated social media trends", "option_d": "Office furniture sizes", "answer": "A", "marks": 1 },
+            { "id": "m1-q06", "question": "Assessing current workforce capabilities helps HR understand:", "option_a": "Existing skill strengths and gaps", "option_b": "Only the cafeteria menu", "option_c": "Only customer invoices", "option_d": "Personal hobbies unrelated to work", "answer": "A", "marks": 1 },
+            { "id": "m1-q07", "question": "A key challenge in digital HR transformation is:", "option_a": "Resistance to change", "option_b": "Too many paper clips", "option_c": "No need for data privacy", "option_d": "Lower need for integration", "answer": "A", "marks": 1 },
+            { "id": "m1-q08", "question": "Cybersecurity and data privacy matter in digital HR because HR systems contain:", "option_a": "Sensitive employee information", "option_b": "Only public advertisements", "option_c": "Only weather reports", "option_d": "No personal data", "answer": "A", "marks": 1 },
+            { "id": "m1-q09", "question": "Manpower demand forecasting estimates:", "option_a": "Future workforce requirements", "option_b": "A company's paint budget", "option_c": "Customer packaging size", "option_d": "The number of holidays in a calendar", "answer": "A", "marks": 1 },
+            { "id": "m1-q10", "question": "Technological change can affect manpower demand by:", "option_a": "Changing the skills and number of employees needed", "option_b": "Removing the need for planning", "option_c": "Making all roles identical", "option_d": "Stopping recruitment forever", "answer": "A", "marks": 1 },
+            { "id": "m1-q11", "question": "Economic conditions influence HR planning because they can affect:", "option_a": "Hiring budgets and labour demand", "option_b": "Only logo colours", "option_c": "Only meeting room names", "option_d": "Only file formats", "answer": "A", "marks": 1 },
+            { "id": "m1-q12", "question": "Regulatory environment affects manpower planning by shaping:", "option_a": "Legal requirements for employment practices", "option_b": "Only personal entertainment choices", "option_c": "Office snack preferences", "option_d": "Product packaging art", "answer": "A", "marks": 1 },
+            { "id": "m1-q13", "question": "Seasonal variations are important in workforce planning when:", "option_a": "Demand rises or falls during specific periods", "option_b": "All demand is always identical", "option_c": "Employees never take leave", "option_d": "The business has no customers", "answer": "A", "marks": 1 },
+            { "id": "m1-q14", "question": "Monitoring and evaluation in HR strategy are used to:", "option_a": "Track results and improve the plan", "option_b": "Hide performance information", "option_c": "Avoid feedback", "option_d": "Cancel all metrics", "answer": "A", "marks": 1 },
+            { "id": "m1-q15", "question": "Talent optimisation means placing and developing people so that:", "option_a": "Their strengths support organisational performance", "option_b": "No employee learns new skills", "option_c": "All jobs become unclear", "option_d": "Recruitment decisions are random", "answer": "A", "marks": 1 }
+          ]
+        }
+      },
+      {
+        "id": "hrm-module-2",
+        "title": "Module 2: Job Analysis, Job Design, Recruitment, and Selection",
+        "description": "Build the core HR operations toolkit: job analysis, job descriptions, job specifications, job design, job evaluation, recruitment, selection, and personality assessment.",
+        "type": "Recorded Video Lessons",
+        "order_index": 2,
+        "lessons": [
+          {
+            "id": "hrm-lesson-4",
+            "title": "Lecture 4: Job Analysis, Job Description, and Job Specification",
+            "description": "Use a digital marketing agency example to understand job analysis and compare task-based, competency-based, skills-based, and performance-based job descriptions.",
+            "content_type": "video",
+            "duration": "51:46",
+            "order_index": 4,
+            "video_drive_link": "https://drive.google.com/file/d/1xky7DCrcszQ_a5WvX8bBYQoXMYkWElaB/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1xky7DCrcszQ_a5WvX8bBYQoXMYkWElaB/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-5",
+            "title": "Lecture 5: Job Design and Job Evaluation",
+            "description": "Learn the job design process, task components, organisational goals, job purpose, and job evaluation factors such as skill, effort, responsibility, and working conditions.",
+            "content_type": "video",
+            "duration": "52:00",
+            "order_index": 5,
+            "video_drive_link": "https://drive.google.com/file/d/1mxL__rBozWM1iszRfX108Ck45vZ-YVGr/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1mxL__rBozWM1iszRfX108Ck45vZ-YVGr/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-6",
+            "title": "Lecture 6: Recruitment, Selection, and Personality Assessment",
+            "description": "Study recruitment and selection methods, internal and external hiring sources, and how traits such as conscientiousness, openness, agreeableness, and emotional stability support role fit.",
+            "content_type": "video",
+            "duration": "52:15",
+            "order_index": 6,
+            "video_drive_link": "https://drive.google.com/file/d/1c3nzcUScb-pYhX4WU-OGCq6v4_DWeUL5/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1c3nzcUScb-pYhX4WU-OGCq6v4_DWeUL5/view?usp=drivesdk"
+          }
+        ],
+        "quiz": {
+          "id": "hrm-module-2-quiz",
+          "title": "Job Analysis, Design, Recruitment, and Selection Quiz",
+          "pass_marks": 9,
+          "random_count": 15,
+          "max_attempts": 3,
+          "timer_minutes": 20,
+          "status": "published",
+          "questions": [
+            { "id": "m2-q01", "question": "Job analysis is mainly used to understand:", "option_a": "The duties, responsibilities, and requirements of a job", "option_b": "Only employee lunch timings", "option_c": "Only office rent", "option_d": "Only brand colours", "answer": "A", "marks": 1 },
+            { "id": "m2-q02", "question": "A job description usually explains:", "option_a": "Tasks, duties, reporting, and responsibilities", "option_b": "Only salary slips", "option_c": "Only customer complaints", "option_d": "Only software licence costs", "answer": "A", "marks": 1 },
+            { "id": "m2-q03", "question": "A job specification focuses on:", "option_a": "Required qualifications, skills, experience, and traits", "option_b": "Office wall colour", "option_c": "Company logo size", "option_d": "Warehouse shelf labels", "answer": "A", "marks": 1 },
+            { "id": "m2-q04", "question": "A competency-based job description emphasises:", "option_a": "Capabilities and behaviours needed for success", "option_b": "Only the number of chairs", "option_c": "Only old task lists", "option_d": "Only a product catalogue", "answer": "A", "marks": 1 },
+            { "id": "m2-q05", "question": "Job design should begin by understanding:", "option_a": "Organisational goals and the purpose of the job", "option_b": "Unrelated hobbies", "option_c": "Random interview questions", "option_d": "Only office decoration", "answer": "A", "marks": 1 },
+            { "id": "m2-q06", "question": "Identifying task components in job design helps HR:", "option_a": "Structure work clearly and efficiently", "option_b": "Avoid defining the role", "option_c": "Remove accountability", "option_d": "Stop employees from learning", "answer": "A", "marks": 1 },
+            { "id": "m2-q07", "question": "Job evaluation is used to determine:", "option_a": "The relative value of jobs", "option_b": "The weather forecast", "option_c": "Only employee birthdays", "option_d": "Only customer discounts", "answer": "A", "marks": 1 },
+            { "id": "m2-q08", "question": "Which factor is commonly used in job evaluation?", "option_a": "Responsibility", "option_b": "Wallpaper pattern", "option_c": "Personal ringtone", "option_d": "Coffee brand", "answer": "A", "marks": 1 },
+            { "id": "m2-q09", "question": "Internal recruitment means hiring from:", "option_a": "Existing employees inside the organisation", "option_b": "Only unrelated customers", "option_c": "Only competitors' advertisements", "option_d": "Only social media followers", "answer": "A", "marks": 1 },
+            { "id": "m2-q10", "question": "External recruitment means sourcing candidates from:", "option_a": "Outside the organisation", "option_b": "Only current employees", "option_c": "Only managers' personal notes", "option_d": "Only old attendance sheets", "answer": "A", "marks": 1 },
+            { "id": "m2-q11", "question": "The selection process is designed to:", "option_a": "Choose candidates who best fit the role requirements", "option_b": "Ignore job specifications", "option_c": "Avoid evidence about candidates", "option_d": "Make hiring random", "answer": "A", "marks": 1 },
+            { "id": "m2-q12", "question": "Conscientiousness in personality assessment is linked with:", "option_a": "Reliability, discipline, and goal focus", "option_b": "Ignoring responsibilities", "option_c": "Avoiding all planning", "option_d": "Refusing feedback", "answer": "A", "marks": 1 },
+            { "id": "m2-q13", "question": "Openness to experience is useful in roles that require:", "option_a": "Creativity, learning, and adaptability", "option_b": "No new ideas", "option_c": "Only repetitive silence", "option_d": "No problem solving", "answer": "A", "marks": 1 },
+            { "id": "m2-q14", "question": "Role-specific personality requirements should be connected to:", "option_a": "Actual job demands", "option_b": "Random preferences", "option_c": "Only horoscope signs", "option_d": "Only office seating", "answer": "A", "marks": 1 },
+            { "id": "m2-q15", "question": "Good recruitment and selection decisions should be based on:", "option_a": "Job-related criteria and evidence", "option_b": "Guesswork only", "option_c": "Unclear rumours", "option_d": "Personal favour alone", "answer": "A", "marks": 1 }
+          ]
+        }
+      },
+      {
+        "id": "hrm-module-3",
+        "title": "Module 3: Performance, Compensation, Engagement, and Change Management",
+        "description": "Learn how HR supports performance, employee engagement, rewards, compensation equity, change readiness, stakeholder alignment, and culture during organisational change.",
+        "type": "Recorded Video Lessons",
+        "order_index": 3,
+        "lessons": [
+          {
+            "id": "hrm-lesson-7",
+            "title": "Lecture 7: Performance Management and Performance Appraisal",
+            "description": "Review the evolution of performance management and the objectives of appraisal, including measurement, development, goal alignment, communication, and HR validation.",
+            "content_type": "video",
+            "duration": "54:43",
+            "order_index": 7,
+            "video_drive_link": "https://drive.google.com/file/d/12HpaJs2j8DjK7X5CZHxkgSjKk7A0_IZV/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/12HpaJs2j8DjK7X5CZHxkgSjKk7A0_IZV/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-8",
+            "title": "Lecture 8: Employee Engagement and Line Manager Skills in Dynamic Workplaces",
+            "description": "Explore line manager responsibilities in modern workplaces, including digital fluency, work-life integration, continuous growth, and organisational agility.",
+            "content_type": "video",
+            "duration": "56:31",
+            "order_index": 8,
+            "video_drive_link": "https://drive.google.com/file/d/1mh-A8Jj5tviB3cMrKE4El4rCd0GcUjva/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1mh-A8Jj5tviB3cMrKE4El4rCd0GcUjva/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-9",
+            "title": "Lecture 9: Compensation Management, Internal Equity, and Total Rewards",
+            "description": "Understand compensation from a strategic perspective, including internal equity, market competitiveness, non-financial recognition, rewards, and work-life integration.",
+            "content_type": "video",
+            "duration": "52:52",
+            "order_index": 9,
+            "video_drive_link": "https://drive.google.com/file/d/1PVCsiulQqjIgit6w7f9z4SuoHg788r5K/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1PVCsiulQqjIgit6w7f9z4SuoHg788r5K/view?usp=drivesdk"
+          },
+          {
+            "id": "hrm-lesson-10",
+            "title": "Lecture 10: Change Management and Stakeholder Alignment",
+            "description": "Learn why change matters and how awareness, planning, stakeholder alignment, implementation, culture, psychological safety, and leadership support successful change.",
+            "content_type": "video",
+            "duration": "52:17",
+            "order_index": 10,
+            "video_drive_link": "https://drive.google.com/file/d/1RjYaByK3X6phCxa0MNeXBXgb1v59Oqgt/view?usp=drivesdk",
+            "drive_link": "https://drive.google.com/file/d/1RjYaByK3X6phCxa0MNeXBXgb1v59Oqgt/view?usp=drivesdk"
+          }
+        ],
+        "quiz": {
+          "id": "hrm-module-3-quiz",
+          "title": "Performance, Rewards, Engagement, and Change Quiz",
+          "pass_marks": 9,
+          "random_count": 15,
+          "max_attempts": 3,
+          "timer_minutes": 20,
+          "status": "published",
+          "questions": [
+            { "id": "m3-q01", "question": "Performance management is broader than appraisal because it includes:", "option_a": "Continuous goal setting, feedback, development, and review", "option_b": "Only one yearly form", "option_c": "Only salary payment", "option_d": "Only attendance marking", "answer": "A", "marks": 1 },
+            { "id": "m3-q02", "question": "One objective of performance appraisal is to:", "option_a": "Measure and improve employee performance", "option_b": "Hide expectations", "option_c": "Remove employee development", "option_d": "Avoid communication", "answer": "A", "marks": 1 },
+            { "id": "m3-q03", "question": "Goal alignment in performance management connects individual goals with:", "option_a": "Organisational objectives", "option_b": "Random tasks", "option_c": "Unrelated hobbies", "option_d": "Only personal preferences", "answer": "A", "marks": 1 },
+            { "id": "m3-q04", "question": "Performance appraisal can support administrative decisions such as:", "option_a": "Promotions, rewards, and development actions", "option_b": "Office paint choices", "option_c": "Weather updates", "option_d": "Unrelated marketing slogans", "answer": "A", "marks": 1 },
+            { "id": "m3-q05", "question": "Employee engagement is strengthened when managers support:", "option_a": "Meaningful work, feedback, growth, and inclusion", "option_b": "Silence and unclear goals", "option_c": "No recognition", "option_d": "No learning opportunities", "answer": "A", "marks": 1 },
+            { "id": "m3-q06", "question": "Digital fluency for line managers helps them:", "option_a": "Use workplace tools and data effectively", "option_b": "Avoid all technology", "option_c": "Ignore team collaboration", "option_d": "Remove communication channels", "answer": "A", "marks": 1 },
+            { "id": "m3-q07", "question": "Work-life integration in modern HR focuses on:", "option_a": "Sustainable performance and employee wellbeing", "option_b": "Making employees always available", "option_c": "Eliminating boundaries", "option_d": "Ignoring personal responsibilities", "answer": "A", "marks": 1 },
+            { "id": "m3-q08", "question": "Compensation management should balance internal equity with:", "option_a": "Market competitiveness", "option_b": "Random pay decisions", "option_c": "No job value comparison", "option_d": "Only manager mood", "answer": "A", "marks": 1 },
+            { "id": "m3-q09", "question": "Internal equity in compensation means:", "option_a": "Pay is fair compared with roles inside the organisation", "option_b": "Every employee earns exactly the same", "option_c": "Market data is never used", "option_d": "Pay ignores job responsibility", "answer": "A", "marks": 1 },
+            { "id": "m3-q10", "question": "Non-financial recognition can include:", "option_a": "Praise, growth opportunities, flexibility, and meaningful recognition", "option_b": "Only basic salary", "option_c": "Only statutory deductions", "option_d": "Only office rent", "answer": "A", "marks": 1 },
+            { "id": "m3-q11", "question": "Change management is best described as:", "option_a": "A structured process for helping people and organisations move to a new state", "option_b": "Changing things with no plan", "option_c": "Only issuing orders", "option_d": "Ignoring stakeholders", "answer": "A", "marks": 1 },
+            { "id": "m3-q12", "question": "Creating awareness and urgency during change helps employees:", "option_a": "Understand why the change is needed", "option_b": "Ignore the reason for change", "option_c": "Avoid all communication", "option_d": "Reject every plan automatically", "answer": "A", "marks": 1 },
+            { "id": "m3-q13", "question": "Stakeholder alignment in change management means:", "option_a": "Key groups understand, support, and coordinate around the change", "option_b": "Only one person knows the plan", "option_c": "No one receives updates", "option_d": "All feedback is banned", "answer": "A", "marks": 1 },
+            { "id": "m3-q14", "question": "Psychological safety helps change because people are more likely to:", "option_a": "Share concerns, ask questions, and learn", "option_b": "Hide every risk", "option_c": "Stop collaborating", "option_d": "Reject all training", "answer": "A", "marks": 1 },
+            { "id": "m3-q15", "question": "Leadership support is important in change because leaders can:", "option_a": "Model commitment and remove obstacles", "option_b": "Avoid communication", "option_c": "Make the purpose unclear", "option_d": "Ignore resistance", "answer": "A", "marks": 1 }
+          ]
+        }
+      }
+    ]
+  }
+}

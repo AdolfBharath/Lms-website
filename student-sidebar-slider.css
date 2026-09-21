@@ -1,0 +1,146 @@
+@media (min-width: 761px) {
+  body[data-ui-build] .student-sidebar {
+    width: 76px !important;
+    min-width: 76px !important;
+    align-items: flex-start !important;
+    padding: 16px 10px 14px !important;
+    overflow: hidden !important;
+    transition: width 190ms ease, min-width 190ms ease, box-shadow 190ms ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover,
+  body[data-ui-build] .student-sidebar:focus-within {
+    width: 232px !important;
+    min-width: 232px !important;
+    box-shadow: 18px 0 42px rgba(15, 23, 42, 0.1) !important;
+  }
+
+  body[data-ui-build] .brand-panel {
+    width: 54px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    margin: 0 0 8px !important;
+    padding: 0 !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+    border: 1px solid #dce7f6 !important;
+    overflow: hidden !important;
+    text-align: left !important;
+    box-shadow: 0 16px 32px rgba(37, 99, 255, 0.12) !important;
+    transition: width 190ms ease, padding 190ms ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover .brand-panel,
+  body[data-ui-build] .student-sidebar:focus-within .brand-panel {
+    width: 212px !important;
+    padding: 0 12px !important;
+  }
+
+  body[data-ui-build] .brand-panel::before,
+  body[data-ui-build] .brand-panel::after,
+  body[data-ui-build] .brand-panel .brand-mark,
+  body[data-ui-build] .brand-copy {
+    display: none !important;
+  }
+
+  body[data-ui-build] .brand-panel img {
+    display: block !important;
+    width: 150px !important;
+    height: 58px !important;
+    min-width: 150px !important;
+    object-fit: contain !important;
+    object-position: left center !important;
+  }
+
+  body[data-ui-build] .student-card,
+  body[data-ui-build] .sidebar-promo {
+    display: none !important;
+  }
+
+  body[data-ui-build] .student-nav {
+    align-items: flex-start !important;
+    gap: 11px !important;
+  }
+
+  body[data-ui-build] .nav-item {
+    width: 54px !important;
+    min-width: 54px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    padding: 0 15px !important;
+    overflow: hidden !important;
+    transition: width 190ms ease, background 150ms ease, color 150ms ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover .nav-item,
+  body[data-ui-build] .student-sidebar:focus-within .nav-item {
+    width: 212px !important;
+  }
+
+  body[data-ui-build] .nav-item > span {
+    display: block !important;
+    min-width: 122px !important;
+    opacity: 0 !important;
+    color: currentColor !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    transform: translateX(-8px) !important;
+    transition: opacity 170ms ease, transform 170ms ease !important;
+  }
+
+  body[data-ui-build] .nav-item .nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover .nav-item > span,
+  body[data-ui-build] .student-sidebar:focus-within .nav-item > span {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+
+  body[data-ui-build] .sidebar-footer {
+    align-self: stretch !important;
+  }
+
+  body[data-ui-build] .logout-btn.full {
+    width: 54px !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 0 16px !important;
+    overflow: hidden !important;
+    transition: width 190ms ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover .logout-btn.full,
+  body[data-ui-build] .student-sidebar:focus-within .logout-btn.full {
+    width: 212px !important;
+  }
+
+  body[data-ui-build] .logout-btn.full b {
+    display: block !important;
+    opacity: 0 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    transition: opacity 170ms ease !important;
+  }
+
+  body[data-ui-build] .student-sidebar:hover .logout-btn.full b,
+  body[data-ui-build] .student-sidebar:focus-within .logout-btn.full b {
+    opacity: 1 !important;
+  }
+}

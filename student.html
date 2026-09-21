@@ -6,7 +6,7 @@
   <title>Student | Jenovate LMS</title>
   <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
   <link rel="stylesheet" href="colours.css" />
-  <link rel="stylesheet" href="student.css?v=20260730-pdf-localhost-v6" />
+  <link rel="stylesheet" href="student.css?v=20260909-mobile-menu-v1" />
   <link rel="stylesheet" href="student-courses-split.css?v=20260731-file-size-v1" />
   <link rel="stylesheet" href="student-tasks-split.css?v=20260803-task-shell-v1" />
   <link rel="stylesheet" href="student-batch-support-split.css?v=20260731-file-size-v1" />
@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="student-referral-support-split.css?v=20260731-file-size-v1" />
   <link rel="stylesheet" href="student-support-split.css?v=20260731-file-size-v1" />
   <link rel="stylesheet" href="student-premium-shell-split.css?v=20260731-file-size-v1" />
+  <link rel="stylesheet" href="student-sidebar-slider.css?v=20260831-v1" />
   <link rel="stylesheet" href="student-learning-dashboard-split.css?v=20260731-file-size-v1" />
   <link rel="stylesheet" href="student-referral-final-split.css?v=20260731-file-size-v1" />
   <style>nextjs-portal{pointer-events:none!important}</style>
@@ -25,14 +26,40 @@
   <link rel="stylesheet" href="student-session-hero.css?v=20260714-time-sessions" />
   <link rel="stylesheet" href="student-course-cards.css?v=20260714-reference-cards" />
   <link rel="stylesheet" href="student-my-courses.css?v=20260725-reference-my-courses-v1" />
+  <link rel="stylesheet" href="student-course-slider.css?v=20260831-v1" />
   <link rel="stylesheet" href="student-inbox-card.css?v=20260714-reference-inbox" />
   <link rel="stylesheet" href="student-leaderboard.css?v=20260714-live-leaderboard" />
   <link rel="stylesheet" href="student-assignment-card.css?v=20260715-academic-dashboard" />
   <link rel="stylesheet" href="student-tasks-reference.css?v=20260725-reference-tasks-fit-v4" />
-  <link rel="stylesheet" href="student-batch-chat.css?v=20260728-active-chat-scale-v1" />
+  <link rel="stylesheet" href="student-batch-chat.css?v=20260908-batch-alert-fix-v1" />
   <link rel="stylesheet" href="student-referral-refresh.css?v=20260720-referral-ui-v2" />
   <link rel="stylesheet" href="student-learning-player-youtube.css?v=20260802-discussion-notes-v1" />
+  <link rel="stylesheet" href="student-quiz-polish.css?v=20260901-v1" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
+  <link rel="stylesheet" href="jenovate-design-system.css?v=20260822-final-ui-v1" />
+  <style>
+    @media (min-width: 761px) and (max-width: 900px) {
+      body[data-ui-build] .student-sidebar {
+        left: 0 !important;
+        transform: none !important;
+        z-index: 2147483001 !important;
+      }
+    }
+    @media (max-width: 760px) {
+      body[data-ui-build].sidebar-open .student-sidebar,
+      body[data-ui-build] .student-sidebar.mobile-open,
+      body[data-ui-build] .student-sidebar.open {
+        width: min(286px, 86vw) !important;
+        min-width: min(286px, 86vw) !important;
+        max-width: 86vw !important;
+        transform: translateX(0) !important;
+        z-index: 2147483001 !important;
+      }
+      body[data-ui-build] .sidebar-scrim { z-index: 2147483000 !important; }
+      body[data-ui-build].sidebar-open .nav-item { width: 100% !important; justify-content: flex-start !important; gap: 12px !important; padding: 0 14px !important; }
+      body[data-ui-build].sidebar-open .nav-item > span { display: block !important; font-size: 14px !important; font-weight: 800 !important; }
+    }
+  </style>
 </head>
 <body data-ui-build="stitch-20260605">
   <div class="student-shell">
@@ -42,7 +69,7 @@
         <div class="brand-mark" aria-hidden="true">J</div>
         <div class="brand-copy">
           <strong>Jenovate</strong>
-          <small id="sidebarBatchName">Batch: Alpha-2024</small>
+          <small id="sidebarBatchName">Batch: 2026</small>
         </div>
       </div>
 
@@ -267,10 +294,10 @@
           <section class="dashboard-hero-card" data-session="evening">
             <div class="dashboard-hero-copy">
               <span id="heroSessionLabel" class="hero-session-pill">
-                <span class="session-pill-icon" id="heroSessionIcon">🌙</span>
+                <span class="session-pill-icon" id="heroSessionIcon"></span>
                 <span id="heroSessionText">EVENING SESSION</span>
               </span>
-              <h2 id="heroGreeting">Good Evening, <span class="hero-greeting-person"><span class="hero-name">ajay</span>! <span class="hero-wave">👋</span></span></h2>
+              <h2 id="heroGreeting">Good Evening, <span class="hero-greeting-person"><span class="hero-name">Student</span>!</span></h2>
               <p id="heroSummary">The best time for learning is now. Let's continue building your knowledge and achieving your goals.</p>
               <div class="dashboard-insight-panel" aria-label="Daily learning insight">
                 <span class="dashboard-insight-art" aria-hidden="true">
@@ -530,7 +557,15 @@
             </div>
           </div>
         </div>
-        <div class="course-grid" id="coursesGrid"></div>
+        <div class="student-course-slider-shell">
+          <button class="course-slider-btn prev" id="courseSliderPrev" type="button" aria-label="Previous courses" title="Previous courses">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>
+          </button>
+          <div class="course-grid student-course-slider" id="coursesGrid" tabindex="0" aria-label="My courses slider"></div>
+          <button class="course-slider-btn next" id="courseSliderNext" type="button" aria-label="Next courses" title="Next courses">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+          </button>
+        </div>
         <div class="course-load-more-wrap" id="courseLoadMoreWrap" hidden>
           <button class="secondary-btn course-load-more" id="courseLoadMore" type="button">Load More Courses
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
@@ -585,16 +620,17 @@
           <article class="batch-chat-panel">
             <div class="batch-chat-header">
               <div class="batch-chat-header-left">
-                <div class="chat-icon-circle">💬</div>
+                <div class="chat-icon-circle">Chat</div>
                 <div>
                   <h2>Batch Chat</h2>
-                  <span class="online-status" id="chatOnlineStatus">• 0 Students Online</span>
+                  <span class="online-status" id="chatOnlineStatus">0 Students Online</span>
+                  <span class="chat-status" id="chatStatus" aria-live="polite"></span>
                 </div>
               </div>
               <div class="batch-chat-header-right">
                 <div class="chat-header-actions">
                   <select id="chatBatchSelect" class="chat-batch-select" aria-label="Select batch for chat"></select>
-                  <button class="chat-refresh-btn" id="reloadChatBtn" type="button" title="Refresh chat">🔄</button>
+                  <button class="chat-refresh-btn" id="reloadChatBtn" type="button" title="Refresh chat">Refresh</button>
                 </div>
               </div>
             </div>
@@ -610,7 +646,7 @@
                 <input id="chatMessage" type="text" placeholder="Type your message..." autocomplete="off" required />
               </div>
               <button class="composer-send-btn" type="submit" aria-label="Send message">
-                <span class="send-icon">➤</span>
+                <span class="send-icon">Send</span>
               </button>
             </form>
           </article>
@@ -845,7 +881,7 @@
           <aside class="referral-stats-card">
             <strong>Your Referral Stats</strong>
             <div class="referral-stat-grid">
-              <div><span id="referralInviteCount">12</span><small>Total Invites</small></div>
+              <div><span id="referralInviteCount">0</span><small>Total Invites</small></div>
               <div><span id="referralCoinsEarned">0</span><small>Coins Earned</small></div>
             </div>
             <div class="referral-next-reward">
@@ -866,12 +902,12 @@
               </div>
             </div>
             <div class="referral-code-box">
-              <small>Unique Referral Code</small>
-              <strong id="referralCodeText">JNV-0000000</strong>
-              <input id="referralCodeValue" type="text" value="JNV-0000000" readonly aria-label="Referral code" tabindex="-1" />
+              <small>Refer Key</small>
+              <strong id="referralCodeText">Generating code...</strong>
+              <input id="referralCodeValue" type="text" value="" readonly aria-label="Refer key" tabindex="-1" />
             </div>
             <div class="referral-action-strip">
-              <button class="primary-btn" type="button" data-copy-referral-code>Copy Referral Code</button>
+              <button class="primary-btn" type="button" data-copy-referral-code>Copy Refer Key</button>
             </div>
             <p class="referral-status" id="referralStatus" aria-live="polite"></p>
           </article>
@@ -1032,6 +1068,14 @@
                     <input id="profilePhone" type="tel" disabled />
                   </div>
                 </div>
+                <div class="profile-input-group profile-refer-key-group">
+                  <small class="profile-input-label">Your Refer Key</small>
+                  <div class="profile-input-wrapper refer-key-wrapper">
+                    <span class="profile-input-icon">#</span>
+                    <input id="profileReferKey" type="text" value="Loading..." readonly aria-label="Your Refer Key" />
+                    <button class="profile-copy-btn" id="profileReferKeyCopyBtn" type="button" data-copy-profile-refer-key>Copy</button>
+                  </div>
+                </div>
                 <div class="profile-form-actions" id="profileFormActions" style="display: none;">
                   <button type="button" class="cancel-btn" id="profileCancelBtn">Cancel</button>
                   <button type="submit" class="save-btn">Save Changes</button>
@@ -1144,9 +1188,9 @@
   <script defer src="lms-content-service.js?v=20260802-provider-preview-v1"></script>
   <script defer src="academic-metrics.js?v=20260716-academic-metrics"></script>
   <script defer src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
-  <script type="module" src="student-referral.js?v=20260720-referral-db-v2"></script>
+  <script type="module" src="student-referral.js?v=20260821-referral-live-v3"></script>
   <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
   <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
-  <script defer src="student.js?v=20260802-discussion-pdf-v1"></script>
+  <script defer src="student.js?v=20260908-student-chat-v4"></script>
 </body>
 </html>

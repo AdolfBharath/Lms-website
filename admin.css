@@ -16,6 +16,18 @@ body.admin-redesign-final {
   background: #ffffff !important;
 }
 
+body.admin-redesign-final.admin-auth-pending .admin-sidebar,
+body.admin-redesign-final.admin-auth-pending .admin-context-panel,
+body.admin-redesign-final.admin-auth-pending .admin-main > :not(#loadingPanel) {
+  visibility: hidden !important;
+}
+
+body.admin-redesign-final.admin-auth-pending .loading-panel {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 body.admin-redesign-final .admin-shell {
   width: 100vw !important;
   max-width: none !important;

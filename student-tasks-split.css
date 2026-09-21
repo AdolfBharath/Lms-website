@@ -10,6 +10,16 @@ body[data-ui-build] #tasksView .secondary-page-intro,
 body[data-ui-build] #tasksView > .toolbar {
   display: none !important;
 }
+/* Assignment submission form polish */
+body[data-ui-build] .modal-panel #taskSubmitForm{display:grid!important;gap:18px!important}
+body[data-ui-build] .modal-panel #taskSubmitForm .task-submit-link{display:grid!important;gap:10px!important;padding:14px!important;background:#f8fafc!important;border:1px solid #e5edf7!important;border-radius:14px!important}
+body[data-ui-build] .modal-panel #taskSubmitForm label{display:grid!important;gap:8px!important;color:#334155!important;font-weight:800!important}
+body[data-ui-build] .modal-panel #taskSubmitForm input[type="url"],body[data-ui-build] .modal-panel #taskSubmitForm textarea{min-height:46px!important;border:1px solid #d9e2f0!important;border-radius:12px!important;background:#fff!important}
+body[data-ui-build] .modal-panel #taskSubmitForm input[type="file"]{width:100%!important;min-height:132px!important;padding:48px 16px 16px!important;text-align:center!important;background:linear-gradient(180deg,#fbfdff,#f6f9fe)!important;border:1.5px dashed #9db5df!important;border-radius:16px!important;color:#475569!important}
+body[data-ui-build] .modal-panel #taskSubmitForm input[type="file"]::file-selector-button{margin-right:12px!important;padding:10px 14px!important;color:#fff!important;background:#2563eb!important;border:0!important;border-radius:10px!important;font-weight:800!important}
+body[data-ui-build] .modal-panel #taskSubmitForm .primary-btn{min-height:48px!important;justify-content:center!important}
+body[data-ui-build] .modal-panel .import-callout{padding:12px 14px!important;background:#ecfdf5!important;border:1px solid #bbf7d0!important;border-radius:12px!important;color:#166534!important;font-weight:700!important}
+@media(max-width:520px){body[data-ui-build] .modal-panel{width:calc(100vw - 18px)!important;max-height:calc(100vh - 18px)!important;overflow:auto!important}body[data-ui-build] .modal-panel #taskSubmitForm input[type="file"]{min-height:110px!important;padding-top:38px!important}body[data-ui-build] .modal-panel #taskSubmitForm .secondary-btn{white-space:normal!important;overflow-wrap:anywhere!important}}
 
 body[data-ui-build] .tasks-shell {
   display: grid !important;
@@ -1635,4 +1645,16 @@ body[data-ui-build] #tasksView .task-detail-status {
   body[data-ui-build] #tasksView .stitch-task-detail {
     padding: 18px !important;
   }
+}
+
+body[data-ui-build] #tasksView .task-submit-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #tasksView .task-submit-actions .primary-btn,
+body[data-ui-build] #tasksView .task-submit-actions .secondary-btn {
+  flex: 1 1 180px !important;
+  min-width: 0 !important;
 }

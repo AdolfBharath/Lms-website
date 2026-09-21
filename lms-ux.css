@@ -364,3 +364,153 @@ table thead th {
     scroll-behavior: auto !important;
   }
 }
+
+body[data-ui-build] #referralView .referral-code-box {
+  overflow: hidden !important;
+}
+
+body[data-ui-build] #referralView #referralCodeText {
+  display: block !important;
+  color: #315ee6 !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  color: #1f2937 !important;
+  -webkit-text-fill-color: #1f2937 !important;
+  caret-color: #315ee6 !important;
+}
+
+body[data-ui-build] #referralView #referralCodeValue {
+  position: absolute !important;
+  inset: auto !important;
+  display: block !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 1px !important;
+  max-width: 1px !important;
+  height: 1px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+body[data-ui-build] #referralView #referralCodeText {
+  position: relative !important;
+  z-index: 1 !important;
+  font-size: clamp(22px, 2.2vw, 34px) !important;
+  line-height: 1.12 !important;
+}
+
+body[data-ui-build] #referralView #referralShareText {
+  min-height: 154px !important;
+  resize: vertical !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(106px, auto) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions .secondary-btn,
+body[data-ui-build] #catalogView .discovery-actions .primary-btn {
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #catalogView .discovery-actions .primary-btn {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2258f4, #4839f3) !important;
+  box-shadow: 0 12px 24px rgba(34, 88, 244, 0.22) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card {
+  overflow: hidden !important;
+  min-height: 280px !important;
+  border: 1px solid rgba(34, 88, 244, 0.16) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(255, 190, 49, 0.26), transparent 24%),
+    radial-gradient(circle at 18% 92%, rgba(41, 203, 178, 0.18), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #eef5ff 52%, #f8fbff 100%) !important;
+  box-shadow: 0 24px 60px rgba(28, 48, 105, 0.12) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card span {
+  color: #2258f4 !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card h2 {
+  max-width: 720px !important;
+  color: #101936 !important;
+  font-size: clamp(30px, 3vw, 46px) !important;
+  line-height: 1.06 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card p {
+  max-width: 680px !important;
+  color: #5f6f8f !important;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card .primary-btn,
+body[data-ui-build] #catalogView .catalog-accelerator-card .secondary-btn {
+  min-width: 170px !important;
+  min-height: 48px !important;
+  padding: 0 24px !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card .primary-btn {
+  color: #fff !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, #2258f4, #2db8e8) !important;
+}
+
+body[data-ui-build] #catalogView .catalog-accelerator-card .secondary-btn {
+  color: #111936 !important;
+  border: 1px solid #d8e2f2 !important;
+  background: #fff !important;
+}
+
+@media (max-width: 680px) {
+  body[data-ui-build] #catalogView .discovery-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-accelerator-card {
+    padding: 24px !important;
+  }
+
+  body[data-ui-build] #catalogView .catalog-accelerator-card .primary-btn,
+  body[data-ui-build] #catalogView .catalog-accelerator-card .secondary-btn {
+    width: 100% !important;
+  }
+}

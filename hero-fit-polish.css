@@ -1,0 +1,491 @@
+@media (min-width: 1181px) {
+  body.marketspace-refresh:has(.hero#home) main {
+    overflow-x: clip !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero {
+    height: clamp(760px, calc(100svh - 88px), 840px) !important;
+    min-height: 760px !important;
+    max-height: 840px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy {
+    top: clamp(36px, 4.2vh, 48px) !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy::before {
+    content: none !important;
+    display: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .job-headline {
+    font-size: clamp(62px, 4.15vw, 78px) !important;
+    line-height: .98 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy > p {
+    margin-top: 18px !important;
+    line-height: 1.46 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 620px !important;
+    max-width: min(620px, calc(100vw - 120px)) !important;
+    height: 54px !important;
+    margin-top: 20px !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    align-items: center !important;
+    justify-items: start !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    min-width: 0 !important;
+    padding: 0 12px 0 8px !important;
+    gap: 8px !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span::before {
+    position: static !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+    border-radius: 999px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    transform: none !important;
+    background: linear-gradient(135deg, #4d55ff 0%, #18c3d5 100%) !important;
+    box-shadow: 0 10px 20px rgba(37, 131, 255, .22) !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span b {
+    display: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-buttons {
+    margin-top: 26px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust {
+    width: 560px !important;
+    min-height: 112px !important;
+    margin-top: 24px !important;
+    padding: 16px 22px !important;
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    align-items: center !important;
+    column-gap: 18px !important;
+    row-gap: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-avatars {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust p {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust strong {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    margin: 4px 0 0 !important;
+    font-size: 42px !important;
+    line-height: 1 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust span {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-art {
+    top: clamp(18px, 2.6vh, 32px) !important;
+    width: clamp(700px, 40vw, 790px) !important;
+    right: clamp(78px, 7vw, 136px) !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-reference-art {
+    max-height: 760px !important;
+    object-fit: contain !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero + .dream-journey-strip {
+    margin-top: 0 !important;
+    padding-top: clamp(28px, 3.2vw, 46px) !important;
+  }
+}
+
+@media (min-width: 1181px) and (max-height: 820px) {
+  body.marketspace-refresh:has(.hero#home) .hero {
+    height: calc(100svh - 88px) !important;
+    min-height: 700px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy::before {
+    display: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy {
+    top: 28px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust {
+    min-height: 104px !important;
+    margin-top: 20px !important;
+  }
+}
+
+/* Final public-home responsive pass. Keep this file last in index.html. */
+@media (max-width: 1180px) {
+  body.marketspace-refresh:has(.hero#home) main {
+    overflow-x: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero {
+    width: min(100% - 28px, 760px) !important;
+    min-height: 0 !important;
+    margin: 14px auto 18px !important;
+    padding: 34px 22px 28px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy::before {
+    content: "Career-ready learning" !important;
+    width: max-content !important;
+    min-height: 32px !important;
+    margin: 0 0 14px !important;
+    padding: 0 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    border-radius: 999px !important;
+    background: #eaf4ff !important;
+    color: #0865d8 !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero-copy h1.job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero h1 {
+    width: 100% !important;
+    max-width: 11.5ch !important;
+    margin: 0 0 16px !important;
+    font-size: 44px !important;
+    line-height: 1.04 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .job-headline mark {
+    display: inline !important;
+    padding: 0 .05em !important;
+    color: #0865d8 !important;
+    background: linear-gradient(180deg, transparent 58%, rgba(142, 204, 255, .55) 0) !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .job-headline mark::after {
+    content: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy > p {
+    max-width: 38rem !important;
+    margin: 0 0 18px !important;
+    color: #34415a !important;
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+    overflow-wrap: normal !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 18px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span {
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 8px 10px !important;
+    display: grid !important;
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 9px !important;
+    border-radius: 14px !important;
+    white-space: normal !important;
+    text-align: left !important;
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span::before {
+    width: 34px !important;
+    height: 34px !important;
+    position: static !important;
+    display: grid !important;
+    place-items: center !important;
+    margin: 0 !important;
+    transform: none !important;
+    font-size: 12px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip span b {
+    display: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-buttons {
+    width: 100% !important;
+    max-width: 460px !important;
+    margin: 0 0 18px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-buttons .btn {
+    width: 100% !important;
+    min-height: 50px !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    font-size: 14px !important;
+    white-space: normal !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust {
+    width: 100% !important;
+    max-width: 540px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 14px !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    gap: 2px 14px !important;
+    align-items: center !important;
+    overflow: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-avatars {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    min-width: 126px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust p,
+  body.marketspace-refresh:has(.hero#home) .hero-trust strong,
+  body.marketspace-refresh:has(.hero#home) .hero-trust span {
+    grid-column: 2 !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust p {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust strong {
+    font-size: 34px !important;
+    line-height: 1 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust span {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-art {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.marketspace-refresh:has(.hero#home) .home-testimonials {
+    width: min(100% - 24px, 620px) !important;
+    margin-inline: auto !important;
+    padding: 24px 14px !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    content-visibility: visible !important;
+    contain-intrinsic-size: auto none !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .home-testimonials .section-title {
+    width: 100% !important;
+    margin: 0 0 14px !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .home-testimonials .section-title h2 {
+    font-size: 24px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .home-testimonials .section-title p {
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-reviews {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-review-row,
+  body.marketspace-refresh:has(.hero#home) .flying-review-row.reverse {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-review-row.reverse {
+    display: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-review-card {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-review-row:not(.reverse) .flying-review-card:nth-of-type(n + 5) {
+    display: none !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .flying-review-card p {
+    max-width: 100% !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.marketspace-refresh:has(.hero#home) .hero {
+    width: calc(100% - 24px) !important;
+    margin-top: 12px !important;
+    padding: 26px 16px 22px !important;
+    border-radius: 22px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero-copy h1.job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero h1 {
+    max-width: 10.5ch !important;
+    margin-inline: auto !important;
+    text-align: center !important;
+    font-size: 34px !important;
+    line-height: 1.08 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy {
+    text-align: center !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy::before {
+    margin-inline: auto !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy > p {
+    margin-inline: auto !important;
+    font-size: 13px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip {
+    grid-template-columns: minmax(0, 1fr) !important;
+    margin-bottom: 16px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-buttons {
+    max-width: 100% !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust {
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-avatars,
+  body.marketspace-refresh:has(.hero#home) .hero-trust p,
+  body.marketspace-refresh:has(.hero#home) .hero-trust strong,
+  body.marketspace-refresh:has(.hero#home) .hero-trust span {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body.marketspace-refresh:has(.hero#home) .job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero-copy h1.job-headline,
+  body.marketspace-refresh:has(.hero#home) .hero h1 {
+    font-size: 30px !important;
+  }
+}

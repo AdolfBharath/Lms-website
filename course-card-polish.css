@@ -1,0 +1,640 @@
+body.marketspace-refresh .courses-section {
+  position: relative !important;
+  padding: clamp(56px, 5.6vw, 84px) 0 clamp(78px, 7vw, 108px) !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 9% 2%, rgba(37, 131, 255, .08), transparent 26%),
+    radial-gradient(circle at 92% 0%, rgba(114, 87, 255, .08), transparent 26%),
+    linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%) !important;
+}
+
+body.marketspace-refresh .courses-section::before,
+body.marketspace-refresh .courses-section::after {
+  pointer-events: none !important;
+}
+
+body.marketspace-refresh .courses-section .section-title {
+  width: min(700px, calc(100% - 32px)) !important;
+  margin: 0 auto 22px !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .courses-section .section-title .pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 24px !important;
+  margin: 0 0 12px !important;
+  padding: 0 12px !important;
+  border: 1px solid rgba(37, 131, 255, .22) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .9) !important;
+  color: #2477f2 !important;
+  box-shadow: 0 10px 22px rgba(37, 131, 255, .08) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .courses-section .section-title h2 {
+  max-width: 660px !important;
+  margin: 0 auto 12px !important;
+  color: #070b18 !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  font-size: clamp(40px, 4.2vw, 58px) !important;
+  line-height: 1.02 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .courses-section .section-title h2 mark {
+  position: relative !important;
+  display: inline-block !important;
+  padding: 0 !important;
+  color: #1677ff !important;
+  background: none !important;
+  box-shadow: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #1677ff !important;
+}
+
+body.marketspace-refresh .courses-section .section-title h2 mark::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 8% !important;
+  right: 8% !important;
+  bottom: -5px !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: rgba(22, 119, 255, .3) !important;
+}
+
+body.marketspace-refresh .courses-section .section-title p {
+  margin: 0 auto !important;
+  color: #657286 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  font-weight: 650 !important;
+}
+
+body.marketspace-refresh .course-toolbar {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 16px auto 26px !important;
+}
+
+body.marketspace-refresh .currency-switcher {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 46px !important;
+  padding: 6px !important;
+  border: 1px solid rgba(39, 117, 237, .2) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .84) !important;
+  box-shadow: 0 18px 38px rgba(31, 74, 145, .08) !important;
+}
+
+body.marketspace-refresh .currency-switcher span,
+body.marketspace-refresh .currency-switcher button {
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .currency-switcher button {
+  min-width: 58px !important;
+  min-height: 34px !important;
+  border-radius: 999px !important;
+}
+
+body.marketspace-refresh .course-tab-shell {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: min(1180px, calc(100% - 72px)) !important;
+  min-height: 58px !important;
+  margin: 0 auto 36px !important;
+  padding: 0 64px !important;
+}
+
+body.marketspace-refresh .course-tab-shell::before,
+body.marketspace-refresh .course-tab-shell::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-tab-shell .course-tab-arrow {
+  position: absolute !important;
+  top: 50% !important;
+  z-index: 5 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  border: 3px solid #101428 !important;
+  border-radius: 50% !important;
+  background: #ffc236 !important;
+  box-shadow: 5px 7px 0 #101428 !important;
+  transform: translateY(-50%) !important;
+}
+
+body.marketspace-refresh .course-tab-shell .course-tab-arrow.left {
+  left: 0 !important;
+}
+
+body.marketspace-refresh .course-tab-shell .course-tab-arrow.right {
+  right: 0 !important;
+}
+
+body.marketspace-refresh .course-tab-shell .course-tab-arrow::before {
+  position: static !important;
+  width: 11px !important;
+  height: 11px !important;
+  margin: 0 !important;
+  border-width: 0 0 3px 3px !important;
+}
+
+body.marketspace-refresh .course-tab-shell .course-tab-arrow:hover {
+  transform: translateY(calc(-50% - 2px)) !important;
+  box-shadow: 6px 8px 0 #101428 !important;
+}
+
+body.marketspace-refresh .tabs {
+  width: 100% !important;
+  max-width: 1054px !important;
+  min-height: 52px !important;
+  margin: 0 auto !important;
+  padding: 7px !important;
+  border: 1px solid rgba(39, 177, 153, .24) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .82) !important;
+  box-shadow: 0 18px 46px rgba(28, 85, 151, .08) !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+body.marketspace-refresh .tabs::-webkit-scrollbar {
+  display: none !important;
+}
+
+body.marketspace-refresh .tabs button {
+  min-height: 38px !important;
+  padding: 0 18px !important;
+  border-radius: 999px !important;
+  color: #32405c !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+}
+
+body.marketspace-refresh .tabs button.active {
+  color: #101828 !important;
+  background: linear-gradient(135deg, #52bf97, #f5c42a) !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .course-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(228px, 244px)) !important;
+  justify-content: center !important;
+  gap: clamp(24px, 2.3vw, 32px) !important;
+  width: min(1068px, calc(100% - 64px)) !important;
+  margin: 0 auto !important;
+  align-items: stretch !important;
+}
+
+body.marketspace-refresh .course-card {
+  position: relative !important;
+  justify-self: stretch !important;
+  display: grid !important;
+  grid-template-rows: 118px 36px 58px 32px 54px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 298px !important;
+  height: auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(37, 131, 255, .16) !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: 0 16px 36px rgba(27, 48, 93, .14) !important;
+  cursor: pointer !important;
+  transform: none !important;
+  transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease !important;
+}
+
+body.marketspace-refresh .course-card[hidden],
+body.marketspace-refresh .course-card.is-hidden {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-card:hover {
+  border-color: rgba(37, 131, 255, .28) !important;
+  box-shadow: 0 24px 54px rgba(27, 48, 93, .16) !important;
+  transform: translateY(-6px) !important;
+}
+
+body.marketspace-refresh .course-visual {
+  position: relative !important;
+  height: 118px !important;
+  max-height: 118px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 12px 12px 0 0 !important;
+  background: #dfeafb !important;
+}
+
+body.marketspace-refresh .course-visual::before {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-visual img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  filter: saturate(1.04) contrast(1.02) !important;
+  transform: none !important;
+  transition: transform .32s ease !important;
+}
+
+body.marketspace-refresh .course-card:hover .course-visual img {
+  transform: scale(1.035) !important;
+}
+
+body.marketspace-refresh .course-card.teal .course-visual img {
+  filter: saturate(1.2) contrast(1.03) hue-rotate(145deg) brightness(.88) !important;
+}
+
+body.marketspace-refresh .course-card.purple .course-visual img,
+body.marketspace-refresh .course-card.violet .course-visual img {
+  filter: saturate(1.25) contrast(1.06) hue-rotate(235deg) brightness(.82) !important;
+}
+
+body.marketspace-refresh .course-card.orange .course-visual img,
+body.marketspace-refresh .course-card.amber .course-visual img {
+  filter: saturate(1.15) contrast(1.02) hue-rotate(12deg) brightness(1.08) !important;
+}
+
+body.marketspace-refresh .course-visual-tag {
+  position: absolute !important;
+  left: 14px !important;
+  top: 14px !important;
+  bottom: auto !important;
+  z-index: 2 !important;
+  max-width: calc(100% - 62px) !important;
+  padding: 6px 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: var(--course-accent, #1d6ef2) !important;
+  box-shadow: 0 8px 18px rgba(19, 73, 154, .16) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+body.marketspace-refresh .course-visual-chip {
+  position: absolute !important;
+  left: auto !important;
+  right: 14px !important;
+  top: 13px !important;
+  bottom: auto !important;
+  z-index: 2 !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 24px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .course-visual-chip::before {
+  content: "♡" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: auto !important;
+  height: auto !important;
+  color: #fff !important;
+  font-size: 25px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .course-visual-chip::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-visual-icon {
+  position: absolute !important;
+  left: 16px !important;
+  bottom: 14px !important;
+  z-index: 3 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border: 1px solid rgba(255, 255, 255, .65) !important;
+  border-radius: 12px !important;
+  background: var(--course-accent, #1475ff) !important;
+  box-shadow: 0 14px 26px rgba(17, 54, 110, .22) !important;
+}
+
+body.marketspace-refresh .course-visual-icon::before {
+  content: attr(data-course-icon) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+body.marketspace-refresh .course-card.teal .course-visual-icon::before {
+  content: "J" !important;
+  font-size: 19px !important;
+}
+
+body.marketspace-refresh .course-card.purple .course-visual-icon::before,
+body.marketspace-refresh .course-card.violet .course-visual-icon::before {
+  content: "" !important;
+  width: 18px !important;
+  height: 18px !important;
+  background:
+    linear-gradient(#fff, #fff) left bottom / 3px 8px no-repeat,
+    linear-gradient(#fff, #fff) center bottom / 3px 14px no-repeat,
+    linear-gradient(#fff, #fff) right bottom / 3px 11px no-repeat !important;
+}
+
+body.marketspace-refresh .course-card.orange .course-visual-icon::before,
+body.marketspace-refresh .course-card.amber .course-visual-icon::before {
+  content: "" !important;
+  width: 17px !important;
+  height: 17px !important;
+  border: 2px solid #fff !important;
+  border-radius: 50% !important;
+  box-shadow: inset 7px 0 0 rgba(255, 255, 255, .35) !important;
+}
+
+body.marketspace-refresh .course-visual-icon::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-meta {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 16px 12px 0 !important;
+}
+
+body.marketspace-refresh .course-meta span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  justify-self: start !important;
+  width: max-content !important;
+  max-width: 96px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 18px !important;
+  padding: 2px 6px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--course-accent, #1475ff) 11%, #fff) !important;
+  color: var(--course-accent, #1475ff) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 9px !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .course-meta b {
+  align-self: center !important;
+  justify-self: end !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  color: #f7a721 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+body.marketspace-refresh .course-meta em {
+  color: #647189 !important;
+  font-size: 9px !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+}
+
+body.marketspace-refresh .course-card h3 {
+  display: block !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #111827 !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  font-size: 17px !important;
+  line-height: 1.08 !important;
+  font-weight: 920 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  word-spacing: .06em !important;
+}
+
+body.marketspace-refresh .course-card.orange h3,
+body.marketspace-refresh .course-card.amber h3,
+body.marketspace-refresh .course-card.purple h3,
+body.marketspace-refresh .course-card.violet h3,
+body.marketspace-refresh .course-card.pink h3,
+body.marketspace-refresh .course-card.rose h3,
+body.marketspace-refresh .course-card.green h3,
+body.marketspace-refresh .course-card.teal h3,
+body.marketspace-refresh .course-card.cyan h3,
+body.marketspace-refresh .course-card.navy h3,
+body.marketspace-refresh .course-card.blue h3 {
+  color: #101828 !important;
+  -webkit-text-fill-color: #101828 !important;
+}
+
+body.marketspace-refresh .course-card .course-mentor {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 12px 6px !important;
+  overflow: hidden !important;
+  color: #5b6880 !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+body.marketspace-refresh .course-card .course-mentor span {
+  flex: 0 0 auto !important;
+  width: 12px !important;
+  height: 12px !important;
+  position: relative !important;
+  border: 1.8px solid currentColor !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  opacity: .72 !important;
+}
+
+body.marketspace-refresh .course-card .course-mentor span::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 9px !important;
+  width: 12px !important;
+  height: 6px !important;
+  border: 1.8px solid currentColor !important;
+  border-top: 0 !important;
+  border-radius: 0 0 999px 999px !important;
+  transform: translateX(-50%) !important;
+}
+
+body.marketspace-refresh .course-bottom {
+  display: grid !important;
+  grid-template-columns: minmax(104px, auto) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 9px 12px 12px !important;
+  border-top: 1px solid rgba(41, 105, 190, .14) !important;
+}
+
+body.marketspace-refresh .course-bottom a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: max-content !important;
+  min-width: 96px !important;
+  min-height: 0 !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--course-accent, #1475ff) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 22px rgba(20, 117, 255, .22) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+body.marketspace-refresh .course-bottom a span {
+  display: inline-block !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  transform: translateY(-.5px) !important;
+}
+
+body.marketspace-refresh .course-bottom strong {
+  justify-self: end !important;
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  white-space: nowrap !important;
+}
+
+body.marketspace-refresh .course-card.orange,
+body.marketspace-refresh .course-card.amber {
+  --course-accent: #ff7a1a;
+}
+
+body.marketspace-refresh .course-card.purple,
+body.marketspace-refresh .course-card.violet {
+  --course-accent: #6948df;
+}
+
+body.marketspace-refresh .course-card.green,
+body.marketspace-refresh .course-card.teal,
+body.marketspace-refresh .course-card.cyan {
+  --course-accent: #0f9f8b;
+}
+
+body.marketspace-refresh .course-card.navy,
+body.marketspace-refresh .course-card.blue {
+  --course-accent: #126be7;
+}
+
+body.marketspace-refresh .course-card.pink,
+body.marketspace-refresh .course-card.rose {
+  --course-accent: #df2777;
+}
+
+@media (max-width: 1180px) {
+  body.marketspace-refresh .course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: min(720px, calc(100% - 36px)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body.marketspace-refresh .courses-section .section-title h2 {
+    font-size: clamp(34px, 11vw, 46px) !important;
+  }
+
+  body.marketspace-refresh .tabs {
+    width: calc(100% - 28px) !important;
+    margin-bottom: 26px !important;
+  }
+
+  body.marketspace-refresh .course-grid {
+    grid-template-columns: 1fr !important;
+    width: min(330px, calc(100% - 28px)) !important;
+  }
+}

@@ -1,0 +1,3261 @@
+/* Jenovate Marketspace premium visual refresh.
+   Existing HTML, course data, prices, images, filters, search, and links stay authoritative. */
+
+body.marketspace-refresh,
+body.course-detail-refresh {
+  --ms-ink: #101828;
+  --ms-muted: #667085;
+  --ms-line: #e6e9ef;
+  --ms-soft: #f7f8fb;
+  --ms-warm: #fbfaf7;
+  --ms-accent: #235ed8;
+  background: linear-gradient(180deg, #fff 0%, var(--ms-warm) 42%, #fff 100%) !important;
+  color: var(--ms-ink) !important;
+}
+
+@media (min-width: 1181px) and (max-width: 1280px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  body.marketspace-refresh .site-header .nav {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
+  }
+}
+
+/* Final reference match: dream journey section from provided screenshot. */
+body.marketspace-refresh .dream-journey-strip {
+  position: relative !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  min-height: 724px !important;
+  margin: 0 !important;
+  padding: 64px clamp(32px, 7vw, 150px) 86px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: #fbfbfa !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .dream-journey-strip::before,
+body.marketspace-refresh .dream-journey-strip::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .journey-knot {
+  position: relative !important;
+  width: 170px !important;
+  height: 13px !important;
+  margin: 0 auto 17px !important;
+  background:
+    linear-gradient(45deg, transparent 36%, #c99a26 37% 63%, transparent 64%) center / 13px 13px no-repeat !important;
+}
+
+body.marketspace-refresh .journey-knot::before,
+body.marketspace-refresh .journey-knot::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 6px !important;
+  width: 64px !important;
+  height: 2px !important;
+  background: #c99a26 !important;
+}
+
+body.marketspace-refresh .journey-knot::before {
+  left: 0 !important;
+}
+
+body.marketspace-refresh .journey-knot::after {
+  right: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-strip h2 {
+  position: relative !important;
+  z-index: 1 !important;
+  margin: 0 auto 18px !important;
+  color: #141c2d !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(42px, 3.55vw, 58px) !important;
+  line-height: 1.08 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+}
+
+body.marketspace-refresh .dream-journey-subtitle {
+  margin: 0 auto 74px !important;
+  color: #60636a !important;
+  font-size: clamp(20px, 1.42vw, 26px) !important;
+  line-height: 1.35 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(42px, 5.2vw, 106px) !important;
+  width: min(1330px, 100%) !important;
+  margin: 0 auto !important;
+}
+
+body.marketspace-refresh .dream-journey-steps::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50px !important;
+  left: calc(12.5% + 72px) !important;
+  right: calc(12.5% + 72px) !important;
+  height: 2px !important;
+  background: repeating-linear-gradient(90deg, #dcdcdc 0 9px, transparent 9px 17px) !important;
+  z-index: -1 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps article {
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps span {
+  display: grid !important;
+  place-items: center !important;
+  width: 104px !important;
+  height: 104px !important;
+  margin: 0 auto 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(203, 205, 214, .52) !important;
+  background: #f9fbff !important;
+  box-shadow:
+    0 18px 35px rgba(30, 39, 58, .12),
+    inset 0 0 0 7px rgba(255, 255, 255, .76) !important;
+}
+
+body.marketspace-refresh .dream-journey-steps svg {
+  width: 45px !important;
+  height: 45px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 3.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body.marketspace-refresh .dream-journey-steps b {
+  display: block !important;
+  margin: 0 0 18px !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps h3 {
+  margin: 0 0 22px !important;
+  color: #151d2b !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(28px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps i {
+  display: block !important;
+  width: 52px !important;
+  height: 2px !important;
+  margin: 0 auto 24px !important;
+  background: currentColor !important;
+  font-style: normal !important;
+}
+
+body.marketspace-refresh .dream-journey-steps p {
+  margin: 0 auto !important;
+  max-width: 260px !important;
+  color: #565a62 !important;
+  font-size: clamp(17px, 1.08vw, 19px) !important;
+  line-height: 1.46 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .journey-step-learn {
+  color: #4f8df6 !important;
+}
+
+body.marketspace-refresh .journey-step-learn span {
+  background: #f5f9ff !important;
+}
+
+body.marketspace-refresh .journey-step-build {
+  color: #4bb775 !important;
+}
+
+body.marketspace-refresh .journey-step-build span {
+  background: #f3fbf5 !important;
+}
+
+body.marketspace-refresh .journey-step-grow {
+  color: #c79618 !important;
+}
+
+body.marketspace-refresh .journey-step-grow span {
+  background: #fffbf3 !important;
+}
+
+body.marketspace-refresh .journey-step-hired {
+  color: #7b5bdc !important;
+}
+
+body.marketspace-refresh .journey-step-hired span {
+  background: #f8f5ff !important;
+}
+
+body.marketspace-refresh .dream-journey-steps h3 {
+  color: #151d2b !important;
+}
+
+body.marketspace-refresh .dream-journey-steps p {
+  color: #565a62 !important;
+}
+
+body.marketspace-refresh .dream-journey-strip + .future-section {
+  margin-top: 0 !important;
+}
+
+body.marketspace-refresh .whatsapp-float {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  body.marketspace-refresh .dream-journey-strip {
+    min-height: 0 !important;
+    padding: 48px 22px 58px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-subtitle {
+    margin-bottom: 44px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 44px 24px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body.marketspace-refresh .dream-journey-strip h2 {
+    font-size: 36px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Compact FAQ correction: reduce the oversized support block. */
+body.marketspace-refresh .faq.section-glow {
+  width: min(1440px, calc(100vw - 56px)) !important;
+  margin: clamp(42px, 5vw, 72px) auto !important;
+  padding: clamp(38px, 4vw, 56px) clamp(28px, 4vw, 52px) !important;
+  grid-template-columns: minmax(320px, 460px) minmax(460px, 640px) !important;
+  justify-content: center !important;
+  gap: clamp(34px, 4vw, 58px) !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 6% 6%, rgba(37, 131, 255, .18), transparent 24%),
+    radial-gradient(circle at 92% 92%, rgba(91, 109, 255, .12), transparent 30%),
+    linear-gradient(135deg, #f8fbff 0%, #edf6ff 100%) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-art {
+  min-height: 420px !important;
+  border-radius: 28px !important;
+  background:
+    url("assets/img/others/faq_img.png") 4% 100% / min(330px, 70%) auto no-repeat,
+    radial-gradient(circle at 72% 72%, rgba(37, 131, 255, .10), transparent 31%),
+    linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(242, 248, 255, .76)) !important;
+  box-shadow: 0 20px 48px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-float-chip {
+  min-height: 38px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  box-shadow: 0 12px 26px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-live {
+  left: 9% !important;
+  top: 22% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-project {
+  right: 7% !important;
+  top: 43% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-cert {
+  left: 11% !important;
+  bottom: 24% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy {
+  max-width: 640px !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+  margin: 12px 0 12px !important;
+  font-size: clamp(34px, 3vw, 52px) !important;
+  line-height: 1.06 !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy > p {
+  max-width: 560px !important;
+  margin-bottom: 22px !important;
+  font-size: clamp(15px, 1vw, 18px) !important;
+  line-height: 1.55 !important;
+  font-weight: 650 !important;
+}
+
+body.marketspace-refresh .faq.section-glow .accordion {
+  gap: 10px !important;
+}
+
+body.marketspace-refresh .faq.section-glow details {
+  border-radius: 18px !important;
+  box-shadow: 0 12px 30px rgba(37, 91, 170, .08) !important;
+}
+
+body.marketspace-refresh .faq.section-glow details[open] {
+  box-shadow: 0 16px 36px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow summary {
+  min-height: 58px !important;
+  padding: 17px 54px 17px 22px !important;
+  font-size: clamp(15px, 1vw, 18px) !important;
+}
+
+body.marketspace-refresh .faq.section-glow details p {
+  padding: 0 22px 22px !important;
+  font-size: clamp(14px, .95vw, 16px) !important;
+  line-height: 1.62 !important;
+}
+
+@media (max-width: 720px) {
+  body.marketspace-refresh .faq.section-glow {
+    width: calc(100vw - 24px) !important;
+    margin: 34px auto !important;
+    padding: 16px 14px 20px !important;
+    gap: 18px !important;
+    border-radius: 22px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq-art {
+    min-height: 235px !important;
+    border-radius: 20px !important;
+    background:
+      url("assets/img/others/faq_img.png") 2% 100% / min(180px, 54%) auto no-repeat,
+      radial-gradient(circle at 78% 72%, rgba(37, 131, 255, .11), transparent 30%),
+      linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(242, 248, 255, .76)) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip {
+    min-height: 31px !important;
+    padding: 6px 10px !important;
+    gap: 7px !important;
+    font-size: 11px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip::before {
+    width: 7px !important;
+    height: 7px !important;
+    box-shadow: 0 0 0 4px rgba(255, 190, 46, .16) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-live {
+    right: 5% !important;
+    top: 10% !important;
+    left: auto !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-project {
+    right: 5% !important;
+    top: 44% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-cert {
+    left: 7% !important;
+    bottom: 18% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+    margin-top: 4px !important;
+    font-size: clamp(28px, 8.2vw, 34px) !important;
+    line-height: 1.1 !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy > p {
+    margin-bottom: 18px !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow summary {
+    min-height: 56px !important;
+    padding: 16px 48px 16px 16px !important;
+    font-size: 14px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow details p {
+    padding: 0 16px 18px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (min-width: 1181px) and (max-width: 1280px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "brand"
+      "actions"
+      "nav" !important;
+  }
+
+  body.marketspace-refresh .nav {
+    grid-column: 1 / -1 !important;
+    justify-self: stretch !important;
+    place-self: auto stretch !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    width: min(760px, calc(100vw - 56px)) !important;
+    max-width: calc(100vw - 56px) !important;
+  }
+}
+
+@media (min-width: 1181px) and (max-width: 1280px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+  }
+
+  body.marketspace-refresh .nav {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+}
+
+/* Final reference match: dream journey section from provided screenshot. */
+body.marketspace-refresh .dream-journey-strip {
+  position: relative !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  min-height: 724px !important;
+  margin: 0 !important;
+  padding: 64px clamp(32px, 7vw, 150px) 86px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: #fbfbfa !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .dream-journey-strip::before,
+body.marketspace-refresh .dream-journey-strip::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .journey-knot {
+  position: relative !important;
+  width: 170px !important;
+  height: 13px !important;
+  margin: 0 auto 17px !important;
+  background:
+    linear-gradient(45deg, transparent 36%, #c99a26 37% 63%, transparent 64%) center / 13px 13px no-repeat !important;
+}
+
+body.marketspace-refresh .journey-knot::before,
+body.marketspace-refresh .journey-knot::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 6px !important;
+  width: 64px !important;
+  height: 2px !important;
+  background: #c99a26 !important;
+}
+
+body.marketspace-refresh .journey-knot::before {
+  left: 0 !important;
+}
+
+body.marketspace-refresh .journey-knot::after {
+  right: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-strip h2 {
+  position: relative !important;
+  z-index: 1 !important;
+  margin: 0 auto 18px !important;
+  color: #141c2d !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(42px, 3.55vw, 58px) !important;
+  line-height: 1.08 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+}
+
+body.marketspace-refresh .dream-journey-subtitle {
+  margin: 0 auto 74px !important;
+  color: #60636a !important;
+  font-size: clamp(20px, 1.42vw, 26px) !important;
+  line-height: 1.35 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(42px, 5.2vw, 106px) !important;
+  width: min(1330px, 100%) !important;
+  margin: 0 auto !important;
+}
+
+body.marketspace-refresh .dream-journey-steps::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50px !important;
+  left: calc(12.5% + 72px) !important;
+  right: calc(12.5% + 72px) !important;
+  height: 2px !important;
+  background: repeating-linear-gradient(90deg, #dcdcdc 0 9px, transparent 9px 17px) !important;
+  z-index: -1 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps article {
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps span {
+  display: grid !important;
+  place-items: center !important;
+  width: 104px !important;
+  height: 104px !important;
+  margin: 0 auto 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(203, 205, 214, .52) !important;
+  background: #f9fbff !important;
+  box-shadow:
+    0 18px 35px rgba(30, 39, 58, .12),
+    inset 0 0 0 7px rgba(255, 255, 255, .76) !important;
+}
+
+body.marketspace-refresh .dream-journey-steps svg {
+  width: 45px !important;
+  height: 45px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 3.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body.marketspace-refresh .dream-journey-steps b {
+  display: block !important;
+  margin: 0 0 18px !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps h3 {
+  margin: 0 0 22px !important;
+  color: #151d2b !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(28px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps i {
+  display: block !important;
+  width: 52px !important;
+  height: 2px !important;
+  margin: 0 auto 24px !important;
+  background: currentColor !important;
+  font-style: normal !important;
+}
+
+body.marketspace-refresh .dream-journey-steps p {
+  margin: 0 auto !important;
+  max-width: 260px !important;
+  color: #565a62 !important;
+  font-size: clamp(17px, 1.08vw, 19px) !important;
+  line-height: 1.46 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .journey-step-learn {
+  color: #4f8df6 !important;
+}
+
+body.marketspace-refresh .journey-step-learn span {
+  background: #f5f9ff !important;
+}
+
+body.marketspace-refresh .journey-step-build {
+  color: #4bb775 !important;
+}
+
+body.marketspace-refresh .journey-step-build span {
+  background: #f3fbf5 !important;
+}
+
+body.marketspace-refresh .journey-step-grow {
+  color: #c79618 !important;
+}
+
+body.marketspace-refresh .journey-step-grow span {
+  background: #fffbf3 !important;
+}
+
+body.marketspace-refresh .journey-step-hired {
+  color: #7b5bdc !important;
+}
+
+body.marketspace-refresh .journey-step-hired span {
+  background: #f8f5ff !important;
+}
+
+body.marketspace-refresh .dream-journey-steps h3 {
+  color: #151d2b !important;
+}
+
+body.marketspace-refresh .dream-journey-steps p {
+  color: #565a62 !important;
+}
+
+body.marketspace-refresh .dream-journey-strip + .future-section {
+  margin-top: 0 !important;
+}
+
+body.marketspace-refresh .whatsapp-float {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  body.marketspace-refresh .dream-journey-strip {
+    min-height: 0 !important;
+    padding: 48px 22px 58px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-subtitle {
+    margin-bottom: 44px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 44px 24px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body.marketspace-refresh .dream-journey-strip h2 {
+    font-size: 36px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+body.marketspace-refresh::before,
+body.course-detail-refresh::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(18, 169, 143, .12), transparent 28%),
+    radial-gradient(circle at 84% 14%, rgba(35, 94, 216, .12), transparent 30%),
+    linear-gradient(180deg, #fff 0%, #fbfaf7 52%, #fff 100%) !important;
+}
+
+body.marketspace-refresh .site-header,
+body.course-detail-refresh .course-header {
+  position: sticky !important;
+  top: 14px !important;
+  z-index: 1000 !important;
+  min-height: 76px !important;
+  height: auto !important;
+  padding: 10px clamp(18px, 4vw, 58px) !important;
+  border: 1px solid rgba(16, 24, 40, .09) !important;
+  border-bottom-color: rgba(16, 24, 40, .12) !important;
+  border-radius: 34px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .98), rgba(248, 251, 255, .9)) !important;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, .12), inset 0 1px 0 rgba(255, 255, 255, .86) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+}
+
+body.marketspace-refresh .site-header {
+  width: min(1760px, calc(100% - 48px)) !important;
+  display: grid !important;
+  grid-template-columns: minmax(190px, 220px) minmax(520px, 1fr) minmax(520px, 680px) !important;
+  gap: clamp(22px, 1.7vw, 32px) !important;
+  align-items: center !important;
+  min-height: 96px !important;
+  margin: 16px auto 0 !important;
+  padding: 16px clamp(26px, 3.2vw, 58px) !important;
+}
+
+body.marketspace-refresh .brand {
+  width: 204px !important;
+  height: 64px !important;
+}
+
+body.marketspace-refresh .brand img {
+  width: 204px !important;
+  max-height: 64px !important;
+  object-fit: contain !important;
+}
+
+body.marketspace-refresh .nav {
+  justify-content: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  padding: 8px !important;
+  border: 1px solid rgba(35, 94, 216, .1) !important;
+  border-radius: 999px !important;
+  background: rgba(246, 248, 252, .78) !important;
+}
+
+body.marketspace-refresh .header-actions {
+  grid-column: 3 !important;
+  width: min(680px, 100%) !important;
+  justify-self: end !important;
+  display: grid !important;
+  grid-template-columns: minmax(320px, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+body.marketspace-refresh .nav a,
+body.course-detail-refresh .course-header nav a {
+  color: #344054 !important;
+  font-size: 13px !important;
+  font-weight: 760 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .nav a {
+  position: relative !important;
+  padding: 13px 15px !important;
+  border-radius: 999px !important;
+  font-size: 14.5px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  transition: background .22s ease, color .22s ease, transform .22s ease !important;
+}
+
+body.marketspace-refresh .nav a:hover,
+body.marketspace-refresh .nav .active,
+body.course-detail-refresh .course-header nav a:hover {
+  color: var(--ms-accent) !important;
+}
+
+body.marketspace-refresh .nav a:hover {
+  background: rgba(255, 255, 255, .9) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.marketspace-refresh .nav a.active,
+body.marketspace-refresh .nav .active {
+  background: #101828 !important;
+  color: #fff !important;
+  box-shadow: 0 14px 30px rgba(16, 24, 40, .18) !important;
+}
+
+body.marketspace-refresh .nav a.active::before,
+body.marketspace-refresh .nav .active::before {
+  display: none !important;
+}
+
+body.marketspace-refresh .nav a::after,
+body.marketspace-refresh .scribble,
+body.marketspace-refresh mark::after,
+body.marketspace-refresh .pcat-ambient,
+body.marketspace-refresh .courses-section::before,
+body.marketspace-refresh .pcat-portal,
+body.marketspace-refresh .pcat-art-ring {
+  display: none !important;
+}
+
+body.marketspace-refresh .hero,
+body.marketspace-refresh .pcat-section,
+body.marketspace-refresh .courses-section,
+body.course-detail-refresh .course-hero {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(247, 250, 255, .92)),
+    radial-gradient(circle at 78% 32%, rgba(35, 94, 216, .14), transparent 30%),
+    linear-gradient(180deg, #fff 0%, var(--ms-warm) 100%) !important;
+}
+
+body.marketspace-refresh .hero,
+body.course-detail-refresh .course-hero {
+  min-height: clamp(620px, 82vh, 760px) !important;
+  height: auto !important;
+  align-items: center !important;
+  gap: clamp(36px, 6vw, 92px) !important;
+  padding: clamp(76px, 8vw, 112px) clamp(22px, 6vw, 96px) clamp(54px, 7vw, 92px) !important;
+}
+
+body.marketspace-refresh .hero {
+  position: relative !important;
+  margin: 0 !important;
+  padding-top: clamp(86px, 8vw, 132px) !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .hero::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 28px clamp(18px, 4vw, 72px) 32px !important;
+  z-index: 0 !important;
+  border: 1px solid rgba(16, 24, 40, .08) !important;
+  border-radius: clamp(34px, 4vw, 64px) !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(18, 169, 143, .12), transparent 28%),
+    radial-gradient(circle at 80% 26%, rgba(35, 94, 216, .14), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(247, 250, 255, .9)) !important;
+  box-shadow: 0 40px 120px rgba(16, 24, 40, .08) !important;
+}
+
+body.marketspace-refresh .hero > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+body.marketspace-refresh .hero {
+  grid-template-columns: minmax(0, .92fr) minmax(420px, .82fr) !important;
+}
+
+body.course-detail-refresh .course-hero {
+  grid-template-columns: minmax(0, .92fr) minmax(420px, .78fr) !important;
+}
+
+body.marketspace-refresh .hero-copy {
+  width: min(720px, 100%) !important;
+  padding: 0 !important;
+}
+
+body.marketspace-refresh .hero-copy::before {
+  display: none !important;
+}
+
+body.marketspace-refresh .hero-copy h1,
+body.course-detail-refresh .course-hero h1 {
+  color: var(--ms-ink) !important;
+  font-size: clamp(54px, 6vw, 92px) !important;
+  line-height: .96 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .hero-copy h1 {
+  max-width: 760px !important;
+  text-wrap: balance !important;
+}
+
+body.course-detail-refresh .course-hero h1 {
+  font-size: clamp(46px, 5.4vw, 82px) !important;
+}
+
+body.marketspace-refresh mark {
+  color: var(--ms-accent) !important;
+  background: linear-gradient(180deg, transparent 58%, rgba(35, 94, 216, .14) 0) !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .hero-copy p,
+body.course-detail-refresh .course-hero-copy > p {
+  color: var(--ms-muted) !important;
+  font-size: clamp(16px, 1.25vw, 20px) !important;
+  line-height: 1.7 !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span,
+body.marketspace-refresh .hero-trust,
+body.marketspace-refresh .map-card {
+  border: 1px solid var(--ms-line) !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: 0 18px 46px rgba(16, 24, 40, .08) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+body.marketspace-refresh .hero-feature-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin: 30px 0 !important;
+}
+
+body.marketspace-refresh .hero-buttons {
+  gap: 14px !important;
+}
+
+body.marketspace-refresh .btn {
+  min-height: 52px !important;
+  padding-inline: 24px !important;
+  font-size: 14px !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span {
+  border-radius: 999px !important;
+  color: #344054 !important;
+}
+
+body.marketspace-refresh .map-card {
+  border-radius: 30px !important;
+}
+
+body.marketspace-refresh .site-header .search,
+body.marketspace-refresh .pcat-glass,
+body.marketspace-refresh .course-card,
+body.marketspace-refresh .currency-switcher,
+body.marketspace-refresh .tabs,
+body.course-detail-refresh .course-mentor-line,
+body.course-detail-refresh .course-hero-media,
+body.course-detail-refresh .course-facts article,
+body.course-detail-refresh .tool-card,
+body.course-detail-refresh .curriculum-card,
+body.course-detail-refresh .roadmap-list article > div,
+body.course-detail-refresh .community-card,
+body.course-detail-refresh .enroll-card {
+  border: 1px solid var(--ms-line) !important;
+  background: rgba(255, 255, 255, .96) !important;
+  box-shadow: 0 18px 46px rgba(16, 24, 40, .07) !important;
+}
+
+body.marketspace-refresh .site-header .search {
+  width: min(720px, 100%) !important;
+  height: 64px !important;
+  justify-self: stretch !important;
+  border-radius: 999px !important;
+  padding: 4px !important;
+  box-shadow: 0 20px 56px rgba(16, 24, 40, .08) !important;
+}
+
+body.marketspace-refresh .site-header .search:focus-within {
+  width: min(760px, 100%) !important;
+  border-color: rgba(35, 94, 216, .36) !important;
+  box-shadow: 0 20px 50px rgba(35, 94, 216, .14), 0 0 0 5px rgba(35, 94, 216, .08) !important;
+}
+
+body.marketspace-refresh .site-header .category-btn {
+  width: 164px !important;
+  flex: 0 0 164px !important;
+  height: 54px !important;
+  border-radius: 999px !important;
+  background: #f2f4f7 !important;
+  color: #344054 !important;
+  font-size: 16px !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .site-header .grid-dot {
+  width: 19px !important;
+  height: 19px !important;
+  margin-right: 10px !important;
+  background:
+    radial-gradient(circle at 25% 25%, #5b42ff 0 3px, transparent 3.5px),
+    radial-gradient(circle at 75% 25%, #235ed8 0 3px, transparent 3.5px),
+    radial-gradient(circle at 25% 75%, #235ed8 0 3px, transparent 3.5px),
+    radial-gradient(circle at 75% 75%, #12a98f 0 3px, transparent 3.5px) !important;
+}
+
+body.marketspace-refresh .site-header .search input {
+  height: 54px !important;
+  padding: 0 18px !important;
+  font-size: 18px !important;
+  font-weight: 650 !important;
+  color: #101828 !important;
+}
+
+body.marketspace-refresh .site-header .search input::placeholder {
+  color: #8a96ad !important;
+}
+
+body.marketspace-refresh .site-header .search-btn {
+  width: 54px !important;
+  height: 54px !important;
+  margin-right: 0 !important;
+}
+
+body.marketspace-refresh .site-header .search-btn,
+body.marketspace-refresh .join-us,
+body.marketspace-refresh .btn.primary,
+body.marketspace-refresh .course-bottom a,
+body.marketspace-refresh .pcat-btn,
+body.marketspace-refresh .tabs .active,
+body.marketspace-refresh .currency-switcher button.active,
+body.course-detail-refresh .primary-action,
+body.course-detail-refresh .enroll-card > a {
+  background: #101828 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .login,
+body.marketspace-refresh .btn.yellow,
+body.course-detail-refresh .secondary-action,
+body.course-detail-refresh .header-search,
+body.course-detail-refresh .header-login {
+  border: 1px solid var(--ms-line) !important;
+  background: #fff !important;
+  color: #101828 !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .login,
+body.marketspace-refresh .join-us {
+  min-width: 112px !important;
+  min-height: 62px !important;
+  padding-inline: 24px !important;
+  font-size: 16px !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .login,
+body.marketspace-refresh .join-us,
+body.marketspace-refresh .btn,
+body.marketspace-refresh .course-bottom a,
+body.course-detail-refresh .primary-action,
+body.course-detail-refresh .secondary-action,
+body.course-detail-refresh .enroll-card > a {
+  border-radius: 999px !important;
+  transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease, border-color .22s ease !important;
+}
+
+body.marketspace-refresh .login:hover,
+body.marketspace-refresh .join-us:hover,
+body.marketspace-refresh .btn:hover,
+body.marketspace-refresh .course-bottom a:hover,
+body.course-detail-refresh .primary-action:hover,
+body.course-detail-refresh .secondary-action:hover,
+body.course-detail-refresh .enroll-card > a:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 16px 34px rgba(16, 24, 40, .14) !important;
+}
+
+body.marketspace-refresh .login:active,
+body.marketspace-refresh .join-us:active,
+body.marketspace-refresh .btn:active,
+body.marketspace-refresh .course-bottom a:active,
+body.course-detail-refresh .primary-action:active,
+body.course-detail-refresh .secondary-action:active,
+body.course-detail-refresh .enroll-card > a:active {
+  transform: scale(.97) !important;
+}
+
+body.marketspace-refresh .pcat-section,
+body.marketspace-refresh .courses-section {
+  padding-block: clamp(72px, 8vw, 126px) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  content-visibility: visible !important;
+  contain-intrinsic-size: auto none !important;
+}
+
+body.marketspace-refresh .pcat-overflow-mask,
+body.marketspace-refresh .course-toolbar,
+body.marketspace-refresh .course-tab-shell,
+body.marketspace-refresh .course-grid {
+  width: min(1260px, calc(100% - 44px)) !important;
+}
+
+body.marketspace-refresh .pcat-overflow-mask {
+  width: min(1340px, calc(100% - 36px)) !important;
+  padding-block: 18px 34px !important;
+}
+
+body.marketspace-refresh .pcat-track {
+  gap: 28px !important;
+  padding: 24px 58px 52px !important;
+}
+
+body.marketspace-refresh .pcat-wrap {
+  width: 268px !important;
+  min-width: 268px !important;
+  flex: 0 0 268px !important;
+  height: 420px !important;
+  min-height: 420px !important;
+}
+
+body.marketspace-refresh .pcat-glass {
+  position: relative !important;
+  height: 100% !important;
+  min-height: 420px !important;
+  padding: 14px 14px 22px !important;
+  border: 1px solid rgba(16, 24, 40, .08) !important;
+  border-radius: 30px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(248, 251, 255, .9)) !important;
+  box-shadow: 0 20px 54px rgba(16, 24, 40, .08) !important;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease !important;
+}
+
+body.marketspace-refresh .pcat-glass:hover,
+body.marketspace-refresh .course-card:hover,
+body.course-detail-refresh .tool-card:hover,
+body.course-detail-refresh .curriculum-card:hover {
+  border-color: rgba(35, 94, 216, .22) !important;
+  box-shadow: 0 28px 70px rgba(16, 24, 40, .13) !important;
+  transform: translateY(-4px) !important;
+}
+
+body.marketspace-refresh .pcat-art-wrap {
+  position: relative !important;
+  height: 214px !important;
+  border-radius: 24px !important;
+  background: var(--ms-soft) !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .pcat-art-wrap::after,
+body.marketspace-refresh .category-art::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .pcat-art-wrap img {
+  transform: scale(1.01) !important;
+  transition: transform .32s ease !important;
+}
+
+body.marketspace-refresh .pcat-glass:hover .pcat-art-wrap img {
+  transform: scale(1.06) !important;
+}
+
+body.marketspace-refresh .pcat-badge,
+body.marketspace-refresh .category-count {
+  display: none !important;
+}
+
+body.marketspace-refresh .pcat-glass h3 {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-height: 92px !important;
+  margin: 28px auto 0 !important;
+  padding: 0 10px !important;
+  color: #1d2739 !important;
+  font-size: 23px !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  overflow: visible !important;
+}
+
+body.marketspace-refresh .pcat-btn,
+body.marketspace-refresh .category-explore {
+  border-radius: 999px !important;
+  background: #101828 !important;
+  color: #fff !important;
+  box-shadow: 0 16px 30px rgba(16, 24, 40, .18) !important;
+}
+
+body.marketspace-refresh .pcat-footer {
+  right: 22px !important;
+  bottom: 22px !important;
+}
+
+body.marketspace-refresh .pcat-btn {
+  min-height: 34px !important;
+  padding-inline: 16px !important;
+  font-size: 11px !important;
+}
+
+body.marketspace-refresh .category-item {
+  position: relative !important;
+  min-height: 392px !important;
+  padding: 14px 14px 22px !important;
+  border: 1px solid rgba(16, 24, 40, .08) !important;
+  border-radius: 30px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(248, 251, 255, .9)) !important;
+  box-shadow: var(--category-shadow, 0 20px 54px rgba(16, 24, 40, .08)) !important;
+}
+
+body.marketspace-refresh .category-art {
+  height: 214px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .category-item h3 {
+  margin-top: 28px !important;
+  color: #1d2739 !important;
+  font-size: clamp(20px, 1.7vw, 28px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .course-meta span,
+body.course-detail-refresh .course-kicker span,
+body.course-detail-refresh .course-kicker b,
+body.course-detail-refresh .section-heading span,
+body.course-detail-refresh .roadmap-intro > span,
+body.course-detail-refresh .mentor-section span,
+body.course-detail-refresh .enroll-card > span {
+  border: 1px solid rgba(35, 94, 216, .12) !important;
+  border-radius: 999px !important;
+  background: rgba(35, 94, 216, .06) !important;
+  color: var(--ms-accent) !important;
+}
+
+body.marketspace-refresh .tabs {
+  min-height: 56px !important;
+  padding: 8px !important;
+  border-radius: 999px !important;
+}
+
+body.marketspace-refresh .tabs button {
+  height: 38px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: var(--ms-muted) !important;
+}
+
+body.marketspace-refresh .course-grid {
+  grid-template-columns: repeat(auto-fit, minmax(276px, 1fr)) !important;
+  gap: 24px !important;
+  align-items: stretch !important;
+}
+
+body.marketspace-refresh .course-card {
+  min-height: 442px !important;
+  height: auto !important;
+  padding: 14px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease !important;
+}
+
+body.marketspace-refresh .course-visual {
+  position: relative !important;
+  height: 190px !important;
+  border-radius: 18px !important;
+  background: var(--ms-soft) !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .course-visual::before,
+body.marketspace-refresh .course-visual::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-visual img,
+body.course-detail-refresh .course-hero-media > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform .32s ease !important;
+}
+
+body.marketspace-refresh .course-visual img {
+  z-index: 1 !important;
+}
+
+body.marketspace-refresh .course-card:hover .course-visual img,
+body.course-detail-refresh .course-hero-media:hover > img {
+  transform: scale(1.03) !important;
+}
+
+body.marketspace-refresh .course-visual-tag {
+  left: 14px !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 14px !important;
+  z-index: 2 !important;
+  max-width: calc(100% - 28px) !important;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(255, 255, 255, .46) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .9) !important;
+  color: var(--ms-ink) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+body.marketspace-refresh .course-visual-chip {
+  right: 14px !important;
+  top: 14px !important;
+  z-index: 2 !important;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(255, 255, 255, .46) !important;
+  border-radius: 999px !important;
+  background: rgba(16, 24, 40, .82) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+body.marketspace-refresh .course-card h3 {
+  min-height: 58px !important;
+  margin: 0 2px 8px !important;
+  color: var(--ms-ink) !important;
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+}
+
+body.marketspace-refresh .course-card .course-mentor,
+body.course-detail-refresh .course-facts article span,
+body.course-detail-refresh .section-heading p,
+body.course-detail-refresh .roadmap-intro p,
+body.course-detail-refresh .mentor-section p,
+body.course-detail-refresh .enroll-card li,
+body.course-detail-refresh .community-message p {
+  color: var(--ms-muted) !important;
+}
+
+body.marketspace-refresh .course-card .course-mentor {
+  font-size: 13px !important;
+  white-space: normal !important;
+}
+
+body.marketspace-refresh .course-bottom {
+  min-height: 48px !important;
+  gap: 12px !important;
+  margin-top: auto !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--ms-line) !important;
+}
+
+body.marketspace-refresh .course-bottom strong {
+  margin-left: auto !important;
+  color: var(--ms-ink) !important;
+  font-size: 18px !important;
+  font-weight: 850 !important;
+}
+
+body.course-detail-refresh .course-hero-media {
+  max-width: 560px !important;
+  border-radius: 30px !important;
+  overflow: hidden !important;
+}
+
+body.course-detail-refresh .course-hero-media > img {
+  border-radius: 24px !important;
+}
+
+body.course-detail-refresh .course-section,
+body.course-detail-refresh .roadmap-section,
+body.course-detail-refresh .enrollment-section,
+body.course-detail-refresh .mentor-section {
+  background: transparent !important;
+}
+
+body.course-detail-refresh .section-heading h2,
+body.course-detail-refresh .roadmap-intro h2,
+body.course-detail-refresh .mentor-section h2,
+body.course-detail-refresh .enroll-price strong {
+  color: var(--ms-ink) !important;
+  letter-spacing: 0 !important;
+}
+
+body.course-detail-refresh .enroll-card {
+  position: sticky !important;
+  top: 96px !important;
+}
+
+@media (max-width: 1180px) {
+  body.marketspace-refresh .site-header {
+    width: min(100% - 28px, 980px) !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    top: 10px !important;
+  }
+
+  body.marketspace-refresh .brand,
+  body.marketspace-refresh .header-actions {
+    grid-column: 1 !important;
+  }
+
+  body.marketspace-refresh .brand {
+    justify-self: center !important;
+  }
+
+  body.marketspace-refresh .nav {
+    order: 3 !important;
+    width: 100% !important;
+    justify-content: center !important;
+    overflow-x: auto !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    width: 100% !important;
+    justify-self: stretch !important;
+  }
+
+  body.marketspace-refresh .hero,
+  body.course-detail-refresh .course-hero {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.marketspace-refresh .site-header {
+    border-radius: 24px !important;
+    padding: 14px !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    width: 100% !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.marketspace-refresh .site-header .search,
+  body.marketspace-refresh .site-header .search:focus-within {
+    order: 3 !important;
+    width: 100% !important;
+  }
+
+  body.marketspace-refresh .nav {
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+  }
+
+  body.marketspace-refresh .pcat-track {
+    gap: 18px !important;
+    padding-inline: 24px !important;
+  }
+
+  body.marketspace-refresh .pcat-wrap {
+    width: 232px !important;
+    min-width: 232px !important;
+    flex-basis: 232px !important;
+    height: 390px !important;
+    min-height: 390px !important;
+  }
+
+  body.marketspace-refresh .pcat-glass {
+    min-height: 390px !important;
+  }
+
+  body.marketspace-refresh .pcat-art-wrap {
+    height: 188px !important;
+  }
+
+  body.marketspace-refresh .pcat-glass h3 {
+    min-height: 92px !important;
+    font-size: 20px !important;
+  }
+
+  body.marketspace-refresh .hero,
+  body.course-detail-refresh .course-hero {
+    min-height: 0 !important;
+    padding: 52px 18px 44px !important;
+  }
+
+  body.marketspace-refresh .hero-copy h1,
+  body.course-detail-refresh .course-hero h1 {
+    font-size: clamp(40px, 13vw, 60px) !important;
+  }
+
+  body.marketspace-refresh .course-toolbar,
+  body.marketspace-refresh .course-tab-shell,
+  body.marketspace-refresh .course-grid {
+    width: min(100%, calc(100% - 24px)) !important;
+  }
+
+  body.marketspace-refresh .tabs {
+    border-radius: 18px !important;
+  }
+
+  body.marketspace-refresh .course-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  body.course-detail-refresh .enroll-card {
+    position: static !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.marketspace-refresh *,
+  body.marketspace-refresh *::before,
+  body.marketspace-refresh *::after,
+  body.course-detail-refresh *,
+  body.course-detail-refresh *::before,
+  body.course-detail-refresh *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Header cleanup: keep the homepage navigation in the Jenovate blue family. */
+body.marketspace-refresh {
+  --jenovate-blue: #0b7cff;
+  --jenovate-blue-deep: #075fd2;
+  --jenovate-blue-dark: #0f2f68;
+  --jenovate-blue-soft: #eef6ff;
+  --jenovate-blue-line: rgba(11, 124, 255, .18);
+}
+
+body.marketspace-refresh .site-header {
+  grid-template-columns: minmax(150px, 178px) minmax(500px, 1fr) minmax(540px, 650px) !important;
+  gap: clamp(14px, 1.25vw, 24px) !important;
+  min-height: 82px !important;
+  padding: 12px clamp(22px, 2.8vw, 44px) !important;
+  border-color: var(--jenovate-blue-line) !important;
+  background: rgba(250, 253, 255, .96) !important;
+  box-shadow: 0 20px 54px rgba(11, 54, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+body.marketspace-refresh .brand,
+body.marketspace-refresh .brand img {
+  width: clamp(150px, 10vw, 176px) !important;
+  height: 56px !important;
+  max-height: 56px !important;
+}
+
+body.marketspace-refresh .nav {
+  gap: 4px !important;
+  padding: 6px !important;
+  border-color: var(--jenovate-blue-line) !important;
+  background: rgba(239, 247, 255, .78) !important;
+}
+
+body.marketspace-refresh .nav a {
+  padding: 11px 13px !important;
+  color: #253858 !important;
+  font-size: 13.5px !important;
+}
+
+body.marketspace-refresh .nav a:hover,
+body.marketspace-refresh .nav .active {
+  color: var(--jenovate-blue) !important;
+}
+
+body.marketspace-refresh .nav a.active,
+body.marketspace-refresh .nav .active {
+  background: var(--jenovate-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 26px rgba(11, 124, 255, .28) !important;
+}
+
+body.marketspace-refresh .header-actions {
+  grid-template-columns: minmax(300px, 1fr) auto auto !important;
+  gap: 10px !important;
+  width: min(650px, 100%) !important;
+}
+
+body.marketspace-refresh .site-header .search,
+body.marketspace-refresh .site-header .search:focus-within {
+  width: 100% !important;
+  height: 54px !important;
+  border-color: var(--jenovate-blue-line) !important;
+  background: #fff !important;
+  box-shadow: 0 14px 34px rgba(11, 54, 120, .1) !important;
+}
+
+body.marketspace-refresh .site-header .search:focus-within {
+  box-shadow: 0 16px 38px rgba(11, 124, 255, .14), 0 0 0 4px rgba(11, 124, 255, .08) !important;
+}
+
+body.marketspace-refresh .site-header .category-btn {
+  width: 156px !important;
+  flex: 0 0 156px !important;
+  height: 46px !important;
+  background: var(--jenovate-blue-soft) !important;
+  color: var(--jenovate-blue-dark) !important;
+  font-size: 13px !important;
+}
+
+body.marketspace-refresh .site-header .category-label {
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+body.marketspace-refresh .site-header .grid-dot {
+  background:
+    radial-gradient(circle at 25% 25%, var(--jenovate-blue) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 75% 25%, #53a8ff 0 3px, transparent 3.5px),
+    radial-gradient(circle at 25% 75%, var(--jenovate-blue-deep) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 75% 75%, #8cc9ff 0 3px, transparent 3.5px) !important;
+}
+
+body.marketspace-refresh .site-header .search input {
+  height: 46px !important;
+  padding: 0 14px !important;
+  font-size: 15px !important;
+  color: #172033 !important;
+}
+
+body.marketspace-refresh .site-header .search input::placeholder {
+  color: #7890ad !important;
+}
+
+body.marketspace-refresh .site-header .search-btn {
+  width: 46px !important;
+  height: 46px !important;
+  background: var(--jenovate-blue) !important;
+  box-shadow: 0 12px 26px rgba(11, 124, 255, .3) !important;
+}
+
+body.marketspace-refresh .login,
+body.marketspace-refresh .join-us {
+  min-width: 96px !important;
+  min-height: 54px !important;
+  padding-inline: 20px !important;
+  font-size: 15px !important;
+}
+
+body.marketspace-refresh .login {
+  border-color: var(--jenovate-blue-line) !important;
+  background: #fff !important;
+  color: var(--jenovate-blue-dark) !important;
+}
+
+body.marketspace-refresh .join-us {
+  background: var(--jenovate-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px rgba(11, 124, 255, .28) !important;
+}
+
+@media (max-width: 1320px) and (min-width: 1181px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: 150px minmax(455px, 1fr) minmax(440px, 510px) !important;
+  }
+
+  body.marketspace-refresh .nav a {
+    padding-inline: 10px !important;
+    font-size: 12.5px !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    width: min(510px, 100%) !important;
+  }
+}
+
+/* Full-page Jenovate blue pass and spacious header rhythm. */
+body.marketspace-refresh {
+  --ms-accent: var(--jenovate-blue) !important;
+  --ms-warm: #f4f9ff !important;
+  --ms-line: rgba(11, 124, 255, .16) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f2f8ff 46%, #ffffff 100%) !important;
+}
+
+body.marketspace-refresh::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(11, 124, 255, .16), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(83, 168, 255, .16), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f4f9ff 54%, #ffffff 100%) !important;
+}
+
+body.marketspace-refresh .site-header {
+  grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) !important;
+  grid-template-areas:
+    "brand actions"
+    "nav nav" !important;
+  row-gap: 12px !important;
+  column-gap: 24px !important;
+  min-height: 142px !important;
+  align-items: center !important;
+}
+
+body.marketspace-refresh .brand {
+  grid-area: brand !important;
+  grid-column: 1 / 2 !important;
+  grid-row: 1 !important;
+}
+
+body.marketspace-refresh .header-actions {
+  grid-area: actions !important;
+  grid-column: 2 / 3 !important;
+  grid-row: 1 !important;
+  grid-template-columns: minmax(360px, 1fr) auto auto !important;
+  justify-self: end !important;
+  width: min(820px, 100%) !important;
+}
+
+body.marketspace-refresh .nav {
+  grid-area: nav !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+body.marketspace-refresh .nav a {
+  min-width: max-content !important;
+  padding-inline: clamp(12px, 1.6vw, 24px) !important;
+}
+
+body.marketspace-refresh .hero,
+body.marketspace-refresh .pcat-section,
+body.marketspace-refresh .courses-section,
+body.marketspace-refresh .future-section,
+body.marketspace-refresh .about-section,
+body.marketspace-refresh .dream-journey-strip,
+body.marketspace-refresh .testimonials,
+body.marketspace-refresh .subscribe {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .98), rgba(242, 248, 255, .94)),
+    radial-gradient(circle at 80% 24%, rgba(11, 124, 255, .12), transparent 32%) !important;
+}
+
+body.marketspace-refresh mark,
+body.marketspace-refresh .pill,
+body.marketspace-refresh .pcat-badge,
+body.marketspace-refresh .category-count,
+body.marketspace-refresh .map-pill {
+  color: var(--jenovate-blue) !important;
+  background: rgba(11, 124, 255, .1) !important;
+}
+
+body.marketspace-refresh .hero-copy h1 mark,
+body.marketspace-refresh .section-title h2 mark,
+body.marketspace-refresh .about-copy h2 mark {
+  color: var(--jenovate-blue) !important;
+  background: linear-gradient(180deg, transparent 58%, rgba(11, 124, 255, .16) 0) !important;
+}
+
+body.marketspace-refresh .btn.primary,
+body.marketspace-refresh .btn.yellow,
+body.marketspace-refresh .course-bottom a,
+body.marketspace-refresh .pcat-btn,
+body.marketspace-refresh .tabs .active,
+body.marketspace-refresh .currency-switcher button.active,
+body.marketspace-refresh .map-card-btn {
+  background: var(--jenovate-blue) !important;
+  color: #fff !important;
+  border-color: var(--jenovate-blue) !important;
+  box-shadow: 0 14px 30px rgba(11, 124, 255, .24) !important;
+}
+
+body.marketspace-refresh .pcat-glass,
+body.marketspace-refresh .course-card,
+body.marketspace-refresh .map-card,
+body.marketspace-refresh .future-card,
+body.marketspace-refresh .dream-journey-steps article {
+  border-color: var(--jenovate-blue-line) !important;
+  box-shadow: 0 18px 42px rgba(11, 54, 120, .08) !important;
+}
+
+body.marketspace-refresh .course-card h3,
+body.marketspace-refresh .pcat-glass h3,
+body.marketspace-refresh .future-copy h2,
+body.marketspace-refresh .about-copy h2,
+body.marketspace-refresh .section-title h2 {
+  color: #102f66 !important;
+}
+
+@media (max-width: 1500px) and (min-width: 901px) {
+  body.marketspace-refresh .site-header {
+    grid-template:
+      "brand" auto
+      "actions" auto
+      "nav" auto / minmax(0, 1fr) !important;
+    min-height: 206px !important;
+    row-gap: 12px !important;
+  }
+
+  body.marketspace-refresh .brand {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    justify-self: center !important;
+    width: min(860px, 100%) !important;
+  }
+
+  body.marketspace-refresh .nav {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "brand"
+      "actions"
+      "nav" !important;
+    min-height: 0 !important;
+  }
+
+  body.marketspace-refresh .brand {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    grid-template-columns: 1fr !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+  }
+
+  body.marketspace-refresh .nav {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+  }
+}
+
+@media (max-width: 1500px) and (min-width: 901px) {
+  body.marketspace-refresh.marketspace-refresh .site-header {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .brand,
+  body.marketspace-refresh.marketspace-refresh .header-actions,
+  body.marketspace-refresh.marketspace-refresh .nav {
+    grid-column: 1 / -1 !important;
+    width: min(860px, 100%) !important;
+    justify-self: center !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .nav {
+    width: 100% !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .site-header .search,
+  body.marketspace-refresh.marketspace-refresh .site-header .search:focus-within {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .site-header .category-btn {
+    width: 156px !important;
+    flex-basis: 156px !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .site-header .category-label {
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+
+@media (max-width: 1500px) and (min-width: 901px) {
+  body.marketspace-refresh.marketspace-refresh .header-actions {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .site-header .search,
+  body.marketspace-refresh.marketspace-refresh .site-header .search:focus-within {
+    flex: 1 1 620px !important;
+    width: auto !important;
+    max-width: 640px !important;
+  }
+
+  body.marketspace-refresh.marketspace-refresh .login,
+  body.marketspace-refresh.marketspace-refresh .join-us {
+    flex: 0 0 auto !important;
+  }
+}
+
+/* Reference header: one visible desktop row, blue system, no dropdown arrows. */
+body.marketspace-refresh .site-header,
+body.course-detail-refresh .course-header {
+  position: sticky !important;
+  top: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 112px !important;
+  margin: 0 !important;
+  padding: 0 clamp(28px, 2.7vw, 48px) !important;
+  border: 0 !important;
+  border-bottom: 4px solid var(--jenovate-blue, #0b7cff) !important;
+  border-radius: 0 !important;
+  background: rgba(255, 255, 255, .97) !important;
+  box-shadow: 0 18px 54px rgba(11, 54, 120, .11) !important;
+  backdrop-filter: blur(18px) saturate(145%) !important;
+}
+
+body.marketspace-refresh .site-header {
+  display: grid !important;
+  grid-template-columns: minmax(190px, 240px) minmax(520px, 1fr) minmax(620px, 760px) !important;
+  grid-template-areas: "brand nav actions" !important;
+  gap: clamp(22px, 2vw, 40px) !important;
+  align-items: center !important;
+}
+
+body.course-detail-refresh .course-header {
+  display: grid !important;
+  grid-template-columns: minmax(190px, 240px) minmax(600px, 1fr) minmax(520px, auto) !important;
+  gap: clamp(22px, 2vw, 40px) !important;
+  align-items: center !important;
+}
+
+body.marketspace-refresh .brand,
+body.course-detail-refresh .course-brand {
+  grid-area: brand !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  width: clamp(180px, 10vw, 210px) !important;
+  height: 74px !important;
+}
+
+body.marketspace-refresh .brand img,
+body.course-detail-refresh .course-brand img {
+  width: clamp(180px, 10vw, 210px) !important;
+  height: auto !important;
+  max-height: 74px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 12px 24px rgba(11, 124, 255, .18)) !important;
+}
+
+body.marketspace-refresh .nav,
+body.course-detail-refresh .course-header nav {
+  grid-area: nav !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(18px, 1.6vw, 34px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+body.marketspace-refresh .nav a,
+body.course-detail-refresh .course-header nav a {
+  min-width: max-content !important;
+  padding: 8px 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #090d22 !important;
+  box-shadow: none !important;
+  font-size: clamp(13px, .82vw, 15px) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .nav a.active,
+body.marketspace-refresh .nav .active,
+body.marketspace-refresh .nav a:hover,
+body.course-detail-refresh .course-header nav a:hover {
+  color: #5c4bff !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .nav a::before,
+body.marketspace-refresh .nav a::after,
+body.course-detail-refresh .course-header nav a::before,
+body.course-detail-refresh .course-header nav a::after,
+body.marketspace-refresh .category-btn::after,
+body.marketspace-refresh .category-btn .chev,
+body.marketspace-refresh .chev {
+  display: none !important;
+  content: none !important;
+}
+
+body.marketspace-refresh .header-actions,
+body.course-detail-refresh .course-header-actions {
+  grid-area: actions !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  justify-self: end !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: clamp(10px, 1vw, 18px) !important;
+}
+
+body.marketspace-refresh .site-header .search,
+body.marketspace-refresh .site-header .search:focus-within,
+body.course-detail-refresh .header-search {
+  flex: 1 1 460px !important;
+  width: auto !important;
+  max-width: 520px !important;
+  min-width: 360px !important;
+  height: 58px !important;
+  border: 1px solid rgba(11, 124, 255, .2) !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 42px rgba(11, 54, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .92) !important;
+}
+
+body.marketspace-refresh .site-header .category-btn {
+  width: 172px !important;
+  flex: 0 0 172px !important;
+  height: 50px !important;
+  background: var(--jenovate-blue-soft, #eef6ff) !important;
+  color: var(--jenovate-blue-dark, #0f2f68) !important;
+}
+
+body.marketspace-refresh .site-header .search input {
+  height: 50px !important;
+}
+
+body.marketspace-refresh .site-header .search-btn {
+  width: 50px !important;
+  height: 50px !important;
+  background: var(--jenovate-blue, #0b7cff) !important;
+}
+
+body.marketspace-refresh .login,
+body.marketspace-refresh .join-us,
+body.course-detail-refresh .header-login,
+body.course-detail-refresh .header-join {
+  flex: 0 0 auto !important;
+  min-width: 96px !important;
+  min-height: 50px !important;
+  width: auto !important;
+  height: 50px !important;
+  padding: 0 22px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #ffbd32 !important;
+  color: #081027 !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+
+body.course-detail-refresh .header-login::before {
+  content: none !important;
+}
+
+body.course-detail-refresh .header-login {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.course-detail-refresh .header-join {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.marketspace-refresh .hero,
+body.course-detail-refresh .course-hero {
+  padding-top: clamp(68px, 6vw, 104px) !important;
+}
+
+@media (max-width: 1500px) {
+  body.marketspace-refresh .site-header,
+  body.course-detail-refresh .course-header {
+    min-height: 0 !important;
+    padding-block: 16px !important;
+  }
+
+  body.marketspace-refresh .site-header,
+  body.course-detail-refresh .course-header {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "brand"
+      "actions"
+      "nav" !important;
+    gap: 14px !important;
+  }
+
+  body.marketspace-refresh .brand,
+  body.course-detail-refresh .course-brand,
+  body.marketspace-refresh .header-actions,
+  body.course-detail-refresh .course-header-actions,
+  body.marketspace-refresh .nav,
+  body.course-detail-refresh .course-header nav {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+  }
+
+  body.marketspace-refresh .header-actions,
+  body.course-detail-refresh .course-header-actions {
+    width: min(860px, 100%) !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.marketspace-refresh .site-header .search,
+  body.course-detail-refresh .header-search {
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  body.marketspace-refresh .login,
+  body.marketspace-refresh .join-us,
+  body.course-detail-refresh .header-login {
+    min-width: 84px !important;
+    padding-inline: 16px !important;
+  }
+}
+
+/* Marketspace readability pass: keep copy crisp on the pale blue canvas. */
+body.marketspace-refresh {
+  --ms-muted: #43516c !important;
+}
+
+body.marketspace-refresh .hero-copy p,
+body.marketspace-refresh .section-title p,
+body.marketspace-refresh .future-copy p,
+body.marketspace-refresh .about-copy p,
+body.marketspace-refresh .course-card p,
+body.marketspace-refresh .course-card .course-mentor,
+body.marketspace-refresh .map-card p,
+body.marketspace-refresh .hero-trust p,
+body.marketspace-refresh .hero-trust span,
+body.marketspace-refresh .dream-journey-steps p,
+body.marketspace-refresh .search-results button small,
+body.marketspace-refresh .search-empty small {
+  color: #43516c !important;
+  opacity: 1 !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span,
+body.marketspace-refresh .course-meta span,
+body.marketspace-refresh .course-visual-tag,
+body.marketspace-refresh .course-visual-chip,
+body.marketspace-refresh .map-chip,
+body.marketspace-refresh .map-tag {
+  color: #18335f !important;
+  opacity: 1 !important;
+}
+
+body.marketspace-refresh .pill,
+body.marketspace-refresh .map-pill,
+body.marketspace-refresh .hero-copy::before {
+  color: var(--jenovate-blue-deep, #075fd2) !important;
+  border-color: rgba(11, 124, 255, .24) !important;
+}
+
+body.marketspace-refresh .site-header .search input::placeholder {
+  color: #5a6b88 !important;
+  opacity: 1 !important;
+}
+
+/* Course section polish: clearer category rail, visible image badges, warmer card accents. */
+body.marketspace-refresh .tabs {
+  min-height: 62px !important;
+  border: 1px solid rgba(18, 169, 143, .18) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(247, 252, 250, .86)) !important;
+  box-shadow: 0 16px 44px rgba(16, 24, 40, .08) !important;
+}
+
+body.marketspace-refresh .tabs button {
+  color: #33415f !important;
+  font-weight: 850 !important;
+}
+
+body.marketspace-refresh .tabs button.active,
+body.marketspace-refresh .tabs .active {
+  background: linear-gradient(135deg, #12a98f, #ffb629) !important;
+  color: #101828 !important;
+  border-color: transparent !important;
+  box-shadow: 0 12px 28px rgba(18, 169, 143, .22) !important;
+}
+
+body.marketspace-refresh .tabs button.active::after,
+body.marketspace-refresh .tabs .active::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .course-visual::before {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(180deg, rgba(16, 24, 40, .1), transparent 42%),
+    linear-gradient(0deg, rgba(16, 24, 40, .24), transparent 46%) !important;
+}
+
+body.marketspace-refresh .course-visual-tag,
+body.marketspace-refresh .course-visual-chip {
+  z-index: 3 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  max-width: calc(100% - 28px) !important;
+  min-height: 32px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  border-radius: 999px !important;
+  color: #101828 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, .18) !important;
+  backdrop-filter: blur(12px) saturate(150%) !important;
+}
+
+body.marketspace-refresh .course-visual-chip {
+  left: 14px !important;
+  right: auto !important;
+  top: 14px !important;
+  bottom: auto !important;
+  background: linear-gradient(135deg, #fff4bf, #ffc329) !important;
+}
+
+body.marketspace-refresh .course-visual-tag {
+  left: 14px !important;
+  top: auto !important;
+  bottom: 14px !important;
+  background: rgba(255, 255, 255, .94) !important;
+}
+
+body.marketspace-refresh .course-card {
+  border-color: rgba(18, 169, 143, .18) !important;
+}
+
+body.marketspace-refresh .courses-section .section-title h2 {
+  color: transparent !important;
+  background: linear-gradient(135deg, #0f8a76 0%, #8a3f08 46%, #5a2d91 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+body.marketspace-refresh .course-meta {
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+
+body.marketspace-refresh .course-meta span {
+  max-width: 64% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  line-height: 1.15 !important;
+  border-color: rgba(18, 169, 143, .22) !important;
+  background: rgba(18, 169, 143, .08) !important;
+  color: #08796a !important;
+}
+
+body.marketspace-refresh .course-meta b {
+  flex: 0 0 auto !important;
+  margin-top: 8px !important;
+}
+
+body.marketspace-refresh .course-card h3 {
+  color: #172033 !important;
+}
+
+body.marketspace-refresh .course-card.orange h3,
+body.marketspace-refresh .course-card.amber h3 {
+  color: #8a3f08 !important;
+}
+
+body.marketspace-refresh .course-card.purple h3,
+body.marketspace-refresh .course-card.violet h3,
+body.marketspace-refresh .course-card.pink h3 {
+  color: #5a2d91 !important;
+}
+
+body.marketspace-refresh .course-card.green h3,
+body.marketspace-refresh .course-card.teal h3,
+body.marketspace-refresh .course-card.cyan h3 {
+  color: #08796a !important;
+}
+
+body.marketspace-refresh .course-card.navy h3,
+body.marketspace-refresh .course-card.blue h3 {
+  color: #21457a !important;
+}
+
+body.marketspace-refresh .course-bottom a {
+  background: linear-gradient(135deg, #2583ff, #235ed8) !important;
+  border-color: #2583ff !important;
+  box-shadow: 0 14px 30px rgba(37, 131, 255, .24) !important;
+}
+
+body.marketspace-refresh .course-bottom strong {
+  color: #172033 !important;
+}
+
+/* Journey section polish: keep the post-course page texture aligned with the blue hero system. */
+body.marketspace-refresh .journey {
+  padding-block: clamp(72px, 7vw, 104px) !important;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(37, 131, 255, .24), transparent 20%),
+    radial-gradient(circle at 14% 18%, rgba(91, 141, 255, .18), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(83, 116, 255, .12), transparent 32%),
+    linear-gradient(135deg, #f8fbff 0%, #eef5ff 48%, #f4f8ff 100%) !important;
+}
+
+body.marketspace-refresh .journey .section-title,
+body.marketspace-refresh .journey-features,
+body.marketspace-refresh .journey-features article {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .journey::before {
+  background: rgba(37, 131, 255, .10) !important;
+}
+
+body.marketspace-refresh .journey::after {
+  border-color: rgba(37, 131, 255, .20) !important;
+}
+
+body.marketspace-refresh .journey .section-title.light .pill {
+  background: rgba(255, 255, 255, .82) !important;
+  color: #235ed8 !important;
+  border-color: rgba(37, 131, 255, .28) !important;
+  box-shadow: 0 12px 28px rgba(37, 131, 255, .12) !important;
+}
+
+body.marketspace-refresh .journey .section-title.light h2 {
+  color: transparent !important;
+  background: linear-gradient(135deg, #102f66 0%, #2583ff 52%, #5b6dff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+}
+
+body.marketspace-refresh .journey .section-title.light p {
+  color: #43516c !important;
+  opacity: 1 !important;
+}
+
+body.marketspace-refresh .journey-features article {
+  color: #172033 !important;
+  border: 1px solid rgba(37, 131, 255, .16) !important;
+  background: rgba(255, 255, 255, .82) !important;
+  box-shadow: 0 18px 42px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .journey-features article h3 {
+  color: #102f66 !important;
+}
+
+body.marketspace-refresh .journey-features article p {
+  color: #43516c !important;
+}
+
+body.marketspace-refresh .journey-features .jicon {
+  filter: saturate(1.35) hue-rotate(182deg) brightness(.92) drop-shadow(0 10px 18px rgba(37, 131, 255, .14)) !important;
+  opacity: 1 !important;
+}
+
+/* Final WhatsApp guidance CTA visibility and responsive width. */
+body.marketspace-refresh .subscribe {
+  isolation: isolate !important;
+  width: min(1820px, calc(100vw - 64px)) !important;
+  max-width: calc(100vw - 64px) !important;
+  margin-inline: auto !important;
+  border: 1px solid rgba(32, 55, 91, .08) !important;
+  background:
+    radial-gradient(circle at 82% 10%, rgba(37, 211, 102, .22), transparent 28%),
+    radial-gradient(circle at 18% 88%, rgba(37, 131, 255, .16), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #f2f8ff 52%, #eaf8f1 100%) !important;
+  box-shadow: 0 30px 90px rgba(44, 62, 110, .16) !important;
+}
+
+body.marketspace-refresh .subscribe h2 {
+  opacity: 1 !important;
+  transform: none !important;
+  min-block-size: auto !important;
+  color: #10213d !important;
+  text-shadow: none !important;
+}
+
+body.marketspace-refresh .subscribe h2 strong {
+  color: #0f9f5f !important;
+}
+
+body.marketspace-refresh .subscribe-form {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .subscribe .whatsapp-join {
+  opacity: 1 !important;
+  transform: none !important;
+  min-height: 62px !important;
+  border: 2px solid rgba(12, 28, 52, .88) !important;
+  background: linear-gradient(135deg, #26d66f, #18bf63) !important;
+  color: #061829 !important;
+  box-shadow: 8px 9px 0 #12172f, 0 18px 38px rgba(37, 211, 102, .22) !important;
+  font-weight: 900 !important;
+}
+
+body.marketspace-refresh .subscribe .whatsapp-join img {
+  filter: none !important;
+}
+
+body.marketspace-refresh .subscribe .whatsapp-join:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 10px 12px 0 #12172f, 0 24px 48px rgba(37, 211, 102, .26) !important;
+}
+
+@media (max-width: 720px) {
+  body.marketspace-refresh:has(.hero#home) .subscribe,
+  body.marketspace-refresh .subscribe {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    justify-self: center !important;
+  }
+}
+
+/* Landing-wide blue texture harmonization after the course catalog. */
+body.marketspace-refresh .future-section,
+body.marketspace-refresh .about-section,
+body.marketspace-refresh .dream-journey-strip,
+body.marketspace-refresh .instructors,
+body.marketspace-refresh .home-testimonials,
+body.marketspace-refresh .faq,
+body.marketspace-refresh .news {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(37, 131, 255, .13), transparent 28%),
+    radial-gradient(circle at 88% 24%, rgba(91, 141, 255, .11), transparent 30%),
+    linear-gradient(135deg, #fbfdff 0%, #f1f7ff 48%, #f7faff 100%) !important;
+}
+
+body.marketspace-refresh .future-section::before,
+body.marketspace-refresh .about-section::before,
+body.marketspace-refresh .dream-journey-strip::before,
+body.marketspace-refresh .home-testimonials::before,
+body.marketspace-refresh .faq::before,
+body.marketspace-refresh .news::before {
+  background: rgba(37, 131, 255, .10) !important;
+}
+
+body.marketspace-refresh .future-section::after,
+body.marketspace-refresh .about-section::after,
+body.marketspace-refresh .dream-journey-strip::after,
+body.marketspace-refresh .home-testimonials::after,
+body.marketspace-refresh .faq::after,
+body.marketspace-refresh .news::after {
+  border-color: rgba(37, 131, 255, .16) !important;
+}
+
+body.marketspace-refresh .section-title .pill,
+body.marketspace-refresh .mentor-pill,
+body.marketspace-refresh .featured-badge {
+  color: #235ed8 !important;
+  border-color: rgba(37, 131, 255, .30) !important;
+  background: rgba(255, 255, 255, .76) !important;
+  box-shadow: 0 12px 28px rgba(37, 131, 255, .10) !important;
+}
+
+body.marketspace-refresh .section-title h2,
+body.marketspace-refresh .mentor-hero-copy h2,
+body.marketspace-refresh .faq-copy h2,
+body.marketspace-refresh .news .section-title h2 {
+  color: transparent !important;
+  background: linear-gradient(135deg, #102f66 0%, #2583ff 54%, #5b6dff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+}
+
+body.marketspace-refresh .section-title p,
+body.marketspace-refresh .mentor-hero-copy p,
+body.marketspace-refresh .faq-copy p {
+  color: #43516c !important;
+  opacity: 1 !important;
+}
+
+/* Hero copy polish: stronger supporting text and cleaner trust block. */
+body.marketspace-refresh .hero-copy p {
+  max-width: 760px !important;
+  color: #354765 !important;
+  font-size: clamp(21px, 1.65vw, 27px) !important;
+  line-height: 1.42 !important;
+  font-weight: 750 !important;
+  letter-spacing: 0 !important;
+  text-wrap: balance !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-copy > p {
+  max-width: 660px !important;
+  color: #33435f !important;
+  font-size: clamp(18px, 1.18vw, 22px) !important;
+  line-height: 1.5 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .hero-feature-strip {
+  margin-top: 24px !important;
+  gap: 12px !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 58px !important;
+  padding-inline: 18px 22px !important;
+  color: #10213d !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  border-color: rgba(37, 131, 255, .16) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(247, 251, 255, .88)) !important;
+  box-shadow: 0 14px 30px rgba(37, 91, 170, .08) !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span::before {
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 auto !important;
+  width: 28px !important;
+  height: 28px !important;
+  margin-right: 10px !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  background: linear-gradient(135deg, #4d55ff, #16c7d8) !important;
+  box-shadow: 0 8px 16px rgba(37, 131, 255, .20) !important;
+}
+
+body.marketspace-refresh .hero-feature-strip span:nth-child(1)::before {
+  content: "01";
+}
+
+body.marketspace-refresh .hero-feature-strip span:nth-child(2)::before {
+  content: "02";
+}
+
+body.marketspace-refresh .hero-feature-strip span:nth-child(3)::before {
+  content: "03";
+}
+
+body.marketspace-refresh .hero-feature-strip span:nth-child(4)::before {
+  content: "04";
+}
+
+body.marketspace-refresh .hero-feature-strip span b {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  margin-right: 10px !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  background: linear-gradient(135deg, #4d55ff, #16c7d8) !important;
+  box-shadow: 0 8px 16px rgba(37, 131, 255, .20) !important;
+  overflow: hidden !important;
+  text-indent: -999px !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-feature-strip span b {
+  display: none !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-trust {
+  display: grid !important;
+  margin-top: 28px !important;
+  width: min(540px, 100%) !important;
+  min-height: 122px !important;
+  padding: 16px 22px !important;
+  grid-template-columns: auto minmax(210px, 1fr) !important;
+  grid-template-areas:
+    "avatars label"
+    "avatars count"
+    "avatars note" !important;
+  align-items: center !important;
+  column-gap: 22px !important;
+  row-gap: 2px !important;
+  border: 1px solid rgba(37, 131, 255, .20) !important;
+  border-radius: 20px !important;
+  border-color: rgba(37, 131, 255, .20) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(37, 131, 255, .10), transparent 34%),
+    rgba(255, 255, 255, .78) !important;
+  box-shadow: 0 20px 54px rgba(37, 91, 170, .12) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-avatars {
+  grid-area: avatars !important;
+  display: flex !important;
+  align-items: center !important;
+  min-width: 180px !important;
+  margin: 0 !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-avatars img {
+  width: 46px !important;
+  height: 46px !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 8px 18px rgba(16, 33, 61, .16) !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-avatars img + img {
+  margin-left: -12px !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-trust p {
+  position: static !important;
+  grid-area: label !important;
+  color: #4a5b78 !important;
+  font-size: 16px !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  text-align: left !important;
+  white-space: normal !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-trust strong {
+  position: static !important;
+  grid-area: count !important;
+  color: #10213d !important;
+  font-size: clamp(34px, 2.3vw, 44px) !important;
+  line-height: 1 !important;
+  margin: 4px 0 0 !important;
+  text-align: left !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-trust span {
+  position: static !important;
+  grid-area: note !important;
+  color: #235ed8 !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh:has(.hero#home) .hero-trust span::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* FAQ/support block final polish. */
+body.marketspace-refresh .faq.section-glow {
+  content-visibility: visible !important;
+  contain: none !important;
+  width: min(1760px, calc(100vw - 64px)) !important;
+  margin: clamp(58px, 6vw, 96px) auto !important;
+  padding: clamp(54px, 5.8vw, 92px) clamp(34px, 5vw, 72px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(360px, .92fr) minmax(520px, 1fr) !important;
+  align-items: center !important;
+  gap: clamp(48px, 6vw, 96px) !important;
+  border: 1px solid rgba(37, 131, 255, .16) !important;
+  border-radius: 38px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 4% 0%, rgba(37, 131, 255, .24), transparent 22%),
+    radial-gradient(circle at 88% 88%, rgba(93, 116, 255, .16), transparent 32%),
+    linear-gradient(135deg, #f7fbff 0%, #eaf4ff 48%, #f6faff 100%) !important;
+  box-shadow: 0 34px 86px rgba(37, 91, 170, .12) !important;
+}
+
+body.marketspace-refresh .faq.section-glow::before {
+  inset: auto auto -120px -100px !important;
+  width: 320px !important;
+  height: 320px !important;
+  background: radial-gradient(circle, rgba(37, 131, 255, .20), transparent 68%) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-art {
+  content-visibility: visible !important;
+  position: relative !important;
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  min-height: clamp(460px, 36vw, 620px) !important;
+  display: grid !important;
+  place-items: end center !important;
+  isolation: isolate !important;
+  border: 1px solid rgba(255, 255, 255, .82) !important;
+  border-radius: 34px !important;
+  background:
+    url("assets/img/others/faq_img.png") 10% 100% / min(450px, 72%) auto no-repeat,
+    radial-gradient(circle at 28% 20%, rgba(117, 95, 255, .15), transparent 22%),
+    radial-gradient(circle at 80% 74%, rgba(37, 131, 255, .10), transparent 28%),
+    linear-gradient(145deg, rgba(255, 255, 255, .86), rgba(240, 247, 255, .72)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), 0 28px 70px rgba(37, 91, 170, .12) !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-art::before {
+  content: "" !important;
+  position: absolute !important;
+  right: 7% !important;
+  bottom: 8% !important;
+  width: min(260px, 42%) !important;
+  aspect-ratio: 1 !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(37, 131, 255, .12) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .42), rgba(37, 131, 255, .08)) !important;
+  box-shadow: inset 0 18px 44px rgba(37, 91, 170, .06) !important;
+  z-index: 0 !important;
+}
+
+body.marketspace-refresh .faq.section-glow .circle-photo {
+  display: none !important;
+}
+
+body.marketspace-refresh .faq.section-glow .circle-photo img {
+  display: none !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-float-chip {
+  position: absolute !important;
+  z-index: 4 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 46px !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(37, 131, 255, .14) !important;
+  color: #14213a !important;
+  background: rgba(255, 255, 255, .88) !important;
+  box-shadow: 0 18px 36px rgba(37, 91, 170, .12) !important;
+  backdrop-filter: blur(12px) !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  animation: none !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-float-chip::before {
+  content: "" !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 999px !important;
+  background: #ffbe2e !important;
+  box-shadow: 0 0 0 7px rgba(255, 190, 46, .18) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-live {
+  left: 10% !important;
+  top: 24% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-project {
+  right: 8% !important;
+  top: 42% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-cert {
+  left: 14% !important;
+  bottom: 22% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy {
+  content-visibility: visible !important;
+  max-width: 760px !important;
+  text-align: left !important;
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy .pill {
+  margin-inline: 0 !important;
+  color: #235ed8 !important;
+  background: rgba(255, 255, 255, .76) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+  margin: 16px 0 16px !important;
+  font-size: clamp(44px, 4.6vw, 76px) !important;
+  line-height: .98 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy > p {
+  max-width: 680px !important;
+  margin: 0 0 30px !important;
+  color: #475774 !important;
+  font-size: clamp(17px, 1.2vw, 21px) !important;
+  line-height: 1.55 !important;
+  font-weight: 650 !important;
+  text-align: left !important;
+}
+
+body.marketspace-refresh .faq.section-glow .accordion {
+  display: grid !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .faq.section-glow details {
+  width: 100% !important;
+  margin: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  border: 1px solid rgba(37, 131, 255, .13) !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(248, 251, 255, .88)) !important;
+  box-shadow: 0 18px 42px rgba(37, 91, 170, .10) !important;
+  overflow: hidden !important;
+}
+
+body.marketspace-refresh .faq.section-glow details[open] {
+  border-color: rgba(37, 131, 255, .22) !important;
+  box-shadow: 0 24px 54px rgba(37, 91, 170, .14) !important;
+}
+
+body.marketspace-refresh .faq.section-glow summary {
+  min-height: 70px !important;
+  padding: 20px 64px 20px 26px !important;
+  color: #111a2e !important;
+  font-size: clamp(17px, 1.12vw, 20px) !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+}
+
+body.marketspace-refresh .faq.section-glow summary::after {
+  right: 24px !important;
+  color: #2583ff !important;
+}
+
+body.marketspace-refresh .faq.section-glow details p {
+  padding: 0 28px 28px !important;
+  color: #4c5c78 !important;
+  font-size: clamp(16px, 1.02vw, 19px) !important;
+  line-height: 1.65 !important;
+}
+
+@media (max-width: 720px) {
+  body.marketspace-refresh main,
+  body.marketspace-refresh:has(.hero#home) main {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 34px 16px 40px !important;
+    overflow: hidden !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy h1,
+  body.marketspace-refresh:has(.hero#home) .hero-copy .job-headline {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 18px !important;
+    text-align: left !important;
+    font-size: clamp(38px, 11.5vw, 50px) !important;
+    line-height: 1.02 !important;
+  }
+
+  body.marketspace-refresh .hero-copy p {
+    font-size: 18px !important;
+    line-height: 1.5 !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-copy > p {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-feature-strip {
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-buttons {
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero-trust {
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "avatars"
+      "label"
+      "count"
+      "note" !important;
+    justify-items: start !important;
+    row-gap: 6px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow {
+    width: calc(100vw - 24px) !important;
+    margin: 42px auto !important;
+    padding: 24px 14px 28px !important;
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    border-radius: 28px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq-art {
+    display: grid !important;
+    min-height: 330px !important;
+    border-radius: 24px !important;
+    background:
+      url("assets/img/others/faq_img.png") 2% 100% / min(242px, 66%) auto no-repeat,
+      radial-gradient(circle at 28% 20%, rgba(117, 95, 255, .15), transparent 22%),
+      radial-gradient(circle at 80% 74%, rgba(37, 131, 255, .10), transparent 28%),
+      linear-gradient(145deg, rgba(255, 255, 255, .86), rgba(240, 247, 255, .72)) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .circle-photo {
+    left: 0 !important;
+    width: min(300px, 78%) !important;
+    min-height: 300px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip {
+    min-height: 36px !important;
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip::before {
+    width: 9px !important;
+    height: 9px !important;
+    box-shadow: 0 0 0 5px rgba(255, 190, 46, .18) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-live {
+    left: auto !important;
+    right: 6% !important;
+    top: 10% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-project {
+    right: 5% !important;
+    top: 40% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-cert {
+    left: 9% !important;
+    bottom: 18% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy {
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+    font-size: clamp(34px, 10.5vw, 44px) !important;
+    line-height: 1.04 !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy > p {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow summary {
+    min-height: 62px !important;
+    padding: 18px 54px 18px 18px !important;
+    font-size: 16px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow details p {
+    padding: 0 18px 22px !important;
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+}
+
+/* Final compact FAQ correction: keep the support block polished, not oversized. */
+body.marketspace-refresh .faq.section-glow {
+  width: min(1440px, calc(100vw - 56px)) !important;
+  margin: clamp(42px, 5vw, 72px) auto !important;
+  padding: clamp(38px, 4vw, 56px) clamp(28px, 4vw, 52px) !important;
+  grid-template-columns: minmax(320px, 460px) minmax(460px, 640px) !important;
+  justify-content: center !important;
+  gap: clamp(34px, 4vw, 58px) !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 6% 6%, rgba(37, 131, 255, .18), transparent 24%),
+    radial-gradient(circle at 92% 92%, rgba(91, 109, 255, .12), transparent 30%),
+    linear-gradient(135deg, #f8fbff 0%, #edf6ff 100%) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-art {
+  min-height: 420px !important;
+  border-radius: 28px !important;
+  background:
+    url("assets/img/others/faq_img.png") 4% 100% / min(330px, 70%) auto no-repeat,
+    radial-gradient(circle at 72% 72%, rgba(37, 131, 255, .10), transparent 31%),
+    linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(242, 248, 255, .76)) !important;
+  box-shadow: 0 20px 48px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-float-chip {
+  min-height: 38px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  box-shadow: 0 12px 26px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-live {
+  left: 9% !important;
+  top: 22% !important;
+  right: auto !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-project {
+  right: 7% !important;
+  top: 43% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .chip-cert {
+  left: 11% !important;
+  bottom: 24% !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy {
+  max-width: 640px !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+  margin: 12px 0 12px !important;
+  font-size: clamp(34px, 3vw, 52px) !important;
+  line-height: 1.06 !important;
+}
+
+body.marketspace-refresh .faq.section-glow .faq-copy > p {
+  max-width: 560px !important;
+  margin-bottom: 22px !important;
+  font-size: clamp(15px, 1vw, 18px) !important;
+  line-height: 1.55 !important;
+  font-weight: 650 !important;
+}
+
+body.marketspace-refresh .faq.section-glow .accordion {
+  gap: 10px !important;
+}
+
+body.marketspace-refresh .faq.section-glow details {
+  border-radius: 18px !important;
+  box-shadow: 0 12px 30px rgba(37, 91, 170, .08) !important;
+}
+
+body.marketspace-refresh .faq.section-glow details[open] {
+  box-shadow: 0 16px 36px rgba(37, 91, 170, .10) !important;
+}
+
+body.marketspace-refresh .faq.section-glow summary {
+  min-height: 58px !important;
+  padding: 17px 54px 17px 22px !important;
+  font-size: clamp(15px, 1vw, 18px) !important;
+}
+
+body.marketspace-refresh .faq.section-glow details p {
+  padding: 0 22px 22px !important;
+  font-size: clamp(14px, .95vw, 16px) !important;
+  line-height: 1.62 !important;
+}
+
+@media (max-width: 720px) {
+  body.marketspace-refresh .faq.section-glow {
+    width: calc(100vw - 24px) !important;
+    margin: 34px auto !important;
+    padding: 16px 14px 20px !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    border-radius: 22px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq.section-glow .faq-art,
+  body.marketspace-refresh:has(.hero#home) .faq-art {
+    min-height: 235px !important;
+    border-radius: 20px !important;
+    background:
+      url("assets/img/others/faq_img.png") 2% 100% / min(180px, 54%) auto no-repeat,
+      radial-gradient(circle at 78% 72%, rgba(37, 131, 255, .11), transparent 30%),
+      linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(242, 248, 255, .76)) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip {
+    min-height: 31px !important;
+    padding: 6px 10px !important;
+    gap: 7px !important;
+    font-size: 11px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-float-chip::before {
+    width: 7px !important;
+    height: 7px !important;
+    box-shadow: 0 0 0 4px rgba(255, 190, 46, .16) !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-live {
+    right: 5% !important;
+    top: 10% !important;
+    left: auto !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-project {
+    right: 5% !important;
+    top: 44% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .chip-cert {
+    left: 7% !important;
+    bottom: 18% !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy h2 {
+    margin-top: 4px !important;
+    font-size: clamp(28px, 8.2vw, 34px) !important;
+    line-height: 1.1 !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow .faq-copy > p {
+    margin-bottom: 18px !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow summary {
+    min-height: 56px !important;
+    padding: 16px 48px 16px 16px !important;
+    font-size: 14px !important;
+  }
+
+  body.marketspace-refresh .faq.section-glow details p {
+    padding: 0 16px 18px !important;
+    font-size: 14px !important;
+  }
+}
+@media (min-width: 1181px) and (max-width: 1280px) {
+  body.marketspace-refresh .site-header {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "brand"
+      "actions"
+      "nav" !important;
+  }
+
+  body.marketspace-refresh .nav {
+    grid-column: 1 / -1 !important;
+    justify-self: stretch !important;
+    place-self: auto stretch !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .header-actions {
+    width: min(760px, calc(100vw - 56px)) !important;
+    max-width: calc(100vw - 56px) !important;
+  }
+}

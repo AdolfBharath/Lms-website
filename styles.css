@@ -63,8 +63,10 @@ body {
 .faq,
 .journey,
 .news {
-  content-visibility: auto;
-  contain-intrinsic-size: 720px;
+  /* These sections have variable-height content. A fixed intrinsic placeholder
+     caused tall blank bands before the browser painted off-screen sections. */
+  content-visibility: visible;
+  contain-intrinsic-size: auto none;
 }
 
 body::before {
@@ -126,6 +128,15 @@ html {
   max-height: 64px;
   object-fit: contain;
   border-radius: 0;
+}
+
+.brand picture,
+.hero-art > picture {
+  display: block;
+}
+
+.brand picture {
+  line-height: 0;
 }
 
 .brand:hover {
@@ -11315,3 +11326,17 @@ body {
     font-size: 12px;
   }
 }
+
+/* Final public form readiness: launchpad/contact/search controls. */
+.launchpad-form{position:relative;overflow:hidden;border:1px solid rgba(126,148,186,.28)!important;border-radius:24px!important;background:rgba(255,255,255,.95)!important;box-shadow:0 28px 80px rgba(28,46,82,.14)!important;backdrop-filter:blur(18px) saturate(145%)}
+.launchpad-form::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,#0f8a76,#ffc329,#5a2d91)}
+.launchpad-form h3{color:transparent!important;background:linear-gradient(135deg,#0f8a76 0%,#8a3f08 48%,#5a2d91 100%);-webkit-background-clip:text;background-clip:text}
+.launchpad-form p{color:#475467!important}
+.launchpad-form input,.launchpad-form select,.launchpad-form textarea,.earn-controls input{min-height:54px;border:1px solid rgba(126,148,186,.34)!important;border-radius:16px!important;background:#f8fbff!important;color:#172033!important;font-size:15px!important;font-weight:700!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.78);transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease}
+.launchpad-form textarea{min-height:126px}
+.launchpad-form input:hover,.launchpad-form select:hover,.launchpad-form textarea:hover,.earn-controls input:hover{border-color:rgba(18,169,143,.4)!important;background:#fff!important}
+.launchpad-form input:focus,.launchpad-form select:focus,.launchpad-form textarea:focus,.earn-controls input:focus{border-color:#0f8a76!important;background:#fff!important;box-shadow:0 0 0 4px rgba(18,169,143,.14),0 14px 30px rgba(31,52,88,.08)!important}
+.launchpad-form input::placeholder,.launchpad-form textarea::placeholder,.earn-controls input::placeholder{color:#8795ad;font-weight:600}
+.launchpad-form .launchpad-inline-submit{min-height:56px;border-radius:16px!important;background:linear-gradient(135deg,#0f8a76,#12a98f)!important;border-color:transparent!important;box-shadow:0 16px 34px rgba(18,169,143,.24)!important}
+.launchpad-form .launchpad-inline-submit:hover{background:linear-gradient(135deg,#08796a,#0f8a76)!important}
+.site-header .search,.category-menu,.search-results{border-color:rgba(126,148,186,.28)!important}

@@ -37,6 +37,82 @@ test("student purchases use the atomic purchase RPC", () => {
   assert.doesNotMatch(purchase, /updateStudentProfile\(\{ coins:/);
 });
 
+test("course purchase flow verifies payment server-side before enrollment", () => {
+  const browser = read("course-purchase.js");
+  const edge = read("supabase/functions/course-purchase/index.ts");
+  const migration = read("supabase/migrations/20260822_course_purchase_flow.sql");
+
+  assert.match(browser, /functions\.invoke\(PURCHASE_FUNCTION/);
+  assert.doesNotMatch(browser, /from\("user_courses"\)\.insert/);
+  assert.doesNotMatch(browser, /payment_status.*success[\s\S]{0,120}user_courses/);
+  assert.match(edge, /courseAmount\(course\)/);
+  assert.doesNotMatch(edge, /body\.amount/);
+  assert.match(edge, /fetchProviderOrder/);
+  assert.match(edge, /verifyCashfreeWebhook/);
+  assert.match(edge, /Webhook amount or currency mismatch/);
+  assert.match(edge, /grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(migration, /lms_course_orders/);
+  assert.match(migration, /lms_course_payments/);
+  assert.match(migration, /user_courses_user_course_active_unique_idx/);
+});
+
+test("course purchase uses Cashfree hosted checkout for in-app browser compatibility", () => {
+  const browser = read("course-purchase.js");
+
+  assert.match(browser, /cashfree\.checkout\(\{ paymentSessionId, redirectTarget: "_self" \}\)/);
+  assert.match(browser, /invokePurchase\("verify_payment", \{ order_id: orderId \}\)/);
+});
+
+test("course purchase assigns paid courses to new and existing student profiles only after verification", () => {
+  const edge = read("supabase/functions/course-purchase/index.ts");
+  const ensureProfile = edge.slice(edge.indexOf("async function ensureStudentProfile"), edge.indexOf("async function findProfile"));
+  const createOrder = edge.slice(edge.indexOf("async function createCourseOrder"), edge.indexOf("async function createProviderOrder"));
+  const grant = edge.slice(edge.indexOf("async function grantEnrollment"), edge.indexOf("async function pendingOrder"));
+
+  assert.match(ensureProfile, /if \(existing\?\.id\)/);
+  assert.match(ensureProfile, /role: "student"/);
+  assert.match(createOrder, /const existingEnrollment = await activeEnrollment\(admin, profile\.id, course\.id\)/);
+  assert.match(createOrder, /return \{ already_owned: true/);
+  assert.match(edge, /async function verifyPayment/);
+  assert.match(edge, /const enrollment = await grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(grant, /user_id: userId/);
+  assert.match(grant, /student_id: userId/);
+  assert.match(grant, /learner_id: userId/);
+  assert.match(grant, /status: "active"/);
+  assert.doesNotMatch(createOrder, /grantEnrollment\(admin, profile\.id, course\.id\)[\s\S]{0,80}payment_status: "pending"/);
+});
+
+test("student-visible courses require active lifecycle while learning access requires assignment", () => {
+  const student = read("student.js");
+  const edge = read("supabase/functions/course-purchase/index.ts");
+  const migration = latestMigrationContaining(/lms_student_has_course/);
+
+  assert.match(student, /function isStudentVisibleCourse\(course\)/);
+  assert.match(student, /String\(course\?\.status \|\| ""\)\.toLowerCase\(\) === "active"/);
+  assert.match(student, /ids\.has\(String\(course\.id\)\)[\s\S]*&& isStudentVisibleCourse\(course\)/);
+  assert.match(student, /return query\.ilike\("status", "active"\)\.is\("deleted_at", null\)/);
+  assert.match(edge, /\.is\("deleted_at", null\)\.ilike\("status", "active"\)/);
+  assert.match(edge, /String\(course\.status \|\| ""\)\.toLowerCase\(\) !== "active"/);
+  assert.match(migration.source, /create policy courses_students_active_only/);
+  assert.match(migration.source, /lower\(coalesce\(status, ''\)\) = 'active'/);
+  assert.doesNotMatch(migration.source, /public\.lms_student_has_course\(id\)/);
+  assert.match(migration.source, /create or replace function public\.lms_student_has_batch/);
+  assert.match(migration.source, /drop policy if exists users_student_batch_mentor_read/);
+});
+
+test("course purchase signup prevents duplicate registration submits", () => {
+  const source = read("course-purchase.js");
+  assert.equal(source.match(/\.auth\.signUp\(/g)?.length || 0, 1);
+  assert.match(source, /window\.__jenovatePurchaseFlowInitialized/);
+  assert.match(source, /if \(state\.accountBusy\) return/);
+  assert.match(source, /state\.accountBusy = true/);
+  assert.match(source, /setFormBusy\(form, true, "Creating your account\.\.\."\)/);
+  assert.doesNotMatch(source, /emailRedirectTo/);
+  assert.doesNotMatch(source, /purchase_resume/);
+  assert.doesNotMatch(source, /data-purchase-panel="confirm-email"/);
+  assert.match(source, /Too many signup attempts\. Please wait a moment and try again\./);
+});
+
 test("task rewards are returned by the submission RPC", () => {
   const source = read("student.js");
   const submission = source.slice(source.indexOf("async function submitTask"), source.indexOf("async function saveProfile"));
@@ -126,6 +202,42 @@ test("student streak uses a Monday-to-Sunday LMS-local cycle", () => {
   assert.match(migration, /least\(coalesce\(streak_count, 0\) \+ 1, 7\)/);
 });
 
+test("daily login reward refreshes the persisted coin balance before rendering", () => {
+  const source = read("student.js");
+  const reward = source.slice(source.indexOf("async function syncDailyStreak"), source.indexOf("function setupDailyStreakRefresh"));
+
+  assert.match(reward, /lms_claim_daily_login_reward/);
+  assert.match(reward, /coin_balance: Number\(result\.coin_balance/);
+  assert.match(reward, /await refreshStudentProfileAfterReward\(result\)/);
+  assert.match(reward, /renderIdentity\(\)/);
+  assert.match(source, /select\("coins,coin_balance,streak_count,last_active_date,last_login_reward_date"\)/);
+  assert.match(read("supabase/migrations/20260813_student_rewards_persistence_fix.sql"), /scope = 'student_rewards'/);
+});
+
+test("daily login reward is ten coins with a seven-day bonus and database-unique per LMS date", () => {
+  const migration = read("supabase/migrations/20260902_daily_login_10_coin_streak_bonus.sql");
+  const source = read("student.js");
+
+  assert.match(migration, /create table if not exists public\.lms_daily_login_rewards/);
+  assert.match(migration, /primary key \(user_id, reward_date\)/);
+  assert.match(migration, /lms_reward_date date := timezone\('Asia\/Kolkata', now\(\)\)::date/);
+  assert.match(migration, /daily_reward integer := 10/);
+  assert.match(migration, /streak_bonus_amount integer := 10/);
+  assert.match(migration, /streak_length integer := 7/);
+  assert.match(migration, /mod\(next_streak, streak_length\) = 0/);
+  assert.match(migration, /daily_coins integer not null default 0/);
+  assert.match(migration, /streak_day integer not null default 0/);
+  assert.match(migration, /streak_bonus integer not null default 0/);
+  assert.match(migration, /total_coins_awarded integer not null default 0/);
+  assert.match(migration, /on conflict \(user_id, reward_date\) do nothing/);
+  assert.match(migration, /target_user_id is not null and target_user_id <> profile\.id/);
+  assert.match(migration, /select b\.id into valid_batch_id/);
+  assert.match(migration, /new\.id,\s*valid_batch_id,/);
+  assert.doesNotMatch(migration, /body\.amount|target_amount|target_reward_date/);
+  assert.match(source, /totalReward/);
+  assert.match(source, /streakBonus/);
+});
+
 test("admin and mentor task saves use total_marks without writing removed max_marks", () => {
   for (const file of ["admin.js", "mentor.js"]) {
     const source = read(file);
@@ -186,6 +298,21 @@ test("admin save services only persist allowlisted user profile fields", () => {
   }
 });
 
+test("admin assignment writes use the trusted assignment RPC", () => {
+  const edge = read("supabase/functions/admin-save-user/index.ts");
+  const migration = read("supabase/migrations/20260826_admin_user_assignment_trusted_writes.sql");
+  const liveQa = read("scripts/final-production-acceptance-test.mjs");
+
+  assert.match(edge, /rpc\("lms_admin_update_user_assignment"/);
+  assert.match(edge, /function persistUserAssignment/);
+  assert.doesNotMatch(edge, /from\("users"\)\.update\(\{ batch_id: batchId \}\)/);
+  assert.match(migration, /scope in \('student_rewards', 'admin_user_write'\)/);
+  assert.match(migration, /create or replace function public\.lms_admin_update_user_assignment/);
+  assert.match(migration, /grant execute on function public\.lms_admin_update_user_assignment\(uuid, uuid, jsonb\) to service_role/);
+  assert.match(liveQa, /functions\.invoke\("admin-save-user"/);
+  assert.doesNotMatch(liveQa, /from\("users"\)\.update\(\{ batch_id: batch\.data\.id \}\)/);
+});
+
 test("admin password reset can create missing Supabase Auth logins for legacy profiles", () => {
   for (const file of ["supabase/functions/admin-save-user/index.ts"]) {
     const source = read(file);
@@ -219,10 +346,9 @@ test("admin save services retry profile writes without optional schema-drift fie
 test("admin user forms and CSV import enforce the backend password policy", () => {
   const source = read("admin.js");
   assert.match(source, /const MIN_ADMIN_PASSWORD_LENGTH = 8/);
-  assert.match(source, /const DEFAULT_IMPORT_PASSWORD = "Temp@12345"/);
   assert.doesNotMatch(source, /123456/);
   assert.match(source, /id="createUserPassword"[^>]+minlength="\$\{MIN_ADMIN_PASSWORD_LENGTH\}"/);
-  assert.match(source, /id="importDefaultPassword"[^>]+value="\$\{DEFAULT_IMPORT_PASSWORD\}"/);
+  assert.match(source, /Row \$\{shortPassword\._row\} password must be at least \$\{MIN_ADMIN_PASSWORD_LENGTH\} characters/);
   assert.match(source, /id="userPassword"[^>]+minlength="\$\{MIN_ADMIN_PASSWORD_LENGTH\}"/);
 });
 
@@ -232,8 +358,13 @@ test("admin CSV import validates file size, type, row limit, and email before im
   assert.match(source, /const MAX_USER_CSV_ROWS = 500/);
   assert.match(source, /validateUserCsvFile\(file\)/);
   assert.match(source, /CSV import is limited to \$\{MAX_USER_CSV_ROWS\} users/);
-  assert.match(source, /missing an email address/);
+  assert.match(source, /CSV headers required: name, email, course, batch, password/);
+  assert.match(source, /const requiredHeaders = \["name", "email", "course", "batch", "password"\]/);
+  assert.match(source, /CSV is missing required header/);
+  assert.match(source, /Row \$\{missingValue\._row\} is missing \$\{field\}/);
   assert.match(source, /Upload a valid \.csv file/);
+  assert.match(source, /role: "student"/);
+  assert.doesNotMatch(source, /importDefaultRole|importDefaultPassword|importDefaultCourse|importDefaultBatch/);
 });
 
 test("admin support attachments are restricted and optional cleanup cannot block resolved tickets", () => {
@@ -261,23 +392,90 @@ test("login and student startup do not wait on optional dashboard RPCs", () => {
   assert.match(auth, /Session verification timed out/);
 });
 
-test("student catalog previews only unassigned courses without self enrollment", () => {
+test("student catalog shows all active courses without self enrollment", () => {
   const student = read("student.js");
   const catalog = student.slice(student.indexOf("function renderCatalog"), student.indexOf("function renderRailTasks"));
+  const catalogCourses = student.slice(student.indexOf("function catalogCourses"), student.indexOf("function mergedCourseRows"));
   const details = student.slice(student.indexOf("function openCourseDetailModal"), student.indexOf("function openCourseReview"));
   const openCourseHandler = student.slice(student.indexOf("const openCourse = event.target.closest"), student.indexOf("const detailCourse = event.target.closest"));
 
   assert.match(catalog, /const enrolledIds = studentCourseIds\(\)/);
-  assert.match(catalog, /\.filter\(\(course\) => !enrolledIds\.has\(String\(course\.id\)\)\)/);
-  assert.match(catalog, /courseCatalogCard\(course\)/);
-  assert.doesNotMatch(catalog, /courseCatalogCard\(course,\s*enrolledIds/);
+  assert.doesNotMatch(catalogCourses, /const ids = studentCourseIds\(\)/);
+  assert.match(catalogCourses, /isStudentVisibleCourse\(course\)/);
+  assert.doesNotMatch(catalogCourses, /ids\.has\(String\(course\.id\)\)/);
+  assert.doesNotMatch(catalog, /\.filter\(\(course\) => !enrolledIds\.has\(String\(course\.id\)\)\)/);
+  assert.match(catalog, /courseCatalogCard\(course,\s*enrolledIds\)/);
+  assert.match(catalog, /Assigned/);
+  assert.match(catalog, /Open/);
   assert.doesNotMatch(catalog, /data-open-course/);
   assert.doesNotMatch(student, /data-enroll-course/);
   assert.doesNotMatch(student, /function enrollInCourse/);
   assert.doesNotMatch(student, /lms_enroll_student/);
-  assert.match(details, /Assignment Required/);
+  assert.match(details, /View & Buy/);
+  assert.match(details, /courseDetailCheckoutHref/);
+  assert.match(student, /checkout=1/);
   assert.match(details, /data-open-course/);
   assert.match(openCourseHandler, /setView\("learn"\)/);
+});
+
+test("student portal hides broken batch data and mojibake labels", () => {
+  const student = read("student.js");
+  const utils = read("modules/portal-utils.js");
+  const scopedBatches = student.slice(student.indexOf("function scopedBatches"), student.indexOf("function currentBatch"));
+  const batchFilters = student.slice(student.indexOf("function applyScopedFilters"), student.indexOf("function revalidateTable"));
+  const renderChat = student.slice(student.indexOf("function renderChat"), student.indexOf("function renderBatchPendingTasks"));
+
+  assert.match(utils, /function cleanText/);
+  assert.match(utils, /replace\(\S*�/);
+  assert.match(scopedBatches, /!isInactiveRecord\(batch\)/);
+  assert.match(batchFilters, /studentBatchFilterIds\(\)\.length \? query\.in\("batch_id", studentBatchFilterIds\(\)\) : query/);
+  assert.match(student, /function studentBatchFilterIds/);
+  assert.match(student, /state\.selectedBatchId/);
+  assert.match(student, /\["archived", "deleted", "inactive", "cancelled", "removed", "disabled"\]/);
+  assert.match(renderChat, />Reply<\/button>/);
+  assert.doesNotMatch(renderChat, /Â|Ã|â|�/);
+});
+
+test("mentor chat and support flows stay scoped and actionable", () => {
+  const mentor = read("mentor.js");
+  const migration = read("supabase/migrations/20260907_mentor_batch_chat_delete.sql");
+  const questionMigration = read("supabase/migrations/20260907_student_question_valid_batch.sql");
+  const questionReplyMigration = read("supabase/migrations/20260907_mentor_question_reply.sql");
+  const scopedBatches = mentor.slice(mentor.indexOf("function scopedBatches"), mentor.indexOf("function scopedStudents"));
+  const scopedQuestions = mentor.slice(mentor.indexOf("function scopedQuestions"), mentor.indexOf("function isQuestionProject"));
+  const messageRow = mentor.slice(mentor.indexOf("function messageRow"), mentor.indexOf("function announcementRow"));
+
+  assert.match(scopedBatches, /isActiveLmsRow\(batch\)/);
+  assert.match(scopedQuestions, /courseIds\.has\(String\(project\.course_id\)\)/);
+  assert.match(mentor, /supportOwnerRows/);
+  assert.match(mentor, /query\.eq\("user_id", mentorId\)/);
+  assert.match(messageRow, /data-reply-chat/);
+  assert.match(messageRow, /data-delete-chat/);
+  assert.match(mentor, /lms_mentor_delete_batch_chat/);
+  assert.match(migration, /public\.lms_current_role\(\) <> 'mentor'/);
+  assert.match(migration, /public\.lms_is_mentor_for_batch\(target_batch_id\)/);
+  assert.match(questionMigration, /valid_batch_id/);
+  assert.match(questionMigration, /join public\.batches b on b\.id = uc\.batch_id/);
+  assert.match(questionMigration, /b\.deleted_at is null/);
+  assert.match(questionMigration, /batch_id, course_id, title, description/);
+  assert.match(mentor, /lms_mentor_reply_student_question/);
+  assert.match(questionReplyMigration, /public\.lms_current_role\(\) <> 'mentor'/);
+  assert.match(questionReplyMigration, /feedback = trim\(reply_text\)/);
+  assert.doesNotMatch(messageRow, /Â|Ã|â|�/);
+});
+
+test("student referral behavior stays extracted from the main portal bundle", () => {
+  const student = read("student.js");
+  const studentPage = read("student.html");
+  const referral = read("student-referral.js");
+  const code = read("modules/referral-code.js");
+
+  const renderReferral = student.slice(student.indexOf("function renderReferral"), student.indexOf("function renderAchievementGrid"));
+  assert.match(studentPage, /type="module" src="student-referral\.js/);
+  assert.match(referral, /window\.renderStudentReferral = renderStudentReferral/);
+  assert.match(code, /export function createReferralCode/);
+  assert.match(renderReferral, /window\.renderStudentReferral\?\.\(state\.student\)/);
+  assert.doesNotMatch(renderReferral, /innerHTML|referralShareText|referralCodeValue/);
 });
 
 test("authenticated portal startup bypasses stale Supabase table cache", () => {
@@ -329,7 +527,8 @@ test("module quizzes use a 15-question bank and store randomized attempt details
   const migration = read("supabase/migrations/20260716_lms_academic_metrics.sql");
 
   assert.match(student, /quiz\.questions\.length < 15/);
-  assert.match(student, /5 \+ Math\.floor\(Math\.random\(\) \* 3\)/);
+  assert.match(student, /Number\(quiz\.random_count \|\| 15\) \|\| 15/);
+  assert.match(student, /Math\.min\(configuredCount, shuffled\.length\)/);
   assert.match(student, /time_taken_seconds/);
   assert.match(student, /selected_question_ids/);
   assert.match(mentor, /quiz needs at least 15 questions/);
@@ -383,7 +582,7 @@ test("student dashboard active courses are limited to the two most recent course
   assert.match(recentCourses, /latestAcademicActivityTimeForCourse/);
   assert.doesNotMatch(enrolledCourses, /courseFromBatch|batchFallbacks|Assigned Course|Assigned Batch/);
   assert.doesNotMatch(student, /function courseFromBatch/);
-  assert.match(enrolledCourses, /!isArchivedCourse\(course\) \|\| courseProgress\(course\)\.percent >= 100/);
+  assert.match(enrolledCourses, /isStudentVisibleCourse\(course\)/);
   assert.match(assignedCourseIds, /state\.data\.userCourses/);
   assert.match(assignedCourseIds, /state\.data\.batches/);
   assert.doesNotMatch(assignedCourseIds, /state\.data\.progress/);

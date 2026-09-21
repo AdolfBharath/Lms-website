@@ -9,27 +9,31 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="course-detail.css?v=20260626-brand-logos">
-  <link rel="stylesheet" href="public-mobile-comfort.css?v=20260720-mobile-visibility2">
+  <link rel="stylesheet" href="course-detail.css?v=20260905-mobile-checkout-v1">
+  <link rel="stylesheet" href="marketspace-premium.css?v=20260818-jenovate-blue-spacing-v3">
+  <link rel="stylesheet" href="jenovate-design-system.css?v=20260822-final-ui-v1">
+  <link rel="stylesheet" href="public-mobile-comfort.css?v=20260905-adaptive-mobile-v1">
 </head>
-<body>
+<body class="course-detail-refresh">
   <header class="course-header">
     <a class="course-brand" href="index.html" aria-label="Jenovate home">
-      <img src="image/logo/logonew.png" alt="Jenovate">
+      <img src="image/logo/logonew.png" alt="Jenovate" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
     </a>
     <nav aria-label="Primary navigation">
       <a href="index.html">Home</a>
       <a href="index.html#courses">Courses</a>
       <a href="launchpad-detail.html?plan=advanced">Launchpad</a>
       <a href="campus-ambassador.html">Campus Ambassador</a>
+      <a href="index.html#testimonials">Testimonials</a>
       <a href="about-us.html">About Us</a>
     </nav>
     <div class="course-header-actions">
       <a class="header-search" href="index.html#courses" aria-label="Search masterclasses">
-          <span aria-hidden="true">&#10003;</span>
-        Search Masterclasses
+          <span aria-hidden="true"></span>
+        Search For Course . . .
       </a>
       <a class="header-login" href="login.html">Log in</a>
+      <a class="header-join" href="form-engine/index.html?category=student_registration">Join Us</a>
     </div>
   </header>
 
@@ -76,12 +80,30 @@
       <div class="tools-grid" id="toolsGrid"></div>
       <div class="company-logo-strip" aria-label="Companies and platforms learners recognize">
         <span>Relevant to workflows used around</span>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=64" alt="" loading="lazy" decoding="async">Google</b>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=amazon.com&sz=64" alt="" loading="lazy" decoding="async">Amazon</b>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" loading="lazy" decoding="async">Microsoft</b>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=meta.com&sz=64" alt="" loading="lazy" decoding="async">Meta</b>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=salesforce.com&sz=64" alt="" loading="lazy" decoding="async">Salesforce</b>
-        <b class="company-wordmark logo-wordmark"><img src="https://www.google.com/s2/favicons?domain=stripe.com&sz=64" alt="" loading="lazy" decoding="async">Stripe</b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path fill="#4285f4" d="M28.7 16.3c0-1-.1-1.8-.3-2.6H16v5h7.1a6.1 6.1 0 0 1-2.6 4l4.1 3.2c2.4-2.2 4.1-5.5 4.1-9.6Z"/><path fill="#34a853" d="M16 29c3.5 0 6.5-1.2 8.6-3.1l-4.1-3.2c-1.1.7-2.6 1.2-4.5 1.2a7.8 7.8 0 0 1-7.3-5.4H4.4v3.3A13 13 0 0 0 16 29Z"/><path fill="#fbbc05" d="M8.7 18.5a7.8 7.8 0 0 1 0-5V10H4.4a13 13 0 0 0 0 12l4.3-3.5Z"/><path fill="#ea4335" d="M16 8.1c1.9 0 3.7.7 5 2l3.8-3.8A13 13 0 0 0 4.4 10l4.3 3.5A7.8 7.8 0 0 1 16 8.1Z"/></svg>
+          Google
+        </b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 36 32" aria-hidden="true"><text x="18" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="900" fill="#232f3e">a</text><path d="M9 21c5.8 3.8 12.5 3.9 18.9.4" fill="none" stroke="#ff9900" stroke-width="2.8" stroke-linecap="round"/><path d="M25.5 20.8h5l-2.4 4.2" fill="none" stroke="#ff9900" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Amazon
+        </b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path fill="#f25022" d="M4 4h11v11H4z"/><path fill="#7fba00" d="M17 4h11v11H17z"/><path fill="#00a4ef" d="M4 17h11v11H4z"/><path fill="#ffb900" d="M17 17h11v11H17z"/></svg>
+          Microsoft
+        </b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 44 32" aria-hidden="true"><path d="M6 21c2.2-8.2 5.6-12 9.7-12 3.2 0 5.3 2.4 7.5 5.8C25.6 11.4 28 9 31.4 9 36.2 9 39 13.8 40 21c-2.7 5.2-7.4 4.9-10.8.2l-6-8.2-6 8.2C13.4 26.3 8.7 26.1 6 21Z" fill="none" stroke="#0866ff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Meta
+        </b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 42 32" aria-hidden="true"><path d="M16 25h15.3a7.2 7.2 0 0 0 1-14.3A9.6 9.6 0 0 0 15.2 8 7.6 7.6 0 0 0 16 25Z" fill="#00a1e0"/><path d="M13.3 25h6.4a6.5 6.5 0 0 0-5.1-11.9A7.2 7.2 0 0 0 6 20.1C6 22.8 8.6 25 13.3 25Z" fill="#00a1e0"/></svg>
+          Salesforce
+        </b>
+        <b class="company-wordmark has-logo">
+          <svg class="company-logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="4" width="24" height="24" rx="7" fill="#635bff"/><path d="M20.8 13.1c0-1.4-1.2-2.1-3.7-2.1-2 0-3.7.5-5 1.2v3.8c1.2-.7 3-1.4 4.7-1.4 1 0 1.4.2 1.4.7 0 1.5-6.7.9-6.7 5.4 0 2.2 1.8 3.5 5.2 3.5 2 0 3.8-.4 5.2-1.1v-3.9a9.2 9.2 0 0 1-4.8 1.4c-1.2 0-1.8-.2-1.8-.8 0-1.5 6.7-1 6.7-5.5Z" fill="#fff"/></svg>
+          Stripe
+        </b>
       </div>
     </section>
 
@@ -154,6 +176,9 @@
     <div><a href="index.html#courses">Courses</a><a href="about-us.html">About Us</a><a href="login.html">Login</a></div>
   </footer>
 
-  <script src="course-detail.js?v=20260626-brand-logos"></script>
+  <script defer src="assets/vendor/lms-platform-sdk.js"></script>
+  <script defer src="lms-platform-config.js?v=20260803-shared-auth-v1"></script>
+  <script defer src="course-detail.js?v=20260905-iot-price-v1"></script>
+  <script defer src="course-purchase.js?v=20260905-modal-state-v1"></script>
 </body>
 </html>

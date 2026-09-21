@@ -122,9 +122,22 @@ server.listen(port, host, () => {
   console.log(`Static LMS server running at http://${host}:${port}`);
 });
 
+function shutdown() {
+  server.close(() => {
+    process.exit(0);
+  });
+}
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);
+process.once("message", (message) => {
+  if (message === "shutdown") shutdown();
+});
+
 function securityHeaders(contentType) {
   const headers = {
     "Content-Type": contentType,
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline' https://agrzjwnsapbanbvgbwkh.supabase.co https://sdk.cashfree.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://*.supabase.co https://drive.google.com https://lh3.googleusercontent.com https://*.cashfree.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://agrzjwnsapbanbvgbwkh.supabase.co wss://agrzjwnsapbanbvgbwkh.supabase.co https://drive.google.com https://docs.google.com https://*.cashfree.com; media-src 'self' blob: https://*.supabase.co https://drive.google.com; frame-src 'self' https://drive.google.com https://docs.google.com https://*.cashfree.com;",
     "Cross-Origin-Opener-Policy": "same-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
     "Referrer-Policy": "strict-origin-when-cross-origin",

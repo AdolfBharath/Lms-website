@@ -35,6 +35,16 @@ body[data-ui-build] .catalog-search-pill {
   font-size: 10px !important;
 }
 
+body[data-ui-build] .catalog-search-pill input {
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  font: inherit !important;
+}
+
 body[data-ui-build] .course-discovery-hero > button {
   min-height: 36px !important;
   padding: 0 18px !important;

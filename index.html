@@ -8,15 +8,64 @@
   <link rel="icon" type="image/png" href="assets/img/logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/hero/jenovate-reference-hero-art-smartblend.webp" type="image/webp" media="(min-width: 1181px)" fetchpriority="high">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="styles.css?v=20260625-course-originals">
-  <link rel="stylesheet" href="public-mobile-comfort.css?v=20260720-mobile-visibility2">
-  <link rel="stylesheet" href="landing-premium.css?v=20260802-news-journey-center-v1">
+  <link rel="stylesheet" href="landing-premium.css?v=20260817-marketspace-premium-v1">
+  <link rel="stylesheet" href="marketspace-premium.css?v=20260818-marketspace-readable-v1">
+  <link rel="stylesheet" href="dream-journey-reference.css?v=20260826-reference-v1">
+  <link rel="stylesheet" href="future-section-polish.css?v=20260826-polish-v1">
+  <link rel="stylesheet" href="about-section-polish.css?v=20260826-polish-v1">
+  <link rel="stylesheet" href="course-categories-polish.css?v=20260826-polish-v4">
+  <link rel="stylesheet" href="course-card-polish.css?v=20260826-polish-v15">
+  <link rel="stylesheet" href="launchpad-plan-polish.css?v=20260826-polish-v2">
+  <link rel="stylesheet" href="hero-fit-polish.css?v=20260827-polish-v7">
+  <link rel="stylesheet" href="public-mobile-comfort.css?v=20260905-adaptive-mobile-v1" media="(max-width: 1180px)">
+  <style>
+    @media (min-width: 1181px) and (max-width: 1280px) {
+      body.marketspace-refresh.marketspace-refresh .site-header {
+        grid-template-columns: 1fr !important;
+        grid-template-areas: "brand" "actions" "nav" !important;
+      }
+
+      body.marketspace-refresh.marketspace-refresh .site-header .nav {
+        grid-column: 1 / -1 !important;
+        justify-self: stretch !important;
+        place-self: auto stretch !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        inline-size: 100% !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        overflow: visible !important;
+        transform: scale(.9) !important;
+        transform-origin: left center !important;
+      }
+
+      body.marketspace-refresh.marketspace-refresh .site-header .nav a {
+        flex: 0 1 auto !important;
+        min-width: 0 !important;
+        padding-inline: 9px !important;
+        white-space: normal !important;
+      }
+
+      body.marketspace-refresh.marketspace-refresh .site-header .header-actions {
+        width: min(760px, calc(100vw - 56px)) !important;
+        max-width: calc(100vw - 56px) !important;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="marketspace-refresh">
   <header class="site-header">
     <a class="brand" href="index.html#home" aria-label="Jenovate home">
-      <img src="image/logo/logonew.png" alt="Jenovate" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
+      <picture>
+        <source srcset="image/logo/logonew.webp" type="image/webp">
+        <img src="image/logo/logonew.png" alt="Jenovate" width="784" height="318" decoding="async" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
+      </picture>
     </a>
     <nav class="nav">
       <a class="active" href="#home">Home</a>
@@ -50,7 +99,7 @@
       <span class="scribble" aria-hidden="true"></span>
       <div class="hero-copy">
         <h1 class="job-headline">Let's Land Your<br><mark>Dream Job</mark><br>Together.</h1>
-        <p>Unlock the power of our comprehensive suite of programs designed to transform your upskilling journey. We have everything you need to stand out in today's competitive job market.</p>
+        <p>Master in-demand skills, build real projects, and graduate with the confidence to stand out from day one.</p>
         <div class="hero-feature-strip" aria-label="Program highlights">
           <span><b aria-hidden="true">♟</b>Mentor Guided</span>
           <span><b aria-hidden="true">▣</b>Live Projects</span>
@@ -69,13 +118,16 @@
             <img src="assets/img/mentors/tanya-d-sm.jpg" alt="" loading="eager" decoding="async">
             <img src="assets/img/mentors/ravindra-sm.jpg" alt="" loading="eager" decoding="async">
           </div>
-          <p>Trusted by learners from</p>
+          <p>Trusted by ambitious learners</p>
           <strong>10K+</strong>
-          <span>Happy Learners</span>
+          <span>Building job-ready portfolios</span>
         </div>
       </div>
       <div class="hero-art" aria-label="Live skill map preview">
-        <img class="hero-reference-art" src="assets/hero/jenovate-reference-hero-art-smartblend.png" alt="" loading="eager" decoding="async">
+        <picture>
+          <source srcset="assets/hero/jenovate-reference-hero-art-smartblend.webp" type="image/webp">
+          <img class="hero-reference-art" src="assets/hero/jenovate-reference-hero-art-smartblend.png" alt="" width="810" height="750" loading="eager" decoding="async" fetchpriority="high">
+        </picture>
         <div class="hero-3d-stage" data-hero-3d aria-hidden="true"></div>
         <div class="skill-map">
           <span class="map-orbit" aria-hidden="true"></span>
@@ -85,8 +137,14 @@
           <span class="map-dot dot-one" aria-hidden="true"></span>
           <span class="map-dot dot-two" aria-hidden="true"></span>
           <span class="map-dot dot-three" aria-hidden="true"></span>
-          <img class="hero-person hero-person-left" src="assets/hero/jenovate-hero-male-cutout.png" alt="" loading="eager" decoding="async">
-          <img class="hero-person hero-person-right" src="assets/hero/jenovate-hero-female-cutout.png" alt="" loading="eager" decoding="async">
+          <picture>
+            <source srcset="assets/hero/jenovate-hero-male-cutout.webp" type="image/webp">
+            <img class="hero-person hero-person-left" src="assets/hero/jenovate-hero-male-cutout.png" alt="" width="726" height="1008" loading="eager" decoding="async" fetchpriority="low">
+          </picture>
+          <picture>
+            <source srcset="assets/hero/jenovate-hero-female-cutout.webp" type="image/webp">
+            <img class="hero-person hero-person-right" src="assets/hero/jenovate-hero-female-cutout.png" alt="" width="706" height="1001" loading="eager" decoding="async" fetchpriority="low">
+          </picture>
           <div class="map-card">
             <span class="map-pill">Career Launch Hub</span>
             <h2>Build. Prove.<br>Get Hired.</h2>
@@ -107,27 +165,63 @@
     </section>
 
     <section class="dream-journey-strip" aria-label="Your Journey to a Dream Job">
+      <div class="journey-knot" aria-hidden="true"></div>
       <h2>Your Journey to a Dream Job</h2>
+      <p class="dream-journey-subtitle">A clear path. Practical support. Real opportunities.</p>
       <div class="dream-journey-steps">
-        <article>
-          <span><img src="assets/img/icons/features_icon01.svg" alt="" loading="lazy" decoding="async"></span>
+        <article class="journey-step-learn">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <path d="M14 18.5c6.6-2.8 12.5-1.8 18 3v27c-5.5-4.8-11.4-5.8-18-3V18.5Z"></path>
+              <path d="M50 18.5c-6.6-2.8-12.5-1.8-18 3v27c5.5-4.8 11.4-5.8 18-3V18.5Z"></path>
+              <path d="M32 21.5v27"></path>
+            </svg>
+          </span>
+          <b>01</b>
           <h3>Learn</h3>
-          <p>Industry-ready<br>curriculum</p>
+          <i aria-hidden="true"></i>
+          <p>Access industry-ready<br>curriculum and master<br>in-demand skills.</p>
         </article>
-        <article>
-          <span><img src="assets/img/icons/features_icon02.svg" alt="" loading="lazy" decoding="async"></span>
+        <article class="journey-step-build">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <path d="m21 45 24-24"></path>
+              <path d="m17 27 8-8 7 7-8 8-7-7Z"></path>
+              <path d="m38 15 11 11"></path>
+              <path d="M46 18c3.1-.8 6 .1 8 2.1L48 26"></path>
+              <path d="M18 46c-2.3 2.3-2.3 6.1 0 8.4 2.3 2.3 6.1 2.3 8.4 0L31 49.8 22.6 41 18 46Z"></path>
+            </svg>
+          </span>
+          <b>02</b>
           <h3>Build</h3>
-          <p>Work on real-world<br>projects</p>
+          <i aria-hidden="true"></i>
+          <p>Work on real-world projects<br>and build a portfolio that<br>stands out.</p>
         </article>
-        <article>
-          <span><img src="assets/img/icons/features_icon03.svg" alt="" loading="lazy" decoding="async"></span>
+        <article class="journey-step-grow">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <circle cx="32" cy="22" r="8"></circle>
+              <path d="M18 49c1.8-8.2 7.2-12.4 14-12.4S44.2 40.8 46 49"></path>
+            </svg>
+          </span>
+          <b>03</b>
           <h3>Grow</h3>
-          <p>Get mentor<br>guidance</p>
+          <i aria-hidden="true"></i>
+          <p>Get mentor guidance and<br>feedback to accelerate<br>your growth.</p>
         </article>
-        <article>
-          <span><img src="assets/img/icons/features_icon04.svg" alt="" loading="lazy" decoding="async"></span>
+        <article class="journey-step-hired">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <rect x="16" y="24" width="32" height="24" rx="3"></rect>
+              <path d="M25 24v-6h14v6"></path>
+              <path d="M16 34h32"></path>
+              <path d="M28 36h8"></path>
+            </svg>
+          </span>
+          <b>04</b>
           <h3>Get Hired</h3>
-          <p>Land your dream<br>opportunity</p>
+          <i aria-hidden="true"></i>
+          <p>Land your dream role with<br>career support and interview<br>preparation.</p>
         </article>
       </div>
     </section>
@@ -173,8 +267,8 @@
 
     <section class="categories-section pcat-section" id="categories">
       <div class="section-title">
-        <span class="pill">Popular Learning Paths</span>
-        <h2>Choose A Skill Track</h2>
+        <span class="pill">Explore. Learn. Grow.</span>
+        <h2>Choose A<br><span>Skill Track</span></h2>
         <p>Explore focused categories designed for practical career growth</p>
       </div>
 
@@ -193,11 +287,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/Tech.webp" alt="Technology &amp; Software Development" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">6 Courses</span>
-              <h3>Technology &amp; Software Development</h3>
+              <span class="pcat-badge">Code</span>
+              <h3>Technology<br>&amp; Software<br>Development</h3>
+              <p class="pcat-copy">Build websites, apps, and software with practical coding skills.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Technology &amp; Software Development courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -211,11 +306,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/ai.webp" alt="Artificial Intelligence &amp; Data" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">5 Courses</span>
-              <h3>Artificial Intelligence &amp; Data</h3>
+              <span class="pcat-badge">AI</span>
+              <h3>Artificial<br>Intelligence &amp; Data</h3>
+              <p class="pcat-copy">Harness the power of AI, machine learning, and data to build intelligent solutions.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Artificial Intelligence &amp; Data courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -229,11 +325,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/cyber.webp" alt="Cyber Security &amp; Infrastructure" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">3 Courses</span>
-              <h3>Cyber Security &amp; Infrastructure</h3>
+              <span class="pcat-badge">Shield</span>
+              <h3>Cyber Security<br>&amp; Infrastructure</h3>
+              <p class="pcat-copy">Protect systems and networks while building secure and scalable infrastructure.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Cyber Security &amp; Infrastructure courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -247,11 +344,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/enginerring.webp" alt="Engineering &amp; Emerging Technologies" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">6 Courses</span>
-              <h3>Engineering &amp; Emerging Technologies</h3>
+              <span class="pcat-badge">Rocket</span>
+              <h3>Engineering<br>&amp; Emerging<br>Technologies</h3>
+              <p class="pcat-copy">Explore innovative technologies and engineering solutions for the future.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Engineering &amp; Emerging Technologies courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -265,11 +363,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/bussiness.webp" alt="Business, Management &amp; Finance" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">8 Courses</span>
-              <h3>Business, Management &amp; Finance</h3>
+              <span class="pcat-badge">Briefcase</span>
+              <h3>Business,<br>Management<br>&amp; Finance</h3>
+              <p class="pcat-copy">Develop leadership skills and strategic thinking to drive business success.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Business, Management &amp; Finance courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -283,11 +382,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/design.webp" alt="Design &amp; Creative Arts" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">4 Courses</span>
-              <h3>Design &amp; Creative Arts</h3>
+              <span class="pcat-badge">Design</span>
+              <h3>Design &amp;<br>Creative Arts</h3>
+              <p class="pcat-copy">Bring ideas to life through design, visual storytelling, and creative expression.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Design &amp; Creative Arts courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -301,11 +401,12 @@
                 <span class="pcat-art-ring" aria-hidden="true"></span>
                 <img src="assets/categories/healthcare.webp" alt="Healthcare &amp; Human Sciences" loading="lazy" decoding="async">
               </div>
-              <span class="pcat-badge">3 Courses</span>
-              <h3>Healthcare &amp; Human Sciences</h3>
+              <span class="pcat-badge">Care</span>
+              <h3>Healthcare &amp;<br>Human Sciences</h3>
+              <p class="pcat-copy">Learn human-centered skills across health, psychology, and care practice.</p>
               <div class="pcat-footer">
                 <a class="pcat-btn" href="#courses" aria-label="Enroll in Healthcare &amp; Human Sciences courses">
-                  Enroll <b aria-hidden="true">&rarr;</b>
+                  <span>Begin your journey</span><b aria-hidden="true">&rarr;</b>
                 </a>
               </div>
             </div>
@@ -317,8 +418,8 @@
 
     <section class="courses-section section-glow" id="courses">
       <div class="section-title">
-        <span class="pill">Featured Courses</span>
-        <h2>Explore Courses Built For Outcomes</h2>
+        <span class="pill">Learn. Grow. Succeed.</span>
+        <h2>Explore Courses<br>Built For <mark>Outcomes</mark></h2>
         <p>Shortlist the programs that match your pace, goals, and skill level</p>
       </div>
       <div class="course-toolbar" aria-label="Course display options">
@@ -339,40 +440,13 @@
         <button type="button">Healthcare & Human Sciences</button>
       </div>
       <div class="course-grid">
-        <article class="course-card orange" data-course-category="Technology & Software Development" data-course-slug="programming-in-python">
-          <div class="course-visual"><img src="course/1. Technology & Software Development/mk.avif" alt="" width="320" height="180" loading="lazy" decoding="async"></div>
-          <div class="course-meta"><span>Technology & Software Development</span><b>&#9733; <em>(4.6 Reviews)</em></b></div>
-          <h3>Programming in Python</h3>
-          <p>Technology & Software Development</p>
-          <div class="course-bottom"><a href="course-detail.html?course=programming-in-python">Enroll Now</a><strong>INR 6,000</strong></div>
-        </article>
-        <article class="course-card purple" data-course-category="Artificial Intelligence & Data" data-course-slug="artificial-intelligence">
-          <div class="course-visual"><img src="course/2. Artificial Intelligence & Data Science/premium_photo-.avif" alt="" width="320" height="180" loading="lazy" decoding="async"></div>
-          <div class="course-meta"><span>Artificial Intelligence & Data</span><b>&#9733; <em>(4.9 Reviews)</em></b></div>
-          <h3>Artificial Intelligence</h3>
-          <p>Artificial Intelligence & Data</p>
-          <div class="course-bottom"><a href="course-detail.html?course=artificial-intelligence">Enroll Now</a><strong>INR 6,000</strong></div>
-        </article>
-        <article class="course-card navy" data-course-category="Cyber Security & Infrastructure" data-course-slug="cyber-security-and-ethical-hacking">
-          <div class="course-visual"><img src="course/3. Cyber Security, Cloud & DevOps/gettyimages.jpg" alt="" width="320" height="180" loading="lazy" decoding="async"></div>
-          <div class="course-meta"><span>Cyber Security & Infrastructure</span><b>&#9733; <em>(4.3 Reviews)</em></b></div>
-          <h3>Cyber Security & Ethical Hacking</h3>
-          <p>Cyber Security & Infrastructure</p>
-          <div class="course-bottom"><a href="course-detail.html?course=cyber-security-and-ethical-hacking">Enroll Now</a><strong>INR 6,000</strong></div>
-        </article>
-        <article class="course-card green" data-course-category="Engineering & Emerging Technologies" data-course-slug="internet-of-things-iot">
-          <div class="course-visual"><img src="course/4. Engineering & Emerging Technologies/premium_photo.avif" alt="" width="320" height="180" loading="lazy" decoding="async"></div>
-          <div class="course-meta"><span>Engineering & Emerging Technologies</span><b>&#9733; <em>(4.7 Reviews)</em></b></div>
-          <h3>Internet of Things (IoT)</h3>
-          <p>Engineering & Emerging Technologies</p>
-          <div class="course-bottom"><a href="course-detail.html?course=internet-of-things-iot">Enroll Now</a><strong>INR 6,000</strong></div>
-        </article>
       </div>
     </section>
 
     <section class="launchpad-section home-launchpad-preview home-plan-preview" id="launchpad">
       <div class="launchpad-plan-heading">
-        <h2>Choose Your Tailored Plan</h2>
+        <h2>Choose Your <mark>Tailored Plan</mark></h2>
+        <p>Flexible learning options designed to fit your goals and accelerate your growth.</p>
         <div class="launchpad-currency-toggle" aria-label="Choose currency">
           <button type="button" data-launchpad-currency="USD" aria-pressed="false">$ USD</button>
           <button class="active" type="button" data-launchpad-currency="INR" aria-pressed="true">&#8377; INR</button>
@@ -614,19 +688,19 @@
       </div>
       <div class="faq-copy">
         <span class="pill">Questions</span>
-        <h2>Start Confidently With<br>Clear Learning Support</h2>
-        <p>Find quick answers about classes, mentorship, certificates, and course access.</p>
+        <h2>Questions? We've Got You.</h2>
+        <p>Quick answers, mentor support, and clear guidance so learners can start with confidence.</p>
         <div class="accordion">
           <details open>
-            <summary>What does Jenovate give you?</summary>
-            <p>Jenovate gives you guided courses, weekly mentor support, practical projects, certificates, and a clear roadmap from first lesson to portfolio-ready work.</p>
+            <summary>What makes Jenovate different?</summary>
+            <p>Jenovate combines guided courses, mentor feedback, real projects, and certification so every learner builds visible proof of progress.</p>
           </details>
           <details>
-            <summary>Why choose Jenovate for your education?</summary>
+            <summary>Why should learners choose Jenovate?</summary>
             <p>Choose Jenovate if you want learning that feels practical and accountable. Every program combines real assignments, mentor feedback, progress checkpoints, and career-focused outcomes.</p>
           </details>
           <details>
-            <summary>How do we provide service for you?</summary>
+            <summary>How do we support your progress?</summary>
             <p>We support you through live sessions, doubt-clearing, guided assignments, progress updates, and mentor reviews, so you always know what to improve next.</p>
           </details>
           <details>
@@ -738,8 +812,8 @@
       <p><a href="terms-of-service.html">Terms of Service</a> <span>|</span> <a href="privacy-policy.html">Privacy Policy</a></p>
     </div>
   </footer>
-      <script src="script.js?v=20260802-mentor-scroll-v1"></script>
-      <script src="effects-loader.js?v=20260621-cleanup-speed"></script>
+      <script src="script.js?v=20260905-iot-price-v1" defer></script>
+      <script src="effects-loader.js?v=20260621-cleanup-speed" defer></script>
 
 </body>
 </html>

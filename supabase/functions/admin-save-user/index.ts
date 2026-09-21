@@ -22,6 +22,7 @@ type NormalizedAdminUserPayload = {
   username: string | null;
   phone: string | null;
   referral: string | null;
+  referral_key: string | null;
   batch_id: string | null;
   coins: number;
   auth_user_id?: string | null;
@@ -38,6 +39,7 @@ const allowedProfileFields = [
   "username",
   "phone",
   "referral",
+  "referral_key",
   "batch_id",
   "coins",
   "course_ids",
@@ -147,9 +149,13 @@ Deno.serve(async (request) => {
 
     if (body.assign_course_id) {
       await upsertEnrollment(admin, savedProfile.id, body.assign_course_id, body.assign_batch_id || null);
-    } else if (body.assign_batch_id) {
-      await admin.from("users").update({ batch_id: body.assign_batch_id }).eq("id", savedProfile.id);
     }
+    await persistUserAssignment(
+      admin,
+      savedProfile.id,
+      body.assign_batch_id || payload.batch_id || null,
+      mergeCourseIds(payload.course_ids, body.assign_course_id),
+    );
 
     return jsonResponse(savedProfile);
   } catch (error) {
@@ -175,6 +181,7 @@ function normalizePayload(payload: Record<string, unknown>): NormalizedAdminUser
     username: nullableString(payload.username),
     phone: nullableString(payload.phone),
     referral: nullableString(payload.referral),
+    referral_key: nullableString(payload.referral_key),
     batch_id: nullableString(payload.batch_id),
     coins: Number.isFinite(Number(payload.coins)) ? Math.max(0, Number(payload.coins)) : 0,
   };
@@ -258,9 +265,12 @@ function profilePayloadCandidates(payload: Record<string, unknown>) {
     stripPayloadFields(payload, ["password", "course_ids"]),
     stripPayloadFields(payload, ["course_ids", "expertise"]),
     stripPayloadFields(payload, ["course_ids", "expertise", "referral"]),
-    stripPayloadFields(payload, ["course_ids", "expertise", "referral", "coins"]),
     stripPayloadFields(payload, ["course_ids", "expertise", "referral", "coins", "status"]),
     stripPayloadFields(payload, ["password", "auth_user_id", "course_ids", "expertise", "referral", "coins", "status"]),
+    stripPayloadFields(payload, ["course_ids", "expertise", "referral", "referral_key"]),
+    stripPayloadFields(payload, ["course_ids", "expertise", "referral", "referral_key", "coins"]),
+    stripPayloadFields(payload, ["course_ids", "expertise", "referral", "referral_key", "coins", "status"]),
+    stripPayloadFields(payload, ["password", "auth_user_id", "course_ids", "expertise", "referral", "referral_key", "coins", "status"]),
     pickPayloadFields(payload, ["email", "name", "role"]),
   ];
 }
@@ -331,8 +341,40 @@ async function upsertEnrollment(
     : admin.from("user_courses").insert(payload);
   const { error } = await request;
   if (error) throw error;
+}
 
-  await admin.from("users").update({ batch_id: batchId }).eq("id", userId);
+async function persistUserAssignment(
+  admin: ReturnType<typeof createClient>,
+  userId: string,
+  batchId: string | null,
+  courseIds: string[] | null,
+) {
+  if (!batchId && !courseIds?.length) return;
+  const { error } = await admin.rpc("lms_admin_update_user_assignment", {
+    target_user_id: userId,
+    target_batch_id: batchId,
+    target_course_ids: courseIds || null,
+  });
+  if (error) throw error;
+}
+
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function capitalize(value: string) {
+  return value ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase() : "";
+}
+
+function mergeCourseIds(existing: string[] | undefined, assigned: string | null | undefined) {
+  const values = [...(existing || []), assigned]
+    .map((value) => String(value || "").trim())
+    .filter(Boolean);
+  return values.length ? Array.from(new Set(values)) : null;
 }
 
 function nullableString(value: unknown) {

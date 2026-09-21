@@ -2071,7 +2071,7 @@
       button.addEventListener("click", () => openReviewModal("projects", findById(state.data.projects, button.dataset.reviewProject), "review_notes"));
     });
     document.querySelectorAll("[data-reply-question]").forEach((button) => {
-      button.addEventListener("click", () => openQuestionReplyModal(findById(state.data.projects, button.dataset.replyQuestion)));
+      button.addEventListener("click", () => openQuestionReplyModal(findById(scopedQuestions(), button.dataset.replyQuestion)));
     });
     document.querySelectorAll("[data-edit-announcement]").forEach((button) => {
       button.addEventListener("click", () => openAnnouncementModal(findById(state.data.announcements, button.dataset.editAnnouncement)));
@@ -2084,6 +2084,9 @@
     });
     document.querySelectorAll("[data-reply-chat]").forEach((button) => {
       button.addEventListener("click", () => openReplyModal(findById(state.data.chats, button.dataset.replyChat)));
+    });
+    document.querySelectorAll("[data-delete-chat]").forEach((button) => {
+      button.addEventListener("click", () => deleteChatMessage(button.dataset.deleteChat));
     });
   }
 
@@ -2203,7 +2206,6 @@
         </div>
       </form>
     `);
-
     const renderEditor = () => {
       const activeModules = draftModules.filter((module) => !module.deleted_at);
       html("courseModuleList", activeModules.length ? activeModules.map(moduleEditorHtml).join("") : emptyState("No modules yet."));
@@ -2309,7 +2311,6 @@
         </div>
       </form>
     `);
-
     const renderQuizEditor = () => {
       html("quizModuleList", draftModules.map(quizModuleEditorHtml).join(""));
       bindQuizEditorEvents();
@@ -2965,10 +2966,12 @@
     document.getElementById("questionReplyForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       await runLockedSubmit(event.currentTarget, event.submitter, "Saving reply...", async () => {
+        const replyText = valueOf("questionReplyNotes"), replyStatus = valueOf("questionReplyStatus") || "answered";
+        if (getClient()?.rpc) { const { data, error } = await getClient().rpc("lms_mentor_reply_student_question", { actor_user_id: state.mentor.id, target_question_id: question.id, reply_text: replyText, reply_status: replyStatus }); if (!error) { state.data.projects = upsertById(state.data.projects, Array.isArray(data) ? data[0] : data); closeModal(); renderQuestions(); void loadAllData({ force: true, silent: true }); return; } if (!isMissingRpcError(error)) throw error; }
         await writeRecord("projects", {
-          status: valueOf("questionReplyStatus") || "answered",
-          review_notes: valueOf("questionReplyNotes"),
-          feedback: valueOf("questionReplyNotes"),
+          status: replyStatus,
+          review_notes: replyText,
+          feedback: replyText,
           reviewed_by: state.mentor.id,
           reviewed_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
@@ -3010,21 +3013,17 @@
     const input = document.getElementById("chatMessage");
     const message = input.value.trim();
     if (!message) return;
-    await insertChatMessage(message, state.selectedBatchId, null);
-    input.value = "";
+    const saved = await insertChatMessage(message, state.selectedBatchId, null);
+    input.value = ""; if (saved) renderChat();
   }
-
   async function insertChatMessage(message, batchId, parentId) {
-    if (!batchId) {
-      showAlert("Choose a batch before posting.", true);
-      return;
-    }
-    await writeRecord("batch_chats", {
-      batch_id: batchId,
-      user_id: state.mentor.id,
-      message,
-      parent_id: parentId
-    }, null, ["parent_id"]);
+    if (!batchId) return showAlert("Choose a batch before posting.", true);
+    const payload = { batch_id: batchId, user_id: state.mentor.id, message, parent_id: parentId, created_at: new Date().toISOString() };
+    const { data, error } = await getClient().from("batch_chats").insert(payload).select(SELECTS.chats).maybeSingle();
+    if (error) throw error;
+    state.data.chats = mergeRowsById(state.data.chats, [data || { ...payload, id: randomId() }]);
+    closeModal(); void refreshChatRows();
+    return true;
   }
 
   async function saveProfile(event) {
@@ -3236,7 +3235,15 @@
       showAlert(error.message || "Archive failed.", true);
     }
   }
-
+  async function deleteChatMessage(id) {
+    if (!id || !window.confirm("Delete this chat message?")) return;
+    try {
+      const { error } = await getClient().rpc("lms_mentor_delete_batch_chat", { actor_user_id: state.mentor.id, target_message_id: id });
+      if (error) throw error;
+      state.data.chats = state.data.chats.filter((chat) => !sameId(chat.id, id) && !sameId(chat.parent_id, id));
+      renderChat(); showAlert("Message deleted."); void refreshChatRows();
+    } catch (error) { showAlert(error.message || "Unable to delete message.", true); }
+  }
   function softDeletePayload(table) {
     const now = new Date().toISOString();
     if (table === "batch_tasks") return { status: "archived", deleted_at: now };
@@ -3345,7 +3352,7 @@
 
   function scopedBatches() {
     const ids = mentorCourseIds();
-    return state.data.batches.filter((batch) => sameId(batch.mentor_id, state.mentor?.id) || ids.has(String(batch.course_id)));
+    return state.data.batches.filter((batch) => isActiveLmsRow(batch) && (sameId(batch.mentor_id, state.mentor?.id) || ids.has(String(batch.course_id))));
   }
 
   function scopedStudents() {
@@ -3361,12 +3368,10 @@
       return batchIds.has(String(user.batch_id)) || enrollmentStudentIds.has(String(user.id));
     });
   }
-
   function quizAttemptsForCourse(course) {
     return state.data.quizAttempts.filter((attempt) => sameId(attempt.course_id, course.id) && !attempt.deleted_at)
       .sort((a, b) => new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0));
   }
-
   function selectedQuestionIds(attempt) {
     return Array.isArray(attempt.selected_question_ids) ? attempt.selected_question_ids : [];
   }
@@ -4267,12 +4272,8 @@
     const own = sameId(chat.user_id, state.mentor?.id);
     return `
       <div class="message-row ${own ? "own" : ""}">
-        <div>
-          <strong>${escapeHtml(sender?.name || "User")}</strong>
-          <small>${formatDateTime(chat.created_at)}${chat.parent_id ? " · reply" : ""}</small>
-          <p>${escapeHtml(chat.message || "")}</p>
-        </div>
-        <button class="ghost-btn" type="button" data-reply-chat="${chat.id}">Reply</button>
+        <div><strong>${escapeHtml(sender?.name || "User")}</strong><small>${formatDateTime(chat.created_at)}${chat.parent_id ? " - reply" : ""}</small><p>${escapeHtml(chat.message || "")}</p></div>
+        <div class="row-actions"><button class="ghost-btn" type="button" data-reply-chat="${escapeAttr(chat.id)}">Reply</button><button class="danger-btn" type="button" data-delete-chat="${escapeAttr(chat.id)}">Delete</button></div>
       </div>
     `;
   }

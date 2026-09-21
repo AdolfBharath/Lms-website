@@ -1,0 +1,80 @@
+.student-course-slider-shell {
+  position: relative;
+  margin-top: 4px;
+}
+
+#coursesGrid.student-course-slider {
+  display: flex !important;
+  grid-template-columns: none !important;
+  gap: 24px !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 4px;
+  padding: 4px 6px 18px !important;
+  scrollbar-width: thin;
+}
+
+#coursesGrid.student-course-slider.list-layout {
+  display: flex !important;
+}
+
+#coursesGrid.student-course-slider .my-course-card {
+  flex: 0 0 min(360px, calc(100vw - var(--st-sidebar) - 96px));
+  width: auto;
+  scroll-snap-align: start;
+}
+
+.course-slider-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  width: 46px;
+  height: 46px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9e5ff;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #2459f5;
+  box-shadow: 0 18px 36px rgba(33, 77, 180, 0.16);
+  transform: translateY(-50%);
+}
+
+.student-course-slider-shell.can-scroll .course-slider-btn {
+  display: inline-flex;
+}
+
+.course-slider-btn.prev {
+  left: -10px;
+}
+
+.course-slider-btn.next {
+  right: -10px;
+}
+
+.course-slider-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 760px) {
+  #coursesGrid.student-course-slider {
+    gap: 16px !important;
+    padding: 2px 4px 16px !important;
+  }
+
+  #coursesGrid.student-course-slider .my-course-card {
+    flex-basis: min(320px, calc(100vw - 40px));
+  }
+
+  .student-course-slider-shell.can-scroll .course-slider-btn {
+    display: none;
+  }
+}

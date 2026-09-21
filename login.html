@@ -9,6 +9,7 @@
   <title>Login - Jenovate</title>
   <link rel="stylesheet" href="lms-premium.css?v=20260522-ui-stability" />
   <link rel="stylesheet" href="login.css?v=20260723-login-layout" />
+  <link rel="stylesheet" href="jenovate-design-system.css?v=20260822-final-ui-v1" />
 </head>
 <body>
   <div class="login-container">
@@ -22,8 +23,8 @@
     </div>
     <div class="login-right">
       <div class="login-form-container">
-        <h1 class="welcome-title">Welcome</h1>
-        <p class="welcome-subtitle">Login with Email</p>
+        <h1 class="welcome-title">Welcome Back</h1>
+        <p class="welcome-subtitle">Continue your learning journey.</p>
         
         <form class="login-form" action="#" method="POST">
           <div class="form-group">
@@ -37,7 +38,6 @@
           <div class="form-group">
             <div class="label-row">
               <label for="password">PASSWORD</label>
-              <a href="#" class="forgot-password">Forgot your password?</a>
             </div>
             <div class="input-wrapper">
               <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
@@ -45,7 +45,14 @@
               <button class="toggle-password" type="button" onclick="togglePasswordVisibility()" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
             </div>
           </div>
-          
+          <div class="auth-options-row">
+            <label class="remember-choice" for="rememberLogin">
+              <input id="rememberLogin" type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+
           <button type="submit" class="submit-btn">LOGIN</button>
           <p class="login-error" id="loginError" role="alert"></p>
           <p class="join-account">

@@ -7,7 +7,7 @@
   },
   "categories": {
     "train_deploy_enquiry": {
-      "title": "ZeAI Soft - Train and Deploy Enquiry Form",
+      "title": "Train and Deploy Enquiry Form",
       "description": "Please complete all fields to submit your enquiry request",
       "endpoint": {
         "type": "supabase",

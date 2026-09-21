@@ -3156,3 +3156,480 @@ body:has(.hero#home) .mentor-card b {
     max-width: calc(100vw - 28px) !important;
   }
 }
+
+/* Absolute mobile flow guard: keep public pages content-sized instead of tall blank bands. */
+@media (max-width: 760px) {
+  .hero,
+  .dream-journey-strip,
+  .future-section,
+  .about-section,
+  .categories-section,
+  .courses-section,
+  .launchpad-section,
+  .home-launchpad-preview,
+  .home-plan-preview,
+  .subscribe,
+  .instructors,
+  .mentor-showcase,
+  .stats,
+  .home-testimonials,
+  .faq,
+  .journey,
+  .news,
+  .footer,
+  .simple-footer {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-top: 34px !important;
+    padding-bottom: 34px !important;
+    overflow: visible !important;
+  }
+
+  .hero {
+    padding-top: 20px !important;
+  }
+
+  .future-section:empty,
+  .about-section:empty,
+  .subscribe:empty,
+  .journey:empty,
+  .news:empty {
+    display: none !important;
+  }
+
+  .courses-section {
+    padding-bottom: 42px !important;
+  }
+
+  .home-testimonials {
+    display: block !important;
+  }
+
+  .home-testimonials .testimonial-grid,
+  .home-testimonials .testimonials-grid,
+  .faq-grid,
+  .news-grid,
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .footer,
+  .simple-footer {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 18px !important;
+  }
+
+  body.marketspace-refresh .hero,
+  body.marketspace-refresh .dream-journey-strip,
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .categories-section,
+  body.marketspace-refresh .courses-section,
+  body.marketspace-refresh .launchpad-section,
+  body.marketspace-refresh .home-launchpad-preview,
+  body.marketspace-refresh .home-plan-preview,
+  body.marketspace-refresh .subscribe,
+  body.marketspace-refresh .instructors,
+  body.marketspace-refresh .mentor-showcase,
+  body.marketspace-refresh .stats,
+  body.marketspace-refresh .home-testimonials,
+  body.marketspace-refresh .faq,
+  body.marketspace-refresh .journey,
+  body.marketspace-refresh .news,
+  body.marketspace-refresh .footer,
+  body.marketspace-refresh .simple-footer {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-top: 34px !important;
+    padding-bottom: 34px !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .launchpad-section,
+  body.marketspace-refresh .home-plan-preview,
+  body.marketspace-refresh .journey,
+  body.marketspace-refresh .news {
+    display: block !important;
+  }
+
+  body.marketspace-refresh:has(.hero#home) .hero,
+  body.marketspace-refresh:has(.hero#home) .dream-journey-strip,
+  body.marketspace-refresh:has(.hero#home) .future-section,
+  body.marketspace-refresh:has(.hero#home) .about-section,
+  body.marketspace-refresh:has(.hero#home) .categories-section,
+  body.marketspace-refresh:has(.hero#home) .courses-section,
+  body.marketspace-refresh:has(.hero#home) .launchpad-section,
+  body.marketspace-refresh:has(.hero#home) .home-launchpad-preview,
+  body.marketspace-refresh:has(.hero#home) .home-plan-preview,
+  body.marketspace-refresh:has(.hero#home) .subscribe,
+  body.marketspace-refresh:has(.hero#home) .instructors,
+  body.marketspace-refresh:has(.hero#home) .mentor-showcase,
+  body.marketspace-refresh:has(.hero#home) .stats,
+  body.marketspace-refresh:has(.hero#home) .home-testimonials,
+  body.marketspace-refresh:has(.hero#home) .faq,
+  body.marketspace-refresh:has(.hero#home) .journey,
+  body.marketspace-refresh:has(.hero#home) .news,
+  body.marketspace-refresh:has(.hero#home) .footer,
+  body.marketspace-refresh:has(.hero#home) .simple-footer {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    padding-top: 34px !important;
+    padding-bottom: 34px !important;
+    overflow: visible !important;
+  }
+}
+
+/* Final adaptive pass: keep the hosted homepage compact and readable on phones. */
+@media (max-width: 760px) {
+  body.marketspace-refresh {
+    overflow-x: hidden !important;
+  }
+
+  body.marketspace-refresh .site-header {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  body.marketspace-refresh .site-header .brand {
+    max-width: 126px !important;
+  }
+
+  body.marketspace-refresh .site-header .nav {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    padding: 4px 0 !important;
+  }
+
+  body.marketspace-refresh .site-header .nav a {
+    flex: 0 1 auto !important;
+    min-height: 30px !important;
+    padding: 0 10px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+
+  body.marketspace-refresh .pcat-overflow-mask {
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    contain: layout paint !important;
+  }
+
+  body.marketspace-refresh .pcat-track {
+    width: max-content !important;
+    max-width: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .launchpad-section,
+  body.marketspace-refresh .home-plan-preview,
+  body.marketspace-refresh .journey,
+  body.marketspace-refresh .news {
+    min-height: 0 !important;
+    padding-top: 28px !important;
+    padding-bottom: 28px !important;
+  }
+
+  body.marketspace-refresh .future-media:empty,
+  body.marketspace-refresh .about-media:empty,
+  body.marketspace-refresh .launchpad-art:empty {
+    display: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body.marketspace-refresh .site-header .nav {
+    gap: 6px !important;
+  }
+
+  body.marketspace-refresh .site-header .nav a {
+    padding: 0 8px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Mobile flow repair: undo legacy desktop-height sections without hiding content. */
+@media (max-width: 760px) {
+  body.marketspace-refresh main {
+    display: block !important;
+  }
+
+  body.marketspace-refresh .hero,
+  body.marketspace-refresh .dream-journey-strip,
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .categories-section,
+  body.marketspace-refresh .courses-section,
+  body.marketspace-refresh .home-plan-preview,
+  body.marketspace-refresh .launchpad-section,
+  body.marketspace-refresh .subscribe,
+  body.marketspace-refresh .instructors,
+  body.marketspace-refresh .mentor-showcase,
+  body.marketspace-refresh .stats,
+  body.marketspace-refresh .home-testimonials,
+  body.marketspace-refresh .faq,
+  body.marketspace-refresh .journey,
+  body.marketspace-refresh .news,
+  body.marketspace-refresh .simple-footer,
+  body.marketspace-refresh footer {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 18px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 30px 14px !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh .hero {
+    padding-top: 18px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-strip {
+    padding-top: 28px !important;
+    padding-bottom: 28px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps,
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .launchpad-plan-grid,
+  body.marketspace-refresh .mentor-feature-wide,
+  body.marketspace-refresh .mentor-card-strip,
+  body.marketspace-refresh .mentor-stat-row,
+  body.marketspace-refresh .journey-features,
+  body.marketspace-refresh .apply-cards,
+  body.marketspace-refresh .news-grid,
+  body.marketspace-refresh .faq-content,
+  body.marketspace-refresh .stats {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps::before,
+  body.marketspace-refresh .dream-journey-strip::before,
+  body.marketspace-refresh .dream-journey-strip::after,
+  body.marketspace-refresh .future-section::before,
+  body.marketspace-refresh .future-section::after,
+  body.marketspace-refresh .about-section::before,
+  body.marketspace-refresh .about-section::after,
+  body.marketspace-refresh .launchpad-section::before,
+  body.marketspace-refresh .launchpad-section::after,
+  body.marketspace-refresh .subscribe::before,
+  body.marketspace-refresh .subscribe::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps article,
+  body.marketspace-refresh .journey-features article,
+  body.marketspace-refresh .apply-cards article,
+  body.marketspace-refresh .news-grid article,
+  body.marketspace-refresh .launchpad-plan-card,
+  body.marketspace-refresh .mentor-feature-wide,
+  body.marketspace-refresh .mentor-card,
+  body.marketspace-refresh .flying-review-card {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh .future-media,
+  body.marketspace-refresh .video-blob,
+  body.marketspace-refresh .mentor-feature-photo,
+  body.marketspace-refresh .subscribe-person,
+  body.marketspace-refresh .faq-art {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .future-media img,
+  body.marketspace-refresh .video-blob img,
+  body.marketspace-refresh .mentor-feature-photo img,
+  body.marketspace-refresh .subscribe-person img,
+  body.marketspace-refresh .news-grid img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 260px !important;
+    object-fit: cover !important;
+    border-radius: 18px !important;
+  }
+
+  body.marketspace-refresh .course-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  body.marketspace-refresh .course-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .home-testimonials .flying-reviews,
+  body.marketspace-refresh .home-testimonials .flying-review-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  body.marketspace-refresh .home-testimonials .flying-review-card:nth-of-type(n + 7) {
+    display: grid !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    gap: 14px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps article {
+    display: grid !important;
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 4px 14px !important;
+    padding: 16px !important;
+    border: 1px solid rgba(126, 148, 186, .24) !important;
+    border-radius: 18px !important;
+    background: #ffffff !important;
+    box-shadow: 0 12px 28px rgba(31, 42, 90, .08) !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps span {
+    grid-row: 1 / 4 !important;
+    width: 56px !important;
+    height: 56px !important;
+    margin: 0 !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps b,
+  body.marketspace-refresh .dream-journey-steps h3,
+  body.marketspace-refresh .dream-journey-steps p {
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps b {
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps h3 {
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps p {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps i {
+    display: none !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-grid {
+    gap: 16px !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-card,
+  body.marketspace-refresh .launchpad-plan-card * {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-card {
+    padding: 22px !important;
+    border-radius: 20px !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-icon {
+    width: 58px !important;
+    height: 58px !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  body.marketspace-refresh .future-section,
+  body.marketspace-refresh .about-section,
+  body.marketspace-refresh .home-plan-preview,
+  body.marketspace-refresh .launchpad-section,
+  body.marketspace-refresh .subscribe,
+  body.marketspace-refresh .instructors,
+  body.marketspace-refresh .mentor-showcase,
+  body.marketspace-refresh .journey,
+  body.marketspace-refresh .news {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.marketspace-refresh .course-grid,
+  body.marketspace-refresh .launchpad-plan-grid,
+  body.marketspace-refresh .journey-features,
+  body.marketspace-refresh .apply-cards,
+  body.marketspace-refresh .news-grid {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}

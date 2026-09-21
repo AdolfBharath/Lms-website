@@ -1,9 +1,19 @@
 (function () {
   "use strict";
 
+  function cleanText(value) {
+    return String(value ?? "")
+      .replace(/\u00c2[\u00a0-\u00bf]?/g, "")
+      .replace(/\u00e2[\u0080-\u00bf]{1,2}/g, " ")
+      .replace(/\u00ef\u00bf\u00bd/g, "")
+      .replace(/�/g, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+  }
+
   const escapeHtml = (value) => window.JenovateDom?.escapeHtml
-    ? window.JenovateDom.escapeHtml(value)
-    : String(value ?? "")
+    ? window.JenovateDom.escapeHtml(cleanText(value))
+    : cleanText(value)
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -128,7 +138,7 @@
   }
 
   function truncate(value, length) {
-    const text = String(value || "");
+    const text = cleanText(value);
     return text.length > length ? `${text.slice(0, Math.max(0, length - 3))}...` : text;
   }
 
@@ -273,6 +283,7 @@
     emptyState,
     escapeAttr,
     escapeHtml,
+    cleanText,
     formatDate,
     formatDateTime,
     formatFileSize,

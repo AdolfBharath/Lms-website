@@ -1,14 +1,14 @@
-/* Student Batch Chat: stable reference layout and active-room wrapping */
+/* Student Batch Chat: refreshed learning-room layout */
 body[data-ui-build] #batchView.student-view.active {
   display: block !important;
   width: 100% !important;
   max-width: none !important;
   height: calc(100vh - 76px) !important;
-  min-height: 620px !important;
+  min-height: 640px !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: #fff !important;
+  background: #f5f8fc !important;
 }
 
 body[data-ui-build] #batchView *,
@@ -19,114 +19,128 @@ body[data-ui-build] #batchView *::after {
 
 body[data-ui-build] #batchView .batch-layout {
   display: grid !important;
-  grid-template-columns: 188px minmax(0, 1fr) !important;
-  gap: 0 !important;
+  grid-template-columns: 300px minmax(0, 1fr) !important;
   width: 100% !important;
   height: 100% !important;
   min-width: 0 !important;
   min-height: 0 !important;
   overflow: hidden !important;
-  border: 1px solid #e7edf5 !important;
-  border-radius: 12px !important;
+  border: 1px solid #dbe7f7 !important;
+  border-radius: 22px !important;
   background: #fff !important;
-  box-shadow: none !important;
+  box-shadow: 0 22px 56px rgba(18, 31, 56, .08) !important;
 }
 
 body[data-ui-build] #batchView .batch-sidebar {
   display: grid !important;
   grid-template-rows: auto auto minmax(0, 1fr) !important;
-  gap: 26px !important;
+  gap: 18px !important;
   width: 100% !important;
   min-width: 0 !important;
   height: 100% !important;
   min-height: 0 !important;
-  padding: 24px 22px !important;
+  padding: 24px !important;
   overflow: hidden !important;
   border: 0 !important;
-  border-right: 1px solid #edf1f6 !important;
-  border-radius: 0 !important;
-  background: #f6f8fb !important;
-  box-shadow: none !important;
+  border-right: 1px solid #e6edf8 !important;
+  background: linear-gradient(180deg, #eef6ff 0%, #f8fbff 52%, #ffffff 100%) !important;
 }
 
-body[data-ui-build] #batchView .batch-sidebar-header,
-body[data-ui-build] #batchView .batch-sidebar-cards,
-body[data-ui-build] #batchView .batch-instructors-section {
+body[data-ui-build] #batchView .batch-sidebar-header {
   min-width: 0 !important;
+  padding: 18px !important;
+  border: 1px solid #dbe9ff !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: 0 16px 36px rgba(28, 84, 168, .08) !important;
 }
 
 body[data-ui-build] #batchView .sidebar-eyebrow {
-  display: block !important;
-  color: #1367d8 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 24px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  background: #e6f0ff !important;
+  color: #1766d9 !important;
   font-size: 10px !important;
   font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: .13em !important;
+  letter-spacing: .08em !important;
   text-transform: uppercase !important;
 }
 
 body[data-ui-build] #batchView .sidebar-title {
+  display: block !important;
   min-width: 0 !important;
-  margin: 12px 0 0 !important;
-  padding: 16px 14px !important;
-  border: 1px solid #e6ebf3 !important;
-  border-radius: 18px !important;
-  background: #fff !important;
-  color: #182033 !important;
-  font-size: 12px !important;
-  font-weight: 850 !important;
-  line-height: 1.35 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, .05) !important;
+  margin: 14px 0 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  font-size: 22px !important;
+  font-weight: 950 !important;
+  line-height: 1.12 !important;
+  overflow-wrap: anywhere !important;
+  box-shadow: none !important;
 }
 
 body[data-ui-build] #batchView .sidebar-status-badge {
   display: inline-flex !important;
-  margin-top: 8px !important;
-  color: #00a85a !important;
-  font-size: 9px !important;
+  align-items: center !important;
+  gap: 7px !important;
+  color: #0f9f61 !important;
+  font-size: 11px !important;
   font-weight: 900 !important;
-  letter-spacing: .08em !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .sidebar-status-badge::before {
+  content: "" !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: currentColor !important;
+  box-shadow: 0 0 0 5px rgba(15, 159, 97, .1) !important;
 }
 
 body[data-ui-build] #batchView .batch-sidebar-cards {
   display: grid !important;
-  gap: 22px !important;
+  gap: 12px !important;
+  min-width: 0 !important;
 }
 
-body[data-ui-build] #batchView .sidebar-card {
+body[data-ui-build] #batchView .sidebar-card,
+body[data-ui-build] #batchView .batch-instructor-row {
   display: grid !important;
-  grid-template-columns: 34px minmax(0, 1fr) !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
   align-items: center !important;
   gap: 12px !important;
   min-width: 0 !important;
-  min-height: 54px !important;
-  padding: 10px 12px !important;
-  border: 0 !important;
-  border-radius: 14px !important;
-  background: rgba(255, 255, 255, .72) !important;
-  box-shadow: 0 18px 38px rgba(15, 23, 42, .035) !important;
+  padding: 13px !important;
+  border: 1px solid #e7eef8 !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: 0 12px 28px rgba(18, 31, 56, .04) !important;
 }
 
 body[data-ui-build] #batchView .sidebar-card-icon {
-  width: 28px !important;
-  height: 28px !important;
-  border-radius: 8px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
   display: grid !important;
   place-items: center !important;
-  background: #eef5ff !important;
-  color: #52627a !important;
+  background: #edf5ff !important;
+  color: #1d64d8 !important;
   font-size: 0 !important;
 }
 
 body[data-ui-build] #batchView .sidebar-card-icon::before {
   content: "" !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 16px !important;
+  height: 16px !important;
   border: 2px solid currentColor !important;
-  border-radius: 4px !important;
+  border-radius: 5px !important;
 }
 
 body[data-ui-build] #batchView .sidebar-card-info,
@@ -134,292 +148,281 @@ body[data-ui-build] #batchView .batch-instructor-row span {
   min-width: 0 !important;
 }
 
-body[data-ui-build] #batchView .sidebar-card-info small {
+body[data-ui-build] #batchView .sidebar-card-info small,
+body[data-ui-build] #batchView .batch-instructor-row small {
   display: block !important;
-  margin: 0 0 3px !important;
-  color: #a0adbd !important;
-  font-size: 8px !important;
+  margin: 0 0 4px !important;
+  color: #8291a8 !important;
+  font-size: 10px !important;
   font-weight: 900 !important;
   line-height: 1.1 !important;
-  letter-spacing: .05em !important;
+  letter-spacing: .04em !important;
   text-transform: uppercase !important;
 }
 
-body[data-ui-build] #batchView .sidebar-card-info strong {
+body[data-ui-build] #batchView .sidebar-card-info strong,
+body[data-ui-build] #batchView .batch-instructor-row strong {
   display: block !important;
   min-width: 0 !important;
-  color: #25314a !important;
-  font-size: 10px !important;
-  font-weight: 850 !important;
-  line-height: 1.25 !important;
-  overflow-wrap: anywhere !important;
+  color: #172033 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.28 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 body[data-ui-build] #batchView .batch-instructors-section {
   align-self: end !important;
   display: grid !important;
-  gap: 14px !important;
+  gap: 12px !important;
+  min-width: 0 !important;
   margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
+  padding: 14px 0 0 !important;
+  border-top: 1px solid #e6edf8 !important;
 }
 
 body[data-ui-build] #batchView .instructors-header {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 8px !important;
-}
-
-body[data-ui-build] #batchView .instructors-header span,
-body[data-ui-build] #batchView .instructors-header small {
-  font-size: 8px !important;
-  font-weight: 900 !important;
-  letter-spacing: .08em !important;
-  text-transform: uppercase !important;
-  white-space: nowrap !important;
-}
-
-body[data-ui-build] #batchView .instructors-header span {
-  color: #a0adbd !important;
-}
-
-body[data-ui-build] #batchView .instructors-header small {
-  color: #16b657 !important;
-}
-
-body[data-ui-build] #batchView .batch-instructor-row {
-  display: grid !important;
-  grid-template-columns: 32px minmax(0, 1fr) !important;
-  align-items: center !important;
   gap: 10px !important;
-  min-width: 0 !important;
-  padding: 9px !important;
-  border-radius: 16px !important;
-  background: rgba(255, 255, 255, .74) !important;
-  box-shadow: 0 16px 32px rgba(15, 23, 42, .035) !important;
+  color: #8291a8 !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #batchView .instructors-header small {
+  color: #0f9f61 !important;
 }
 
 body[data-ui-build] #batchView .batch-instructor-row .student-avatar.small {
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 999px !important;
-  background: #006fd6 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #0b78df, #5138ea) !important;
   color: #fff !important;
-  font-size: 9px !important;
+  font-size: 12px !important;
   font-weight: 900 !important;
-}
-
-body[data-ui-build] #batchView .batch-instructor-row strong,
-body[data-ui-build] #batchView .batch-instructor-row small {
-  display: block !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-body[data-ui-build] #batchView .batch-instructor-row strong {
-  color: #273249 !important;
-  font-size: 9px !important;
-  font-weight: 900 !important;
-}
-
-body[data-ui-build] #batchView .batch-instructor-row small {
-  color: #8d9aaa !important;
-  font-size: 7px !important;
-  font-weight: 750 !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-panel {
   display: grid !important;
-  grid-template-rows: 56px minmax(0, 1fr) auto auto !important;
+  grid-template-rows: auto minmax(0, 1fr) auto auto !important;
   min-width: 0 !important;
   height: 100% !important;
   min-height: 0 !important;
   overflow: hidden !important;
   border: 0 !important;
-  border-radius: 0 !important;
   background: #fff !important;
-  box-shadow: none !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-header {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: center !important;
-  gap: 16px !important;
-  height: 56px !important;
-  padding: 0 24px !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(237, 241, 246, .72) !important;
-  background: #fff !important;
+  gap: 18px !important;
+  min-height: 84px !important;
+  padding: 16px 26px !important;
+  border-bottom: 1px solid #e7eef8 !important;
+  background: rgba(255, 255, 255, .94) !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-header-left {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 13px !important;
   min-width: 0 !important;
 }
 
 body[data-ui-build] #batchView .chat-icon-circle {
-  width: 28px !important;
-  height: 28px !important;
-  border-radius: 8px !important;
-  flex: 0 0 28px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
+  flex: 0 0 44px !important;
   display: grid !important;
   place-items: center !important;
-  background: #eff6ff !important;
-  color: #2f8bea !important;
-  font-size: 15px !important;
+  background: linear-gradient(135deg, #edf5ff, #e9e7ff) !important;
+  color: #245fe8 !important;
+  font-size: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-icon-circle::before {
+  content: "" !important;
+  width: 19px !important;
+  height: 15px !important;
+  border: 2px solid currentColor !important;
+  border-radius: 9px 9px 9px 3px !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-header-left h2 {
   margin: 0 !important;
-  color: #46536a !important;
-  font-size: 14px !important;
-  font-weight: 900 !important;
-  line-height: 1.2 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  color: #0f172a !important;
+  font-size: 20px !important;
+  font-weight: 950 !important;
+  line-height: 1.15 !important;
 }
 
 body[data-ui-build] #batchView .online-status {
-  display: none !important;
+  display: block !important;
+  margin-top: 4px !important;
+  color: #718096 !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+
+body[data-ui-build] #batchView .chat-status {
+  display: block !important;
+  min-height: 16px !important;
+  margin-top: 2px !important;
+  color: #0f9f61 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
 }
 
 body[data-ui-build] #batchView .chat-header-actions {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+  min-width: 0 !important;
 }
 
 body[data-ui-build] #batchView .chat-batch-select,
 body[data-ui-build] #batchView .chat-refresh-btn {
-  height: 34px !important;
-  border: 0 !important;
-  border-radius: 9px !important;
-  background: #eff6ff !important;
-  color: #2f8bea !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
+  height: 46px !important;
+  border: 1px solid #d9e7fb !important;
+  border-radius: 14px !important;
+  background: #f6f9ff !important;
+  color: #165fd9 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
 }
 
 body[data-ui-build] #batchView .chat-batch-select {
-  width: 150px !important;
-  min-width: 0 !important;
-  padding: 0 10px !important;
+  width: min(360px, 34vw) !important;
+  padding: 0 36px 0 14px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 body[data-ui-build] #batchView .chat-refresh-btn {
-  width: 34px !important;
-  font-size: 0 !important;
+  min-width: 98px !important;
+  padding: 0 18px !important;
   cursor: pointer !important;
 }
 
 body[data-ui-build] #batchView .chat-refresh-btn::before {
-  content: "R" !important;
-  font-size: 12px !important;
+  content: none !important;
 }
 
 body[data-ui-build] #batchView .chat-list {
   display: flex !important;
   flex-direction: column !important;
-  gap: 14px !important;
+  gap: 16px !important;
   min-width: 0 !important;
   min-height: 0 !important;
   width: 100% !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  padding: 28px clamp(24px, 4.2vw, 56px) !important;
-  background: #fff !important;
-  overscroll-behavior: contain !important;
+  padding: 30px clamp(26px, 5vw, 72px) !important;
+  background: linear-gradient(180deg, #fbfdff 0%, #ffffff 42%, #f8fbff 100%) !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty {
   margin: auto !important;
-  width: min(360px, 100%) !important;
+  width: min(430px, 100%) !important;
   display: grid !important;
   justify-items: center !important;
-  gap: 12px !important;
+  gap: 13px !important;
+  padding: 34px !important;
+  border: 1px solid #e4edf9 !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, .88) !important;
   text-align: center !important;
-  color: #44516a !important;
+  box-shadow: 0 22px 48px rgba(18, 31, 56, .06) !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty-icon {
-  width: 74px !important;
-  height: 74px !important;
-  border-radius: 16px !important;
+  width: 62px !important;
+  height: 62px !important;
+  border-radius: 18px !important;
   display: grid !important;
   place-items: center !important;
-  background: #fff !important;
-  color: #77aeea !important;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, .08) !important;
+  background: linear-gradient(135deg, #ecf5ff, #eeebff) !important;
+  color: #245fe8 !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty-icon::before {
-  content: "..." !important;
-  font-size: 24px !important;
-  font-weight: 900 !important;
+  content: "" !important;
+  width: 24px !important;
+  height: 18px !important;
+  border: 3px solid currentColor !important;
+  border-radius: 11px 11px 11px 4px !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty strong {
-  color: #101828 !important;
-  font-size: 16px !important;
-  font-weight: 900 !important;
+  color: #0f172a !important;
+  font-size: 21px !important;
+  font-weight: 950 !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty p {
   margin: 0 !important;
-  max-width: 310px !important;
-  color: #6a778e !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  line-height: 1.65 !important;
+  color: #66758c !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  line-height: 1.6 !important;
 }
 
 body[data-ui-build] #batchView .batch-chat-empty-action {
-  min-height: 36px !important;
-  padding: 0 18px !important;
+  min-height: 42px !important;
+  padding: 0 22px !important;
   border: 0 !important;
   border-radius: 999px !important;
-  background: #006fd6 !important;
+  background: linear-gradient(135deg, #245fe8, #5138ea) !important;
   color: #fff !important;
-  font-size: 10px !important;
+  font-size: 13px !important;
   font-weight: 900 !important;
   cursor: pointer !important;
-  box-shadow: 0 10px 24px rgba(0, 111, 214, .24) !important;
+  box-shadow: 0 14px 30px rgba(36, 95, 232, .24) !important;
 }
 
 body[data-ui-build] #batchView .chat-date-divider {
   width: 100% !important;
   display: flex !important;
-  justify-content: center !important;
-  margin: 3px 0 !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin: 4px 0 !important;
 }
 
-body[data-ui-build] #batchView .chat-date-divider::before {
-  display: none !important;
+body[data-ui-build] #batchView .chat-date-divider::before,
+body[data-ui-build] #batchView .chat-date-divider::after {
+  content: "" !important;
+  height: 1px !important;
+  flex: 1 1 auto !important;
+  background: #e4edf9 !important;
 }
 
 body[data-ui-build] #batchView .chat-date-divider span {
-  max-width: 100% !important;
-  padding: 4px 10px !important;
+  flex: 0 0 auto !important;
+  padding: 5px 12px !important;
   border-radius: 999px !important;
-  background: #f3f6fb !important;
-  color: #8a96a8 !important;
+  background: #eef4ff !important;
+  color: #75859c !important;
   font-size: 10px !important;
-  font-weight: 850 !important;
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
 }
 
 body[data-ui-build] #batchView .chat-message-row {
   display: grid !important;
-  gap: 6px !important;
+  gap: 7px !important;
   align-self: flex-start !important;
-  width: min(680px, 82%) !important;
-  max-width: min(680px, 82%) !important;
+  width: min(690px, 78%) !important;
+  max-width: min(690px, 78%) !important;
   min-width: 0 !important;
 }
 
@@ -433,9 +436,8 @@ body[data-ui-build] #batchView .chat-message-meta {
   align-items: center !important;
   gap: 8px !important;
   min-width: 0 !important;
-  max-width: 100% !important;
-  color: #718096 !important;
-  font-size: 10px !important;
+  color: #77859a !important;
+  font-size: 11px !important;
   font-weight: 800 !important;
 }
 
@@ -452,7 +454,7 @@ body[data-ui-build] #batchView .chat-message-time {
 }
 
 body[data-ui-build] #batchView .mentor-badge {
-  color: #006fd6 !important;
+  color: #165fd9 !important;
 }
 
 body[data-ui-build] #batchView .chat-message-bubble {
@@ -460,20 +462,22 @@ body[data-ui-build] #batchView .chat-message-bubble {
   max-width: 100% !important;
   min-width: 0 !important;
   display: grid !important;
-  gap: 8px !important;
-  padding: 11px 14px !important;
-  border: 1px solid #e7edf5 !important;
-  border-radius: 14px 14px 14px 4px !important;
-  background: #f7f9fc !important;
-  color: #1f2a44 !important;
+  gap: 9px !important;
+  padding: 13px 15px !important;
+  border: 1px solid #e2eaf6 !important;
+  border-radius: 18px 18px 18px 6px !important;
+  background: #fff !important;
+  color: #1b2740 !important;
+  box-shadow: 0 12px 28px rgba(18, 31, 56, .06) !important;
   overflow: hidden !important;
 }
 
 body[data-ui-build] #batchView .chat-message-row.mine .chat-message-bubble {
-  border-color: #006fd6 !important;
-  border-radius: 14px 14px 4px 14px !important;
-  background: #006fd6 !important;
+  border-color: #245fe8 !important;
+  border-radius: 18px 18px 6px 18px !important;
+  background: linear-gradient(135deg, #1674e5, #4637e6) !important;
   color: #fff !important;
+  box-shadow: 0 14px 32px rgba(36, 95, 232, .22) !important;
 }
 
 body[data-ui-build] #batchView .chat-message-text,
@@ -487,38 +491,72 @@ body[data-ui-build] #batchView .reply-preview {
 body[data-ui-build] #batchView .chat-message-text {
   margin: 0 !important;
   color: inherit !important;
-  font-size: 13px !important;
-  font-weight: 650 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
   line-height: 1.55 !important;
   white-space: pre-wrap !important;
 }
 
 body[data-ui-build] #batchView .reply-preview {
-  padding: 7px 9px !important;
-  border-left: 3px solid #2f8bea !important;
-  border-radius: 8px !important;
-  background: rgba(47, 139, 234, .08) !important;
+  padding: 8px 10px !important;
+  border-left: 3px solid currentColor !important;
+  border-radius: 10px !important;
+  background: rgba(22, 116, 229, .08) !important;
   color: inherit !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   line-height: 1.35 !important;
+  opacity: .9 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-row.mine .reply-preview {
+  background: rgba(255, 255, 255, .12) !important;
+}
+
+body[data-ui-build] #batchView .chat-message-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 9px !important;
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #batchView .chat-message-action-author {
+  min-width: 0 !important;
+  max-width: 170px !important;
+  overflow: hidden !important;
+  color: inherit !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  opacity: .68 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 body[data-ui-build] #batchView .chat-bubble-reply-btn {
-  justify-self: end !important;
-  width: auto !important;
-  min-height: 20px !important;
+  flex: 0 0 auto !important;
+  min-height: 24px !important;
   margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  color: #006fd6 !important;
-  font-size: 10px !important;
+  padding: 0 8px !important;
+  border: 1px solid rgba(36, 95, 232, .18) !important;
+  border-radius: 999px !important;
+  background: #f4f8ff !important;
+  color: #165fd9 !important;
+  font-size: 11px !important;
   font-weight: 900 !important;
   cursor: pointer !important;
 }
 
 body[data-ui-build] #batchView .chat-message-row.mine .chat-bubble-reply-btn {
-  color: rgba(255, 255, 255, .82) !important;
+  border-color: rgba(255, 255, 255, .2) !important;
+  background: rgba(255, 255, 255, .12) !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #batchView .chat-bubble-reply-btn::before,
+body[data-ui-build] #batchView .chat-bubble-reply-btn::after {
+  content: none !important;
+  display: none !important;
 }
 
 body[data-ui-build] #batchView .chat-reply-bar {
@@ -527,8 +565,8 @@ body[data-ui-build] #batchView .chat-reply-bar {
   align-items: center !important;
   gap: 12px !important;
   min-width: 0 !important;
-  padding: 10px 22px !important;
-  border-top: 1px solid #edf1f6 !important;
+  padding: 12px 26px !important;
+  border-top: 1px solid #e7eef8 !important;
   background: #f8fbff !important;
 }
 
@@ -547,12 +585,12 @@ body[data-ui-build] #batchView .chat-reply-bar strong {
 
 body[data-ui-build] #batchView .chat-composer {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 36px !important;
+  grid-template-columns: minmax(0, 1fr) 76px !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 12px !important;
   min-width: 0 !important;
-  padding: 16px 22px !important;
-  border-top: 1px solid #edf1f6 !important;
+  padding: 16px 26px !important;
+  border-top: 1px solid #e7eef8 !important;
   background: #fff !important;
 }
 
@@ -561,12 +599,17 @@ body[data-ui-build] #batchView .composer-input-wrapper {
   align-items: center !important;
   min-width: 0 !important;
   width: 100% !important;
-  height: 38px !important;
-  padding: 0 22px !important;
-  border: 1px solid #e1e8f2 !important;
-  border-radius: 999px !important;
+  height: 46px !important;
+  padding: 0 18px !important;
+  border: 1px solid #dce8f8 !important;
+  border-radius: 16px !important;
+  background: #f8fbff !important;
+}
+
+body[data-ui-build] #batchView .composer-input-wrapper:focus-within {
+  border-color: #245fe8 !important;
   background: #fff !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 4px rgba(36, 95, 232, .1) !important;
 }
 
 body[data-ui-build] #batchView .composer-input-wrapper input {
@@ -577,32 +620,38 @@ body[data-ui-build] #batchView .composer-input-wrapper input {
   border: 0 !important;
   outline: 0 !important;
   background: transparent !important;
-  color: #23314d !important;
-  font-size: 12px !important;
-  font-weight: 650 !important;
+  color: #172033 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
 }
 
 body[data-ui-build] #batchView .composer-send-btn {
-  width: 36px !important;
-  height: 36px !important;
-  min-width: 36px !important;
-  min-height: 36px !important;
+  width: 76px !important;
+  height: 46px !important;
   display: grid !important;
   place-items: center !important;
   border: 0 !important;
-  border-radius: 999px !important;
-  background: #006fd6 !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #1674e5, #4637e6) !important;
   color: #fff !important;
-  font-size: 0 !important;
-  box-shadow: 0 8px 18px rgba(0, 111, 214, .25) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 14px 28px rgba(36, 95, 232, .24) !important;
   cursor: pointer !important;
+  transform: none !important;
 }
 
 body[data-ui-build] #batchView .send-icon {
+  color: inherit !important;
+  display: block !important;
   font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  transform: none !important;
+  writing-mode: horizontal-tb !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1040px) {
   body[data-ui-build] #batchView.student-view.active {
     height: auto !important;
     min-height: 0 !important;
@@ -612,7 +661,7 @@ body[data-ui-build] #batchView .send-icon {
   body[data-ui-build] #batchView .batch-layout {
     grid-template-columns: 1fr !important;
     height: auto !important;
-    min-height: 720px !important;
+    min-height: 760px !important;
     overflow: visible !important;
   }
 
@@ -620,19 +669,13 @@ body[data-ui-build] #batchView .send-icon {
     height: auto !important;
     grid-template-rows: auto !important;
     padding: 18px !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid #edf1f6 !important;
     overflow: visible !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #e7eef8 !important;
   }
 
   body[data-ui-build] #batchView .batch-sidebar-cards {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-  }
-
-  body[data-ui-build] #batchView .sidebar-card {
-    grid-template-columns: 1fr !important;
-    justify-items: start !important;
   }
 
   body[data-ui-build] #batchView .batch-instructors-section {
@@ -640,35 +683,54 @@ body[data-ui-build] #batchView .send-icon {
   }
 
   body[data-ui-build] #batchView .batch-chat-panel {
-    min-height: 620px !important;
-  }
-
-  body[data-ui-build] #batchView .chat-message-row,
-  body[data-ui-build] #batchView .chat-message-row.mine {
-    width: min(100%, 620px) !important;
-    max-width: min(100%, 620px) !important;
+    min-height: 640px !important;
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 680px) {
+  body[data-ui-build] #batchView .batch-layout {
+    border-radius: 16px !important;
+  }
+
   body[data-ui-build] #batchView .batch-sidebar-cards {
     grid-template-columns: 1fr !important;
   }
 
   body[data-ui-build] #batchView .batch-chat-header {
-    padding: 0 14px !important;
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+    padding: 16px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-header-actions {
+    width: 100% !important;
   }
 
   body[data-ui-build] #batchView .chat-batch-select {
-    width: 42px !important;
-    color: transparent !important;
+    width: 100% !important;
+  }
+
+  body[data-ui-build] #batchView .chat-refresh-btn {
+    min-width: 88px !important;
   }
 
   body[data-ui-build] #batchView .chat-list {
-    padding: 20px 14px !important;
+    padding: 18px 14px !important;
+  }
+
+  body[data-ui-build] #batchView .chat-message-row,
+  body[data-ui-build] #batchView .chat-message-row.mine {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   body[data-ui-build] #batchView .chat-composer {
-    padding: 12px 14px !important;
+    grid-template-columns: minmax(0, 1fr) 64px !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  body[data-ui-build] #batchView .composer-send-btn {
+    width: 64px !important;
   }
 }

@@ -412,3 +412,96 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Final standalone enrollment polish. */
+.join-page {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(18, 169, 143, .16), transparent 30%),
+    radial-gradient(circle at 86% 12%, rgba(255, 195, 41, .2), transparent 26%),
+    linear-gradient(135deg, #f8fbff 0%, #eef8f5 54%, #fff8e5 100%);
+}
+
+.join-copy h1 {
+  color: transparent;
+  background: linear-gradient(135deg, #0f8a76 0%, #8a3f08 48%, #5a2d91 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.join-kicker {
+  color: #0f8a76;
+  border-color: rgba(18, 169, 143, .24);
+  background: rgba(255, 255, 255, .78);
+  box-shadow: 0 12px 28px rgba(18, 169, 143, .12);
+}
+
+.join-form {
+  border-color: rgba(126, 148, 186, .3);
+  background: rgba(255, 255, 255, .95);
+  box-shadow: 0 28px 80px rgba(28, 46, 82, .14);
+  backdrop-filter: blur(18px) saturate(145%);
+}
+
+.join-form::before {
+  background: linear-gradient(90deg, #0f8a76, #ffc329, #5a2d91);
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.radio-field label {
+  border-color: rgba(126, 148, 186, .34);
+}
+
+.field input[type="text"]:hover,
+.field input[type="email"]:hover,
+.field input[type="tel"]:hover,
+.radio-field label:hover,
+.radio-field label:focus-within {
+  border-color: rgba(18, 169, 143, .4);
+}
+
+.field input:focus {
+  border-color: #0f8a76;
+  box-shadow: 0 0 0 4px rgba(18, 169, 143, .14), 0 14px 30px rgba(31, 52, 88, .08);
+}
+
+.radio-field input {
+  accent-color: #0f8a76;
+  width: 18px;
+  height: 18px;
+  margin: 0 10px 0 0;
+  flex: 0 0 18px;
+  min-height: 18px;
+  padding: 0;
+  appearance: none;
+  border: 2px solid rgba(36, 50, 74, .35);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: none;
+}
+
+.radio-field input:checked {
+  border-color: #0f8a76;
+  background: radial-gradient(circle, #0f8a76 0 42%, transparent 46%);
+}
+
+.radio-field input:invalid {
+  border-color: rgba(36, 50, 74, .35) !important;
+  box-shadow: none !important;
+}
+
+.radio-field label:has(input:checked) {
+  border-color: #0f8a76;
+  background: #edf9f6;
+  color: #08796a;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #0f8a76, #12a98f);
+  box-shadow: 0 16px 34px rgba(18, 169, 143, .24);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #08796a, #0f8a76);
+}

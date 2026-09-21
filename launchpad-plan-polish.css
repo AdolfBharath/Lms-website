@@ -1,0 +1,360 @@
+body.marketspace-refresh .home-plan-preview {
+  position: relative !important;
+  overflow: hidden !important;
+  padding: clamp(62px, 7vw, 96px) 0 clamp(76px, 8vw, 108px) !important;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(20, 117, 255, .06), transparent 24%),
+    radial-gradient(circle at 88% 28%, rgba(112, 86, 255, .05), transparent 25%),
+    linear-gradient(180deg, #fbfdff 0%, #f8fbff 100%) !important;
+}
+
+body.marketspace-refresh .home-plan-preview::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 4vw !important;
+  top: 150px !important;
+  width: 96px !important;
+  height: 190px !important;
+  opacity: .55 !important;
+  background-image: radial-gradient(circle, rgba(22, 119, 255, .28) 1.6px, transparent 1.8px) !important;
+  background-size: 22px 22px !important;
+}
+
+body.marketspace-refresh .home-plan-preview::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -110px !important;
+  top: 176px !important;
+  width: 310px !important;
+  height: 310px !important;
+  border: 1px solid rgba(22, 119, 255, .12) !important;
+  border-radius: 50% !important;
+  box-shadow:
+    0 0 0 34px rgba(22, 119, 255, .045),
+    0 0 0 70px rgba(22, 119, 255, .035),
+    0 0 0 108px rgba(22, 119, 255, .025) !important;
+}
+
+body.marketspace-refresh .launchpad-plan-heading {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0 !important;
+  max-width: 920px !important;
+  margin: 0 auto 34px !important;
+  padding: 0 20px !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .launchpad-plan-heading h2 {
+  margin: 0 !important;
+  color: #070b18 !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #070b18 !important;
+  font-size: clamp(40px, 4.6vw, 64px) !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-heading h2 mark {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #126fff !important;
+  background: linear-gradient(90deg, #126fff, #2e67ff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  text-shadow: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-heading h2 mark::before,
+body.marketspace-refresh .launchpad-plan-heading h2 mark::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-heading p {
+  margin: 14px auto 26px !important;
+  color: #34416a !important;
+  font-size: clamp(16px, 1.35vw, 20px) !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+body.marketspace-refresh .launchpad-currency-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(22, 119, 255, .14) !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 34px rgba(48, 83, 160, .12) !important;
+}
+
+body.marketspace-refresh .launchpad-currency-toggle button {
+  min-width: 104px !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #0d1326 !important;
+  box-shadow: none !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+body.marketspace-refresh .launchpad-currency-toggle button.active {
+  color: #fff !important;
+  background: linear-gradient(135deg, #065bff, #1d74ff) !important;
+  box-shadow: 0 12px 24px rgba(15, 104, 255, .28) !important;
+}
+
+body.marketspace-refresh .launchpad-plan-grid {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(300px, 400px)) !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  gap: clamp(24px, 2.4vw, 34px) !important;
+  width: min(1290px, calc(100% - 72px)) !important;
+  margin: 0 auto !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 690px !important;
+  padding: 28px 34px 32px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(33, 109, 255, .16) !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(circle at 92% 16%, rgba(216, 228, 255, .4), transparent 22%),
+    rgba(255, 255, 255, .93) !important;
+  box-shadow: 0 28px 70px rgba(30, 47, 92, .1) !important;
+  transform: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured {
+  border: 1.5px solid #1c5fff !important;
+  box-shadow: 0 30px 76px rgba(33, 109, 255, .12) !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 34px 82px rgba(30, 47, 92, .15) !important;
+}
+
+body.marketspace-refresh .plan-badge {
+  position: absolute !important;
+  top: 26px !important;
+  right: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 34px !important;
+  padding: 0 16px !important;
+  border: 1px solid rgba(22, 119, 255, .1) !important;
+  border-radius: 999px !important;
+  background: #eaf2ff !important;
+  color: #0a63ff !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+body.marketspace-refresh .plan-badge::before {
+  content: "" !important;
+  width: 12px !important;
+  height: 12px !important;
+  background: #0a63ff !important;
+  clip-path: polygon(50% 0, 61% 35%, 100% 50%, 61% 65%, 50% 100%, 39% 65%, 0 50%, 39% 35%) !important;
+}
+
+body.marketspace-refresh .plan-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 72px !important;
+  height: 72px !important;
+  margin: 0 0 18px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #e8f0ff !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .plan-icon::before {
+  color: #075fff !important;
+  font-size: 36px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+body.marketspace-refresh .plan-icon-basics::before {
+  content: "◇" !important;
+}
+
+body.marketspace-refresh .plan-icon-pro::before {
+  content: "♛" !important;
+}
+
+body.marketspace-refresh .plan-icon-advanced::before {
+  content: "☆" !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card h2 {
+  margin: 0 0 8px !important;
+  color: #080d20 !important;
+  font-size: 25px !important;
+  line-height: 1.15 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured h2 {
+  color: #080d20 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured h2::after {
+  content: "Pro" !important;
+  color: #0a63ff !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured h2 {
+  font-size: 0 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured h2::before {
+  content: "Jenovate " !important;
+  color: #080d20 !important;
+  font-size: 25px !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured h2::after {
+  font-size: 25px !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card p {
+  min-height: 50px !important;
+  margin: 0 0 20px !important;
+  color: #202a55 !important;
+  font-size: 16px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card strong {
+  display: block !important;
+  margin: 0 0 20px !important;
+  padding: 22px 0 0 !important;
+  border-top: 1px solid rgba(22, 119, 255, .16) !important;
+  color: #080d20 !important;
+  font-size: 38px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card ul {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  margin: 0 0 30px !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card li {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  border-bottom: 1px solid rgba(22, 119, 255, .12) !important;
+  color: #101a45 !important;
+  font-size: 15px !important;
+  line-height: 1.3 !important;
+  font-weight: 500 !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card li::before {
+  display: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card li::after {
+  content: "✓" !important;
+  flex: 0 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #075fff !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+}
+
+body.marketspace-refresh .plan-start {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 22px !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  margin: auto 0 0 !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #055fff 0%, #275bff 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 18px 34px rgba(20, 93, 255, .24) !important;
+  font-size: 19px !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+}
+
+body.marketspace-refresh .launchpad-plan-card.featured .plan-start {
+  background: linear-gradient(135deg, #055fff 0%, #8a35ef 100%) !important;
+}
+
+body.marketspace-refresh .plan-start::after {
+  content: "→" !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 1100px) {
+  body.marketspace-refresh .launchpad-plan-grid {
+    grid-template-columns: minmax(280px, 420px) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body.marketspace-refresh .launchpad-plan-heading h2 {
+    font-size: clamp(34px, 11vw, 48px) !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-grid {
+    width: min(420px, calc(100% - 28px)) !important;
+  }
+
+  body.marketspace-refresh .launchpad-plan-card {
+    min-height: 0 !important;
+    padding: 24px 22px 26px !important;
+  }
+}

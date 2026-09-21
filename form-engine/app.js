@@ -24,7 +24,11 @@ const els = {
   submit: document.querySelector("[data-submit-form]"),
   status: document.querySelector("[data-status]"),
   themeToggle: document.querySelector("[data-theme-toggle]"),
-  closeForm: document.querySelector("[data-close-form]")
+  closeForm: document.querySelector("[data-close-form]"),
+  cardTitle: document.querySelector("[data-card-title]"),
+  cardDescription: document.querySelector("[data-card-description]"),
+  cardIcon: document.querySelector("[data-card-icon]"),
+  sideBenefits: document.querySelector("[data-side-benefits]")
 };
 
 const apiBase = window.location.protocol === "file:" ? "http://localhost:3000" : "";
@@ -34,6 +38,102 @@ const instantCategories = new Set(["train_deploy_enquiry", "student_registration
 
 const fieldTypes = new Set(["text", "email", "phone", "number", "date", "textarea", "select", "radio", "checkbox", "file"]);
 
+const categoryUi = {
+  train_deploy_enquiry: {
+    badge: "Course Enquiry",
+    cardTitle: "Enquiry Details",
+    cardDescription: "Please fill in your details to get started",
+    icon: "form",
+    benefits: [
+      ["Plan Together", "Share your placement goals and training needs."],
+      ["Fast Review", "Our team will check your request and respond soon."],
+      ["Custom Support", "Get a practical path for your institution."]
+    ]
+  },
+  student_registration: {
+    badge: "Student Registration",
+    cardTitle: "Student Details",
+    cardDescription: "Please fill in your details to get started",
+    icon: "student",
+    benefits: [
+      ["Start Learning", "Tell us your interests and goals."],
+      ["Right Guidance", "Get matched to the program that fits you."],
+      ["Career Ready", "Build projects, skills, and confidence."]
+    ]
+  },
+  mentor_registration: {
+    badge: "Mentor Application",
+    cardTitle: "Mentor Application",
+    cardDescription: "Please fill in your details to get started",
+    icon: "mentor",
+    benefits: [
+      ["Make an Impact", "Guide learners and help them unlock their full potential."],
+      ["Grow Together", "Share your knowledge while building your own network."],
+      ["Flexible & Rewarding", "Mentor on your terms and be recognized for your contribution."]
+    ]
+  },
+  launchpad_purchase: {
+    badge: "Launchpad Purchase",
+    cardTitle: "Launchpad Details",
+    cardDescription: "Please fill in your details to continue",
+    icon: "launchpad",
+    benefits: [
+      ["Choose Your Plan", "Select the Launchpad option that suits your goals."],
+      ["Guided Setup", "Our team will help you with the next step."],
+      ["Outcome Focused", "Move toward projects, mentorship, and career growth."]
+    ]
+  },
+  hiring_application: {
+    badge: "Hiring Application",
+    cardTitle: "Hiring Details",
+    cardDescription: "Please fill in your requirements to get started",
+    icon: "hiring",
+    benefits: [
+      ["Hire Talent", "Find learners trained through practical projects."],
+      ["Share Needs", "Tell us the skills, role, and timeline."],
+      ["Quick Match", "We will connect you with suitable candidates."]
+    ]
+  },
+  event_registration: {
+    badge: "Event Registration",
+    cardTitle: "Event Registration",
+    cardDescription: "Please fill in your details to reserve your spot",
+    icon: "event",
+    benefits: [
+      ["Join Live", "Register for Jenovate sessions and workshops."],
+      ["Learn Practically", "Get useful ideas, tasks, and takeaways."],
+      ["Stay Connected", "Be part of the Jenovate learner community."]
+    ]
+  },
+  campus_ambassador: {
+    badge: "Campus Ambassador",
+    cardTitle: "Campus Ambassador Application",
+    cardDescription: "Please fill in your details to get started",
+    icon: "campus",
+    benefits: [
+      ["Lead Your Campus", "Represent Jenovate and help students discover practical learning."],
+      ["Build Influence", "Grow your network with community activities."],
+      ["Earn Recognition", "Get certificates, rewards, and visible experience."]
+    ]
+  }
+};
+
+const fieldIconName = (field) => {
+  if (field.type === "email") return "email";
+  if (field.type === "phone") return "phone";
+  if (field.type === "date") return "calendar";
+  if (field.type === "number") return "number";
+  if (field.type === "select") return "select";
+  if (field.type === "textarea") return "message";
+  if (field.type === "file") return "file";
+  if (/name|person|contact/i.test(field.name)) return "user";
+  if (/college|company|institution/i.test(field.name)) return "building";
+  if (/course|program|plan|interest/i.test(field.name)) return "book";
+  if (/expertise|skill/i.test(field.name)) return "briefcase";
+  if (/availability|timeline/i.test(field.name)) return "clock";
+  return "form";
+};
+
 const fallbackConfig = {
   settings: {
     brandName: "Jenovate",
@@ -42,7 +142,7 @@ const fallbackConfig = {
   },
   categories: {
     train_deploy_enquiry: {
-      title: "ZeAI Soft - Train and Deploy Enquiry Form",
+      title: "Train and Deploy Enquiry Form",
       description: "Please complete all fields to submit your enquiry request",
       endpoint: {
         type: "supabase",
@@ -356,10 +456,26 @@ const renderInput = (field) => {
 const renderForm = () => {
   const category = state.config.categories[state.categoryKey];
   const step = state.steps[state.stepIndex];
+  const ui = categoryUi[state.categoryKey] || categoryUi.train_deploy_enquiry;
   els.root.dataset.formCategory = state.categoryKey;
   document.body.dataset.formCategory = state.categoryKey;
+  document.body.dataset.formBadge = ui.badge;
   els.title.textContent = category.title;
   els.description.textContent = category.description || "";
+  if (els.cardTitle) els.cardTitle.textContent = ui.cardTitle || category.title;
+  if (els.cardDescription) els.cardDescription.textContent = ui.cardDescription || category.description || "Please fill in your details to get started";
+  if (els.cardIcon) els.cardIcon.dataset.icon = ui.icon || "form";
+  if (els.sideBenefits) {
+    els.sideBenefits.innerHTML = (ui.benefits || []).map(([title, text], index) => `
+      <article>
+        <span aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+        <div>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${escapeHtml(text)}</p>
+        </div>
+      </article>
+    `).join("");
+  }
   document.title = `${category.title} - Jenovate`;
 
   const totalSteps = state.steps.length;
@@ -373,7 +489,7 @@ const renderForm = () => {
     if (!fieldTypes.has(field.type)) return "";
     const full = ["textarea", "checkbox", "radio", "file"].includes(field.type) ? " full" : "";
     return `
-      <div class="field${full}" data-field="${field.name}">
+      <div class="field${full}" data-field="${field.name}" data-field-icon="${fieldIconName(field)}">
         ${field.type === "radio" || field.type === "checkbox"
           ? `<legend>${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : `<span class="optional">Optional</span>`}</legend>`
           : `<label for="${field.name}">${escapeHtml(field.label)} ${field.required ? `<span class="required">*</span>` : `<span class="optional">Optional</span>`}</label>`}

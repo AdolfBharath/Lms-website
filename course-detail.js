@@ -97,9 +97,13 @@ const realMentorBySlug = {
   "wellness-productivity-system": "Muskan",
   "senior-sde-interview-prep": "Rahul Singh",
   "full-stack-developer-portfolio": "Tanishq",
+  "software-engineering": "Tanishq",
+  "artificial-intelligence-and-machine-learning": "Surya R",
+  "iot-and-robotics": "Aravind Subramanian",
   "data-engineering-with-sql-and-cloud": "Surya R",
   "data-analytics-with-power-bi": "Tanya D",
   "e-commerce-operations-management": "Ravindra",
+  "human-resource-management": "Ravindra",
   "counselling-psychology-practice": "Archana S",
   "clinical-psychology-basics": "Muskan",
   "rehabilitation-psychology": "Suvidha Sharma"
@@ -124,6 +128,7 @@ const courseImageBySlug = {
   "javascript-imagination": "course/1. Technology & Software Development/mk.avif",
   "react-frontend-bootcamp": "course/1. Technology & Software Development/st.avif",
   "python-data-analytics": "course/1. Technology & Software Development/we.avif",
+  "software-engineering": "course/1. Technology & Software Development/christopher-gower-m_HRfLhgABo.jpg",
   "graphic-design-beginners": "course/6. Design & Creative Arts/premium_photo-1661310081873-.avif",
   "ui-ux-mobile-sprint": "course/6. Design & Creative Arts/premium_photo-1661412864160-e0.avif",
   "brand-identity-masterclass": "course/6. Design & Creative Arts/premium_photo-172362970.avif",
@@ -135,6 +140,9 @@ const courseImageBySlug = {
   "product-management-fundamentals": "course/5. Business, Finance & Marketing/premium_photo-1726812103168-6ad609e53f94.avif",
   "team-leadership-communication": "course/5. Business, Finance & Marketing/premium_photo-1733328013343.avif",
   "wellness-productivity-system": "course/7. Healthcare & Human Sciences/psychology.webp",
+  "psychology": "course/7. Healthcare & Human Sciences/psychology.webp",
+  "artificial-intelligence-and-machine-learning": "course/2. Artificial Intelligence & Data Science/carlos-gil-AsxOJcsaR4g.jpg",
+  "iot-and-robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
   "ai-tools-study-career": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
   "cyber-security-basics": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
   "photography-visual-storytelling": "course/6. Design & Creative Arts/premium_photo-1737597230774.avif"
@@ -155,6 +163,7 @@ const courseSupportImagesBySlug = {
   "product-management-fundamentals": ["course/5. Business, Finance & Marketing/premium_photo-1733328013343.avif", "course/5. Business, Finance & Marketing/ishant-mishra-osWDvhPlGLU.jpg"],
   "team-leadership-communication": ["course/5. Business, Finance & Marketing/premium_photo-1726812103168-6ad609e53f94.avif", "course/5. Business, Finance & Marketing/ishant-mishra-osWDvhPlGLU.jpg"],
   "wellness-productivity-system": ["course/7. Healthcare & Human Sciences/importance-of-.webp", "course/7. Healthcare & Human Sciences/ux-788002_640.webp"],
+  "human-resource-management": ["course/5. Business, Finance & Marketing/scott-graham-5fNmWej4tAA.webp", "course/5. Business, Finance & Marketing/kelly-sikkema-xoU52jUVUXA.webp"],
   "ai-tools-study-career": ["course/2. Artificial Intelligence & Data Science/premium_photo-1725907643701.avif", "course/2. Artificial Intelligence & Data Science/re.avif"],
   "cyber-security-basics": ["course/3. Cyber Security, Cloud & DevOps/istockphoto-1556021855.jpg", "course/3. Cyber Security, Cloud & DevOps/istockphoto-2196516183-612x612.jpg"],
   "photography-visual-storytelling": ["course/6. Design & Creative Arts/hyundai-motor-group-V1DFo8C4JPA.jpg", "course/6. Design & Creative Arts/premium_photo-1661771683263.avif"]
@@ -659,18 +668,18 @@ const marketplaceDomainGroups = [
       "Programming in Python",
       "Programming in Java",
       "DSA with Python",
+      "Software Engineering",
       "Front-End Web Development",
-      "Full-Stack Web Development",
-      "Android Development"
+      "Full-Stack Web Development"
     ]
   },
   {
     category: "Artificial Intelligence & Data",
     courses: [
       "Artificial Intelligence",
+      "Artificial Intelligence and Machine Learning",
       "AI (Agentic & Generative)",
       "Machine Learning",
-      "Data Science",
       "Data Analysis"
     ]
   },
@@ -686,11 +695,10 @@ const marketplaceDomainGroups = [
     category: "Engineering & Emerging Technologies",
     courses: [
       "Internet of Things (IoT)",
+      "IoT & Robotics",
       "Embedded Systems",
       "VLSI",
-      "Robotics",
-      "Hybrid Electric Vehicle",
-      "Nanotechnology"
+      "Hybrid Electric Vehicle"
     ]
   },
   {
@@ -701,18 +709,16 @@ const marketplaceDomainGroups = [
       "Finance",
       "Startup & Entrepreneurship",
       "Business Analysis",
-      "Operation & Supply Chain Management",
-      "Product & Project Management",
       "Stock Marketing"
     ]
   },
   {
     category: "Design & Creative Arts",
-    courses: ["UI/UX", "Graphic Designing", "AutoCAD", "Car Design"]
+    courses: ["UI/UX", "AutoCAD"]
   },
   {
     category: "Healthcare & Human Sciences",
-    courses: ["Medical Coding", "Clinical Trials & Research", "Psychology"]
+    courses: ["Medical Coding", "Psychology"]
   }
 ];
 
@@ -798,33 +804,36 @@ const marketplaceImageBySlug = {
   "photography-visual-storytelling": "course/6. Design & Creative Arts/premium_photo-1737597230774.avif",
   "programming-in-python": "course/1. Technology & Software Development/code.jpg",
   "programming-in-java": "course/1. Technology & Software Development/chris-ried-ieic5Tq8YMk.jpg",
-  "dsa-with-python": "course/1. Technology & Software Development/we.avif",
-  "front-end-web-development": "course/1. Technology & Software Development/mk.avif",
-  "full-stack-web-development": "course/1. Technology & Software Development/st.avif",
+  "dsa-with-python": "course/1. Technology & Software Development/boitumelo-mZ-vSMus7zM.webp",
+  "software-engineering": "course/1. Technology & Software Development/christopher-gower-m_HRfLhgABo.jpg",
+  "front-end-web-development": "course/1. Technology & Software Development/fahim-muntashir-v-FOvoL3o.webp",
+  "full-stack-web-development": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
   "senior-sde-interview-prep": "course/1. Technology & Software Development/fotis-fotopoulos-6sAl6aQ4OWI.jpg",
   "full-stack-developer-portfolio": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
   "android-development": "course/1. Technology & Software Development/hossain-khan-UP3SMQSoNsM.jpg",
   "artificial-intelligence": "course/2. Artificial Intelligence & Data Science/ai.jpg",
-  "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
-  "machine-learning": "course/2. Artificial Intelligence & Data Science/br.jpg",
+  "artificial-intelligence-and-machine-learning": "course/2. Artificial Intelligence & Data Science/carlos-gil-AsxOJcsaR4g.jpg",
+  "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/clarisse-croset--tikpxRBcsA.webp",
+  "machine-learning": "course/2. Artificial Intelligence & Data Science/steve-a-johnson-WhAQMsdRKMI.jpg",
   "data-science": "course/2. Artificial Intelligence & Data Science/ji.avif",
   "data-engineering-with-sql-and-cloud": "course/2. Artificial Intelligence & Data Science/jonathan-kemper-MMUzS5Qzuus.jpg",
   "data-analytics-with-power-bi": "course/2. Artificial Intelligence & Data Science/yhn.jpg",
   "data-analysis": "course/2. Artificial Intelligence & Data Science/nnii.avif",
   "cyber-security-and-ethical-hacking": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
-  "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/istockphoto-952067022.jpg",
-  "devops": "course/3. Cyber Security, Cloud & DevOps/gettyimages.jpg",
+  "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/glen-carrie-Ls1Npp-C-P8.webp",
+  "devops": "course/3. Cyber Security, Cloud & DevOps/kevin-horvat-Pyjp2zmxuLk.webp",
   "internet-of-things-iot": "course/4. Engineering & Emerging Technologies/premium_photo-1681010317789.avif",
+  "iot-and-robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
   "embedded-systems": "course/4. Engineering & Emerging Technologies/jeswin-thomas--Cm7hnp4WOg.jpg",
   "vlsi": "course/4. Engineering & Emerging Technologies/adi-goldstein-EUsVwEOsblE.jpg",
   "robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
-  "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/premium_photo.avif",
+  "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/thisisengineering-omrpeqLz6Po.webp",
   "nanotechnology": "course/4. Engineering & Emerging Technologies/marius-masalar-CyFBmFEsytU.jpg",
   "digital-marketing": "course/5. Business, Finance & Marketing/social-sail-Uno9TGPs4pc.jpg",
-  "human-resource-management": "course/5. Business, Finance & Marketing/vitaly-gariev-pg2eJwNVpvY.jpg",
+  "human-resource-management": "course/5. Business, Finance & Marketing/scott-graham-5fNmWej4tAA.webp",
   "finance": "course/5. Business, Finance & Marketing/anne-nygard-x07ELaNFt34.jpg",
   "startup-and-entrepreneurship": "course/5. Business, Finance & Marketing/lala-azizli-OFZUaeYKP3k.jpg",
-  "business-analysis": "course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif",
+  "business-analysis": "course/5. Business, Finance & Marketing/mirea-mazzei-d1Lp7juy6JU.webp",
   "operation-and-supply-chain-management": "course/5. Business, Finance & Marketing/shutter-speed-BQ9usyzHx_w.jpg",
   "e-commerce-operations-management": "course/5. Business, Finance & Marketing/premium_photo-1681488262364.avif",
   "product-and-project-management": "course/5. Business, Finance & Marketing/photo-1590103514966.avif",
@@ -1123,17 +1132,108 @@ const buildMarketplaceSeed = (title, category, index) => {
   };
 };
 
+const activeMarketplaceCourseSlugs = new Set();
 marketplaceDomainGroups.forEach((group) => {
   group.courses.forEach((title, index) => {
     const slug = slugifyCourse(title);
+    activeMarketplaceCourseSlugs.add(slug);
     courseSeeds[slug] = buildMarketplaceSeed(title, group.category, index);
     courseSupportImagesBySlug[slug] = courseSeeds[slug].supportImages;
   });
 });
 
+if (courseSeeds["human-resource-management"]) {
+  courseSeeds["human-resource-management"] = {
+    ...courseSeeds["human-resource-management"],
+    mentor: "Ravindra",
+    rating: "4.8",
+    summary: "Build practical Human Resource Management skills through 10 recorded lectures covering SHRM, HR strategy, manpower planning, job analysis, recruitment, selection, performance, compensation, engagement, and change management.",
+    modules: 3,
+    hours: "9.0",
+    learners: "500+",
+    level: "Beginner Friendly",
+    score: "96%",
+    curriculumHeading: "Learn HRM through structured video modules.",
+    curriculumIntro: "Move across 10 Human Resource Management lectures with exact lesson timings and a 15-question quiz after each module.",
+    lessons: [
+      ["Strategic HRM and Workforce Planning", "Lectures 1-3 cover SHRM objectives, HR metrics, HR strategy alignment, digital HR transformation, and manpower demand forecasting."],
+      ["Job Analysis, Design, Recruitment, and Selection", "Lectures 4-6 cover job analysis, job descriptions, job specifications, job design, job evaluation, recruitment, selection, and personality assessment."],
+      ["Performance, Compensation, Engagement, and Change", "Lectures 7-10 cover performance management, appraisal, line manager skills, engagement, compensation equity, total rewards, and change management."]
+    ],
+    projects: ["Workforce Planning Worksheet", "HR Policy and Change Readiness Review"],
+    bio: "Ravindra guides learners through HR strategy, workforce planning, recruitment systems, performance conversations, compensation decisions, and people-centred change.",
+    experience: "Senior HR and Operations Mentor",
+    credential: "HR Strategy and People Operations",
+    community: ["AK", "The module split made each lecture easy to revise.", "MS", "The quiz after every module helped me check what I understood."]
+  };
+  courseSupportImagesBySlug["human-resource-management"] = [
+    "course/5. Business, Finance & Marketing/scott-graham-5fNmWej4tAA.webp",
+    "course/5. Business, Finance & Marketing/kelly-sikkema-xoU52jUVUXA.webp"
+  ];
+}
+
 const params = new URLSearchParams(window.location.search);
-const slug = params.get("course") || "javascript-imagination";
-const course = courseSeeds[slug] || courseSeeds["javascript-imagination"];
+const courseSlugAliases = {
+  "ui-and-ux": "ui-ux",
+  "ui-ux-design": "ui-ux",
+  "stock-marketing-1": "stock-marketing",
+  "stock-market": "stock-marketing",
+  "stock-market-trading": "stock-marketing",
+  "cyber-security": "cyber-security-and-ethical-hacking",
+  "cybersecurity": "cyber-security-and-ethical-hacking",
+  "ethical-hacking": "cyber-security-and-ethical-hacking",
+  "internet-of-things": "internet-of-things-iot",
+  "iot": "internet-of-things-iot",
+  "iot-robotics": "iot-and-robotics",
+  "internet-of-things-and-robotics": "iot-and-robotics",
+  "dsa": "dsa-with-python",
+  "data-structures-and-algorithms": "dsa-with-python",
+  "embedded-system": "embedded-systems",
+  "full-stack": "full-stack-web-development",
+  "frontend-web-development": "front-end-web-development",
+  "front-end-development": "front-end-web-development",
+  "hrm": "human-resource-management",
+  "human-resources": "human-resource-management",
+  "startup-and-entrepreneurship": "startup-and-entrepreneurship",
+  "ai": "artificial-intelligence",
+  "agentic-ai": "ai-agentic-and-generative",
+  "generative-ai": "ai-agentic-and-generative"
+};
+const requestedCourseSlug = slugifyCourse(params.get("course") || "");
+const slug = courseSlugAliases[requestedCourseSlug] || requestedCourseSlug;
+const coursesTemporarilyDisabled = false;
+const unavailableCourse = {
+  title: "Courses are currently unavailable",
+  category: "Jenovate LMS",
+  mentor: "Jenovate Team",
+  summary: "The course catalog is being refreshed. No course is currently available for enrollment.",
+  rating: "-",
+  modules: 0,
+  hours: 0,
+  level: "Unavailable",
+  learners: "0",
+  score: "-",
+  curriculumHeading: "No syllabus is available right now.",
+  curriculumIntro: "Courses will appear here after the new catalog is added.",
+  lessons: [],
+  projects: ["course catalog refresh"],
+  community: ["JV", "Courses are being refreshed.", "JV", "Please check back after the new catalog is published."],
+  bio: "Jenovate is refreshing the course catalog.",
+  experience: "Catalog refresh",
+  credential: "Unavailable",
+  image: "assets/img/logo/favicon.png",
+  mentorImage: "assets/img/logo/favicon.png",
+};
+const courseNotFound = !coursesTemporarilyDisabled && (!courseSeeds[slug] || !activeMarketplaceCourseSlugs.has(slug));
+const course = coursesTemporarilyDisabled ? unavailableCourse : (courseSeeds[slug] || {
+  ...unavailableCourse,
+  title: "Course not found",
+  summary: "This course link does not match an active Jenovate course. Please return to the course catalog and choose the course again.",
+  curriculumHeading: "Course not found",
+  curriculumIntro: "Use the course catalog to open an active course.",
+  projects: ["Return to course catalog"],
+  community: ["JV", "Choose a course from the catalog.", "JV", "Checkout opens only for active courses."]
+});
 course.image = resolveLocalAssetPath(courseImageBySlug[slug] || course.image);
 const realMentorName = pickRealMentorName(course, slug);
 const realMentor = realMentorProfiles[realMentorName];
@@ -1151,6 +1251,9 @@ const projectImages = [course.image, ...supportImages];
 const marketplaceCourseInrPrice = 5999;
 const courseInrRate = 83;
 const marketplaceCourseUsdPrice = 65;
+const coursePriceOverrides = {
+  "internet-of-things-iot": 1,
+};
 
 const setText = (id, value) => {
   const node = document.getElementById(id);
@@ -1160,6 +1263,10 @@ const setText = (id, value) => {
 const setImage = (id, src, alt) => {
   const node = document.getElementById(id);
   if (!node) return;
+  node.onerror = () => {
+    node.onerror = null;
+    node.src = "assets/img/logo/favicon.png";
+  };
   node.src = resolveLocalAssetPath(src);
   node.alt = alt;
 };
@@ -1172,7 +1279,8 @@ const formatPrice = () => {
   } catch {
     // Browser storage can be unavailable; INR remains the default.
   }
-  return `INR ${marketplaceCourseInrPrice.toLocaleString("en-IN")}`;
+  const inr = coursePriceOverrides[slug] || marketplaceCourseInrPrice;
+  return `INR ${inr.toLocaleString("en-IN")}`;
 };
 
 const renderCurriculum = () => {
@@ -1180,7 +1288,7 @@ const renderCurriculum = () => {
   if (!grid) return;
   grid.innerHTML = course.lessons.map(([title, description], index) => `
     <article class="curriculum-card">
-      <img src="${curriculumImages[index]}" alt="${title}" loading="lazy" decoding="async">
+      <img src="${curriculumImages[index]}" alt="${title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
       <span>Module ${String(index + 1).padStart(2, "0")}</span>
       <h3>${title}</h3>
       <p>${description}</p>
@@ -1209,7 +1317,7 @@ const renderProjects = () => {
   if (!grid) return;
   grid.innerHTML = course.projects.map((title, index) => `
     <article>
-      <img src="${index === 0 ? course.image : projectImages[index]}" alt="${title}" loading="lazy" decoding="async">
+      <img src="${index === 0 ? course.image : projectImages[index]}" alt="${title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/img/logo/favicon.png';">
       <div><span>Project ${String(index + 1).padStart(2, "0")}</span><h3>${title}</h3></div>
     </article>
   `).join("");
@@ -1278,6 +1386,54 @@ renderCurriculum();
 renderRoadmap();
 renderProjects();
 renderTools();
+renderAccountAwareHeader();
 
 const enrollLink = document.getElementById("masterclassEnroll");
-if (enrollLink) enrollLink.href = `login.html?course=${encodeURIComponent(slug)}`;
+if (enrollLink && (coursesTemporarilyDisabled || courseNotFound)) {
+  enrollLink.removeAttribute("href");
+  enrollLink.textContent = courseNotFound ? "Back to Courses" : "Courses Unavailable";
+  enrollLink.setAttribute("aria-disabled", "true");
+  if (courseNotFound) {
+    enrollLink.removeAttribute("aria-disabled");
+    enrollLink.href = "index.html#courses";
+  }
+}
+if (enrollLink && !coursesTemporarilyDisabled && !courseNotFound) enrollLink.href = `login.html?course=${encodeURIComponent(slug)}`;
+
+if (coursesTemporarilyDisabled) {
+  document.querySelectorAll(".course-hero-actions a").forEach((link) => {
+    link.removeAttribute("href");
+    link.setAttribute("aria-disabled", "true");
+  });
+}
+
+function renderAccountAwareHeader() {
+  const user = readStoredAccount();
+  if (!user) return;
+  const role = String(user.role || "student").toLowerCase();
+  const dashboard = role === "admin" ? "admin.html" : role === "mentor" ? "mentor.html" : "student.html?view=catalog";
+  const name = String(user.name || user.full_name || user.display_name || user.username || user.email || "Account").trim();
+  document.body.classList.add("course-account-context");
+  const search = document.querySelector(".header-search");
+  if (search) {
+    search.href = dashboard;
+    search.textContent = role === "student" ? "Back to student dashboard" : "Back to dashboard";
+  }
+  const login = document.querySelector(".header-login");
+  if (login) {
+    login.href = dashboard;
+    login.textContent = name.split(/\s+/)[0] || "Account";
+    login.setAttribute("aria-label", `Open ${name}'s dashboard`);
+  }
+  const join = document.querySelector(".header-join");
+  if (join) {
+    join.href = dashboard;
+    join.textContent = "My Account";
+  }
+}
+
+function readStoredAccount() {
+  return ["jenovateCurrentUser", "jenovateStudentSession", "jenovateAdminSession", "jenovateMentorSession"].map((key) => {
+    try { return JSON.parse(sessionStorage.getItem(key) || "null"); } catch { return null; }
+  }).find((item) => item && (item.email || item.name || item.id)) || null;
+}

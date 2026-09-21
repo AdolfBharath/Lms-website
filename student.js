@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const SESSION_KEY = "jenovateStudentSession";
   const APP_SESSION_KEY = "jenovateCurrentUser";
   const ADMIN_SESSION_KEY = "jenovateAdminSession";
@@ -50,12 +50,13 @@
     else console.warn(message, detail);
   };
   const safeStudentMessage = (message = LMS_MESSAGES.generic) => message;
+  const isConstraintError = (error) => /foreign key constraint|violates foreign key constraint|23503/i.test(String(error?.message || error?.details || error?.code || ""));
   const PAGE_SIZE = 20;
   const CHAT_PAGE_SIZE = 30;
   const QUERY_CACHE_TTL = 45_000;
   const QUERY_CACHE_PREFIX = "jenovate:lms:student:v3:";
   const SELECTS = {
-    users: "id,name,email,role,username,phone,batch_id,course_ids,coins,streak_count,last_active_date,last_login_reward_date,reward_history,status,deleted_at,created_at,referral,referral_key",
+    users: "id,name,full_name,display_name,email,role,username,phone,batch_id,course_ids,coins,coin_balance,streak_count,last_active_date,last_login_reward_date,reward_history,status,deleted_at,created_at,referral,referral_key",
     courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
     batches: "id,name,course_id,mentor_id,capacity,enroll_limit,smart_waitlist,status,start_date,end_date,progress,enrolled_count,created_at",
     userCourses: "id,user_id,student_id,learner_id,course_id,batch_id,created_at,status,deleted_at",
@@ -79,7 +80,7 @@
       key: "users",
       table: "users",
       select: SELECTS.users,
-      fallbackSelect: "id,name,email,role,username,phone,batch_id,course_ids,coins,streak_count,last_active_date,created_at,referral,referral_key",
+      fallbackSelect: "id,name,full_name,display_name,email,role,username,phone,batch_id,course_ids,coins,coin_balance,streak_count,last_active_date,created_at,referral,referral_key",
       limit: 500,
       scope: "studentUsers"
     },
@@ -253,7 +254,6 @@
     sessionStorage.removeItem(ADMIN_SESSION_KEY);
     sessionStorage.removeItem(MENTOR_SESSION_KEY);
     window.addEventListener("pageshow", enforceLiveSession);
-    // NOTE: pagehide/beforeunload session clear removed — caused session loss
     // on in-tab navigation. Session is cleared only on explicit logout.
 
     recordLocalStreakVisit();
@@ -331,6 +331,7 @@
     state.student = normalizeUser({
       ...state.student,
       coins: Number(result.coins ?? state.student.coins ?? 0),
+      coin_balance: Number(result.coin_balance ?? result.coins ?? state.student.coin_balance ?? state.student.coins ?? 0),
       streak_count: Number(result.streak_count ?? state.student.streak_count ?? 0),
       last_active_date: result.last_active_date || state.student.last_active_date || "",
       last_login_reward_date: result.last_login_reward_date || state.student.last_login_reward_date || ""
@@ -339,14 +340,19 @@
     sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
 
     if (result.claimed && options.notify === true) {
-      showAlert(`Daily login reward claimed! +${Number(result.reward_amount || 10)} Coins`);
+      const totalReward = Number(result.totalReward ?? result.total_coins_awarded ?? result.reward_amount ?? 10);
+      const streakBonus = Number(result.streakBonus ?? result.streak_bonus ?? 0);
+      showAlert(streakBonus > 0 ? `Daily reward claimed! +${totalReward} Coins including +${streakBonus} streak bonus` : `Daily reward claimed! +${totalReward} Coins`);
     }
     if (options.render === true) {
+      await refreshStudentProfileAfterReward(result);
       renderIdentity();
       renderStreakCard();
     }
     return true;
   }
+
+  async function refreshStudentProfileAfterReward(result = {}) { const client = getClient(); if (client?.from && state.student?.id) try { const { data, error } = await withStudentTimeout(client.from("users").select("coins,coin_balance,streak_count,last_active_date,last_login_reward_date").eq("id", state.student.id).maybeSingle(), 2500, "Daily reward profile refresh timed out."); if (!error && data) state.student = normalizeUser({ ...state.student, ...data }); } catch (error) { studentDebug("Daily reward profile refresh skipped.", error); } state.student.daily_login_reward_claimed = Boolean(result.claimed); state.student.daily_login_reward_amount = Number(result.totalReward ?? result.total_coins_awarded ?? result.reward_amount ?? 0); state.student.daily_login_streak_bonus = Number(result.streakBonus ?? result.streak_bonus ?? 0); sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student)); sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student)); }
 
   function setupDailyStreakRefresh() {
     const scheduleMidnightRefresh = () => {
@@ -365,6 +371,14 @@
         void syncDailyStreak({ render: true, notify: true });
       }
     });
+  }
+
+  async function refreshStudentWallet() {
+    if (!getClient()?.rpc || !state.student?.id) return;
+    const { data, error } = await getClient().rpc("lms_student_wallet_summary"); if (error) { if (!isMissingRpcError(error)) studentDebug("Wallet summary failed.", error); return; }
+    const row = Array.isArray(data) ? data[0] : data; if (!row) return;
+    state.student = normalizeUser({ ...state.student, coins: Number(row.coins ?? state.student.coins ?? 0), referral_key: row.referral_key || state.student.referral_key || row.referral_code, referral_count: Number(row.referral_count || 0), successful_referrals: Number(row.successful_referrals || 0), referral_coins_earned: Number(row.referral_coins_earned || 0) });
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student)); sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student)); window.renderStudentReferral?.(state.student);
   }
 
   function wireNavigation() {
@@ -456,6 +470,8 @@
       state.courseVisibleCount += 8;
       renderCourses();
     });
+    on("courseSliderPrev", "click", () => scrollCourseSlider(-1));
+    on("courseSliderNext", "click", () => scrollCourseSlider(1));
     on("leaderboardCourseFilter", "change", (event) => {
       state.leaderboardCourseId = event.target.value;
       renderDashboardLeaderboard();
@@ -490,18 +506,21 @@
     on("chatComposer", "submit", postChatMessage);
     on("questionForm", "submit", submitQuestion);
 
-    // Discussions UI actions
     on("discAskBtn", "click", () => {
       document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "false");
     });
     on("discAskBtnAlt", "click", () => {
       document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "false");
     });
+    on("discMain", "click", (event) => {
+      const button = event.target.closest("[data-disc-follow-up]");
+      if (!button) return;
+      openQuestionComposer({ followUpId: button.dataset.discFollowUp });
+    });
     on("discAskClose", "click", () => {
       document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "true");
     });
 
-    // Close overlay on background click
     const askOverlay = document.getElementById("discAskOverlay");
     askOverlay?.addEventListener("click", (event) => {
       if (event.target === askOverlay) {
@@ -509,7 +528,6 @@
       }
     });
 
-    // Discussion sidebar filter tabs
     const filterTabs = document.querySelector(".disc-filter-tabs");
     filterTabs?.addEventListener("click", (event) => {
       const button = event.target.closest("[data-disc-filter]");
@@ -518,18 +536,15 @@
       renderQuestions();
     });
 
-    // Question card selection click
     const questionListEl = document.getElementById("questionList");
     questionListEl?.addEventListener("click", (event) => {
       const card = event.target.closest("[data-question-id]");
       if (!card) return;
-      // Skip click handling if clicking on a button or link inside card
       if (event.target.closest("button, a, input, select")) return;
       state.selectedQuestionId = card.dataset.questionId;
       renderQuestions();
     });
 
-    // Search input listener
     on("discSearchInput", "input", (event) => {
       state.discQuery = event.target.value.trim().toLowerCase();
       renderQuestions();
@@ -538,8 +553,8 @@
     on("supportTicketForm", "submit", submitSupportTicket);
     on("profileForm", "submit", saveProfile);
     on("passwordForm", "submit", updatePassword);
+    on("profileReferKeyCopyBtn", "click", copyProfileReferKey);
 
-    // Profile page interactive UI toggles
     on("profileEditToggleBtn", "click", () => {
       const inputs = ["profileName", "profileUsername", "profilePhone"].map(id => document.getElementById(id));
       const isDisabled = inputs[0] ? inputs[0].disabled : true;
@@ -547,7 +562,7 @@
       const actions = document.getElementById("profileFormActions");
       if (actions) actions.style.display = isDisabled ? "flex" : "none";
       const btnText = document.getElementById("profileEditToggleBtn");
-      if (btnText) btnText.innerHTML = isDisabled ? "Cancel" : `<span class="edit-icon">✎</span> Edit Details`;
+      if (btnText) btnText.innerHTML = isDisabled ? "Cancel" : `<span class="edit-icon">Edit</span> Edit Details`;
     });
 
     on("profileCancelBtn", "click", () => {
@@ -556,7 +571,7 @@
       const actions = document.getElementById("profileFormActions");
       if (actions) actions.style.display = "none";
       const btnText = document.getElementById("profileEditToggleBtn");
-      if (btnText) btnText.innerHTML = `<span class="edit-icon">✎</span> Edit Details`;
+      if (btnText) btnText.innerHTML = `<span class="edit-icon">Edit</span> Edit Details`;
       renderIdentity();
     });
 
@@ -586,23 +601,33 @@
       const button = event.target.closest("[data-catalog-category]");
       if (button) {
         state.catalogCategory = button.dataset.catalogCategory || "all";
-        renderCatalog();
-        return;
+        return renderCatalog();
       }
-
       const filterButton = event.target.closest("[data-catalog-filter]");
       if (filterButton) {
         state.catalogFilter = filterButton.dataset.catalogFilter || "all";
         state.catalogFiltersOpen = false;
-        renderCatalog();
-        return;
+        return renderCatalog();
       }
-
       const filterToggle = event.target.closest("[data-catalog-filter-toggle]");
       if (filterToggle) {
         state.catalogFiltersOpen = !state.catalogFiltersOpen;
+        return renderCatalog();
+      }
+      const resetButton = event.target.closest("[data-catalog-reset]");
+      if (resetButton) {
+        state.catalogCategory = state.catalogFilter = "all"; state.catalogFiltersOpen = false; state.query = "";
+        const topSearch = document.getElementById("topSearchInput");
+        if (topSearch) topSearch.value = "";
         renderCatalog();
       }
+    });
+    document.getElementById("catalogCoursesGrid")?.addEventListener("input", (event) => {
+      if (!event.target.matches("#catalogSearchInput")) return;
+      state.query = String(event.target.value || "").trim().toLowerCase();
+      const topSearch = document.getElementById("topSearchInput");
+      if (topSearch && topSearch.value !== event.target.value) topSearch.value = event.target.value;
+      clearTimeout(state.searchTimer); state.searchTimer = setTimeout(renderCatalog, 120);
     });
 
     document.addEventListener("click", (event) => {
@@ -620,9 +645,9 @@
         return;
       }
 
-      const openCourse = event.target.closest("[data-open-course]");
+      const openCourse = event.target.closest("[data-open-course],[data-start-assigned-course]");
       if (openCourse) {
-        state.selectedCourseId = openCourse.dataset.openCourse;
+        state.selectedCourseId = openCourse.dataset.openCourse || openCourse.dataset.startAssignedCourse;
         state.selectedLessonKey = "";
         recordCourseAccess(state.selectedCourseId);
         setView("learn");
@@ -843,6 +868,7 @@
         sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
         window.renderStudentReferral?.(state.student);
       }
+      await refreshStudentWallet();
 
       if (!options.initial) {
         await Promise.all([loadSupplementalCourses(), loadSupplementalBatches()]);
@@ -984,7 +1010,7 @@
       case "studentProjectRows":
         return studentId ? query.eq("student_id", studentId) : query;
       case "studentBatchRows":
-        return batchId ? query.eq("batch_id", batchId) : query;
+        return studentBatchFilterIds().length ? query.in("batch_id", studentBatchFilterIds()) : query;
       case "supportOwnerRows":
         return studentId ? query.eq("user_id", studentId) : query;
       case "supportMessageRows": {
@@ -998,9 +1024,9 @@
         if (courseIds.length) return query.in("course_id", courseIds);
         return batchId ? query.eq("id", batchId) : query;
       case "studentCourses":
-        return courseIds.length ? query.in("id", courseIds) : query.in("status", ["Published", "published", "Active", "active"]);
+        return courseIds.length ? query.in("id", courseIds) : query.ilike("status", "active").is("deleted_at", null);
       case "courseCatalog":
-        return query;
+        return query.ilike("status", "active").is("deleted_at", null);
       case "studentUsers":
         return batchId
           ? query.or(`id.eq.${studentId},batch_id.eq.${batchId},role.eq.mentor`)
@@ -1161,14 +1187,16 @@
   function renderIdentity() {
     const student = state.student;
     if (!student) return;
-    const initials = initialsFor(student.name || student.email);
-    setText("sidebarStudentName", student.name || "Student");
+    const displayName = studentDisplayName(student);
+    const shortName = firstName(displayName);
+    const initials = initialsFor(displayName || student.email);
+    setText("sidebarStudentName", displayName);
     setText("sidebarStudentEmail", student.email || "");
     setText("sidebarStudentAvatar", initials);
-    setText("panelStudentName", student.name || firstName(student.email || "Student"));
+    setText("panelStudentName", displayName);
     setText("topbarStudentAvatar", initials);
-    setText("topbarStudentName", firstName(student.name || student.email || "Student"));
-    setText("sidebarBatchName", `Batch: ${currentBatch()?.name || "Alpha-2024"}`);
+    setText("topbarStudentName", shortName);
+    setText("sidebarBatchName", `Batch: ${currentBatch()?.name || "2026"}`);
     setText("coinBalance", formatNumber(student.coins));
     setText("shopCoinBalance", formatNumber(student.coins));
     renderStreakCard();
@@ -1176,6 +1204,10 @@
     setValue("profileUsername", student.username || "");
     setValue("profilePhone", student.phone || "");
     setValue("profileEmail", student.email || "");
+    const referKey = studentReferKey(student);
+    setValue("profileReferKey", referKey || "Loading...");
+    const referCopy = document.getElementById("profileReferKeyCopyBtn");
+    if (referCopy) referCopy.disabled = !referKey;
   }
 
   function renderDashboard() {
@@ -1193,16 +1225,14 @@
     const activeCourse = recentCourses[0] || preferredLearningCourse(activeDashboardCourses) || activeDashboardCourses[0] || null;
     const session = dashboardSession();
 
-    // Set time-of-day theme attribute on hero card
     const heroCard = document.querySelector("#dashboardView .dashboard-hero-card");
     if (heroCard) heroCard.setAttribute("data-session", session.type);
 
-    setText("sidebarBatchName", `Batch: ${primaryBatch?.name || "Alpha-2024"}`);
+    setText("sidebarBatchName", `Batch: ${primaryBatch?.name || "2026"}`);
     setText("panelBatchName", primaryBatch?.name || "Batch");
     setText("panelCourseCount", String(enrolledCourses().length));
     setText("heroBatchName", primaryBatch ? `Welcome back, ${primaryBatch.name}` : "Welcome back");
 
-    // Update session pill icon and text
     const heroSessionIconEl = document.getElementById("heroSessionIcon");
     if (heroSessionIconEl) heroSessionIconEl.textContent = session.icon;
     const heroSessionTextEl = document.getElementById("heroSessionText");
@@ -1212,14 +1242,13 @@
       heroSessionArtwork.setAttribute("src", session.artwork);
     }
 
-    // Update hero greeting with name and wave emoji inline
     const heroGreeting = document.getElementById("heroGreeting");
     if (heroGreeting) {
-      const studentFirstName = firstName(state.student.name || state.student.email || "ajay");
-      heroGreeting.innerHTML = `${escapeHtml(session.greeting)}, <span class="hero-greeting-person"><span class="hero-name">${escapeHtml(studentFirstName)}</span>! <span class="hero-wave">${escapeHtml(session.accent)}</span></span>`;
+      const studentFirstName = firstName(studentDisplayName(state.student));
+      const accent = session.accent ? ` <span class="hero-wave">${escapeHtml(session.accent)}</span>` : "";
+      heroGreeting.innerHTML = `${escapeHtml(session.greeting)}, <span class="hero-greeting-person"><span class="hero-name">${escapeHtml(studentFirstName)}</span>!${accent}</span>`;
     }
 
-    // Keep the welcome message motivational without exposing a course fallback.
     const heroSummaryEl = document.getElementById("heroSummary");
     if (heroSummaryEl) {
       heroSummaryEl.textContent = session.summary(overallProgress);
@@ -1284,8 +1313,8 @@
         artwork: "assets/student-sessions/morning.webp",
         label: "MORNING SESSION",
         greeting: "Good Morning",
-        accent: "☀️",
-        icon: "☀️",
+        accent: "",
+        icon: "",
         noteTitle: "Fresh start",
         noteText: "Begin with one lesson.",
         summary: () => "A fresh start is a chance to learn something meaningful today."
@@ -1297,8 +1326,8 @@
         artwork: "assets/student-sessions/afternoon.webp",
         label: "AFTERNOON SESSION",
         greeting: "Good Afternoon",
-        accent: "✨",
-        icon: "🌤️",
+        accent: "",
+        icon: "",
         noteTitle: "Keep moving",
         noteText: "Your progress is building.",
         summary: () => "Keep your momentum going and turn today's effort into progress."
@@ -1310,8 +1339,8 @@
         artwork: "assets/student-sessions/evening.webp",
         label: "EVENING SESSION",
         greeting: "Good Evening",
-        accent: "👋",
-        icon: "🌙",
+        accent: "",
+        icon: "",
         noteTitle: "Keep it up!",
         noteText: "You're doing great today.",
         summary: () => "The best time for learning is now. Let's keep building your knowledge and confidence."
@@ -1322,8 +1351,8 @@
       artwork: "assets/student-sessions/night.webp",
       label: "LATE NIGHT FOCUS",
       greeting: "Good Night",
-      accent: "🌙",
-      icon: "🌌",
+      accent: "",
+      icon: "",
       noteTitle: "Easy pace",
       noteText: "A short session is enough.",
       summary: () => "Quiet hours are perfect for one focused step forward."
@@ -1497,7 +1526,7 @@
       const achievements = progress.completedModules + submissions.length + passedQuizzes;
       return normalizeLeaderboardRow({
         user_id: state.student.id,
-        learner_name: state.student.name || state.student.username || "Student",
+        learner_name: studentDisplayName(state.student),
         username: state.student.username || "",
         batch_id: state.student.batch_id || "",
         course_id: course.id,
@@ -1610,9 +1639,9 @@
       ? latestAttempt.module_title || `${recentCourse?.title || "Course"} Quiz`
       : recentTask?.title || (latestSubmission ? "Assignment Submission" : "No recent activity");
     const recentMeta = recentIsQuiz
-      ? `Completed · ${relativeActivityTime(attemptDate)}`
+      ? `Completed - ${relativeActivityTime(attemptDate)}`
       : latestSubmission
-        ? `Submitted · ${relativeActivityTime(submissionDate)}`
+        ? `Submitted - ${relativeActivityTime(submissionDate)}`
         : "Complete an assignment or quiz to begin";
 
     const tiles = [
@@ -1946,7 +1975,6 @@
     if (!target) return;
     const enrolledIds = studentCourseIds();
     const catalog = filteredCourses(catalogCourses())
-      .filter((course) => !enrolledIds.has(String(course.id)))
       .sort((a, b) => String(a.title || "").localeCompare(String(b.title || "")));
     const categories = [...new Set(catalog
       .map((course) => String(course.category || course.difficulty || "").trim())
@@ -1975,10 +2003,12 @@
         <div>
           <span>Premium learning collection</span>
           <h2>Master New Skills Today.</h2>
-          <p>Explore ${visibleCatalog.length || 0} courses with ${totalModules || 0} modules. Course access starts after admin assignment.</p>
+          <p>Explore ${visibleCatalog.length || 0} available courses with ${totalModules || 0} modules. Assigned courses are marked in the catalog.</p>
           <div class="catalog-hero-actions">
-            <div class="catalog-search-pill">Search for courses, tools, or mentors...</div>
-            <button class="primary-btn" type="button">Explore All</button>
+            <label class="catalog-search-pill" for="catalogSearchInput">
+              <input id="catalogSearchInput" type="search" value="${escapeAttr(state.query || "")}" placeholder="Search for courses, tools, or mentors..." autocomplete="off" />
+            </label>
+            <button class="primary-btn" type="button" data-catalog-reset>Explore All</button>
           </div>
         </div>
         <aside class="catalog-hero-stat">
@@ -2004,23 +2034,24 @@
       </div>
       <div class="catalog-card-grid">
         ${visibleCatalog.length
-        ? visibleCatalog.map((course) => courseCatalogCard(course)).join("")
-        : emptyState("No courses available", "Unassigned published courses will appear here when they are ready.")}
+        ? visibleCatalog.map((course) => courseCatalogCard(course, enrolledIds)).join("")
+        : emptyState("No courses available", "Published courses will appear here when they are ready.")}
       </div>
       <section class="catalog-accelerator-card">
         <div>
           <span>Exclusive Opportunity</span>
           <h2>The Developer's Career Accelerator Pack</h2>
           <p>Accelerate your roadmap with mentor-led course resources, project practice, and the next best track from your learning catalog.</p>
-          <button class="primary-btn" type="button">Unlock Next Track</button>
-          <button class="secondary-btn" type="button">Learn More</button>
+          <a class="primary-btn" href="launchpad-detail.html?plan=pro">Unlock Next Track</a>
+          <a class="secondary-btn" href="launchpad-detail.html?plan=advanced">Learn More</a>
         </div>
       </section>
     `;
   }
 
-  function courseCatalogCard(course) {
+  function courseCatalogCard(course, enrolledIds = studentCourseIds()) {
     const modules = parseModules(course.modules);
+    const isAssigned = enrolledIds.has(String(course.id));
     const quizCount = modules.filter((module) => moduleQuiz(module)).length;
     const thumbnail = escapeAttr(courseDisplayImage(course, modules.length));
     const title = escapeHtml(course.title || "Untitled course");
@@ -2028,28 +2059,32 @@
     const instructor = escapeHtml(course.instructor_name || course.mentor_name || "Jenovate Mentor");
     const tag = modules.length >= 3 ? "Hot" : "New";
     const duration = escapeHtml(course.duration || `${modules.length || 1} modules`);
-    const rawPrice = String(course.price || "").trim();
-    const price = rawPrice ? escapeHtml(rawPrice) : "Included";
+    const price = escapeHtml(formatCatalogCoursePrice(course.price));
+    const buyHref = courseDetailCheckoutHref(course);
     return `
       <article class="discovery-course-card" data-catalog-course-card="${escapeAttr(course.id)}">
         <div class="discovery-media">
           <img src="${thumbnail}" alt="">
-          <span class="discovery-status">${escapeHtml(tag)}</span>
+          <span class="discovery-status">${escapeHtml(isAssigned ? "Assigned" : tag)}</span>
           <b class="discovery-price">${price}</b>
         </div>
         <div class="discovery-body">
           <div class="discovery-kicker"><span class="course-category-label">${category}</span><small>${duration}</small></div>
           <h3>${title}</h3>
-          <div class="discovery-rating">★★★★★ <small>${escapeHtml(instructor)}</small></div>
+          <div class="discovery-rating">Rating 5.0 <small>${escapeHtml(instructor)}</small></div>
           <div class="discovery-meta"><span>${modules.length || 1} Modules</span><span>${quizCount} Quizzes</span></div>
           <div class="discovery-actions">
             <button class="secondary-btn" type="button" data-course-detail="${escapeAttr(course.id)}">View Details</button>
-            <button class="primary-btn" type="button" data-course-detail="${escapeAttr(course.id)}">Preview</button>
+            ${isAssigned ? `<button class="primary-btn" type="button" data-start-assigned-course="${escapeAttr(course.id)}">Open</button>` : `<a class="primary-btn" href="${escapeAttr(buyHref)}" data-buy-catalog-course="${escapeAttr(course.id)}">Buy Now</a>`}
           </div>
         </div>
       </article>
     `;
   }
+
+  function courseDetailCheckoutHref(course) { const slug = String(course?.slug || course?.course_slug || course?.handle || "").trim() || String(course?.title || course?.name || course?.id || "course").toLowerCase().replace(/&/g, "and").replace(/\(iot\)/g, "iot").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); return `course-detail.html?course=${encodeURIComponent(slug)}&checkout=1`; }
+
+  function formatCatalogCoursePrice(price) { const raw = String(price ?? "").trim(); if (!raw) return "Included"; const amount = Number(raw.replace(/[^0-9.]/g, "")); return Number.isFinite(amount) && amount > 0 ? `INR ${Math.round(amount).toLocaleString("en-IN")}` : "Free"; }
 
   function renderRailTasks(tasks) {
     const target = document.getElementById("dashboardRailTasks");
@@ -2061,7 +2096,7 @@
     if (quiz) {
       const course = state.data.courses.find((item) => sameId(item.id, quiz.course_id));
       activities.push({
-        icon: "QZ",
+        icon: "Quiz",
         title: "Quiz Completed",
         body: `${course?.title || quiz.module_title || "Course quiz"} ${quiz.score !== undefined ? `- ${quiz.score}/${quiz.total || quiz.max_score || "?"}` : ""}`,
         date: quiz.submitted_at || quiz.created_at
@@ -2140,12 +2175,12 @@
 
   function renderStreakCard() {
     if (!state.student) return;
-    const studentName = firstName(state.student.name || state.student.email || "Student");
+    const studentName = firstName(studentDisplayName(state.student));
     const activeDays = weeklyActiveDateKeys();
     const streak = activeDays.size;
     const today = todayKey();
 
-    setText("streakAvatar", initialsFor(state.student.name || state.student.email));
+    setText("streakAvatar", initialsFor(studentDisplayName(state.student) || state.student.email));
     setText("streakStudentName", studentName);
     setText("streakCoinBalance", formatNumber(state.student.coins));
     setText("streakTitle", `${streak} Day${streak === 1 ? "" : "s"} Streak`);
@@ -2239,7 +2274,6 @@
       if (state.courseSort === "progress-asc") return courseProgress(a).percent - courseProgress(b).percent;
       return courseEnrollmentTime(b) - courseEnrollmentTime(a);
     });
-
     const visibleCourses = courses.slice(0, state.courseVisibleCount);
     const target = document.getElementById("coursesGrid");
     target?.classList.toggle("list-layout", state.courseLayout === "list");
@@ -2250,9 +2284,10 @@
       if (loadMoreWrap) loadMoreWrap.hidden = true;
       return;
     }
-    renderCourseCards("coursesGrid", visibleCourses, { compact: false });
+    renderCourseCards("coursesGrid", visibleCourses, { compact: false }); updateCourseSliderControls();
   }
-
+  function scrollCourseSlider(direction) { const target = document.getElementById("coursesGrid"), card = target?.querySelector(".my-course-card"); if (!target) return; target.scrollBy({ left: direction * (card ? card.getBoundingClientRect().width + 24 : Math.max(280, target.clientWidth * 0.85)), behavior: "smooth" }); window.setTimeout(updateCourseSliderControls, 280); }
+  function updateCourseSliderControls() { const target = document.getElementById("coursesGrid"), shell = target?.closest(".student-course-slider-shell"); if (target && shell) shell.classList.toggle("can-scroll", target.scrollWidth > target.clientWidth + 8); }
   function courseEnrollmentTime(course) {
     const enrollment = state.data.userCourses.find((item) => (
       sameId(item.course_id, course.id)
@@ -2426,7 +2461,7 @@
           <button class="secondary-btn" type="button" data-close-modal>Close</button>
           ${enrolled
             ? `<button class="primary-btn" type="button" data-open-course="${escapeAttr(course.id)}">Start Learning</button>`
-            : '<button class="primary-btn" type="button" disabled title="Admin assignment required">Assignment Required</button>'}
+            : `<a class="primary-btn" href="${escapeAttr(courseDetailCheckoutHref(course))}">View & Buy</a>`}
         </div>
       </div>
     `);
@@ -2491,7 +2526,7 @@
         resources.push({
           id: registerLmsResource(url, title, kind),
           title,
-          meta: `${module.title || `Module ${moduleIndex + 1}`} - ${lesson.duration || `Item ${lessonIndex + 1}`}`,
+          meta: `${module.title || `Module ${moduleIndex + 1}`} - ${lessonDurationLabel(lesson, `Item ${lessonIndex + 1}`)}`,
           label: ext.slice(0, 3),
           kind
         });
@@ -2571,7 +2606,7 @@
           <article class="lesson-about-card reference-overview-card lesson-tab-panel ${activeLessonTab === "overview" ? "active" : ""}" data-lesson-panel="overview">
             <h3>${escapeHtml(selectedTitle)}</h3>
             <div class="lesson-facts">
-              <span>${escapeHtml(selectedLesson?.lesson?.duration || course?.duration || "Self paced")}</span>
+              <span>${escapeHtml(lessonDurationLabel(selectedLesson?.lesson, course?.duration || "Self paced"))}</span>
               <span>${escapeHtml(course?.difficulty || "Intermediate")}</span>
               <span>${escapeHtml(category)}</span>
             </div>
@@ -2673,7 +2708,7 @@
             <strong>${Math.max(lessons.length - Number(progress.completedLessons || 0), 0)} Lessons Left</strong>
             <small>${progress.percent}% complete</small>
           </div>
-          <button class="secondary-btn" type="button" aria-label="More learning actions">⋮</button>
+          <button class="secondary-btn" type="button" aria-label="More learning actions">More</button>
         </footer>
       </aside>
     `;
@@ -2703,8 +2738,9 @@
             <span class="module-summary-main">
               <small>Module ${String(index + 1).padStart(2, "0")}</small>
               <strong>${escapeHtml(module.title || `Module ${index + 1}`)}</strong>
+              ${module.description ? `<em>${escapeHtml(module.description)}</em>` : ""}
             </span>
-            <span class="rail-chevron">⌄</span>
+            <span class="rail-chevron">v</span>
           </summary>
           <div class="module-progress">
             <span style="width:${modulePercent}%"></span>
@@ -2729,11 +2765,11 @@
         return `
                 <li class="${isSelected ? "active" : ""}">
                   <button class="lesson-play-dot ${done ? "done" : ""}" type="button" data-select-lesson="${escapeAttr(key)}" aria-label="Open lesson ${escapeAttr(lesson.title || lessonIndex + 1)}">
-                    ${done ? "✓" : mediaUrl ? "▶" : "○"}
+                    ${done ? "OK" : mediaUrl ? "Play" : "-"}
                   </button>
                   <span>
                     <strong>${lessonIndex + 1}. ${escapeHtml(lesson.title || `Lesson ${lessonIndex + 1}`)}</strong>
-                    <small>${escapeHtml(lesson.duration || "08:15")}</small>
+                    <small>${escapeHtml(lessonDurationLabel(lesson, "Video lesson"))}</small>
                   </span>
                   <span class="lesson-actions">
                   </span>
@@ -2823,16 +2859,16 @@
             <div class="lesson-control-row">
               <div class="lesson-control-left">
                 <button class="lesson-icon-control lesson-play-toggle" type="button" data-lesson-toggle-play ${canSeek ? "" : "disabled"} aria-label="Play lesson">
-                  <span data-lesson-play-icon>▶</span>
+                  <span data-lesson-play-icon>Play</span>
                 </button>
-                <button class="lesson-icon-control" type="button" data-lesson-toggle-mute ${canSeek ? "" : "disabled"} aria-label="Mute lesson">🔊</button>
+                <button class="lesson-icon-control" type="button" data-lesson-toggle-mute ${canSeek ? "" : "disabled"} aria-label="Mute lesson">Audio</button>
                 <span class="lesson-time-readout" data-lesson-time>0:00 / 0:00</span>
               </div>
               <div class="lesson-control-right">
-                <button class="lesson-icon-control" type="button" data-lesson-seek="-10" ${canSeek ? "" : "disabled"} aria-label="Rewind 10 seconds">↺10</button>
-                <button class="lesson-icon-control" type="button" data-lesson-seek="10" ${canSeek ? "" : "disabled"} aria-label="Forward 10 seconds">10↻</button>
+                <button class="lesson-icon-control" type="button" data-lesson-seek="-10" ${canSeek ? "" : "disabled"} aria-label="Rewind 10 seconds">-10</button>
+                <button class="lesson-icon-control" type="button" data-lesson-seek="10" ${canSeek ? "" : "disabled"} aria-label="Forward 10 seconds">+10</button>
                 ${[0.75, 1, 1.25, 1.5, 2].map((speed) => `<button class="lesson-speed-chip ${speed === 1 ? "active" : ""}" type="button" data-lesson-speed="${speed}" ${canSeek ? "" : "disabled"}>${speed}x</button>`).join("")}
-                <button class="lesson-icon-control" type="button" data-lesson-fullscreen aria-label="Open fullscreen">⛶</button>
+                <button class="lesson-icon-control" type="button" data-lesson-fullscreen aria-label="Open fullscreen">Full</button>
               </div>
             </div>
           </div>
@@ -2923,12 +2959,12 @@
     const timeReadout = document.querySelector("[data-lesson-time]");
     if (timeReadout) timeReadout.textContent = `${formatVideoTime(current)} / ${formatVideoTime(duration)}`;
     const playIcon = document.querySelector("[data-lesson-play-icon]");
-    if (playIcon) playIcon.textContent = video.paused ? "▶" : "Ⅱ";
+    if (playIcon) playIcon.textContent = video.paused ? "Play" : "Pause";
     const playButton = document.querySelector("[data-lesson-toggle-play]");
     if (playButton) playButton.setAttribute("aria-label", video.paused ? "Play lesson" : "Pause lesson");
     const muteButton = document.querySelector("[data-lesson-toggle-mute]");
     if (muteButton) {
-      muteButton.textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
+      muteButton.textContent = video.muted || video.volume === 0 ? "Muted" : "Audio";
       muteButton.setAttribute("aria-label", video.muted || video.volume === 0 ? "Unmute lesson" : "Mute lesson");
     }
   }
@@ -3063,13 +3099,13 @@
     const quiz = moduleQuiz(module);
     if (!quiz || !quiz.questions.length) return "";
     const best = bestQuizAttempt(course.id, module.id, quiz.id);
-    const attemptQuestionsCount = Math.min(5, quiz.questions.length);
+    const attemptQuestionsCount = Math.min(Number(quiz.random_count || 15) || 15, quiz.questions.length);
     const sampleQuestions = quiz.questions.slice(0, attemptQuestionsCount);
     const totalMarks = sampleQuestions.reduce((sum, q) => sum + Number(q.marks || 1), 0);
     const passMarks = quizAttemptPassMarks(quiz, totalMarks);
     return `
       <div class="module-quiz-card">
-        <span class="quiz-icon">QZ</span>
+        <span class="quiz-icon">Quiz</span>
         <div>
           <strong>${escapeHtml(quiz.title || "Module Quiz")}</strong>
           <small>${attemptQuestionsCount} questions - ${totalMarks} marks${passMarks ? ` - Pass ${passMarks}` : ""}</small>
@@ -3108,13 +3144,22 @@
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    const attemptQuestions = shuffled.slice(0, 5 + Math.floor(Math.random() * 3));
+    const configuredCount = Number(quiz.random_count || 15) || 15;
+    const attemptQuestions = shuffled.slice(0, Math.min(configuredCount, shuffled.length));
     const totalMarks = attemptQuestions.reduce((sum, q) => sum + Number(q.marks || 1), 0);
     const passMarks = quizAttemptPassMarks(quiz, totalMarks);
     const best = bestQuizAttempt(course.id, module.id, quiz.id);
     const timerSeconds = Math.max(0, Number(quiz.timer_minutes || 0)) * 60;
     openModal(quiz.title || `${course.title || "Course"} Quiz`, `
       <form class="quiz-attempt-form stitch-quiz-screen" id="quizAttemptForm">
+        <header class="quiz-shell-header">
+          <div>
+            <span class="quiz-kicker">Knowledge Check</span>
+            <h2>${escapeHtml(quiz.title || `${course.title || "Course"} Quiz`)}</h2>
+            <p>${escapeHtml(course.title || "Course")} - ${escapeHtml(module.title || "Module")}</p>
+          </div>
+          <button class="quiz-exit-btn" type="button" data-close-modal aria-label="Close quiz">Close</button>
+        </header>
         <div class="quiz-progress-strip">
           <span>Question 01 of ${String(attemptQuestions.length).padStart(2, "0")}</span>
           <div><i style="width:${Math.max(1, Math.round(100 / Math.max(attemptQuestions.length, 1)))}%"></i></div>
@@ -3144,9 +3189,10 @@
           </div>
         </section>
         <aside class="quiz-overview-panel">
-          <h3>Quiz Overview</h3>
+          <span class="quiz-kicker">Overview</span>
+          <h3>${attemptQuestions.length} Questions</h3>
           <div class="quiz-legend">
-            <span>Answered</span><span>Unanswered</span><span>Current</span><span>Flagged</span>
+            <span>Answered</span><span>Current</span>
           </div>
           <div class="quiz-number-grid">
             ${Array.from({ length: attemptQuestions.length }, (_, index) => `
@@ -3154,11 +3200,11 @@
             `).join("")}
           </div>
           <div class="quiz-help-card">
-            <strong>Need assistance?</strong>
-            <p>${timerSeconds ? "This quiz will auto-submit when the timer ends." : "If you experience technical issues, contact the system administrator immediately."}</p>
+            <strong>${timerSeconds ? "Timer Active" : "No Timer"}</strong>
+            <p>${timerSeconds ? "This quiz will auto-submit when the timer ends." : "Complete every question before submitting."}</p>
           </div>
           <div class="quiz-help-card">
-            <strong>Attempts</strong>
+            <strong>Attempt Rules</strong>
             <p>${priorAttempts.length}${maxAttempts ? ` / ${maxAttempts}` : ""} used. Pass marks: ${passMarks}/${totalMarks}.</p>
           </div>
         </aside>
@@ -3429,7 +3475,6 @@
       state.selectedTaskId = "";
     }
 
-    // Update tab active classes
     document.querySelectorAll("#tasksView [data-task-filter]").forEach((btn) => {
       const active = btn.dataset.taskFilter === state.taskFilter;
       btn.classList.toggle("active", active);
@@ -3446,7 +3491,6 @@
     const activeTask = visibleTasks.find((task) => sameId(task.id, state.selectedTaskId)) || visibleTasks[0] || tasks[0];
     state.selectedTaskId = activeTask?.id || "";
 
-    // Render left task cards list
     if (!visibleTasks.length) {
       taskListEl.innerHTML = emptyState("No tasks in this tab", "Switch tabs to view other assigned or submitted work.");
     } else {
@@ -3512,7 +3556,7 @@
               <p>Module: ${escapeHtml(batch?.name || "Assigned batch")}</p>
             </div>
             <div class="task-card-footer">
-              <span class="task-calendar-icon">📅</span>
+              <span class="task-calendar-icon">Due</span>
               <small>Assigned ${escapeHtml(assignedDateStr)}</small>
             </div>
           </article>
@@ -3520,11 +3564,10 @@
       }).join("");
     }
 
-    // Render right details main pane
     if (!activeTask) {
       taskMainEl.innerHTML = `
         <div class="task-empty-state">
-          <span>📋</span>
+          <span>Task</span>
           <strong>Select a task</strong>
           <p>Pick an assignment from the left to view requirements and submit.</p>
         </div>
@@ -3544,15 +3587,13 @@
           <div class="task-resources-list">
             <div class="resource-card ${isPdf ? "pdf" : "figma"}">
               <div class="resource-icon-container">
-                <span class="resource-icon">${isPdf ? "📄" : "❖"}</span>
+                <span class="resource-icon">${isPdf ? "PDF" : "File"}</span>
               </div>
               <div class="resource-info">
                 <strong>${escapeHtml(title)}</strong>
                 <small>${isPdf ? "PDF" : "RESOURCE"} - Study Material</small>
               </div>
-              <button class="resource-download-btn" type="button" data-open-resource="${escapeAttr(resourceId)}" data-resource-title="${escapeAttr(title)}" data-resource-kind="${isPdf ? "pdf" : "file"}" title="Open Resource">
-                <span>↗</span>
-              </button>
+              <button class="resource-download-btn" type="button" data-open-resource="${escapeAttr(resourceId)}" data-resource-title="${escapeAttr(title)}" data-resource-kind="${isPdf ? "pdf" : "file"}" title="Open Resource"><span>Open</span></button>
             </div>
           </div>
         `;
@@ -3575,7 +3616,7 @@
         submitBoxHtml = `
           <div class="task-submit-card submitted">
             <div class="task-submit-header">
-              <span class="task-submit-icon">✅</span>
+              <span class="task-submit-icon">OK</span>
               <div>
                 <strong>Submission Saved Successfully</strong>
                 <small>Submitted on ${escapeHtml(formatDate(activeSubmission.submitted_at || activeSubmission.created_at))}</small>
@@ -3586,6 +3627,9 @@
               <button class="primary-btn text-center" type="button" data-open-resource="${escapeAttr(registerLmsResource(taskSubmissionLink(activeSubmission), "Your Submission", "file"))}" data-resource-title="Your Submission" data-resource-kind="file">
                 View Your Submission
               </button>
+              <button class="secondary-btn text-center" type="button" data-open-task="${escapeAttr(activeTask.id)}">
+                Resubmit
+              </button>
             </div>
           </div>
         `;
@@ -3593,7 +3637,7 @@
         submitBoxHtml = `
           <div class="task-submit-card">
             <div class="task-submit-header">
-              <span class="task-submit-icon">📤</span>
+              <span class="task-submit-icon">OK</span>
               <div>
                 <strong>Submit Your Work</strong>
                 <small>Paste a shareable project link or upload your file.</small>
@@ -3687,6 +3731,7 @@
         return `<option value="${escapeAttr(item.id)}" ${sameId(item.id, batch?.id) ? "selected" : ""}>${escapeHtml(label)}</option>`;
       }).join("") : `<option value="">No batch assigned</option>`;
       chatBatchSelect.disabled = batches.length <= 1;
+      if (chatBatchSelect.value) state.selectedBatchId = chatBatchSelect.value;
     }
 
     if (sidebar) {
@@ -3695,11 +3740,10 @@
       } else {
         const students = classmatesForBatch(batch);
         const mentorName = mentor?.name || "Not assigned";
-        const courseTitle = course?.title || course?.name || "PYTHON";
+        const courseTitle = course?.title || course?.name || "Course not assigned";
         const batchPeriodStr = batchPeriod(batch) || "14 May 2026";
         const statusLabel = batch.status && batch.status.toLowerCase() !== "draft" ? batch.status.toUpperCase() : "";
 
-        // Filter classmates list to render instructors
         const instructors = [mentor].filter(Boolean);
         const instructorsHtml = instructors.length ? instructors.map((user) => `
           <div class="batch-instructor-row">
@@ -3723,12 +3767,12 @@
           <div class="batch-sidebar-header">
             <span class="sidebar-eyebrow">LEARNING HUB</span>
             <h2 class="sidebar-title">${escapeHtml(batch.name || "Your Batch")}</h2>
-            ${statusLabel ? `<span class="sidebar-status-badge">• ${escapeHtml(statusLabel)}</span>` : ""}
+            ${statusLabel ? `<span class="sidebar-status-badge">${escapeHtml(statusLabel)}</span>` : ""}
           </div>
 
           <div class="batch-sidebar-cards">
             <div class="sidebar-card">
-              <div class="sidebar-card-icon">👤</div>
+              <div class="sidebar-card-icon">M</div>
               <div class="sidebar-card-info">
                 <small>MENTOR</small>
                 <strong>${escapeHtml(mentorName)}</strong>
@@ -3736,7 +3780,7 @@
             </div>
 
             <div class="sidebar-card">
-              <div class="sidebar-card-icon">📅</div>
+              <div class="sidebar-card-icon">D</div>
               <div class="sidebar-card-info">
                 <small>PERIOD</small>
                 <strong>${escapeHtml(batchPeriodStr)}</strong>
@@ -3744,7 +3788,7 @@
             </div>
 
             <div class="sidebar-card">
-              <div class="sidebar-card-icon">📖</div>
+              <div class="sidebar-card-icon">C</div>
               <div class="sidebar-card-info">
                 <small>COURSE</small>
                 <strong>${escapeHtml(courseTitle)}</strong>
@@ -3763,10 +3807,9 @@
           </div>
         `;
 
-        // Update online status student count
         const onlineStatusEl = document.getElementById("chatOnlineStatus");
         if (onlineStatusEl) {
-          onlineStatusEl.textContent = `• ${students.length} Students Online`;
+          onlineStatusEl.textContent = `${students.length} students online`;
         }
       }
     }
@@ -3805,6 +3848,7 @@
       const mine = sameId(message.user_id, state.student.id);
       const isMentor = user?.role === "mentor";
       const reply = message.parent_id ? messages.find((item) => sameId(item.id, message.parent_id)) : null;
+      const replyUser = reply ? state.data.users.find((item) => sameId(item.id, reply.user_id)) : null;
       const dateLabel = message.created_at ? formatDate(message.created_at) : "Recent";
       const divider = dateLabel !== lastDateLabel ? `<div class="chat-date-divider"><span>${escapeHtml(dateLabel)}</span></div>` : "";
       lastDateLabel = dateLabel;
@@ -3821,9 +3865,9 @@
             <span class="chat-message-time">${escapeHtml(timeStr)}</span>
           </div>
           <div class="chat-message-bubble">
-            ${reply ? `<div class="reply-preview">Replying to ${escapeHtml(truncate(reply.message || "", 80))}</div>` : ""}
+            ${reply ? `<div class="reply-preview">Replying to ${escapeHtml(replyUser?.name || replyUser?.email || "User")}: ${escapeHtml(truncate(reply.message || "", 80))}</div>` : ""}
             <p class="chat-message-text">${escapeHtml(message.message || "")}</p>
-            <button class="chat-bubble-reply-btn" type="button" data-reply-chat="${escapeAttr(message.id)}">reply</button>
+            <div class="chat-message-actions"><span class="chat-message-action-author">${escapeHtml(authorName)}${roleTag}</span><button class="chat-bubble-reply-btn" type="button" data-reply-chat="${escapeAttr(message.id)}">Reply</button></div>
           </div>
         </div>
       `;
@@ -3887,7 +3931,6 @@
     const submitButton = document.getElementById("questionSubmitBtn");
     if (submitButton) submitButton.disabled = !courses.length;
 
-    // Filter tabs active class
     const filterTabs = document.querySelector(".disc-filter-tabs");
     if (filterTabs) {
       filterTabs.querySelectorAll("button").forEach(button => {
@@ -3897,7 +3940,6 @@
 
     let questions = myQuestions();
 
-    // Localized sidebar search filter
     if (state.discQuery) {
       questions = questions.filter(q =>
         String(q.title || "").toLowerCase().includes(state.discQuery) ||
@@ -3905,7 +3947,6 @@
       );
     }
 
-    // Global header search filter
     questions = filteredRecords(questions, ["title", "description", "status"]);
 
     const filter = state.questionsFilter || "all";
@@ -3926,13 +3967,11 @@
 
     if (!questions.length) {
       target.innerHTML = `<div style="text-align: center; color: var(--st-muted); padding: 24px; font-size: 13px;">No discussions found</div>`;
-      // Clear thread if no questions are present
       state.selectedQuestionId = null;
       renderQuestionThread(null);
       return;
     }
 
-    // Auto-select first question if none selected or if selected is not in current view
     let activeQuestion = questions.find(q => sameId(q.id, state.selectedQuestionId));
     if (!activeQuestion && questions.length > 0) {
       activeQuestion = questions[0];
@@ -3943,7 +3982,7 @@
       const course = state.data.courses.find((item) => sameId(item.id, question.course_id));
       const res = question.review_notes || question.response || question.feedback || "";
       const answered = Boolean(res) || /resolved|answered|complete|approved|reviewed/i.test(question.status);
-      const studentName = state.student?.name || "Student";
+      const studentName = studentDisplayName(state.student);
       const initials = initialsFor(studentName);
       const activeClass = sameId(question.id, state.selectedQuestionId) ? "active" : "";
       const courseName = course?.title || course?.name || "General support";
@@ -3956,7 +3995,7 @@
             <div class="disc-card-meta">
               <span class="disc-tag">${escapeHtml(truncate(courseName, 20))}</span>
               <span class="disc-card-stats">
-                ${answered ? `<span style="color: var(--st-success);">💬 Answered</span>` : `<span>⏱ Pending</span>`}
+                ${answered ? `<span style="color: var(--st-success);">Answered</span>` : `<span>Pending</span>`}
               </span>
             </div>
           </div>
@@ -3985,7 +4024,6 @@
     const mainPane = document.getElementById("discMain");
     if (!mainPane) return;
 
-    // Remove any previous thread content
     const existingThread = document.getElementById("discThreadContainer");
     if (existingThread) existingThread.remove();
 
@@ -3999,7 +4037,7 @@
     if (emptyPane) emptyPane.hidden = true;
 
     const course = state.data.courses.find((item) => sameId(item.id, question.course_id));
-    const studentName = state.student?.name || "Student";
+    const studentName = studentDisplayName(state.student);
     const studentInitials = initialsFor(studentName);
     const dateStr = formatDate(question.created_at) || "Recent";
     const courseName = course?.title || course?.name || "General support";
@@ -4007,7 +4045,6 @@
     const response = question.review_notes || question.response || question.feedback || "";
     const answered = Boolean(response) || /resolved|answered|complete|approved|reviewed/i.test(question.status);
 
-    // Dynamic but deterministic view & like counters using a simple hash code
     const hashCode = (str) => {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
@@ -4037,7 +4074,7 @@
         <div class="disc-answers-section">
           <h3 class="disc-answers-title">Answers (1)</h3>
           <article class="disc-answer-card best-answer">
-            <div class="disc-best-badge">★ BEST ANSWER</div>
+            <div class="disc-best-badge">BEST ANSWER</div>
             <div class="disc-answer-author">
               <div class="disc-avatar mentor-avatar" aria-hidden="true">${escapeHtml(mentorInitials)}</div>
               <div class="disc-author-info">
@@ -4049,7 +4086,7 @@
               ${formattedAnswer}
             </div>
             <div class="disc-answer-actions">
-              <button class="text-btn" type="button">Reply</button>
+              <button class="text-btn" type="button" data-disc-follow-up="${escapeAttr(question.id)}">Ask follow-up</button>
             </div>
           </article>
         </div>
@@ -4059,10 +4096,10 @@
         <div class="disc-answers-section">
           <h3 class="disc-answers-title">Answers (0)</h3>
           <div class="disc-pending-answer">
-            <div class="disc-pending-icon">⏱</div>
+            <div class="disc-pending-icon">Pending</div>
             <div>
               <strong>Pending Mentor Response</strong>
-              <p>Our LMS mentor team has been notified. You'll receive a response here within 2–4 hours.</p>
+              <p>Our LMS mentor team has been notified. You'll receive a response here within 2-4 hours.</p>
             </div>
           </div>
         </div>
@@ -4112,7 +4149,7 @@
 
         ${question.drive_link || question.file_url ? `
           <div class="disc-attachment-card">
-            <div class="disc-attachment-icon">📎</div>
+            <div class="disc-attachment-icon">File</div>
             <div class="disc-attachment-details">
               <strong>Attached Resource</strong>
               <small>Study material</small>
@@ -4126,7 +4163,7 @@
 
       <div class="disc-stats-bar">
         <span class="disc-like-count">${likeCount} likes</span>
-        <button class="disc-action-btn like-btn" type="button">❤️ Like</button>
+        <button class="disc-action-btn like-btn" type="button">Like</button>
       </div>
 
       ${answerHtml}
@@ -4134,8 +4171,6 @@
 
     mainPane.appendChild(threadContainer);
 
-    // Bind interactive actions on the thread
-    // Like button
     const likeBtn = threadContainer.querySelector(".disc-action-btn.like-btn");
     if (likeBtn) {
       likeBtn.addEventListener("click", () => {
@@ -4146,13 +4181,12 @@
           let val = parseInt(valEl.innerText) || 0;
           val = isLiked ? val + 1 : val - 1;
           valEl.innerText = `${val} likes`;
-          likeBtn.innerHTML = isLiked ? "❤️ Liked" : "❤️ Like";
+          likeBtn.innerHTML = isLiked ? "Liked" : "Like";
         }
       });
     }
 
 
-    // Copy code buttons
     threadContainer.querySelectorAll(".copy-code-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const wrapper = btn.closest(".code-block-wrapper");
@@ -4162,6 +4196,16 @@
         });
       });
     });
+  }
+
+  function openQuestionComposer(options = {}) {
+    const source = options.followUpId ? myQuestions().find((question) => sameId(question.id, options.followUpId)) : null;
+    if (source) {
+      setValue("questionCourse", source.course_id || "");
+      setValue("questionTitle", `Follow-up: ${source.title || "Question"}`);
+    }
+    document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "false");
+    window.setTimeout(() => document.getElementById(source ? "questionDetails" : "questionTitle")?.focus(), 0);
   }
 
   function mentorNameForQuestion(index = 0) {
@@ -4190,7 +4234,7 @@
     const statusLabel = escapeHtml(humanizeSupportStatus(ticket.status));
     const dateStr = escapeHtml(formatDateTime(ticket.updated_at || ticket.created_at));
     const category = escapeHtml((ticket.category || "general").toUpperCase());
-    const unreadLabel = unread ? ` · ${unread} NEW` : " · NO UNREAD";
+    const unreadLabel = unread ? ` - ${unread} NEW` : " - NO UNREAD";
     const ticketId = escapeAttr(ticket.id || ticket.ticket_id);
     return `
       <article class="support-ticket-item" data-ticket-id="${ticketId}">
@@ -4202,7 +4246,7 @@
         <p class="ticket-preview">${escapeHtml(truncate(ticket.message || "", 140))}</p>
         <div class="ticket-footer-row">
           <span class="ticket-category-tag">${category}${unreadLabel}</span>
-          <button class="ticket-view-link" type="button" data-open-support-ticket="${ticketId}">View Thread →</button>
+          <button class="ticket-view-link" type="button" data-open-support-ticket="${ticketId}">View Thread</button>
         </div>
       </article>
     `;
@@ -4269,7 +4313,7 @@
       recipient_user_id: admin.id,
       recipient_role: "admin",
       title: "New Support Ticket",
-      body: `From: ${state.student.name || state.student.email || "Student"} | Role: Student | Category: ${ticket.category || "general"} | Subject: ${ticket.subject || "Support ticket"}`,
+      body: `From: ${studentDisplayName(state.student)} | Role: Student | Category: ${ticket.category || "general"} | Subject: ${ticket.subject || "Support ticket"}`,
       channel: "in_app",
       is_read: false,
       created_at: new Date().toISOString()
@@ -4420,7 +4464,6 @@
   }
 
   function renderShop() {
-    // Update coin balance in the new hero banner
     setText("shopCoinBalance", formatNumber(state.student.coins));
 
     const purchases = new Set(state.data.purchases
@@ -4444,7 +4487,7 @@
       const inStock = item.stock === undefined || item.stock === null || Number(item.stock) > 0;
       const canBuy = inStock && !owned && Number(state.student.coins || 0) >= price;
       const btnClass = owned ? "primary-btn owned-btn" : "primary-btn";
-      const btnLabel = owned ? "✓ Owned" : "Redeem";
+      const btnLabel = owned ? "Owned" : "Redeem";
       return `
         <article class="shop-card">
           <img src="${escapeAttr(item.image_url || rewardDisplayImage(index))}" alt="${escapeAttr(item.name || "Reward item")}" loading="lazy" />
@@ -4504,11 +4547,10 @@
     if (!target) return;
     const batch = currentBatch();
     const courses = enrolledCourses();
-    const profileName = state.student.name || "Student";
+    const profileName = studentDisplayName(state.student);
     const profileEmail = state.student.email || "";
     const streak = currentStreak();
 
-    // Top banner card
     target.innerHTML = `
       <div class="profile-banner-glass">
         <div class="banner-glass-left">
@@ -4526,18 +4568,15 @@
       </div>
     `;
 
-    // Metrics cards
     setText("profileCoinsVal", formatNumber(state.student.coins));
     setText("profileStreakVal", `${streak} Day${streak === 1 ? "" : "s"}`);
     setText("profileEnrolledCount", courses.length);
     setText("profileAverageProgress", `${averageCourseProgress(courses)}%`);
     setText("profileBatchName", batch?.name || "Not assigned");
 
-    // Completed courses count
     const completedCount = courses.filter(c => courseProgress(c).percent === 100).length;
     setText("profileCoursesCount", completedCount);
 
-    // Active Enrollment details
     const activeCourse = state.selectedCourseId
       ? courses.find((course) => sameId(course.id, state.selectedCourseId)) || courses[0]
       : courses[0];
@@ -4599,33 +4638,34 @@
       "photography-visual-storytelling": "course/6. Design & Creative Arts/premium_photo-1737597230774.avif",
       "programming-in-python": "course/1. Technology & Software Development/code.jpg",
       "programming-in-java": "course/1. Technology & Software Development/chris-ried-ieic5Tq8YMk.jpg",
-      "dsa-with-python": "course/1. Technology & Software Development/we.avif",
-      "front-end-web-development": "course/1. Technology & Software Development/mk.avif",
-      "full-stack-web-development": "course/1. Technology & Software Development/st.avif",
+      "dsa-with-python": "course/1. Technology & Software Development/boitumelo-mZ-vSMus7zM.webp",
+      "front-end-web-development": "course/1. Technology & Software Development/fahim-muntashir-v-FOvoL3o.webp",
+      "full-stack-web-development": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
       "senior-sde-interview-prep": "course/1. Technology & Software Development/fotis-fotopoulos-6sAl6aQ4OWI.jpg",
       "full-stack-developer-portfolio": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
       "android-development": "course/1. Technology & Software Development/hossain-khan-UP3SMQSoNsM.jpg",
-      "artificial-intelligence": "course/2. Artificial Intelligence & Data Science/ai.jpg",
-      "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
-      "machine-learning": "course/2. Artificial Intelligence & Data Science/br.jpg",
+      "artificial-intelligence": "course/2. Artificial Intelligence & Data Science/ai.jpg", "artificial-intelligence-and-machine-learning": "course/2. Artificial Intelligence & Data Science/carlos-gil-AsxOJcsaR4g.jpg",
+      "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/clarisse-croset--tikpxRBcsA.webp",
+      "machine-learning": "course/2. Artificial Intelligence & Data Science/steve-a-johnson-WhAQMsdRKMI.jpg",
       "data-science": "course/2. Artificial Intelligence & Data Science/ji.avif",
       "data-engineering-with-sql-and-cloud": "course/2. Artificial Intelligence & Data Science/jonathan-kemper-MMUzS5Qzuus.jpg",
       "data-analytics-with-power-bi": "course/2. Artificial Intelligence & Data Science/yhn.jpg",
       "data-analysis": "course/2. Artificial Intelligence & Data Science/nnii.avif",
       "cyber-security-and-ethical-hacking": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
-      "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/istockphoto-952067022.jpg",
-      "devops": "course/3. Cyber Security, Cloud & DevOps/gettyimages.jpg",
+      "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/glen-carrie-Ls1Npp-C-P8.webp",
+      "devops": "course/3. Cyber Security, Cloud & DevOps/kevin-horvat-Pyjp2zmxuLk.webp",
       "internet-of-things-iot": "course/4. Engineering & Emerging Technologies/premium_photo-1681010317789.avif",
+      "iot-and-robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.webp",
       "embedded-systems": "course/4. Engineering & Emerging Technologies/jeswin-thomas--Cm7hnp4WOg.jpg",
       "vlsi": "course/4. Engineering & Emerging Technologies/adi-goldstein-EUsVwEOsblE.jpg",
       "robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
-      "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/premium_photo.avif",
+      "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/thisisengineering-omrpeqLz6Po.webp",
       "nanotechnology": "course/4. Engineering & Emerging Technologies/marius-masalar-CyFBmFEsytU.jpg",
       "digital-marketing": "course/5. Business, Finance & Marketing/social-sail-Uno9TGPs4pc.jpg",
-      "human-resource-management": "course/5. Business, Finance & Marketing/vitaly-gariev-pg2eJwNVpvY.jpg",
+      "human-resource-management": "course/5. Business, Finance & Marketing/scott-graham-5fNmWej4tAA.webp",
       "finance": "course/5. Business, Finance & Marketing/anne-nygard-x07ELaNFt34.jpg",
       "startup-and-entrepreneurship": "course/5. Business, Finance & Marketing/lala-azizli-OFZUaeYKP3k.jpg",
-      "business-analysis": "course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif",
+      "business-analysis": "course/5. Business, Finance & Marketing/mirea-mazzei-d1Lp7juy6JU.webp",
       "operation-and-supply-chain-management": "course/5. Business, Finance & Marketing/shutter-speed-BQ9usyzHx_w.jpg",
       "e-commerce-operations-management": "course/5. Business, Finance & Marketing/premium_photo-1681488262364.avif",
       "product-and-project-management": "course/5. Business, Finance & Marketing/photo-1590103514966.avif",
@@ -4894,52 +4934,13 @@
       showAlert("Choose one of your enrolled courses before submitting a question.", true);
       return;
     }
-
-    const candidates = [
-      {
-        student_id: state.student.id,
-        batch_id: currentBatch()?.id || null,
-        course_id: courseId,
-        title,
-        description: details,
-        status: "pending"
-      },
-      {
-        student_id: state.student.id,
-        user_id: state.student.id,
-        course_id: courseId,
-        title,
-        description: details,
-        drive_link: link || null,
-        file_url: link || null,
-        status: "pending",
-        type: "question",
-        created_at: new Date().toISOString()
-      },
-      {
-        student_id: state.student.id,
-        course_id: courseId,
-        title,
-        description: details,
-        status: "pending",
-        created_at: new Date().toISOString()
-      },
-      {
-        user_id: state.student.id,
-        course_id: courseId,
-        title,
-        description: details,
-        status: "pending",
-        created_at: new Date().toISOString()
-      }
-    ];
-
     try {
-      await submitQuestionRecord({ courseId, title, details, link });
-      event.target.reset();
-      document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "true");
+      const question = await submitQuestionRecord({ courseId, title, details, link });
+      if (question?.id) state.selectedQuestionId = question.id;
+      state.questionsFilter = "all";
+      event.target.reset(); document.getElementById("discAskOverlay")?.setAttribute("aria-hidden", "true");
       showAlert("Question submitted to your LMS team.");
-      await loadAllData({ silent: true });
+      await loadAllData({ silent: true, force: true });
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to submit question. Check the projects table schema and RLS."), true);
     }
@@ -4947,61 +4948,58 @@
 
   async function submitQuestionRecord({ courseId, title, details, link }) {
     if (getClient()?.rpc) {
-      const { error } = await getClient().rpc("lms_submit_student_question", {
+      const { data, error } = await getClient().rpc("lms_submit_student_question", {
         target_user_id: state.student.id,
         target_course_id: courseId,
         question_title: title,
         question_description: details,
         question_link: link || null
       });
-      if (!error) return;
+      if (!error) return Array.isArray(data) ? data[0] : data;
       if (!isMissingRpcError(error)) throw error;
     }
-
     const isEnrolled = studentCourseIds().has(String(courseId));
     if (!isEnrolled) throw new Error("You can ask questions only for enrolled courses.");
-    await insertFirstWorking("projects", [
-      {
-        student_id: state.student.id,
-        user_id: state.student.id,
-        batch_id: currentBatch()?.id || null,
-        course_id: courseId,
-        title,
-        description: details,
-        drive_link: link || null,
-        file_url: link || null,
-        status: "pending",
-        type: "question",
-        created_at: new Date().toISOString()
-      }
-    ]);
+    const questionBatch = batchForCourse(courseId);
+    const fallbackQuestion = {
+      student_id: state.student.id, user_id: state.student.id,
+      batch_id: questionBatch?.id || null,
+      course_id: courseId, title, description: details,
+      drive_link: link || null, file_url: link || null,
+      status: "pending", type: "question",
+      created_at: new Date().toISOString()
+    };
+    const questionWithoutBatch = { ...fallbackQuestion };
+    delete questionWithoutBatch.batch_id;
+    await insertFirstWorking("projects", [fallbackQuestion, questionWithoutBatch], { retryOnConstraint: true });
+    return fallbackQuestion;
   }
 
   async function postChatMessage(event) {
     event.preventDefault();
     const input = document.getElementById("chatMessage");
     const message = input?.value.trim();
-    const batch = currentBatch();
-    if (!message || !batch) {
-      showAlert("You need an assigned batch before sending messages.", true);
+    const batchId = document.getElementById("chatBatchSelect")?.value || currentBatch()?.id || state.selectedBatchId;
+    if (batchId) state.selectedBatchId = batchId;
+    if (!message || !batchId) {
+      showAlert("Choose a batch before sending messages.", true);
       return;
     }
 
     try {
-      const { error } = await getClient().from("batch_chats").insert({
-        batch_id: batch.id,
-        user_id: state.student.id,
-        message,
-        parent_id: state.replyToChatId,
-        created_at: new Date().toISOString()
-      });
+      const payload = { batch_id: batchId, user_id: state.student.id, message, parent_id: state.replyToChatId, created_at: new Date().toISOString() };
+      const { data, error } = await getClient().from("batch_chats").insert(payload).select(SELECTS.chats).maybeSingle();
       if (error) throw error;
+      state.data.chats = mergeRowsById(state.data.chats, [data || { ...payload, id: randomId() }]);
       state.replyToChatId = null;
       input.value = "";
       input.placeholder = "Write a message to your batch...";
-      showAlert("Message posted.");
-      await refreshChatRows({ force: true });
+      renderChat();
+      clearAlert();
+      showChatStatus("Message posted.");
+      void refreshChatRows({ force: true });
     } catch (error) {
+      showChatStatus("");
       showAlert(userFriendlyError(error, "Unable to post chat message. Check batch chat RLS."), true);
     }
   }
@@ -5075,10 +5073,12 @@
       try {
         const fileUrl = file ? await uploadAssignmentSubmission(file, task.id) : "";
         const result = await submitTaskRecord(task, fileUrl || link, { isResubmission, originalLink: link, fileUrl });
+        state.selectedTaskId = task.id;
+        state.taskFilter = "submitted";
         closeModal();
         const reward = Number(result?.reward_amount || 0);
         showAlert(`${isResubmission ? "Task resubmission" : "Task submission"} saved.${reward ? ` You earned ${reward} coins.` : ""}`);
-        await loadAllData({ silent: true });
+        await loadAllData({ silent: true, force: true });
       } catch (error) {
         showAlert(userFriendlyError(error, "Unable to save task submission. Check task submission RLS."), true);
       } finally {
@@ -5181,7 +5181,7 @@
       const actions = document.getElementById("profileFormActions");
       if (actions) actions.style.display = "none";
       const btnText = document.getElementById("profileEditToggleBtn");
-      if (btnText) btnText.innerHTML = `<span class="edit-icon">✎</span> Edit Details`;
+      if (btnText) btnText.innerHTML = `<span class="edit-icon">Edit</span> Edit Details`;
       await loadAllData({ silent: true });
     } catch (error) {
       showAlert(userFriendlyError(error, "Unable to update profile."), true);
@@ -5189,7 +5189,11 @@
   }
 
   async function updateStudentProfile(payload) {
-    const { error } = await getClient().from("users").update(payload).eq("id", state.student.id);
+    const { error } = await getClient().rpc("lms_update_own_profile", {
+      profile_name: payload.name || null,
+      profile_username: payload.username || null,
+      profile_phone: payload.phone || null
+    });
     if (error) throw error;
     state.student = normalizeUser({ ...state.student, ...payload });
     const index = state.data.users.findIndex((user) => sameId(user.id, state.student.id));
@@ -5267,6 +5271,7 @@
   function handleTopSearch(event) {
     state.query = String(event.target.value || "").trim().toLowerCase();
     clearTimeout(state.searchTimer);
+    if (state.query && !["catalog", "courses", "learn"].includes(state.activeView)) { state.courseVisibleCount = 8; setView("catalog", { historyMode: "none" }); }
     state.searchTimer = setTimeout(renderActiveView, 120);
   }
 
@@ -5344,20 +5349,15 @@
   function enrolledCourses() {
     const ids = studentCourseIds();
     const sourceCourses = mergedCourseRows(state.data.courses, state.data.catalogCourses);
-    return ids.size ? sourceCourses.filter((course) => (
-      ids.has(String(course.id))
-      && (!isArchivedCourse(course) || courseProgress(course).percent >= 100)
-    )) : [];
+    return ids.size ? sourceCourses.filter((course) => ids.has(String(course.id)) && isStudentVisibleCourse(course)) : [];
   }
 
-  function isArchivedCourse(course) {
-    return String(course?.status || "").toLowerCase() === "archived";
-  }
-
+  function isArchivedCourse(course) { return !isStudentVisibleCourse(course); }
+  function isStudentVisibleCourse(course) { return !course?.deleted_at && String(course?.status || "").toLowerCase() === "active"; }
+  function isInactiveRecord(item) { return item?.deleted_at || ["archived", "deleted", "inactive", "cancelled", "removed", "disabled"].includes(String(item?.status || "active").toLowerCase()); }
   function catalogCourses() {
     const courses = mergedCourseRows(state.data.catalogCourses, state.data.courses);
-    return (courses.length ? courses : state.data.courses)
-      .filter((course) => String(course.status || "").toLowerCase() !== "archived");
+    return (courses.length ? courses : state.data.courses).filter((course) => isStudentVisibleCourse(course));
   }
 
   function mergedCourseRows(...sources) {
@@ -5387,14 +5387,13 @@
     const modules = parseModules(course?.modules);
     const lessonCount = modules.reduce((sum, module) => sum + moduleLessons(module).length, 0);
     const quizCount = modules.reduce((sum, module) => sum + Number(moduleQuiz(module)?.questions?.length || 0), 0);
-    const publishedBonus = ["published", "active", "live"].includes(String(course?.status || "").toLowerCase()) ? 1 : 0;
+    const publishedBonus = isStudentVisibleCourse(course) ? 1 : 0;
     return lessonCount * 1000 + quizCount * 100 + modules.length * 10 + publishedBonus;
   }
 
   function studentCourseIds() {
     return assignedCourseIds();
   }
-
   function assignedCourseIds() {
     const ids = new Set();
     parseIdList(state.student.course_ids).forEach((id) => ids.add(String(id)));
@@ -5410,7 +5409,6 @@
       .forEach((batch) => batch.course_id && ids.add(String(batch.course_id)));
     return ids;
   }
-
   function studentMentorIds() {
     const ids = new Set();
     state.data.batches
@@ -5418,26 +5416,26 @@
       .forEach((batch) => batch.mentor_id && ids.add(String(batch.mentor_id)));
     return ids;
   }
-
   function scopedBatches() {
     const courseIds = studentCourseIds();
-    return state.data.batches.filter((batch) => (
-      String(batch.status || "").toLowerCase() !== "archived"
-      && (sameId(batch.id, state.student.batch_id) || courseIds.has(String(batch.course_id)))
-    ));
+    return state.data.batches.filter((batch) => !isInactiveRecord(batch) && (sameId(batch.id, state.student.batch_id) || courseIds.has(String(batch.course_id))));
   }
-
+  function studentBatchFilterIds() { const ids = new Set(parseIdList(state.student?.batch_id).map(String)); parseIdList(state.selectedBatchId).forEach((id) => ids.add(String(id))); state.data.batches.filter((batch) => !isInactiveRecord(batch) && (sameId(batch.id, state.student?.batch_id) || studentCourseIds().has(String(batch.course_id)))).forEach((batch) => ids.add(String(batch.id))); state.data.userCourses.filter((item) => sameId(item.user_id || item.student_id || item.learner_id, state.student?.id) && item.batch_id && !isInactiveRecord(item)).forEach((item) => ids.add(String(item.batch_id))); return Array.from(ids).filter(Boolean); }
   function currentBatch() {
-    return scopedBatches().find((batch) => sameId(batch.id, state.selectedBatchId))
-      || scopedBatches().find((batch) => sameId(batch.id, state.student.batch_id))
-      || scopedBatches()[0]
-      || null;
+    const batches = scopedBatches();
+    return batches.find((batch) => sameId(batch.id, state.selectedBatchId)) || batches.find((batch) => sameId(batch.id, state.student.batch_id)) || batches[0] || (state.selectedBatchId ? { id: state.selectedBatchId } : null);
+  }
+  function batchForCourse(courseId) {
+    const batches = scopedBatches();
+    const enrollment = state.data.userCourses.find((item) => sameId(item.user_id || item.student_id || item.learner_id, state.student.id) && sameId(item.course_id, courseId) && item.batch_id);
+    if (enrollment?.batch_id) return batches.find((batch) => sameId(batch.id, enrollment.batch_id)) || { id: String(enrollment.batch_id) };
+    return batches.find((batch) => sameId(batch.course_id, courseId)) || batches.find((batch) => sameId(batch.id, state.student.batch_id)) || batches[0] || null;
   }
 
   function scopedTasks() {
     const batchIds = new Set(scopedBatches().map((batch) => String(batch.id)));
     return state.data.batchTasks.filter((task) => (
-      String(task.status || "active").toLowerCase() !== "archived"
+      !isInactiveRecord(task)
       && (!task.batch_id || batchIds.has(String(task.batch_id)))
     ));
   }
@@ -5508,8 +5506,10 @@
   }
 
   function submissionForTask(taskId) {
-    return state.data.taskSubmissions.find((submission) => sameId(submission.task_id, taskId)
-      && (sameId(submission.student_id, state.student.id) || sameId(submission.user_id, state.student.id)));
+    return state.data.taskSubmissions
+      .filter((submission) => sameId(submission.task_id, taskId)
+        && (sameId(submission.student_id, state.student.id) || sameId(submission.user_id, state.student.id)))
+      .sort((a, b) => new Date(b.submitted_at || b.created_at || 0) - new Date(a.submitted_at || a.created_at || 0))[0] || null;
   }
 
   function taskSubmissionLink(task) {
@@ -5841,6 +5841,12 @@
     return `${mins}:${String(secs).padStart(2, "0")}`;
   }
 
+  function lessonDurationLabel(lesson, fallback = "Video lesson") {
+    const status = String(lesson?.duration_status || lesson?.durationStatus || "").trim().toLowerCase();
+    const raw = String(lesson?.duration || lesson?.time || "").trim();
+    return !raw || status.includes("estimated") || status.includes("unavailable") || status.includes("requires_source") || /duration unavailable|unavailable|unknown/i.test(raw) ? fallback : raw;
+  }
+
   function averageCourseProgress(courses) {
     if (!courses.length) return 0;
     return Math.round(courses.reduce((sum, course) => sum + courseProgress(course).percent, 0) / courses.length);
@@ -5883,13 +5889,15 @@
     return [courseId || "course", moduleIndex, lessonIndex, lesson?.id || lesson?.title || "lesson"].map((item) => String(item)).join(":");
   }
 
-  function lessonMediaUrl(lesson) {
-    return [lesson?.video_drive_link, lesson?.videoDriveLink, lesson?.video_url, lesson?.videoUrl, lesson?.google_drive_link, lesson?.googleDriveLink, lesson?.url, lesson?.content_url, lesson?.contentUrl].map((item) => String(item || "").trim()).find((item) => item && !looksLikeStudyMaterialUrl(item)) || "";
-  }
+  function lessonMediaUrl(lesson) { const candidates = [lesson?.video_drive_link, lesson?.videoDriveLink, lesson?.video_url, lesson?.videoUrl, lesson?.google_drive_link, lesson?.googleDriveLink, lesson?.drive_link, lesson?.driveLink, lesson?.url, lesson?.content_url, lesson?.contentUrl]; return candidates.map((item) => String(item || "").trim()).find((item) => item && (isVideoLesson(lesson) || !looksLikeStudyMaterialUrl(item))) || ""; }
 
   function lessonMaterialUrl(lesson) {
-    return [lesson?.material_url, lesson?.materialUrl, lesson?.study_material_url, lesson?.studyMaterialUrl, lesson?.notes_url, lesson?.notesUrl, lesson?.pdf_url, lesson?.pdfUrl, lesson?.file_url, lesson?.fileUrl, lesson?.drive_link, lesson?.driveLink, lesson?.content_url, lesson?.contentUrl, lesson?.resource_url, lesson?.resourceUrl].map((item) => String(item || "").trim()).find((item) => item && looksLikeStudyMaterialUrl(item)) || "";
+    const isVideo = isVideoLesson(lesson);
+    const candidates = [lesson?.material_url, lesson?.materialUrl, lesson?.study_material_url, lesson?.studyMaterialUrl, lesson?.notes_url, lesson?.notesUrl, lesson?.pdf_url, lesson?.pdfUrl, lesson?.file_url, lesson?.fileUrl, isVideo ? "" : lesson?.drive_link, isVideo ? "" : lesson?.driveLink, lesson?.content_url, lesson?.contentUrl, lesson?.resource_url, lesson?.resourceUrl];
+    return candidates.map((item) => String(item || "").trim()).find((item) => item && looksLikeStudyMaterialUrl(item)) || "";
   }
+
+  function isVideoLesson(lesson) { const type = String(lesson?.content_type || lesson?.contentType || lesson?.type || "").toLowerCase(); if (/\b(video|recorded|lecture|media)\b/.test(type)) return true; if (/\b(material|resource|pdf|document|note|assignment)\b/.test(type)) return false; return Boolean(lesson?.video_drive_link || lesson?.videoDriveLink || lesson?.video_url || lesson?.videoUrl || lesson?.video || lesson?.media_url); }
 
   function looksLikeStudyMaterialUrl(url) {
     const text = String(url || "").trim(); return Boolean(text) && (/\.(pdf|docx?|pptx?|xlsx?|zip|txt)(?:$|\?|#)/i.test(text) || /\/storage\/v1\/object\/(?:sign|public)\/study-materials\//i.test(text) || /docs\.google\.com\/(?:document|presentation|spreadsheets)\//i.test(text) || (isGoogleDriveUrl(text) && !/\.(mp4|webm|ogg|mov)(?:$|\?|#)/i.test(text)));
@@ -5898,7 +5906,9 @@
   function mediaEmbedUrl(url) {
     if (!url) return "";
     const text = String(url).trim();
-    if (isGoogleDriveUrl(text)) return contentService.providerPreviewUrl?.(text) || "";
+    if (isGoogleDriveUrl(text)) {
+      return contentService.providerFileId?.(text) ? contentService.providerPreviewUrl?.(text) || "" : "";
+    }
     const youtube = youtubeId(text);
     if (youtube) return `https://www.youtube.com/embed/${youtube}`;
     if (/player\.vimeo\.com\/video\//i.test(text)) return text;
@@ -6050,7 +6060,7 @@
             file_url: lesson.file_url || lesson.fileUrl || "",
             url: lesson.url || "",
             content_url: lesson.content_url || lesson.contentUrl || "",
-            material_url: lesson.material_url || lesson.materialUrl || lesson.drive_link || lesson.driveLink || lesson.google_drive_link || lesson.googleDriveLink || ""
+            material_url: lesson.material_url || lesson.materialUrl || (isVideoLesson(lesson) ? "" : lesson.drive_link || lesson.driveLink || lesson.google_drive_link || lesson.googleDriveLink || "")
           }).sort((a, b) => Number(a.order_index || 0) - Number(b.order_index || 0))
       };
     }).sort((a, b) => Number(a.order_index || 0) - Number(b.order_index || 0));
@@ -6116,27 +6126,19 @@
   function normalizeQuizQuestion(question, index = 0) {
     if (!question || typeof question !== "object") return { id: randomId(), text: "", option_a: "", option_b: "", option_c: "", option_d: "", answer: "A", marks: 1 };
 
-    // ── Resolve options from every known format ──────────────────────────────
-
     let opt_a = "", opt_b = "", opt_c = "", opt_d = "";
-
-    // Format 1: flat named keys — option_a / option_b / option_c / option_d
     if (question.option_a || question.option_b) {
       opt_a = String(question.option_a || question.a || "");
       opt_b = String(question.option_b || question.b || "");
       opt_c = String(question.option_c || question.c || "");
       opt_d = String(question.option_d || question.d || "");
     }
-
-    // Format 2: camelCase — optionA / optionB / optionC / optionD
     else if (question.optionA || question.optionB) {
       opt_a = String(question.optionA || "");
       opt_b = String(question.optionB || "");
       opt_c = String(question.optionC || "");
       opt_d = String(question.optionD || "");
     }
-
-    // Format 3: numbered — option1 / option2 / option3 / option4
     else if (question.option1 || question.option2) {
       opt_a = String(question.option1 || "");
       opt_b = String(question.option2 || "");
@@ -6162,8 +6164,6 @@
       opt_c = String(ans.C || ans.c || ans["3"] || ans[3] || "");
       opt_d = String(ans.D || ans.d || ans["4"] || ans[4] || "");
     }
-
-    // Format 6: options — array or object
     else if (question.options !== undefined) {
       const rawOpts = question.options;
 
@@ -6184,8 +6184,6 @@
         opt_d = String(rawOpts.d || rawOpts.D || rawOpts["4"] || rawOpts[3] || "");
       }
     }
-
-    // ── Resolve correct answer ────────────────────────────────────────────────
 
     let rawAnswer = question.answer || question.correct || question.correct_answer
       || question.correctAnswer || question.correct_option
@@ -6307,28 +6305,22 @@
   // Returns the ISO key ("YYYY-MM-DD") for Monday of the current week.
   function thisWeekMondayKey() {
     const now = new Date();
-    const mondayOffset = (now.getDay() + 6) % 7; // getDay(): 0=Sun,1=Mon…6=Sat
+    const mondayOffset = (now.getDay() + 6) % 7; // getDay(): 0=Sun, 1=Mon, ..., 6=Sat
     const monday = new Date(now);
     monday.setDate(now.getDate() - mondayOffset);
     return dateKeyFromDate(monday);
   }
-
-  // Weekly streak state (Mon–Sun).
-  // The count goes 1→7 as the student logs in each day of the week.
   // On the first login of a new week (Monday or later after last week)
   // the count resets to 1.
   function nextDailyStreakState(profile) {
     const today = todayKey();
     const lastActive = dateKeyFromValue(profile?.last_active_date);
     const current = Math.max(0, Math.floor(Number(profile?.streak_count || 0)));
-
-    // Already logged in today — nothing to save
     if (lastActive === today) {
       return { count: current, today, shouldSave: false };
     }
 
     const monday = thisWeekMondayKey();
-    // lastActive is still in this Mon–Sun week if it is >= this Monday
     const isThisWeek = lastActive && lastActive >= monday;
 
     return {
@@ -6361,8 +6353,6 @@
     // Source of truth: streak_count = how many days this week the student logged in.
     // last_active_date = the most recent login day.
     // We fill backward from last_active_date for streak_count days,
-    // clamping strictly to this Mon–Sun window.
-    // NO historical task/progress data is mixed in — that was causing
     // last-week activity to bleed into the current week's dots.
     const monday = thisWeekMondayKey();
     const sunday = weekDays()[6].key; // last day of this week
@@ -6382,7 +6372,7 @@
       if (key >= monday) {
         active.add(key);
       } else {
-        break; // gone past Monday — stop
+        break; // gone past Monday, stop
       }
     }
 
@@ -6484,6 +6474,42 @@
     return String(value || "Student").trim().split(/\s+/)[0] || "Student";
   }
 
+  async function copyProfileReferKey() {
+    const referKey = studentReferKey(state.student);
+    if (!referKey) return showAlert("Your Refer Key is still loading. Please try again in a moment.", true);
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(referKey);
+      else {
+        const input = document.getElementById("profileReferKey");
+        input?.select?.();
+        document.execCommand("copy");
+        input?.blur?.();
+      }
+      showAlert("Refer Key copied!");
+    } catch {
+      showAlert("Copy failed. Select the Refer Key manually.", true);
+    }
+  }
+
+  function studentReferKey(profile = {}) {
+    const key = String(profile?.referral_key || "").trim();
+    return key && !/^jnv-?(?:0+|pending|account)$/i.test(key) ? key.toUpperCase() : "";
+  }
+
+  function studentDisplayName(user = {}) {
+    const value = [
+      user.display_name,
+      user.full_name,
+      user.name,
+      user.username,
+      user.email
+    ]
+      .map((item) => String(item || "").trim())
+      .find((item) => item && !/^(student|student user|learner|learner user|user)$/i.test(item));
+    if (!value) return "Student";
+    return value.includes("@") ? value.split("@")[0] : value;
+  }
+
   function achievements() {
     const courses = enrolledCourses();
     const completed = courses.filter((course) => courseProgress(course).percent >= 100).length;
@@ -6553,14 +6579,14 @@
     `;
   }
 
-  async function insertFirstWorking(table, payloads) {
+  async function insertFirstWorking(table, payloads, options = {}) {
     let lastError = null;
     for (const payload of payloads) {
       const compactPayload = stripNullish(payload);
       const { error } = await getClient().from(table).insert(compactPayload);
       if (!error) return;
       lastError = error;
-      if (!isSchemaShapeError(error)) break;
+      if (!isSchemaShapeError(error) && !(options.retryOnConstraint && isConstraintError(error))) break;
     }
     throw lastError || new Error(`Unable to insert into ${table}.`);
   }
@@ -6577,14 +6603,14 @@
     }
     throw lastError || new Error(`Unable to update ${table}.`);
   }
-
   function normalizeUser(user) {
+    const displayName = studentDisplayName(user);
     return {
       ...user,
       id: user.id ? String(user.id) : "",
-      name: user.name || user.username || user.email || "Student",
+      name: displayName,
       role: String(user.role || "student").toLowerCase(),
-      coins: Number(user.coins || 0),
+      coins: Math.max(Number(user.coins || 0), Number(user.coin_balance || 0)),
       streak_count: Number(user.streak_count || 0),
       last_login_reward_date: user.last_login_reward_date || "",
       reward_history: Array.isArray(user.reward_history) ? user.reward_history : []
@@ -6599,9 +6625,11 @@
   function notifyDailyLoginReward() {
     if (!state.student?.daily_login_reward_claimed) return;
     const amount = Number(state.student.daily_login_reward_amount || 10);
-    showAlert(`🎉 Daily Login Reward Claimed! +${amount} Coins`);
+    const bonus = Number(state.student.daily_login_streak_bonus || 0);
+    showAlert(bonus > 0 ? `Daily Login Reward Claimed! +${amount} Coins including +${bonus} streak bonus` : `Daily Login Reward Claimed! +${amount} Coins`);
     delete state.student.daily_login_reward_claimed;
     delete state.student.daily_login_reward_amount;
+    delete state.student.daily_login_streak_bonus;
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(state.student));
     sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state.student));
   }
@@ -6641,24 +6669,16 @@
       return parsed && typeof parsed === "object" && Object.keys(parsed).length > 0;
     }) || course?.modules || [];
   }
-
+
   function setLoading(active) {
     loadingPanel?.classList.toggle("active", active);
   }
-
   function setSyncStatus(message) {
     if (syncStatus) syncStatus.textContent = "";
   }
-
-  function showAlert(message, isError = false) {
-    if (!alertBox) return;
-    alertBox.textContent = message;
-    alertBox.classList.toggle("error", Boolean(isError));
-    alertBox.classList.add("show");
-    window.clearTimeout(showAlert.timer);
-    showAlert.timer = window.setTimeout(() => alertBox.classList.remove("show"), isError ? 7000 : 3500);
-  }
-
+  function showAlert(message, isError = false) { if (!alertBox) return; alertBox.textContent = message; alertBox.classList.toggle("error", Boolean(isError)); alertBox.classList.add("show"); window.clearTimeout(showAlert.timer); showAlert.timer = window.setTimeout(() => alertBox.classList.remove("show"), isError ? 7000 : 3500); }
+  function clearAlert() { if (!alertBox) return; alertBox.textContent = ""; alertBox.classList.remove("show", "error"); window.clearTimeout(showAlert.timer); }
+  function showChatStatus(message) { const target = document.getElementById("chatStatus"); if (!target) return; target.textContent = message || ""; window.clearTimeout(showChatStatus.timer); if (message) showChatStatus.timer = window.setTimeout(() => { target.textContent = ""; }, 2200); }
   function openModal(title, body) {
     modalTitle.textContent = title;
     modalBody.innerHTML = body;
@@ -6666,7 +6686,6 @@
     modal?.classList.add("open");
     modal?.setAttribute("aria-hidden", "false");
   }
-
   function closeModal() {
     modal?.classList.remove("open");
     modal?.classList.remove("quiz-modal");
@@ -6674,4 +6693,4 @@
     modal?.setAttribute("aria-hidden", "true");
     modalBody.innerHTML = "";
   }
-})();
+})();

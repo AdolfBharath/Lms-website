@@ -26,6 +26,7 @@ lms-ui-redesign.css
 qa-artifacts/
 qa-report/
 test-results/
+other-than-working-files/
 .codex-course-sheets/
 .vscode/
 .vercel/

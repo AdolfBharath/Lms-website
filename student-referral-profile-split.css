@@ -2,6 +2,12 @@
 body[data-ui-build] #referralView.student-view.active {
   display: block !important;
 }
+/* Referral mobile fit and empty-state polish */
+body[data-ui-build] #referralView .referral-studio,body[data-ui-build] #referralView .referral-pass-card,body[data-ui-build] #referralView .referral-share-card{min-width:0!important;max-width:100%!important}
+body[data-ui-build] #referralView #referralCodeText,body[data-ui-build] #referralView #referralCodeValue,body[data-ui-build] #referralView #referralShareText,body[data-ui-build] #referralView #referralFormUrl{overflow-wrap:anywhere!important;word-break:break-word!important}
+body[data-ui-build] #referralView .referral-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+body[data-ui-build] #referralView .referral-status:not(:empty){display:block!important;margin-top:10px!important;padding:10px 12px!important;background:#ecfdf5!important;border:1px solid #bbf7d0!important;border-radius:10px!important;color:#166534!important;font-weight:800!important}
+@media(max-width:640px){body[data-ui-build] #referralView .referral-hero{padding:20px!important}body[data-ui-build] #referralView .referral-action-strip,body[data-ui-build] #referralView .referral-share-actions{display:grid!important;grid-template-columns:1fr!important}body[data-ui-build] #referralView .referral-stat-grid{grid-template-columns:1fr!important}body[data-ui-build] #referralView #referralCodeText{font-size:24px!important}}
 
 body[data-ui-build][data-student-view="referral"] .coin-pill {
   display: inline-flex !important;
@@ -1699,6 +1705,8 @@ body[data-ui-build] #catalogView .catalog-hero-actions {
 }
 
 body[data-ui-build] #catalogView .catalog-search-pill {
+  display: flex !important;
+  align-items: center !important;
   width: min(430px, 100%) !important;
   max-width: none !important;
   height: 38px !important;
@@ -1709,6 +1717,20 @@ body[data-ui-build] #catalogView .catalog-search-pill {
   background: rgba(255, 255, 255, 0.15) !important;
   color: rgba(255, 255, 255, 0.76) !important;
   font-size: 11px !important;
+}
+
+body[data-ui-build] #catalogView .catalog-search-pill input {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font: inherit !important;
+}
+
+body[data-ui-build] #catalogView .catalog-search-pill input::placeholder {
+  color: rgba(255, 255, 255, 0.76) !important;
 }
 
 body[data-ui-build] #catalogView .catalog-search-pill::before {
@@ -2073,3 +2095,38 @@ body[data-ui-build] #catalogView .catalog-filter-row button.active {
 }
 
 /* v55 student navigation: separate catalog, enrolled courses, and player. */
+/* Final Refer Key profile field polish. */
+body[data-ui-build] #profileView .profile-refer-key-group {
+  grid-column: 1 / -1;
+}
+
+body[data-ui-build] #profileView .refer-key-wrapper {
+  align-items: center;
+  gap: 10px;
+}
+
+body[data-ui-build] #profileView #profileReferKey {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #2447e8;
+  background: #f8fbff;
+}
+
+body[data-ui-build] #profileView .profile-copy-btn {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: #3864f6;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(56, 100, 246, 0.18);
+}
+
+body[data-ui-build] #profileView .profile-copy-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

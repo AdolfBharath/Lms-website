@@ -24,6 +24,13 @@
     return "";
   }
 
+  function providerFolderId(url) {
+    const text = String(url || "").trim();
+    const escapedHost = providerHost.replace(/\./g, "\\.");
+    const folder = text.match(new RegExp(`${escapedHost}/drive/folders/([^/?#]+)`, "i"));
+    return folder?.[1] ? decodeURIComponent(folder[1]) : "";
+  }
+
   function directProviderContentUrl(url) {
     const fileId = providerFileId(url);
     const mediaHost = ["https://", providerHost, "/uc?export=download&id="].join("");
@@ -33,13 +40,16 @@
   function providerPreviewUrl(url) {
     const fileId = providerFileId(url);
     const mediaHost = ["https://", providerHost, "/file/d/"].join("");
-    return fileId ? `${mediaHost}${encodeURIComponent(fileId)}/preview` : "";
+    if (fileId) return `${mediaHost}${encodeURIComponent(fileId)}/preview`;
+    const folderId = providerFolderId(url);
+    return folderId ? `https://${providerHost}/embeddedfolderview?id=${encodeURIComponent(folderId)}#grid` : "";
   }
 
   window.JenovateContentService = Object.freeze({
     directProviderContentUrl,
     providerPreviewUrl,
     providerFileId,
+    providerFolderId,
     isProviderUrl
   });
 })();

@@ -3814,3 +3814,27 @@ body[data-ui-build] .qa-waiting-row .text-btn {
     flex-direction: column !important;
   }
 }
+/* Student batch dashboard polish */
+body[data-ui-build] #batchView .batch-layout{grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr)!important;gap:20px!important;align-items:start!important}
+body[data-ui-build] #batchView .batch-sidebar{display:grid!important;gap:16px!important;min-width:0!important}
+body[data-ui-build] #batchView .batch-dashboard-card{padding:18px!important;background:#fff!important;border:1px solid #dfe7f2!important;border-radius:18px!important;box-shadow:0 14px 38px rgba(15,23,42,.06)!important;min-width:0!important}
+body[data-ui-build] #batchView .batch-hero-card{background:linear-gradient(135deg,#f8fbff 0%,#eef8f6 100%)!important}
+body[data-ui-build] #batchView .batch-hero-card p{margin:6px 0 14px!important;color:#475569!important;font-weight:650!important}
+body[data-ui-build] #batchView .batch-hero-card small{display:block!important;color:#64748b!important;line-height:1.55!important;overflow-wrap:anywhere!important}
+body[data-ui-build] #batchView .batch-progress-row{display:flex!important;justify-content:space-between!important;gap:12px!important;color:#334155!important;font-weight:800!important}
+body[data-ui-build] #batchView .batch-progress-track{height:12px!important;margin:8px 0 14px!important;overflow:hidden!important;background:#e5edf7!important;border-radius:999px!important}
+body[data-ui-build] #batchView .batch-progress-track i{display:block!important;height:100%!important;background:linear-gradient(90deg,#2563eb,#14b8a6)!important;border-radius:inherit!important}
+body[data-ui-build] #batchView .batch-dashboard-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+body[data-ui-build] #batchView .batch-metric-card{min-width:0!important;padding:14px!important;background:#f8fafc!important;border:1px solid #e6edf6!important;border-radius:14px!important}
+body[data-ui-build] #batchView .batch-metric-card span{display:block!important;color:#64748b!important;font-size:12px!important;font-weight:800!important;text-transform:uppercase!important}
+body[data-ui-build] #batchView .batch-metric-card strong{display:block!important;margin-top:5px!important;color:#0f172a!important;overflow-wrap:anywhere!important}
+body[data-ui-build] #batchView .batch-dashboard-card header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin-bottom:12px!important}
+body[data-ui-build] #batchView .batch-module-list{display:grid!important;gap:10px!important}
+body[data-ui-build] #batchView .batch-module-row{display:grid!important;grid-template-columns:42px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;width:100%!important;padding:12px!important;text-align:left!important;background:#f8fbff!important;border:1px solid #e5edf7!important;border-radius:12px!important}
+body[data-ui-build] #batchView .batch-module-row span{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;color:#2563eb!important;background:#eaf1ff!important;border-radius:10px!important;font-weight:900!important}
+body[data-ui-build] #batchView .batch-module-row strong{min-width:0!important;color:#1e293b!important;overflow-wrap:anywhere!important}
+body[data-ui-build] #batchView .batch-module-row em{font-style:normal!important;color:#0f766e!important;font-size:12px!important;font-weight:800!important}
+body[data-ui-build] #batchView .batch-announcement-row{display:grid!important;gap:4px!important;padding:11px 0!important;border-top:1px solid #eef2f7!important}
+body[data-ui-build] #batchView .batch-chat-panel{min-width:0!important;max-width:100%!important}
+@media(max-width:1024px){body[data-ui-build] #batchView .batch-layout{grid-template-columns:1fr!important}body[data-ui-build] #batchView .batch-chat-panel{min-height:560px!important}}
+@media(max-width:520px){body[data-ui-build] #batchView .batch-dashboard-grid{grid-template-columns:1fr!important}body[data-ui-build] #batchView .batch-module-row{grid-template-columns:38px minmax(0,1fr)!important}body[data-ui-build] #batchView .batch-module-row em{grid-column:2!important}body[data-ui-build] #batchView .batch-chat-header{align-items:flex-start!important;flex-direction:column!important}body[data-ui-build] #batchView .chat-header-actions{width:100%!important}body[data-ui-build] #batchView .chat-batch-select{width:100%!important}}

@@ -26,7 +26,6 @@
   const QUERY_CACHE_TTL = 45_000;
   const QUERY_CACHE_PREFIX = "jenovate:lms:admin:";
   const MIN_ADMIN_PASSWORD_LENGTH = 8;
-  const DEFAULT_IMPORT_PASSWORD = "Temp@12345";
   const MAX_USER_CSV_BYTES = 1 * 1024 * 1024;
   const MAX_USER_CSV_ROWS = 500;
   const MAX_SUPPORT_ATTACHMENT_BYTES = 10 * 1024 * 1024;
@@ -45,12 +44,12 @@
   const SUPPORT_ATTACHMENT_EXTENSIONS = new Set(["pdf", "jpg", "jpeg", "png", "webp", "csv", "txt", "doc", "docx", "xls", "xlsx"]);
   const SELECTS = {
     users: "id,name,email,role,username,phone,batch_id,expertise,course_ids,coins,streak_count,last_active_date,last_login_reward_date,status,deleted_at,courseNames,created_at,referral,referral_key",
-    courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,image_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
+    courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,image_url,rating,price,discount,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,updated_at,google_form_url",
     batches: "id,name,course_id,mentor_id,capacity,enroll_limit,smart_waitlist,status,start_date,end_date,progress,enrolled_count,created_at",
     userCourses: "id,user_id,student_id,learner_id,course_id,batch_id,created_at,status,deleted_at",
     progress: "student_id,course_id,completed_lessons,completed_modules,rewarded_modules,quiz_completed,quiz_score,updated_at,quiz_attempts,quiz_failed_attempts,quiz_locked,quiz_rewatch_required,quiz_last_score,quiz_last_total,quiz_best_score,module_quiz_state",
     shopItems: "id,name,price,image_url,stock,status,deleted_at,created_at",
-    projects: "id,title,description,status,student_id,batch_id,file_urls,review_notes",
+    projects: "id,title,description,status,student_id,user_id,batch_id,course_id,type,drive_link,file_url,file_urls,review_notes,feedback,reviewed_at,created_at,updated_at",
     batchTasks: "id,batch_id,course_id,title,description,file_url,drive_link,deadline,status,total_marks,published_at,deleted_at,created_by,created_at",
     taskSubmissions: "id,task_id,student_id,user_id,batch_id,course_id,status,drive_link,file_url,file_type,score,marks_obtained,total_marks,is_on_time,graded_at,submitted_at,created_at,deleted_at,feedback",
     quizAttempts: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,time_taken_seconds,duration_seconds,question_count,selected_question_ids,created_at,submitted_at,deleted_at",
@@ -73,7 +72,7 @@
     { key: "userCourses", table: "user_courses", select: SELECTS.userCourses, fallbackSelect: "user_id,course_id,created_at,status", limit: 1000 },
     { key: "progress", table: "student_course_progress", select: SELECTS.progress, limit: 1000 },
     { key: "shopItems", table: "shop_items", select: SELECTS.shopItems, fallbackSelect: "id,name,price,image_url,created_at", limit: PAGE_SIZE },
-    { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,batch_id,file_urls,review_notes", limit: 500 },
+    { key: "projects", table: "projects", select: SELECTS.projects, fallbackSelect: "id,title,description,status,student_id,user_id,batch_id,course_id,type,file_urls,review_notes,feedback,created_at", limit: 500 },
     { key: "batchTasks", table: "batch_tasks", select: SELECTS.batchTasks, fallbackSelect: "id,batch_id,title,description,file_url,drive_link,deadline,created_by,created_at", limit: PAGE_SIZE, order: "created_at.desc" },
     { key: "taskSubmissions", table: "task_submissions", select: SELECTS.taskSubmissions, fallbackSelect: "id,task_id,student_id,status,drive_link,file_url,file_type,submitted_at,feedback", limit: 500, order: "submitted_at.desc" },
     { key: "quizAttempts", table: "student_quiz_attempts", select: SELECTS.quizAttempts, fallbackSelect: "id,student_id,course_id,score,total,pass_score,passed,attempt_number,module_id,module_order,module_title,quiz_id,max_score,answers,created_at,submitted_at", optional: true, limit: 500, order: "submitted_at.desc" },
@@ -103,6 +102,7 @@
     dashboardAnalysisRange: "weekly",
     reportActivityFilter: "all",
     userRole: "all",
+    courseStatusFilter: "all",
     analyticsRange: "daily",   // daily | weekly | monthly
     globalQuery: "",
     supportStatusFilter: "all",
@@ -201,6 +201,7 @@
     state.admin = admin;
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(admin));
     sessionStorage.setItem(LEGACY_SESSION_KEY, JSON.stringify(admin));
+    document.body.classList.remove("admin-auth-pending");
     window.addEventListener("pageshow", enforceLiveSession);
     // NOTE: pagehide/beforeunload session clear removed — it caused session loss
     // on normal in-tab navigation. Session is cleared only on explicit logout.
@@ -226,6 +227,7 @@
       state.admin = admin;
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(admin));
       sessionStorage.setItem(LEGACY_SESSION_KEY, JSON.stringify(admin));
+      document.body.classList.remove("admin-auth-pending");
       renderAdminIdentity();
     } catch (error) {
       if (redirectToActiveSession("admin")) return;
@@ -307,22 +309,23 @@
     document.getElementById("adminAvatar")?.addEventListener("click", () => setView("profile"));
     document.getElementById("adminProfileForm")?.addEventListener("submit", saveAdminProfile);
     document.getElementById("resetProfileFormBtn")?.addEventListener("click", renderProfile);
-    document.getElementById("addCourseBtn").addEventListener("click", () => openCourseModal());
-    document.getElementById("addBatchBtn").addEventListener("click", () => openBatchModal());
+    document.getElementById("addCourseBtn")?.addEventListener("click", () => openCourseModal());
+    document.getElementById("addBatchBtn")?.addEventListener("click", () => openBatchModal());
     document.getElementById("addUserBtn")?.addEventListener("click", () => openUserCreateModal());
     document.getElementById("importUsersBtn")?.addEventListener("click", () => openUserImportModal());
     document.getElementById("exportUsersBtn")?.addEventListener("click", exportFilteredUsersCsv);
     document.getElementById("addEnrollmentBtn")?.addEventListener("click", () => openEnrollmentModal());
     document.getElementById("addTaskBtn")?.addEventListener("click", () => openTaskModal());
-    document.getElementById("addShopBtn").addEventListener("click", () => openShopModal());
+    document.getElementById("addShopBtn")?.addEventListener("click", () => openShopModal());
     document.getElementById("addAnnouncementBtn")?.addEventListener("click", () => openAnnouncementModal());
     document.getElementById("globalSearch")?.addEventListener("input", (event) => {
       state.globalQuery = event.target.value.trim().toLowerCase();
       renderActiveView();
     });
-    document.getElementById("dashboardUserSearch").addEventListener("input", renderDashboardUsers);
-    document.getElementById("userSearch").addEventListener("input", renderUsers);
-    document.getElementById("chatComposer").addEventListener("submit", postChatMessage);
+    document.getElementById("dashboardUserSearch")?.addEventListener("input", renderDashboardUsers);
+    document.getElementById("userSearch")?.addEventListener("input", renderUsers);
+    document.getElementById("courseStatusFilter")?.addEventListener("change", (event) => { state.courseStatusFilter = event.target.value || "all"; renderCourses(); });
+    document.getElementById("chatComposer")?.addEventListener("submit", postChatMessage);
     document.getElementById("supportStatusFilter")?.addEventListener("change", (event) => {
       state.supportStatusFilter = event.target.value || "all";
       renderSupport();
@@ -574,14 +577,9 @@
     return tableClient.clearQueryCache();
   }
 
-  async function loadChats() {
-    try {
-      state.data.chats = await fetchTable(TABLE_SPECS.find((spec) => spec.key === "chats"), { force: true });
-      renderChat();
-      showAlert("Chat refreshed.");
-    } catch (error) {
-      showAlert(error.message || "Unable to refresh chat.", true);
-    }
+  async function loadChats(options = {}) {
+    try { state.data.chats = await fetchTable(TABLE_SPECS.find((spec) => spec.key === "chats"), { force: true }); renderChat(); if (!options.silent) showAlert("Chat refreshed."); }
+    catch (error) { showAlert(error.message || "Unable to refresh chat.", true); }
   }
 
   function setupRealtime() {
@@ -2595,14 +2593,12 @@
   function renderCourses() {
     const grid = document.getElementById("coursesGrid");
     const query = searchQuery();
-    const rows = state.data.courses.filter((course) => matchesText(query, course.title, course.description, course.category, course.instructor_name, course.status, course.price));
+    const statusFilter = state.courseStatusFilter || "all";
+    const rows = state.data.courses.filter((course) => statusFilter === "all" || courseLifecycleStatus(course) === statusFilter).filter((course) => matchesText(query, course.title, course.description, course.category, course.instructor_name, course.status, course.price, course.id));
     grid.innerHTML = rows.length
       ? rows.map((course) => {
-        const enrolled = courseAssignedUserIds(course, "student").size;
-        const coursePrice = formatCoursePrice(course.price);
-        const allModules = adminCourseModules(course, true);
-        const archivedContent = allModules.filter((module) => module?.deleted_at).length
-          + allModules.reduce((sum, module) => sum + (module?.lessons || []).filter((lesson) => lesson?.deleted_at).length, 0);
+        const enrolled = courseAssignedUserIds(course, "student").size, basePrice = numericCoursePrice(course.price), discount = Math.max(0, Number(course.discount || 0)), finalPrice = Math.max(0, basePrice - discount), allModules = adminCourseModules(course, true), lifecycle = courseLifecycleStatus(course);
+        const archivedContent = allModules.filter((module) => module?.deleted_at).length + allModules.reduce((sum, module) => sum + (module?.lessons || []).filter((lesson) => lesson?.deleted_at).length, 0);
         return `
           <article class="course-card">
             <img class="course-thumb" src="${escapeAttr(course.thumbnail_url || "image/login/loginimg.webp")}" alt="">
@@ -2610,19 +2606,20 @@
               <div class="list-row">
                 <div>
                   <h3>${escapeHtml(course.title || "Untitled course")}</h3>
-                  <small>${escapeHtml(course.category || "General")} · ${escapeHtml(course.duration || "No duration")}</small>
+                  <small>ID: ${escapeHtml(course.id || "-")}</small>
                 </div>
-                <span class="badge ${statusColor(course.status)}">${escapeHtml(course.status || "Draft")}</span>
+                <span class="badge ${statusColor(lifecycle)}">${escapeHtml(lifecycle.toUpperCase())}</span>
               </div>
               <p>${escapeHtml(course.description || "No description added.")}</p>
-              <small>${enrolled} students · ${escapeHtml(course.instructor_name || "Academy Mentor")} · ${escapeHtml(coursePrice)}</small>
+              <small>${escapeHtml(course.category || "General")} - ${escapeHtml(course.duration || "No duration")} - ${escapeHtml(course.instructor_name || "Academy Mentor")}</small>
+              <div class="course-inventory-grid">${[["Base", formatCoursePrice(basePrice)], ["Discount", formatCoursePrice(discount)], ["Final", formatCoursePrice(finalPrice)], ["Enrollments", enrolled], ["Created", formatDate(course.created_at)], ["Updated", formatDate(course.updated_at || course.created_at)]].map(([label, value]) => `<span><b>${escapeHtml(label)}</b>${escapeHtml(value)}</span>`).join("")}</div>
               <div class="course-actions">
                 <button class="primary-btn" type="button" data-assign-course="${course.id}">Assign</button>
                 <button class="ghost-btn" type="button" data-edit-course="${course.id}">Edit</button>
                 <button class="ghost-btn" type="button" data-content-course="${course.id}">Content</button>
                 <button class="ghost-btn" type="button" data-duplicate-course="${course.id}">Duplicate</button>
-                <button class="soft-btn" type="button" data-toggle-course="${course.id}">${course.status === "Published" ? "Unpublish" : "Publish"}</button>
-                ${String(course.status || "").toLowerCase() === "archived"
+                <button class="soft-btn" type="button" data-toggle-course="${course.id}">${lifecycle === "active" ? "Move to Draft" : "Make Active"}</button>
+                ${lifecycle === "deleted"
                   ? `<button class="soft-btn" type="button" data-restore-course="${course.id}">Restore</button>`
                   : `<button class="danger-btn" type="button" data-delete-course="${course.id}">Delete</button>`}
                 ${archivedContent ? `<button class="soft-btn" type="button" data-restore-course-content="${course.id}">Recover Content (${archivedContent})</button>` : ""}
@@ -2649,7 +2646,7 @@
       button.addEventListener("click", () => duplicateCourse(button.dataset.duplicateCourse));
     });
     grid.querySelectorAll("[data-delete-course]").forEach((button) => {
-      button.addEventListener("click", () => deleteRecord("courses", button.dataset.deleteCourse));
+      button.addEventListener("click", () => openCourseDeleteModal(findById(state.data.courses, button.dataset.deleteCourse)));
     });
     grid.querySelectorAll("[data-restore-course]").forEach((button) => {
       button.addEventListener("click", () => restoreRecord("courses", button.dataset.restoreCourse, "Draft"));
@@ -2894,7 +2891,7 @@
       button.addEventListener("click", () => openReplyModal(button.dataset.replyChat));
     });
     document.querySelectorAll("[data-delete-chat]").forEach((button) => {
-      button.addEventListener("click", () => deleteRecord("batch_chats", button.dataset.deleteChat));
+      button.addEventListener("click", () => deleteChatMessage(button.dataset.deleteChat));
     });
   }
 
@@ -3080,11 +3077,13 @@
   }
 
   function projectCardCompact(project) {
+    const student = findById(state.data.users, project.student_id || project.user_id), course = findById(state.data.courses, project.course_id), batch = findById(state.data.batches, project.batch_id);
+    const submittedAt = project.submitted_at || project.created_at || project.updated_at;
     return `
       <div class="list-row">
         <div>
           <strong>${escapeHtml(project.title || "Project")}</strong>
-          <small>${escapeHtml(project.student_name || "Unknown student")} · ${formatDate(project.submission_date)}</small>
+          <small>${escapeHtml(student?.name || project.student_name || "Unknown student")} - ${escapeHtml(course?.title || "Course")} - ${escapeHtml(batch?.name || "No batch")} - ${formatDate(submittedAt)}</small>
         </div>
         <div class="row-actions">
           <span class="badge ${statusColor(project.status)}">${escapeHtml(project.status || "pending")}</span>
@@ -3130,9 +3129,9 @@
           <div>
             <label for="courseStatus">Status</label>
             <select id="courseStatus" data-testid="course-status">
-              ${option("Published", course?.status)}
-              ${option("Draft", course?.status)}
-              ${option("Archived", course?.status)}
+              ${option("active", courseLifecycleStatus(course))}
+              ${option("draft", courseLifecycleStatus(course))}
+              ${option("deleted", courseLifecycleStatus(course))}
             </select>
           </div>
           <div>
@@ -3898,8 +3897,8 @@
           <input id="createUserCoins" type="number" min="0" value="0">
         </div>
         <div class="form-row">
-          <label for="createUserReferral">Referral Code</label>
-          <input id="createUserReferral" placeholder="Optional, leave blank to use generated fallback">
+          <label for="createUserReferral">Refer Key</label>
+          <input id="createUserReferral" placeholder="Optional, leave blank to generate a unique refer key">
         </div>
         <div class="form-actions">
           <button class="ghost-btn" type="button" data-testid="create-user-cancel" data-close-modal>Cancel</button>
@@ -3919,7 +3918,7 @@
             role: valueOf("createUserRole"),
             username: valueOf("createUserUsername") || null,
             phone: valueOf("createUserPhone") || null,
-            referral: valueOf("createUserReferral") || null,
+            referral_key: valueOf("createUserReferral") || null,
             coins: Number(valueOf("createUserCoins") || 0)
           }, {
             courseId: valueOf("createUserCourse") || null,
@@ -3940,41 +3939,11 @@
     openModal("Bulk Import Users", `
       <form class="form-grid" id="userImportForm">
         <div class="import-callout">
-          CSV headers supported: name, email, password, role, phone, username, course, course_id, batch, batch_id, coins.
+          CSV headers required: name, email, course, batch, password.
         </div>
         <div class="form-row">
           <label for="userCsvFile">CSV File</label>
           <input id="userCsvFile" type="file" accept=".csv,text/csv" required>
-        </div>
-        <div class="form-row two">
-          <div>
-            <label for="importDefaultRole">Default Role</label>
-            <select id="importDefaultRole">
-              ${option("student", "student")}
-              ${option("mentor", "student")}
-              ${option("admin", "student")}
-            </select>
-          </div>
-          <div>
-            <label for="importDefaultPassword">Default Password</label>
-            <input id="importDefaultPassword" type="password" minlength="${MIN_ADMIN_PASSWORD_LENGTH}" autocomplete="new-password" value="${DEFAULT_IMPORT_PASSWORD}">
-          </div>
-        </div>
-        <div class="form-row two">
-          <div>
-            <label for="importDefaultCourse">Default Course</label>
-            <select id="importDefaultCourse">
-              <option value="">Use CSV course</option>
-              ${state.data.courses.map((course) => option(course.id, "", course.title || course.name || "Course")).join("")}
-            </select>
-          </div>
-          <div>
-            <label for="importDefaultBatch">Default Batch</label>
-            <select id="importDefaultBatch">
-              <option value="">Use CSV batch</option>
-              ${state.data.batches.map((batch) => option(batch.id, "", batch.name || "Batch")).join("")}
-            </select>
-          </div>
         </div>
         <div class="csv-preview" id="csvPreview">Choose a CSV file to preview the first rows.</div>
         <div class="form-actions">
@@ -3996,12 +3965,7 @@
       event.preventDefault();
       try {
         if (!parsedRows.length) parsedRows = await readUserCsv(fileInput.files?.[0]);
-        const result = await importUsersFromCsv(parsedRows, {
-          role: valueOf("importDefaultRole") || "student",
-          password: valueOf("importDefaultPassword") || DEFAULT_IMPORT_PASSWORD,
-          courseId: valueOf("importDefaultCourse") || null,
-          batchId: valueOf("importDefaultBatch") || null
-        });
+        const result = await importUsersFromCsv(parsedRows);
         closeModal();
         await loadAllData({ force: true });
         showAlert(`Imported ${result.created} user${result.created === 1 ? "" : "s"}${result.failed ? `, ${result.failed} skipped` : ""}.`, Boolean(result.failed));
@@ -4306,12 +4270,12 @@
         </div>
         <div class="form-row two">
           <div>
-            <label for="userReferral">Referral Code</label>
+            <label for="userReferral">Refer Key</label>
             <input id="userReferral" value="${escapeAttr(userReferralCode(user))}" ${disabled}>
           </div>
           <div>
-            <label>Referral Source</label>
-            <input value="${escapeAttr(user.referral || user.referral_key ? "Database" : "Generated fallback")}" disabled>
+            <label>Refer Key Source</label>
+            <input value="${escapeAttr(user.referral_key ? "Database" : "Not set")}" disabled>
           </div>
         </div>
         <div class="form-row two">
@@ -4356,7 +4320,7 @@
             role: valueOf("userRole"),
             username: valueOf("userUsername") || null,
             phone: valueOf("userPhone") || null,
-            referral: valueOf("userReferral") || null,
+            referral_key: valueOf("userReferral") || null,
             coins: Number(valueOf("userCoins") || 0)
           }, {
             targetUserId: user.id,
@@ -4402,36 +4366,30 @@
 
   function openProjectReviewModal(project) {
     if (!project) return;
+    const student = findById(state.data.users, project.student_id || project.user_id), course = findById(state.data.courses, project.course_id), batch = findById(state.data.batches, project.batch_id), projectLinks = projectAttachmentLinks(project);
     openReviewModal({
-      title: "Review Project",
-      table: "projects",
-      id: project.id,
-      status: project.status,
-      notes: project.review_notes,
-      noteField: "review_notes",
-      statusOptions: ["pending", "approved", "changes_requested", "rejected"]
+      title: "Review Project", table: "projects", id: project.id, status: project.status, notes: project.review_notes || project.feedback, noteField: "review_notes", statusOptions: ["pending", "approved", "changes_requested", "rejected"],
+      detailsHtml: `<section class="review-context-panel">${[
+        ["Project", project.title || "Project"], ["Student", student?.name || student?.email || "Unknown student"], ["Course", course?.title || "Course not linked"], ["Batch", batch?.name || "No batch"], ["Submitted", formatDateTime(project.created_at || project.updated_at)], ["Status", project.status || "pending"]
+      ].map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}</section><section class="review-context-body"><strong>Description</strong><p>${escapeHtml(project.description || "No project description was submitted.")}</p>${projectLinks.length ? `<div class="review-link-list">${projectLinks.map((link, index) => `<a class="secondary-btn" href="${escapeAttr(link)}" target="_blank" rel="noopener">Open Attachment ${index + 1}</a>`).join("")}</div>` : `<p class="muted">No attachments or links submitted.</p>`}${project.reviewed_at ? `<small class="muted">Last reviewed ${escapeHtml(formatDateTime(project.reviewed_at))}</small>` : ""}</section>`
     });
   }
 
   function openSubmissionReviewModal(submission) {
-    if (!submission) return;
-    const task = findById(state.data.batchTasks, submission.task_id);
-    openReviewModal({
-      title: "Review Submission",
-      table: "task_submissions",
-      id: submission.id,
-      status: submission.status,
-      notes: submission.feedback,
-      score: submission.marks_obtained ?? submission.score,
-      totalMarks: submission.total_marks ?? submission.max_marks ?? task?.total_marks ?? task?.max_marks,
-      noteField: "feedback",
-      statusOptions: ["pending", "approved", "changes_requested", "rejected"]
-    });
+    if (!submission) return; const task = findById(state.data.batchTasks, submission.task_id);
+    openReviewModal({ title: "Review Submission", table: "task_submissions", id: submission.id, status: submission.status, notes: submission.feedback, score: submission.marks_obtained ?? submission.score, totalMarks: submission.total_marks ?? submission.max_marks ?? task?.total_marks ?? task?.max_marks, noteField: "feedback", statusOptions: ["pending", "approved", "changes_requested", "rejected"] });
+  }
+
+  function projectAttachmentLinks(project) {
+    const raw = project?.file_urls; let fileUrls = Array.isArray(raw) ? raw : [];
+    if (!fileUrls.length && typeof raw === "string" && raw.trim()) { try { const parsed = JSON.parse(raw); fileUrls = Array.isArray(parsed) ? parsed : [raw]; } catch { fileUrls = raw.split(/[\n,|]+/); } }
+    return [...new Set([project?.drive_link, project?.file_url, ...fileUrls].map((link) => String(link || "").trim()).filter(Boolean))];
   }
 
   function openReviewModal(config) {
     openModal(config.title, `
       <form class="form-grid" id="reviewForm">
+        ${config.detailsHtml || ""}
         <div class="form-row">
           <label for="reviewStatus">Status</label>
           <select id="reviewStatus">
@@ -4464,14 +4422,8 @@
         return;
       }
       await upsertRecord(config.table, {
-        status: valueOf("reviewStatus"),
-        [config.noteField]: valueOf("reviewNotes"),
-        ...(config.table === "task_submissions" ? {
-          score,
-          marks_obtained: score,
-          total_marks: totalMarks,
-          graded_at: score === null ? null : new Date().toISOString()
-        } : {}),
+        status: valueOf("reviewStatus"), [config.noteField]: valueOf("reviewNotes"), feedback: valueOf("reviewNotes"),
+        ...(config.table === "task_submissions" ? { score, marks_obtained: score, total_marks: totalMarks, graded_at: score === null ? null : new Date().toISOString() } : { reviewed_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
         ...(config.extraPayload || {})
       }, config.id);
     });
@@ -4502,9 +4454,8 @@
   async function toggleCourseStatus(courseId) {
     const course = findById(state.data.courses, courseId);
     if (!course) return;
-    await upsertRecord("courses", {
-      status: course.status === "Published" ? "Draft" : "Published"
-    }, course.id);
+    const nextStatus = courseLifecycleStatus(course) === "active" ? "draft" : "active";
+    await upsertRecord("courses", { status: nextStatus, deleted_at: null }, course.id);
   }
 
   async function toggleShopStatus(itemId) {
@@ -4690,11 +4641,15 @@
   async function insertUserRecord(payload) {
     const candidates = [
       payload,
+      stripKeys(payload, ["referral_key"]),
       stripKeys(payload, ["referral"]),
+      stripKeys(payload, ["referral", "referral_key"]),
       stripKeys(payload, ["course_ids"]),
       stripKeys(payload, ["password"]),
       stripKeys(payload, ["password", "course_ids"]),
+      stripKeys(payload, ["password", "course_ids", "referral_key"]),
       stripKeys(payload, ["password", "course_ids", "referral"]),
+      stripKeys(payload, ["password", "course_ids", "referral", "referral_key"]),
       stripKeys(payload, ["password", "course_ids", "coins"]),
       stripKeys(payload, ["password", "auth_user_id", "course_ids", "referral", "coins", "status"])
     ];
@@ -4704,11 +4659,15 @@
   async function updateUserRecord(id, payload) {
     const candidates = [
       payload,
+      stripKeys(payload, ["referral_key"]),
       stripKeys(payload, ["referral"]),
+      stripKeys(payload, ["referral", "referral_key"]),
       stripKeys(payload, ["course_ids"]),
       stripKeys(payload, ["password"]),
       stripKeys(payload, ["password", "course_ids"]),
+      stripKeys(payload, ["password", "course_ids", "referral_key"]),
       stripKeys(payload, ["password", "course_ids", "referral"]),
+      stripKeys(payload, ["password", "course_ids", "referral", "referral_key"]),
       stripKeys(payload, ["password", "course_ids", "coins"]),
       stripKeys(payload, ["password", "auth_user_id", "course_ids", "referral", "coins", "status"])
     ];
@@ -4986,15 +4945,7 @@
 
   function compatibleWritePayload(table, payload, error) {
     const missingColumn = missingColumnFromError(error);
-    const optionalByTable = {
-      batch_tasks: ["max_marks", "course_id", "published_at", "created_by"],
-      task_submissions: ["max_marks", "batch_id", "course_id", "graded_at"],
-      batches: ["enroll_limit", "smart_waitlist", "progress", "enrolled_count"],
-      courses: ["image_url", "mentor_id", "created_by_admin"],
-      user_courses: ["batch_id", "status", "deleted_at"],
-      announcements: ["updated_at", "expires_at", "course_id", "batch_id", "created_by_role"],
-      shop_items: ["image_url", "stock", "status", "deleted_at"]
-    };
+    const optionalByTable = { batch_tasks: ["max_marks", "course_id", "published_at", "created_by"], task_submissions: ["max_marks", "batch_id", "course_id", "graded_at"], batches: ["enroll_limit", "smart_waitlist", "progress", "enrolled_count"], courses: ["image_url", "mentor_id", "created_by_admin"], user_courses: ["batch_id", "status", "deleted_at"], announcements: ["updated_at", "expires_at", "course_id", "batch_id", "created_by_role"], shop_items: ["image_url", "stock", "status", "deleted_at"] };
     const optional = optionalByTable[table] || [];
     const keysToStrip = missingColumn ? [missingColumn] : optional.filter((key) => Object.prototype.hasOwnProperty.call(payload, key));
     return stripKeys(payload, keysToStrip);
@@ -5003,24 +4954,37 @@
   function missingColumnFromError(error) {
     const message = String(error?.message || "");
     const quoted = message.match(/'([^']+)' column|column '([^']+)'|Could not find the '([^']+)' column/i);
-    if (quoted) return quoted[1] || quoted[2] || quoted[3] || "";
-    const plain = message.match(/column ([a-zA-Z0-9_]+) does not exist/i);
-    return plain?.[1] || "";
+    if (quoted) return quoted[1] || quoted[2] || quoted[3] || ""; return message.match(/column ([a-zA-Z0-9_]+) does not exist/i)?.[1] || "";
+  }
+
+  function openCourseDeleteModal(course, confirmPermanent = false) {
+    if (!course?.id) return; const title = escapeHtml(course.title || "this course");
+    openModal(confirmPermanent ? "Permanently Delete Course" : "Delete Course", `<div class="confirm-panel danger-confirm" role="alertdialog" aria-describedby="courseDeleteHelp"><p id="courseDeleteHelp">${confirmPermanent ? `This permanently removes ${title}, enrollments, batches, chats, tasks, quiz attempts, progress, and linked reports from the LMS.` : `Choose how you want to remove ${title} from learners.`}</p><div class="confirm-choice-grid">${confirmPermanent ? "" : `<button class="soft-btn" type="button" id="draftCourseBtn">Move to Draft<small>Hide from students, keep content and data.</small></button>`}<button class="danger-btn" type="button" id="permanentCourseBtn">${confirmPermanent ? "Yes, Permanently Delete" : "Permanently Delete"}<small>${confirmPermanent ? "This cannot be restored from the portal." : "Requires one more confirmation."}</small></button></div><div class="form-actions"><button class="ghost-btn" type="button" data-close-modal>Cancel</button></div></div>`);
+    document.getElementById("draftCourseBtn")?.addEventListener("click", () => moveCourseToDraft(course.id));
+    document.getElementById("permanentCourseBtn")?.addEventListener("click", () => confirmPermanent ? permanentlyDeleteCourse(course.id) : openCourseDeleteModal(course, true));
+  }
+  async function moveCourseToDraft(courseId) {
+    try { setRecordActionBusy("courses", courseId, true); const usedRpc = await callCourseLifecycleRpc("lms_admin_move_course_to_draft", courseId);
+      if (!usedRpc) { const { error } = await getClient().from("courses").update({ status: "Draft", deleted_at: null }).eq("id", courseId); if (error) throw error; }
+      closeModal(); applyRecordStatus("courses", courseId, { status: "Draft", deleted_at: null }); renderCourses(); await loadAllData({ force: true, silent: true }); showAlert("Course moved to draft.");
+    } catch (error) { showAlert(error.message || "Unable to move course to draft.", true); } finally { setRecordActionBusy("courses", courseId, false); }
+  }
+  async function permanentlyDeleteCourse(courseId) {
+    try { setRecordActionBusy("courses", courseId, true); const usedRpc = await callCourseLifecycleRpc("lms_admin_delete_course", courseId);
+      if (!usedRpc) throw new Error("Course delete RPC is missing. Apply the latest Supabase migration before permanent deletion.");
+      closeModal(); state.data.courses = state.data.courses.filter((course) => !sameId(course.id, courseId)); renderCourses(); await loadAllData({ force: true, silent: true }); showAlert("Course permanently deleted.");
+    } catch (error) { showAlert(error.message || "Permanent course delete failed.", true); } finally { setRecordActionBusy("courses", courseId, false); }
+  }
+  async function callCourseLifecycleRpc(name, courseId) {
+    if (!state.admin?.id || !getClient()?.rpc) return false; const { error } = await getClient().rpc(name, { actor_user_id: state.admin.id, target_course_id: courseId });
+    if (!error) return true; if (isMissingRpcError(error)) return false; throw error;
   }
 
   async function deleteRecord(table, id) {
-    const isCourse = table === "courses";
-    const actionLabel = isCourse ? "Delete" : "Archive";
-    if (!id || !window.confirm(`${actionLabel} this item? You can restore it later.`)) return;
-    try {
-      setRecordActionBusy(table, id, true);
-      const rpcArchived = await archiveRecordViaRpc(table, id);
-      if (!rpcArchived) {
-        await archiveRecordDirect(table, id);
-      }
-      applyRecordStatus(table, id, softDeletePayload(table));
-      renderActiveView();
-      await loadAllData({ force: true });
+    const actionLabel = "Archive"; if (!id || !window.confirm(`${actionLabel} this item? You can restore it later.`)) return;
+    try { setRecordActionBusy(table, id, true); const rpcArchived = await archiveRecordViaRpc(table, id);
+      if (!rpcArchived) await archiveRecordDirect(table, id);
+      applyRecordStatus(table, id, softDeletePayload(table)); renderActiveView(); await loadAllData({ force: true });
       showAlert(`${actionLabel}d successfully.`);
     } catch (error) {
       showAlert(error.message || `${actionLabel} failed.`, true);
@@ -5029,9 +4993,20 @@
     }
   }
 
+  async function deleteChatMessage(id) {
+    if (!id || !window.confirm("Delete this message?")) return;
+    try {
+      setRecordActionBusy("batch_chats", id, true);
+      const { error } = await getClient().rpc("lms_admin_delete_batch_chat", { actor_user_id: state.admin.id, target_message_id: id });
+      if (error) throw error;
+      state.data.chats = state.data.chats.filter((chat) => !sameId(chat.id, id) && !sameId(chat.parent_id, id));
+      await loadChats({ silent: true }); showAlert("Chat message deleted.");
+    } catch (error) { showAlert(error.message || "Delete failed.", true); }
+    finally { setRecordActionBusy("batch_chats", id, false); }
+  }
+
   function softDeletePayload(table) {
     const now = new Date().toISOString();
-    if (table === "batch_chats") return { deleted_at: now, status: "archived" };
     return { status: "archived", deleted_at: now };
   }
 
@@ -5419,10 +5394,13 @@
   }
 
   function formatCoursePrice(price) {
-    const amount = Number(price || 0);
+    const amount = numericCoursePrice(price);
     if (!Number.isFinite(amount) || amount <= 0) return "Free";
     return `INR ${amount.toLocaleString("en-IN")}`;
   }
+
+  function numericCoursePrice(price) { const amount = Number(String(price ?? "").replace(/[^0-9.]/g, "")); return Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0; }
+  function courseLifecycleStatus(course) { const status = String(course?.status || "").toLowerCase(); if (course?.deleted_at || ["deleted", "archived", "removed"].includes(status)) return "deleted"; if (["active", "published", "live"].includes(status)) return "active"; return "draft"; }
 
   function normalizeUser(user) {
     return {
@@ -5433,12 +5411,11 @@
   }
 
   function userReferralCode(user = {}) {
-    const stored = [user.referral_code, user.referralCode, user.referral, user.referral_key, user.referralKey]
+    const stored = [user.referral_key, user.referralKey]
       .map((value) => String(value || "").trim())
-      .find(Boolean);
+      .find((value) => value && !/^jnv-?(?:0+|pending|account)$/i.test(value));
     if (stored) return stored.toUpperCase();
-    const seed = String(user.id || user.email || user.username || "").replace(/[^a-z0-9]/gi, "").toUpperCase();
-    return seed ? `JNV-${seed.slice(-8).padStart(8, "0")}` : "JNV-PENDING";
+    return "";
   }
 
   function normalizeEnrollment(enrollment) {
@@ -5482,15 +5459,23 @@
     if (rows.length < 2) throw new Error("CSV needs a header row and at least one user.");
     if (rows.length - 1 > MAX_USER_CSV_ROWS) throw new Error(`CSV import is limited to ${MAX_USER_CSV_ROWS} users at a time.`);
     const headers = rows[0].map(normalizeCsvHeader);
+    const requiredHeaders = ["name", "email", "course", "batch", "password"];
+    const missingHeaders = requiredHeaders.filter((header) => !headers.includes(header));
+    if (missingHeaders.length) throw new Error(`CSV is missing required header${missingHeaders.length === 1 ? "" : "s"}: ${missingHeaders.join(", ")}.`);
     const users = rows.slice(1).map((cells, index) => {
       const row = { _row: index + 2 };
       headers.forEach((header, cellIndex) => {
         if (header) row[header] = String(cells[cellIndex] || "").trim();
       });
       return row;
-    }).filter((row) => row.email || row.name);
-    const missingEmail = users.find((row) => !row.email);
-    if (missingEmail) throw new Error(`Row ${missingEmail._row} is missing an email address.`);
+    }).filter((row) => row.name || row.email || row.course || row.batch || row.password);
+    const missingValue = users.find((row) => requiredHeaders.some((header) => !row[header]));
+    if (missingValue) {
+      const field = requiredHeaders.find((header) => !missingValue[header]);
+      throw new Error(`Row ${missingValue._row} is missing ${field}.`);
+    }
+    const shortPassword = users.find((row) => String(row.password || "").length < MIN_ADMIN_PASSWORD_LENGTH);
+    if (shortPassword) throw new Error(`Row ${shortPassword._row} password must be at least ${MIN_ADMIN_PASSWORD_LENGTH} characters.`);
     return users;
   }
 
@@ -5509,35 +5494,37 @@
       <tr>
         <td>${escapeHtml(row.name || "Unnamed")}</td>
         <td>${escapeHtml(row.email || "Missing email")}</td>
-        <td>${escapeHtml(row.role || "default")}</td>
-        <td>${escapeHtml(row.course || row.course_id || "default")}</td>
+        <td>${escapeHtml(row.course || "Missing course")}</td>
+        <td>${escapeHtml(row.batch || "Missing batch")}</td>
       </tr>
     `).join("");
     return `
       <div class="csv-preview-meta">${rows.length} row${rows.length === 1 ? "" : "s"} ready. Previewing first ${Math.min(rows.length, 5)}.</div>
       <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Course</th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Course</th><th>Batch</th></tr></thead>
         <tbody>${previewRows}</tbody>
       </table>
     `;
   }
 
-  async function importUsersFromCsv(rows, defaults) {
+  async function importUsersFromCsv(rows) {
     let created = 0;
     let failed = 0;
     const errors = [];
     for (const row of rows) {
       try {
-        const courseId = resolveCourseId(row.course_id || row.course || row.coursetitle || row.course_name) || defaults.courseId;
-        const batchId = resolveBatchId(row.batch_id || row.batch || row.batchname || row.batch_name) || defaults.batchId;
+        const courseId = resolveCourseId(row.course);
+        const batchId = resolveBatchId(row.batch);
+        if (!courseId) throw new Error(`Course not found: ${row.course}`);
+        if (!batchId) throw new Error(`Batch not found: ${row.batch}`);
         await saveAdminUser({
-          name: row.name || row.fullname || row.full_name || row.email,
+          name: row.name,
           email: row.email,
-          password: row.password || defaults.password,
-          role: row.role || defaults.role,
-          phone: row.phone || row.mobile || null,
-          username: row.username || null,
-          coins: Number(row.coins || 0)
+          password: row.password,
+          role: "student",
+          phone: null,
+          username: null,
+          coins: 0
         }, { courseId, batchId });
         created += 1;
       } catch (error) {

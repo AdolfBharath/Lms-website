@@ -266,22 +266,18 @@ const marketplaceDomainGroups = [
       "Programming in Python",
       "Programming in Java",
       "DSA with Python",
+      "Software Engineering",
       "Front-End Web Development",
-      "Full-Stack Web Development",
-      "Senior SDE Interview Prep",
-      "Full Stack Developer Portfolio",
-      "Android Development"
+      "Full-Stack Web Development"
     ]
   },
   {
     category: "Artificial Intelligence & Data",
     courses: [
       "Artificial Intelligence",
+      "Artificial Intelligence and Machine Learning",
       "AI (Agentic & Generative)",
       "Machine Learning",
-      "Data Science",
-      "Data Engineering with SQL & Cloud",
-      "Data Analytics with Power BI",
       "Data Analysis"
     ]
   },
@@ -297,11 +293,10 @@ const marketplaceDomainGroups = [
     category: "Engineering & Emerging Technologies",
     courses: [
       "Internet of Things (IoT)",
+      "IoT & Robotics",
       "Embedded Systems",
       "VLSI",
-      "Robotics",
-      "Hybrid Electric Vehicle",
-      "Nanotechnology"
+      "Hybrid Electric Vehicle"
     ]
   },
   {
@@ -312,19 +307,16 @@ const marketplaceDomainGroups = [
       "Finance",
       "Startup & Entrepreneurship",
       "Business Analysis",
-      "Operation & Supply Chain Management",
-      "E-Commerce Operations Management",
-      "Product & Project Management",
       "Stock Marketing"
     ]
   },
   {
     category: "Design & Creative Arts",
-    courses: ["UI/UX", "Graphic Designing", "AutoCAD", "Car Design"]
+    courses: ["UI/UX", "AutoCAD"]
   },
   {
     category: "Healthcare & Human Sciences",
-    courses: ["Medical Coding", "Clinical Trials & Research", "Psychology", "Counselling Psychology Practice", "Clinical Psychology Basics", "Rehabilitation Psychology"]
+    courses: ["Medical Coding", "Psychology"]
   }
 ];
 
@@ -410,33 +402,36 @@ const marketplaceImageBySlug = {
   "photography-visual-storytelling": "course/6. Design & Creative Arts/premium_photo-1737597230774.avif",
   "programming-in-python": "course/1. Technology & Software Development/code.jpg",
   "programming-in-java": "course/1. Technology & Software Development/chris-ried-ieic5Tq8YMk.jpg",
-  "dsa-with-python": "course/1. Technology & Software Development/we.avif",
-  "front-end-web-development": "course/1. Technology & Software Development/mk.avif",
-  "full-stack-web-development": "course/1. Technology & Software Development/st.avif",
+  "dsa-with-python": "course/1. Technology & Software Development/boitumelo-mZ-vSMus7zM.webp",
+  "software-engineering": "course/1. Technology & Software Development/christopher-gower-m_HRfLhgABo.jpg",
+  "front-end-web-development": "course/1. Technology & Software Development/fahim-muntashir-v-FOvoL3o.webp",
+  "full-stack-web-development": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
   "senior-sde-interview-prep": "course/1. Technology & Software Development/fotis-fotopoulos-6sAl6aQ4OWI.jpg",
   "full-stack-developer-portfolio": "course/1. Technology & Software Development/premium_photo-1720287601920-.avif",
   "android-development": "course/1. Technology & Software Development/hossain-khan-UP3SMQSoNsM.jpg",
   "artificial-intelligence": "course/2. Artificial Intelligence & Data Science/ai.jpg",
-  "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/premium_photo-.avif",
-  "machine-learning": "course/2. Artificial Intelligence & Data Science/br.jpg",
+  "artificial-intelligence-and-machine-learning": "course/2. Artificial Intelligence & Data Science/carlos-gil-AsxOJcsaR4g.jpg",
+  "ai-agentic-and-generative": "course/2. Artificial Intelligence & Data Science/clarisse-croset--tikpxRBcsA.webp",
+  "machine-learning": "course/2. Artificial Intelligence & Data Science/steve-a-johnson-WhAQMsdRKMI.jpg",
   "data-science": "course/2. Artificial Intelligence & Data Science/ji.avif",
   "data-engineering-with-sql-and-cloud": "course/2. Artificial Intelligence & Data Science/jonathan-kemper-MMUzS5Qzuus.jpg",
   "data-analytics-with-power-bi": "course/2. Artificial Intelligence & Data Science/yhn.jpg",
   "data-analysis": "course/2. Artificial Intelligence & Data Science/nnii.avif",
   "cyber-security-and-ethical-hacking": "course/3. Cyber Security, Cloud & DevOps/premium_photoegsd.avif",
-  "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/istockphoto-952067022.jpg",
-  "devops": "course/3. Cyber Security, Cloud & DevOps/gettyimages.jpg",
+  "cloud-computing": "course/3. Cyber Security, Cloud & DevOps/glen-carrie-Ls1Npp-C-P8.webp",
+  "devops": "course/3. Cyber Security, Cloud & DevOps/kevin-horvat-Pyjp2zmxuLk.webp",
   "internet-of-things-iot": "course/4. Engineering & Emerging Technologies/premium_photo-1681010317789.avif",
+  "iot-and-robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
   "embedded-systems": "course/4. Engineering & Emerging Technologies/jeswin-thomas--Cm7hnp4WOg.jpg",
   "vlsi": "course/4. Engineering & Emerging Technologies/adi-goldstein-EUsVwEOsblE.jpg",
   "robotics": "course/4. Engineering & Emerging Technologies/ray-rui-SyzQ5aByJnE.jpg",
-  "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/premium_photo.avif",
+  "hybrid-electric-vehicle": "course/4. Engineering & Emerging Technologies/thisisengineering-omrpeqLz6Po.webp",
   "nanotechnology": "course/4. Engineering & Emerging Technologies/marius-masalar-CyFBmFEsytU.jpg",
   "digital-marketing": "course/5. Business, Finance & Marketing/social-sail-Uno9TGPs4pc.jpg",
-  "human-resource-management": "course/5. Business, Finance & Marketing/vitaly-gariev-pg2eJwNVpvY.jpg",
+  "human-resource-management": "course/5. Business, Finance & Marketing/scott-graham-5fNmWej4tAA.webp",
   "finance": "course/5. Business, Finance & Marketing/anne-nygard-x07ELaNFt34.jpg",
   "startup-and-entrepreneurship": "course/5. Business, Finance & Marketing/lala-azizli-OFZUaeYKP3k.jpg",
-  "business-analysis": "course/5. Business, Finance & Marketing/premium_photo-1661443781814.avif",
+  "business-analysis": "course/5. Business, Finance & Marketing/mirea-mazzei-d1Lp7juy6JU.webp",
   "operation-and-supply-chain-management": "course/5. Business, Finance & Marketing/shutter-speed-BQ9usyzHx_w.jpg",
   "e-commerce-operations-management": "course/5. Business, Finance & Marketing/premium_photo-1681488262364.avif",
   "product-and-project-management": "course/5. Business, Finance & Marketing/photo-1590103514966.avif",
@@ -466,12 +461,39 @@ const marketplaceMentorsByCategory = {
 const marketplaceMentorByCourse = {
   "senior-sde-interview-prep": "Rahul Singh",
   "full-stack-developer-portfolio": "Tanishq",
+  "software-engineering": "Tanishq",
+  "artificial-intelligence-and-machine-learning": "Surya R",
+  "iot-and-robotics": "Aravind Subramanian",
   "data-engineering-with-sql-and-cloud": "Surya R",
   "data-analytics-with-power-bi": "Tanya D",
   "e-commerce-operations-management": "Ravindra",
+  "human-resource-management": "mentor1",
   "counselling-psychology-practice": "Archana S",
   "clinical-psychology-basics": "Muskan",
   "rehabilitation-psychology": "Suvidha Sharma"
+};
+
+const marketplaceCourseOverrides = {
+  "programming-in-python": {
+    tone: "blue"
+  },
+  "programming-in-java": {
+    tone: "teal"
+  },
+  "dsa-with-python": {
+    tone: "purple"
+  },
+  "front-end-web-development": {
+    tone: "orange"
+  },
+  "human-resource-management": {
+    author: "mentor1",
+    rating: "4.8",
+    tone: "amber",
+    level: "3 Modules",
+    badge: "10 Videos",
+    keywords: "human resource management strategic HRM workforce planning job analysis job design recruitment selection performance appraisal compensation change management 10 videos module quiz"
+  }
 };
 
 const mentorForMarketplaceCourse = (category, index, title = "") => {
@@ -487,21 +509,26 @@ const slugifyCourse = (title) => String(title)
   .replace(/[^a-z0-9]+/g, "-")
   .replace(/^-+|-+$/g, "");
 
-const marketplaceCourses = marketplaceDomainGroups.flatMap((group) => {
+const coursesTemporarilyDisabled = false;
+const marketplaceCourses = coursesTemporarilyDisabled ? [] : marketplaceDomainGroups.flatMap((group) => {
   const images = marketplaceImagePools[group.category] || ["course/1. Technology & Software Development/mk.avif"];
-  return group.courses.map((title, index) => ({
-    title,
-    category: group.category,
-    author: mentorForMarketplaceCourse(group.category, index, title),
-    slug: slugifyCourse(title),
-    price: "INR 5,999",
-    rating: marketplaceRatings[(group.category.length + title.length + index) % marketplaceRatings.length],
-    image: marketplaceImageBySlug[slugifyCourse(title)] || images[index % images.length],
-    tone: marketplaceTones[index % marketplaceTones.length],
-    level: group.category.split(/[,&]/)[0].trim(),
-    badge: "Career Track",
-    keywords: `${title} ${group.category} internship training career skills`
-  }));
+  return group.courses.map((title, index) => {
+    const slug = slugifyCourse(title);
+    return {
+      title,
+      category: group.category,
+      author: mentorForMarketplaceCourse(group.category, index, title),
+      slug,
+      price: "INR 5,999",
+      rating: marketplaceRatings[(group.category.length + title.length + index) % marketplaceRatings.length],
+      image: marketplaceImageBySlug[slug] || images[index % images.length],
+      tone: marketplaceTones[index % marketplaceTones.length],
+      level: group.category.split(/[,&]/)[0].trim(),
+      badge: "Career Track",
+      keywords: `${title} ${group.category} internship training career skills`,
+      ...(marketplaceCourseOverrides[slug] || {})
+    };
+  });
 });
 
 courseDirectory.splice(0, courseDirectory.length, ...marketplaceCourses);
@@ -516,13 +543,12 @@ const courseCurrencyKey = "jenovate-course-currency";
 const courseInrRate = 83;
 const marketplaceCourseInrPrice = 5999;
 const marketplaceCourseUsdPrice = 65;
+const coursePriceOverrides = {
+  "internet-of-things-iot": 1,
+};
 
 const readCourseCurrency = () => {
-  try {
-    return localStorage.getItem(courseCurrencyKey) === "USD" ? "USD" : "INR";
-  } catch {
-    return "INR";
-  }
+  return "INR";
 };
 
 const saveCourseCurrency = (currency) => {
@@ -540,7 +566,7 @@ const courseSearchText = (course) => normalize(`${course.title} ${course.categor
 
 const currentCourseCards = () => [...document.querySelectorAll(".course-card")];
 
-const courseInrAmount = () => marketplaceCourseInrPrice;
+const courseInrAmount = (course) => coursePriceOverrides[course?.slug] || marketplaceCourseInrPrice;
 
 const formatCoursePrice = (course, currency = selectedCourseCurrency) => {
   const inr = courseInrAmount(course);
@@ -785,21 +811,44 @@ const initPremiumCategoryCards = () => {
 
 const courseDetailHref = (course) => `course-detail.html?course=${encodeURIComponent(course.slug)}`;
 
-const courseCardMarkup = (course) => `
+const courseIconLabel = (course) => {
+  const title = String(course.title || "").toLowerCase();
+  if (title.includes("java")) return "J";
+  if (title.includes("dsa") || title.includes("data")) return "↗";
+  if (title.includes("front-end") || title.includes("web") || title.includes("programming") || title.includes("software")) return "</>";
+  if (title.includes("ai") || title.includes("artificial")) return "AI";
+  return "↗";
+};
+
+const courseReviewCount = (course, index = 0) => {
+  const featuredReviews = {
+    "programming-in-python": 128,
+    "programming-in-java": 96,
+    "dsa-with-python": 87,
+    "front-end-web-development": 112
+  };
+  return featuredReviews[course.slug] || 86 + ((course.title.length + index * 13) % 48);
+};
+
+const courseTitleMarkup = (course) => course.title;
+const publicImageFallback = "assets/img/logo/favicon.png";
+
+const courseCardMarkup = (course, index = 0) => `
   <article class="course-card ${course.tone || "blue"}" data-course-category="${course.category}" data-course-slug="${course.slug}" data-course-url="${courseDetailHref(course)}" role="link" tabindex="0" aria-label="Open ${course.title} details">
     <div class="course-visual">
-      <img src="${resolveLocalAssetPath(course.image)}" alt="${course.title}" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">
-      <span class="course-visual-tag">${course.level || course.category}</span>
-      <span class="course-visual-chip">${course.badge || "Course"}</span>
+      <img src="${resolveLocalAssetPath(course.image)}" alt="${course.title}" width="320" height="180" loading="${index < 4 ? "eager" : "lazy"}" decoding="async" fetchpriority="${index < 4 ? "high" : "low"}" onerror="this.onerror=null;this.src='${publicImageFallback}';">
+      <span class="course-visual-tag">Career Track</span>
+      <span class="course-visual-chip" aria-hidden="true"></span>
+      <span class="course-visual-icon" data-course-icon="${courseIconLabel(course)}" aria-hidden="true"></span>
     </div>
     <div class="course-meta">
-      <span>${course.category}</span>
-      <b>&#9733; <em>(${course.rating} Reviews)</em></b>
+      <span>${course.level || course.category}</span>
+      <b>&#9733; ${course.rating} <em>(${courseReviewCount(course, index)})</em></b>
     </div>
-    <h3>${course.title}</h3>
-    <p class="course-mentor">Mentor: ${course.author}</p>
+    <h3>${courseTitleMarkup(course)}</h3>
+    <p class="course-mentor"><span aria-hidden="true"></span>Mentor: ${course.author}</p>
     <div class="course-bottom">
-      <a href="${courseDetailHref(course)}" data-course-enroll="${course.slug}">Enroll Now</a>
+      <a href="${courseDetailHref(course)}" data-course-enroll="${course.slug}">Enroll Now <span aria-hidden="true">&rarr;</span></a>
       <strong data-course-price="${course.slug}">${formatCoursePrice(course)}</strong>
     </div>
   </article>
@@ -945,6 +994,7 @@ const applyCourseFilter = ({ scroll = false, focusFirst = false } = {}) => {
   cards.forEach((card) => {
     const visible = visibleSlugs.has(card.dataset.courseSlug);
     card.classList.toggle("is-hidden", !visible);
+    card.hidden = !visible;
   });
 
   document.querySelectorAll(".tabs button").forEach((button) => {
@@ -1036,7 +1086,7 @@ const renderSearchResults = (courses = matchingCourses(), query = searchInput?.v
   results.hidden = !shouldShow;
   results.innerHTML = visible.length ? visible.map((course) => `
     <button type="button" role="option" data-course-result="${course.slug}">
-      <img src="${resolveLocalAssetPath(course.image)}" alt="" width="56" height="56" loading="lazy" decoding="async" fetchpriority="low">
+      <img src="${resolveLocalAssetPath(course.image)}" alt="" width="56" height="56" loading="lazy" decoding="async" fetchpriority="low" onerror="this.onerror=null;this.src='${publicImageFallback}';">
       <span>${course.category}</span>
       <strong>${course.title}</strong>
       <small>Mentor: ${course.author}</small>

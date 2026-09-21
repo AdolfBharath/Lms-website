@@ -1,0 +1,231 @@
+body.marketspace-refresh .dream-journey-strip {
+  position: relative !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  min-height: 724px !important;
+  margin: 0 !important;
+  padding: 64px clamp(32px, 7vw, 150px) 86px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: #fbfbfa !important;
+  box-shadow: none !important;
+}
+
+body.marketspace-refresh .dream-journey-strip::before,
+body.marketspace-refresh .dream-journey-strip::after {
+  display: none !important;
+}
+
+body.marketspace-refresh .journey-knot {
+  position: relative !important;
+  width: 170px !important;
+  height: 13px !important;
+  margin: 0 auto 17px !important;
+  background:
+    linear-gradient(45deg, transparent 36%, #c99a26 37% 63%, transparent 64%) center / 13px 13px no-repeat !important;
+}
+
+body.marketspace-refresh .journey-knot::before,
+body.marketspace-refresh .journey-knot::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 6px !important;
+  width: 64px !important;
+  height: 2px !important;
+  background: #c99a26 !important;
+}
+
+body.marketspace-refresh .journey-knot::before {
+  left: 0 !important;
+}
+
+body.marketspace-refresh .journey-knot::after {
+  right: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-strip h2 {
+  position: relative !important;
+  z-index: 1 !important;
+  margin: 0 auto 18px !important;
+  color: #141c2d !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(42px, 3.55vw, 58px) !important;
+  line-height: 1.08 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+}
+
+body.marketspace-refresh .dream-journey-subtitle {
+  margin: 0 auto 74px !important;
+  color: #60636a !important;
+  font-size: clamp(20px, 1.42vw, 26px) !important;
+  line-height: 1.35 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(42px, 5.2vw, 106px) !important;
+  width: min(1330px, 100%) !important;
+  margin: 0 auto !important;
+}
+
+body.marketspace-refresh .dream-journey-steps::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50px !important;
+  left: calc(12.5% + 72px) !important;
+  right: calc(12.5% + 72px) !important;
+  height: 2px !important;
+  background: repeating-linear-gradient(90deg, #dcdcdc 0 9px, transparent 9px 17px) !important;
+  z-index: -1 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps article {
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+body.marketspace-refresh .dream-journey-steps span {
+  display: grid !important;
+  place-items: center !important;
+  width: 104px !important;
+  height: 104px !important;
+  margin: 0 auto 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(203, 205, 214, .52) !important;
+  background: #f9fbff !important;
+  box-shadow:
+    0 18px 35px rgba(30, 39, 58, .12),
+    inset 0 0 0 7px rgba(255, 255, 255, .76) !important;
+}
+
+body.marketspace-refresh .dream-journey-steps svg {
+  width: 45px !important;
+  height: 45px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 3.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body.marketspace-refresh .dream-journey-steps b {
+  display: block !important;
+  margin: 0 0 18px !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps h3 {
+  margin: 0 0 22px !important;
+  color: #151d2b !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(28px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .dream-journey-steps i {
+  display: block !important;
+  width: 52px !important;
+  height: 2px !important;
+  margin: 0 auto 24px !important;
+  background: currentColor !important;
+  font-style: normal !important;
+}
+
+body.marketspace-refresh .dream-journey-steps p {
+  margin: 0 auto !important;
+  max-width: 260px !important;
+  color: #565a62 !important;
+  font-size: clamp(17px, 1.08vw, 19px) !important;
+  line-height: 1.46 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+}
+
+body.marketspace-refresh .journey-step-learn {
+  color: #4f8df6 !important;
+}
+
+body.marketspace-refresh .journey-step-learn span {
+  background: #f5f9ff !important;
+}
+
+body.marketspace-refresh .journey-step-build {
+  color: #4bb775 !important;
+}
+
+body.marketspace-refresh .journey-step-build span {
+  background: #f3fbf5 !important;
+}
+
+body.marketspace-refresh .journey-step-grow {
+  color: #c79618 !important;
+}
+
+body.marketspace-refresh .journey-step-grow span {
+  background: #fffbf3 !important;
+}
+
+body.marketspace-refresh .journey-step-hired {
+  color: #7b5bdc !important;
+}
+
+body.marketspace-refresh .journey-step-hired span {
+  background: #f8f5ff !important;
+}
+
+body.marketspace-refresh .dream-journey-strip + .future-section {
+  margin-top: 0 !important;
+}
+
+body.marketspace-refresh .whatsapp-float {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  body.marketspace-refresh .dream-journey-strip {
+    min-height: 0 !important;
+    padding: 48px 22px 58px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-subtitle {
+    margin-bottom: 44px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 44px 24px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body.marketspace-refresh .dream-journey-strip h2 {
+    font-size: 36px !important;
+  }
+
+  body.marketspace-refresh .dream-journey-steps {
+    grid-template-columns: 1fr !important;
+  }
+}

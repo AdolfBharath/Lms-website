@@ -9,13 +9,14 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="assets/img/logo/favicon.png" type="image/png" />
   <link rel="stylesheet" href="colours.css" />
-  <link rel="stylesheet" href="admin.css?v=20260724-auth-logout-hit-fix-v1" />
+  <link rel="stylesheet" href="admin.css?v=20260828-auth-pending-guard-v1" />
   <link rel="stylesheet" href="admin-ui-refresh.css?v=20260720-admin-brand-v16" />
   <link rel="stylesheet" href="admin-brand-final.css?v=20260720-admin-nav-header-fix-v1" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
   <link rel="stylesheet" href="admin-dashboard-reference.css?v=20260728-dashboard-reference-v1" />
+  <link rel="stylesheet" href="jenovate-design-system.css?v=20260822-final-ui-v1" />
 </head>
-<body class="admin-redesign-final">
+<body class="admin-redesign-final admin-auth-pending">
   <div class="admin-shell">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
@@ -561,6 +562,17 @@
             </div>
             <div class="compact-list" id="dashboardShopList"></div>
           </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Payments</h2>
+                <p>Course orders and gateway status</p>
+              </div>
+              <button class="ghost-btn" data-refresh-payments type="button">Refresh</button>
+            </div>
+            <div class="compact-list" id="dashboardPaymentsList"></div>
+          </section>
         </div>
         <aside class="lms-side-rail" aria-label="Admin operations rail">
           <section class="rail-card">
@@ -643,7 +655,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Course / Batch</th>
-                <th>Referral</th>
+                <th>Refer Key</th>
                 <th>Coins</th>
                 <th>Joined</th>
                 <th>Action</th>
@@ -683,8 +695,14 @@
         <div class="section-toolbar">
           <div>
             <h2>Manage Courses</h2>
-            <p>View, add, edit, publish, and remove courses</p>
+            <p>View, add, edit, price, and manage course lifecycle</p>
           </div>
+          <select id="courseStatusFilter" aria-label="Filter courses by status">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="deleted">Deleted</option>
+          </select>
           <button class="primary-btn" id="addCourseBtn" type="button">+ Add Course</button>
         </div>
         <div class="course-grid" id="coursesGrid"></div>
@@ -966,7 +984,8 @@
   <script defer src="modules/portal-data.js?v=20260723-auth-cache-v2"></script>
   <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
   <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
-  <script defer src="admin.js?v=20260803-course-delete-v1"></script>
+  <script defer src="admin.js?v=20260828-auth-pending-guard-v1"></script>
+  <script defer src="admin-payments.js?v=20260822-purchase-flow-v1"></script>
 
   <!-- Scroll-to-top / Scroll-to-bottom floating buttons -->
   <div class="scroll-fab-group" id="scrollFabGroup" aria-label="Page navigation">

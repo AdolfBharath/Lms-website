@@ -1593,3 +1593,917 @@ body[data-form-category="train_deploy_enquiry"] .primary-btn {
     border-radius: 0 0 20px 20px;
   }
 }
+
+/* Hosting-ready form finish: keep every category in the same bright Jenovate system. */
+body[data-form-category] {
+  background:
+    radial-gradient(circle at 14% 12%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 28%),
+    radial-gradient(circle at 84% 8%, rgba(255, 195, 41, .22), transparent 26%),
+    linear-gradient(135deg, #f8fbff 0%, #eef8f5 52%, #fff8e5 100%) !important;
+}
+
+body[data-form-category] .hero-copy h1 {
+  color: transparent !important;
+  background: linear-gradient(135deg, #0f8a76 0%, #8a3f08 48%, #5a2d91 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+body[data-form-category] .form-panel {
+  overflow: hidden;
+  border-radius: 24px !important;
+}
+
+body[data-form-category] .form-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: linear-gradient(90deg, var(--accent), #12a98f, #ffc329);
+}
+
+body[data-form-category="train_deploy_enquiry"] .app-shell {
+  width: min(1280px, calc(100% - 48px));
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(440px, 1.15fr);
+  gap: clamp(30px, 5vw, 72px);
+  align-items: start;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body[data-form-category="train_deploy_enquiry"] .hero-panel {
+  position: sticky;
+  top: 94px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-form-category="train_deploy_enquiry"] .hero-panel::before {
+  content: "Course Enquiry";
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 22px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+body[data-form-category="train_deploy_enquiry"] .form-panel {
+  border-radius: 24px !important;
+  box-shadow: var(--form-shadow-soft, 0 28px 80px rgba(28, 46, 82, .14));
+}
+
+body[data-form-category="train_deploy_enquiry"] .field,
+body[data-form-category="train_deploy_enquiry"] .field.full {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body[data-form-category] .field-control,
+body[data-form-category] .category-bar select {
+  border-radius: 16px;
+}
+
+body[data-form-category] .primary-btn {
+  border-radius: 16px;
+  color: #fff;
+}
+
+@media (max-width: 880px) {
+  body[data-form-category="train_deploy_enquiry"] .app-shell {
+    width: min(100% - 24px, 720px);
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  body[data-form-category="train_deploy_enquiry"] .hero-panel {
+    position: static;
+  }
+}
+
+body[data-form-category] .phone-input-group {
+  display: grid;
+  grid-template-columns: minmax(98px, 124px) minmax(0, 1fr);
+  min-height: 58px;
+  overflow: hidden;
+  border: 1px solid rgba(126, 148, 186, .34);
+  border-radius: 16px;
+  background: #f8fbff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .78);
+}
+
+body[data-form-category] .phone-input-group:focus-within {
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent), 0 14px 30px rgba(31, 52, 88, .08);
+}
+
+body[data-form-category] .phone-country,
+body[data-form-category] .phone-number {
+  min-height: 56px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-form-category] .phone-country {
+  border-right: 1px solid rgba(126, 148, 186, .24) !important;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+body[data-form-category] .phone-number {
+  min-width: 0;
+}
+
+@media (max-width: 520px) {
+  body[data-form-category] .phone-input-group {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-form-category] .phone-country {
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(126, 148, 186, .24) !important;
+  }
+}
+
+/* Reference form system: shared Jenovate application layout. */
+body[data-form-category] {
+  --form-accent: var(--accent);
+  --form-ink: #071333;
+  --form-muted: #64708b;
+  --form-border: #d8e3f4;
+  --form-soft: #f4f8ff;
+  --form-card-shadow: 0 30px 90px rgba(29, 48, 86, .13);
+  min-height: 100vh;
+  color: var(--form-ink);
+  background:
+    radial-gradient(circle at 27% -10%, rgba(198, 223, 255, .6), transparent 22%),
+    radial-gradient(circle at 8% 98%, rgba(202, 226, 255, .42), transparent 24%),
+    linear-gradient(135deg, #fbfdff 0%, #f2f7ff 54%, #ffffff 100%) !important;
+  font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif !important;
+}
+
+body[data-form-category]::before,
+body[data-form-category]::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body[data-form-category]::before {
+  top: 0;
+  left: 44%;
+  width: 190px;
+  height: 96px;
+  border-radius: 0 0 999px 999px;
+  background:
+    radial-gradient(circle, rgba(22, 104, 230, .2) 1.5px, transparent 2px) 18px 48px / 14px 14px,
+    rgba(219, 236, 255, .7);
+  opacity: .75;
+}
+
+body[data-form-category]::after {
+  left: -70px;
+  bottom: -48px;
+  width: 360px;
+  height: 170px;
+  border: 1px solid rgba(35, 94, 216, .12);
+  border-radius: 50% 50% 0 0;
+  background: repeating-radial-gradient(ellipse at bottom left, transparent 0 16px, rgba(35, 94, 216, .11) 17px 18px);
+  opacity: .55;
+}
+
+body[data-form-category] .form-page-header {
+  top: 28px;
+  left: 34px;
+  right: 34px;
+  z-index: 30;
+}
+
+body[data-form-category] .form-logo {
+  width: 172px;
+  min-height: 50px;
+}
+
+body[data-form-category] .form-logo img {
+  max-height: 52px;
+}
+
+body[data-form-category] .page-close-form {
+  width: 50px;
+  height: 50px;
+  border: 0;
+  background: #fff;
+  color: #071333;
+  box-shadow: 0 14px 32px rgba(27, 45, 80, .14);
+}
+
+body[data-form-category] .app-shell,
+body[data-form-category="train_deploy_enquiry"] .app-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1380px, calc(100% - 64px)) !important;
+  min-height: 100vh;
+  max-height: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(330px, 430px) minmax(680px, 1fr) !important;
+  gap: clamp(36px, 4.8vw, 66px) !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+  padding: 104px 0 48px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  scrollbar-color: auto !important;
+}
+
+body[data-form-category] .hero-panel,
+body[data-form-category="train_deploy_enquiry"] .hero-panel {
+  position: sticky !important;
+  top: 104px !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 0 28px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-form-category] .hero-panel::before,
+body[data-form-category="train_deploy_enquiry"] .hero-panel::before {
+  content: attr(data-form-badge);
+}
+
+body[data-form-category] .hero-panel::before {
+  content: "JENOVATE FORM";
+  width: max-content;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+  padding: 0 24px;
+  border: 1px solid rgba(35, 94, 216, .28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .72);
+  color: #1763d6;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+body[data-form-category="student_registration"] .hero-panel::before { content: "Student Registration"; }
+body[data-form-category="mentor_registration"] .hero-panel::before { content: "Mentor Application"; }
+body[data-form-category="launchpad_purchase"] .hero-panel::before { content: "Launchpad Purchase"; }
+body[data-form-category="hiring_application"] .hero-panel::before { content: "Hiring Application"; }
+body[data-form-category="event_registration"] .hero-panel::before { content: "Event Registration"; }
+body[data-form-category="campus_ambassador"] .hero-panel::before { content: "Campus Ambassador"; }
+body[data-form-category="train_deploy_enquiry"] .hero-panel::before { content: "Course Enquiry"; }
+
+body[data-form-category] .hero-copy {
+  margin: 0 !important;
+}
+
+body[data-form-category] .hero-copy h1,
+body[data-form-category="train_deploy_enquiry"] .hero-copy h1 {
+  max-width: 460px !important;
+  margin: 0 0 20px !important;
+  color: #061234 !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(48px, 4.6vw, 68px) !important;
+  line-height: 1.06 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-form-category="student_registration"] .hero-copy h1::first-line,
+body[data-form-category="mentor_registration"] .hero-copy h1::first-line,
+body[data-form-category="launchpad_purchase"] .hero-copy h1::first-line,
+body[data-form-category="hiring_application"] .hero-copy h1::first-line,
+body[data-form-category="event_registration"] .hero-copy h1::first-line,
+body[data-form-category="campus_ambassador"] .hero-copy h1::first-line {
+  color: #061234;
+}
+
+body[data-form-category] .hero-copy p,
+body[data-form-category="train_deploy_enquiry"] .hero-copy p {
+  max-width: 470px !important;
+  margin: 0 !important;
+  color: var(--form-muted) !important;
+  font-size: 17px !important;
+  line-height: 1.65 !important;
+  font-weight: 500 !important;
+}
+
+.form-side-benefits {
+  display: grid;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.form-side-benefits article {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.form-side-benefits article > span {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #edf4ff;
+  color: #1763d6;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.form-side-benefits article:nth-child(2) > span {
+  background: #eafbf5;
+  color: #0f9b78;
+}
+
+.form-side-benefits article:nth-child(3) > span {
+  background: #f3ecff;
+  color: #7c3bed;
+}
+
+.form-side-benefits strong {
+  display: block;
+  margin: 0 0 6px;
+  color: #061234;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.form-side-benefits p {
+  margin: 0;
+  color: var(--form-muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+body[data-form-category] .form-panel,
+body[data-form-category="train_deploy_enquiry"] .form-panel {
+  position: relative;
+  margin: 0 !important;
+  padding: clamp(34px, 4vw, 50px) !important;
+  border: 1px solid rgba(153, 175, 212, .34) !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, .94) !important;
+  box-shadow: var(--form-card-shadow) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  overflow: hidden;
+}
+
+body[data-form-category] .form-panel::before,
+body[data-form-category="train_deploy_enquiry"] .form-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 122px;
+  height: 3px;
+  border-radius: 0 0 999px;
+  background: #1763d6 !important;
+}
+
+.form-card-header {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid rgba(153, 175, 212, .28);
+}
+
+.form-card-icon {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #edf4ff, #f7faff);
+  color: #1763d6;
+}
+
+.form-card-icon::before {
+  content: "";
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 0;
+  background: center / 36px 36px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%231763d6' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6'/%3E%3Cpath d='M14 4h4v4'/%3E%3Cpath d='m20 4-9 9-3 1 1-3 9-9'/%3E%3Cpath d='M8 17h8'/%3E%3C/svg%3E");
+}
+
+.form-card-header h2 {
+  margin: 0 0 8px;
+  color: #061234;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 2.3vw, 34px);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.form-card-header p {
+  margin: 0;
+  color: var(--form-muted);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+body[data-form-category] .category-bar,
+body[data-form-category] .progress-wrap {
+  display: none !important;
+}
+
+body[data-form-category] .form-grid,
+body[data-form-category="train_deploy_enquiry"] .form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 22px 24px !important;
+  align-items: start;
+}
+
+body[data-form-category] .field,
+body[data-form-category] .field.full,
+body[data-form-category="train_deploy_enquiry"] .field,
+body[data-form-category="train_deploy_enquiry"] .field.full {
+  position: relative;
+  min-width: 0;
+  grid-column: auto !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+body[data-form-category] .field.full,
+body[data-form-category] .field[data-field="phone"],
+body[data-form-category] .field[data-field="job_summary"],
+body[data-form-category] .field[data-field="goal"],
+body[data-form-category] .field[data-field="message"],
+body[data-form-category] .field[data-field="placement_challenges"],
+body[data-form-category] .field[data-field="collaboration_timeline"],
+body[data-form-category] .field[data-field="why_join"] {
+  grid-column: 1 / -1 !important;
+}
+
+body[data-form-category] .field label,
+body[data-form-category] .field legend,
+body[data-form-category="train_deploy_enquiry"] .field label,
+body[data-form-category="train_deploy_enquiry"] .field legend {
+  color: #061234 !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-form-category] .required {
+  color: #e02b24 !important;
+}
+
+body[data-form-category] .optional {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #1763d6;
+  font-size: 10px;
+}
+
+body[data-form-category] .field:not(.full)::before,
+body[data-form-category] .field[data-field-icon="textarea"]::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 43px;
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 0;
+  background: center / 20px 20px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+  opacity: .95;
+}
+
+body[data-form-category] .field[data-field-icon="email"]::before {
+  top: 45px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='16' x='2' y='4' rx='2'/%3E%3Cpath d='m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field[data-field-icon="phone"]::before {
+  top: 56px;
+  left: 172px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='20' x='5' y='2' rx='2'/%3E%3Cpath d='M12 18h.01'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field[data-field-icon="select"]::before,
+body[data-form-category] .field[data-field-icon="clock"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 6v6l4 2'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field[data-field-icon="briefcase"]::before,
+body[data-form-category] .field[data-field-icon="book"]::before,
+body[data-form-category] .field[data-field-icon="building"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16'/%3E%3Crect width='20' height='14' x='2' y='6' rx='2'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field[data-field-icon="number"]::before,
+body[data-form-category] .field[data-field-icon="calendar"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Crect width='18' height='18' x='3' y='4' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field[data-field-icon="message"]::before,
+body[data-form-category] .field[data-field-icon="file"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2373819a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z'/%3E%3C/svg%3E");
+}
+
+body[data-form-category] .field-control,
+body[data-form-category] .category-bar select,
+body[data-form-category="train_deploy_enquiry"] .field-control {
+  min-height: 58px !important;
+  padding: 0 18px 0 58px !important;
+  border: 1px solid rgba(153, 175, 212, .62) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, .74) !important;
+  color: #172033 !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  box-shadow: none !important;
+}
+
+body[data-form-category] textarea.field-control,
+body[data-form-category="train_deploy_enquiry"] textarea.field-control {
+  min-height: 138px !important;
+  padding-top: 16px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-form-category] .field.full:not([data-field="phone"])::before {
+  display: none;
+}
+
+body[data-form-category] .field.full:not([data-field="phone"]) .field-control {
+  padding-left: 18px !important;
+}
+
+body[data-form-category] .field-control::placeholder {
+  color: #7d879a !important;
+  font-weight: 600 !important;
+}
+
+body[data-form-category] .field-control:hover {
+  border-color: rgba(23, 99, 214, .45) !important;
+  background: #fff !important;
+}
+
+body[data-form-category] .field-control:focus {
+  border-color: #1763d6 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(23, 99, 214, .12) !important;
+}
+
+body[data-form-category] .phone-input-group {
+  display: grid !important;
+  grid-template-columns: 148px minmax(0, 1fr) !important;
+  min-height: 58px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(153, 175, 212, .62) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, .74) !important;
+  box-shadow: none !important;
+}
+
+body[data-form-category] .phone-input-group:focus-within {
+  border-color: #1763d6 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(23, 99, 214, .12) !important;
+}
+
+body[data-form-category] .phone-country,
+body[data-form-category] .phone-number {
+  min-height: 56px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-form-category] .phone-country {
+  padding-left: 22px !important;
+  border-right: 1px solid rgba(153, 175, 212, .44) !important;
+  color: #061234 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+body[data-form-category] .phone-number {
+  padding-left: 60px !important;
+}
+
+body[data-form-category] .choice-group,
+body[data-form-category="train_deploy_enquiry"] .choice-group {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body[data-form-category] .choice,
+body[data-form-category="train_deploy_enquiry"] .choice {
+  width: 100% !important;
+  min-height: 52px !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(153, 175, 212, .55) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, .72) !important;
+  color: #172033 !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+body[data-form-category] .choice:hover,
+body[data-form-category] .choice:focus-within {
+  border-color: rgba(23, 99, 214, .45) !important;
+  background: #fff !important;
+}
+
+body[data-form-category] .choice:has(input:checked) {
+  border-color: #1763d6 !important;
+  background: #edf4ff !important;
+  color: #1763d6 !important;
+}
+
+body[data-form-category] .choice input {
+  width: 18px !important;
+  height: 18px !important;
+  accent-color: #1763d6 !important;
+}
+
+body[data-form-category] .form-actions,
+body[data-form-category="train_deploy_enquiry"] .form-actions {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 260px);
+  gap: 16px;
+  align-items: center;
+  margin-top: 34px !important;
+  padding-top: 28px !important;
+  border-top: 0 !important;
+}
+
+body[data-form-category] .form-actions:has(.ghost-btn[hidden]) {
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+}
+
+body[data-form-category] .form-actions::before {
+  content: "Your journey with Jenovate starts here.";
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #edf4ff, #f7fbff);
+  color: #061234;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+body[data-form-category] .ghost-btn,
+body[data-form-category] .primary-btn,
+body[data-form-category="train_deploy_enquiry"] .ghost-btn,
+body[data-form-category="train_deploy_enquiry"] .primary-btn {
+  width: 100%;
+  min-height: 68px !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+body[data-form-category] .primary-btn,
+body[data-form-category="train_deploy_enquiry"] .primary-btn {
+  border: 0 !important;
+  background: linear-gradient(135deg, #1763d6, #2852f2) !important;
+  color: #fff !important;
+  box-shadow: 0 16px 32px rgba(23, 99, 214, .22) !important;
+}
+
+body[data-form-category] .primary-btn b::after {
+  content: "  ->";
+}
+
+body[data-form-category] .ghost-btn {
+  border: 1px solid rgba(153, 175, 212, .48) !important;
+  background: #fff !important;
+  color: #1763d6 !important;
+}
+
+body[data-form-category] .status {
+  border-radius: 12px !important;
+  font-size: 14px !important;
+}
+
+@media (max-width: 980px) {
+  body[data-form-category] .app-shell,
+  body[data-form-category="train_deploy_enquiry"] .app-shell {
+    width: min(100% - 28px, 760px) !important;
+    min-height: auto;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 26px !important;
+    align-items: start !important;
+    padding: 92px 0 32px !important;
+  }
+
+  body[data-form-category] .hero-panel,
+  body[data-form-category="train_deploy_enquiry"] .hero-panel {
+    position: static !important;
+  }
+
+  body[data-form-category] .hero-copy h1,
+  body[data-form-category="train_deploy_enquiry"] .hero-copy h1 {
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+    font-size: 46px !important;
+  }
+
+  body[data-form-category] .hero-copy p,
+  body[data-form-category="train_deploy_enquiry"] .hero-copy p {
+    max-width: 100% !important;
+    font-size: 16px !important;
+  }
+
+  .form-side-benefits {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .form-side-benefits article {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .form-side-benefits article > span {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-form-category] .form-page-header {
+    top: 14px;
+    left: 14px;
+    right: 14px;
+  }
+
+  body[data-form-category] .form-logo {
+    width: 142px;
+  }
+
+  body[data-form-category] .page-close-form {
+    width: 44px;
+    height: 44px;
+  }
+
+  body[data-form-category] .app-shell,
+  body[data-form-category="train_deploy_enquiry"] .app-shell {
+    width: min(100% - 20px, 560px) !important;
+    padding-top: 78px !important;
+  }
+
+  body[data-form-category] .hero-panel::before {
+    min-height: 36px;
+    margin-bottom: 16px;
+    padding-inline: 16px;
+    font-size: 12px;
+  }
+
+  body[data-form-category] .hero-copy h1,
+  body[data-form-category="train_deploy_enquiry"] .hero-copy h1 {
+    font-size: 38px !important;
+    line-height: 1.05 !important;
+  }
+
+  .form-side-benefits {
+    display: none;
+  }
+
+  body[data-form-category] .form-panel,
+  body[data-form-category="train_deploy_enquiry"] .form-panel {
+    padding: 24px 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .form-card-header {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+  }
+
+  .form-card-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .form-card-icon::before {
+    width: 28px;
+    height: 28px;
+    background-size: 28px 28px;
+  }
+
+  .form-card-header h2 {
+    font-size: 20px;
+    line-height: 1.12;
+  }
+
+  .form-card-header p {
+    font-size: 14px;
+  }
+
+  body[data-form-category] .form-grid,
+  body[data-form-category="train_deploy_enquiry"] .form-grid,
+  body[data-form-category] .choice-group,
+  body[data-form-category="train_deploy_enquiry"] .choice-group {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  body[data-form-category] .field,
+  body[data-form-category] .field.full,
+  body[data-form-category] .field[data-field] {
+    grid-column: 1 / -1 !important;
+  }
+
+  body[data-form-category] .field-control,
+  body[data-form-category="train_deploy_enquiry"] .field-control {
+    min-height: 56px !important;
+    font-size: 15px !important;
+  }
+
+  body[data-form-category] .phone-input-group {
+    grid-template-columns: 116px minmax(0, 1fr) !important;
+  }
+
+  body[data-form-category] .field[data-field-icon="phone"]::before {
+    left: 134px;
+    top: 54px;
+  }
+
+  body[data-form-category] .phone-country {
+    padding-left: 14px !important;
+    border-right: 1px solid rgba(153, 175, 212, .44) !important;
+    border-bottom: 0 !important;
+    font-size: 13px !important;
+  }
+
+  body[data-form-category] .phone-number {
+    padding-left: 48px !important;
+  }
+
+  body[data-form-category] .form-actions,
+  body[data-form-category] .form-actions:has(.ghost-btn[hidden]),
+  body[data-form-category="train_deploy_enquiry"] .form-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-form-category] .form-actions::before {
+    min-height: 56px;
+    padding-inline: 16px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  body[data-form-category] .ghost-btn,
+  body[data-form-category] .primary-btn {
+    min-height: 58px !important;
+  }
+}

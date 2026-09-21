@@ -94,7 +94,7 @@
       batch_id: profile?.batch_id || "",
       course_ids: safeJson(profile?.course_ids),
       expertise: safeJson(profile?.expertise),
-      coins: Number(profile?.coins || profile?.coin_balance || 0),
+      coins: Math.max(Number(profile?.coins || 0), Number(profile?.coin_balance || 0)),
       streak_count: Number(profile?.streak_count || 0),
       last_active_date: profile?.last_active_date || "",
       status: profile?.status || "active",
