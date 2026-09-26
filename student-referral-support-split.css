@@ -336,6 +336,22 @@ body[data-ui-build] #referralView .referral-code-box strong {
   text-shadow: 0 2px 16px rgba(82, 39, 255, 0.20) !important;
 }
 
+body[data-ui-build] #referralView #referralCodeValue {
+  display: block !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  margin-top: 14px !important;
+  padding: 11px 14px !important;
+  border: 1px solid rgba(82, 39, 255, 0.16) !important;
+  border-radius: 13px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #2138d8 !important;
+  font: 900 15px/1.2 "Courier New", monospace !important;
+  letter-spacing: 0.04em !important;
+  text-align: center !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 12px 24px rgba(82, 39, 255, 0.10) !important;
+}
+
 /* Action Strip Buttons */
 body[data-ui-build] #referralView .referral-action-strip {
   display: block !important;

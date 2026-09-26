@@ -1024,9 +1024,11 @@
         if (courseIds.length) return query.in("course_id", courseIds);
         return batchId ? query.eq("id", batchId) : query;
       case "studentCourses":
-        return courseIds.length ? query.in("id", courseIds) : query.ilike("status", "active").is("deleted_at", null);
-      case "courseCatalog":
-        return query.ilike("status", "active").is("deleted_at", null);
+        return courseIds.length ? query.in("id", courseIds) : studentCourseScope(query);
+      case "courseCatalog": {
+        const scoped = query.or("status.ilike.active,status.ilike.published,status.ilike.live");
+        return typeof scoped.is === "function" ? scoped.is("deleted_at", null) : scoped;
+      }
       case "studentUsers":
         return batchId
           ? query.or(`id.eq.${studentId},batch_id.eq.${batchId},role.eq.mentor`)
@@ -1042,9 +1044,8 @@
     }
   }
 
-  function normalizeLimit(limit = PAGE_SIZE) {
-    return tableClient.normalizeLimit(limit);
-  }
+  function normalizeLimit(limit = PAGE_SIZE) { return tableClient.normalizeLimit(limit); }
+  function studentCourseScope(query) { return query.ilike("status", "active").is("deleted_at", null); }
 
   function queryCacheKey(spec, limit) {
     return tableClient.queryCacheKey(spec, limit);
@@ -5354,10 +5355,11 @@
 
   function isArchivedCourse(course) { return !isStudentVisibleCourse(course); }
   function isStudentVisibleCourse(course) { return !course?.deleted_at && String(course?.status || "").toLowerCase() === "active"; }
+  function isCatalogVisibleCourse(course) { return !course?.deleted_at && ["active", "published", "live"].includes(String(course?.status || "active").toLowerCase()); }
   function isInactiveRecord(item) { return item?.deleted_at || ["archived", "deleted", "inactive", "cancelled", "removed", "disabled"].includes(String(item?.status || "active").toLowerCase()); }
   function catalogCourses() {
     const courses = mergedCourseRows(state.data.catalogCourses, state.data.courses);
-    return (courses.length ? courses : state.data.courses).filter((course) => isStudentVisibleCourse(course));
+    return (courses.length ? courses : state.data.courses).filter((course) => isStudentVisibleCourse(course) || isCatalogVisibleCourse(course));
   }
 
   function mergedCourseRows(...sources) {

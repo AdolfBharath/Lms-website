@@ -8,7 +8,7 @@ for (const course of courses) {
   await request(`courses?id=eq.${encodeURIComponent(course.id)}`, {
     method: "PATCH",
     headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({ price: 1 }),
+    body: JSON.stringify({ price: 5999 }),
   });
 }
 

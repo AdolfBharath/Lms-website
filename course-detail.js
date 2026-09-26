@@ -1251,9 +1251,7 @@ const projectImages = [course.image, ...supportImages];
 const marketplaceCourseInrPrice = 5999;
 const courseInrRate = 83;
 const marketplaceCourseUsdPrice = 65;
-const coursePriceOverrides = {
-  "internet-of-things-iot": 1,
-};
+const coursePriceOverrides = {};
 
 const setText = (id, value) => {
   const node = document.getElementById(id);

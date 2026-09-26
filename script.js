@@ -543,9 +543,7 @@ const courseCurrencyKey = "jenovate-course-currency";
 const courseInrRate = 83;
 const marketplaceCourseInrPrice = 5999;
 const marketplaceCourseUsdPrice = 65;
-const coursePriceOverrides = {
-  "internet-of-things-iot": 1,
-};
+const coursePriceOverrides = {};
 
 const readCourseCurrency = () => {
   return "INR";
