@@ -50,12 +50,11 @@ test("course purchase flow verifies payment server-side before enrollment", () =
   assert.match(edge, /fetchProviderOrder/);
   assert.match(edge, /verifyCashfreeWebhook/);
   assert.match(edge, /Webhook amount or currency mismatch/);
-  assert.match(edge, /grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
-  assert.match(edge, /const enrollment = await activeEnrollment\(admin, profile\.id, order\.course_id\)\s*\|\| await grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
+  assert.match(edge, /rpc\("lms_complete_course_order"/);
   assert.match(edge, /not\("status", "in", "\(archived,removed,cancelled,inactive,deleted,disabled\)"\)/);
-  assert.match(edge, /await syncProfileCourseIds\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
-  assert.match(edge, /lms_admin_update_user_assignment/);
-  assert.match(edge, /function parseCourseIds\(value: unknown\)/);
+  const atomic = read("supabase/migrations/20260929090000_atomic_course_purchase.sql");
+  assert.match(atomic, /lms_admin_update_user_assignment/);
+  assert.match(atomic, /paid_order\.user_id, paid_order\.course_id/);
   assert.match(migration, /lms_course_orders/);
   assert.match(migration, /lms_course_payments/);
   assert.match(migration, /user_courses_user_course_active_unique_idx/);
@@ -72,25 +71,23 @@ test("course purchase assigns paid courses to new and existing student profiles 
   const edge = read("supabase/functions/course-purchase/index.ts");
   const ensureProfile = edge.slice(edge.indexOf("async function ensureStudentProfile"), edge.indexOf("async function findProfile"));
   const createOrder = edge.slice(edge.indexOf("async function createCourseOrder"), edge.indexOf("async function createProviderOrder"));
-  const grant = edge.slice(edge.indexOf("async function grantEnrollment"), edge.indexOf("async function pendingOrder"));
+  const grant = read("supabase/migrations/20260929090000_atomic_course_purchase.sql");
 
   assert.match(ensureProfile, /if \(existing\?\.id\)/);
   assert.match(ensureProfile, /role: "student"/);
   assert.match(createOrder, /const existingEnrollment = await activeEnrollment\(admin, profile\.id, course\.id\)/);
   assert.match(createOrder, /return \{ already_owned: true/);
   assert.match(edge, /async function verifyPayment/);
-  assert.match(edge, /const enrollment = await grantEnrollment\(admin, String\(order\.user_id\), String\(order\.course_id\)\)/);
-  assert.match(grant, /user_id: userId/);
-  assert.match(grant, /student_id: userId/);
-  assert.match(grant, /learner_id: userId/);
-  assert.match(grant, /status: "active"/);
+  assert.match(edge, /target_order_id: order\.id, verified_provider: provider/);
+  assert.match(grant, /user_id = paid_order\.user_id, student_id = paid_order\.user_id/);
+  assert.match(grant, /learner_id = paid_order\.user_id, status = 'active'/);
   assert.doesNotMatch(createOrder, /grantEnrollment\(admin, profile\.id, course\.id\)[\s\S]{0,80}payment_status: "pending"/);
 });
 
 test("student-visible courses require active lifecycle while learning access requires assignment", () => {
   const student = read("student.js");
   const edge = read("supabase/functions/course-purchase/index.ts");
-  const migration = latestMigrationContaining(/lms_student_has_course/);
+  const migration = { source: read("supabase/migrations/20260906_student_assignment_visibility_isolation.sql") };
 
   assert.match(student, /function isStudentVisibleCourse\(course\)/);
   assert.match(student, /String\(course\?\.status \|\| ""\)\.toLowerCase\(\) === "active"/);
@@ -100,7 +97,7 @@ test("student-visible courses require active lifecycle while learning access req
   assert.match(edge, /String\(course\.status \|\| ""\)\.toLowerCase\(\) !== "active"/);
   assert.match(migration.source, /create policy courses_students_active_only/);
   assert.match(migration.source, /lower\(coalesce\(status, ''\)\) = 'active'/);
-  assert.doesNotMatch(migration.source, /public\.lms_student_has_course\(id\)/);
+  assert.match(read("supabase/migrations/20260929090100_protected_course_catalog.sql"), /public\.lms_student_has_course\(id\)/);
   assert.match(migration.source, /create or replace function public\.lms_student_has_batch/);
   assert.match(migration.source, /drop policy if exists users_student_batch_mentor_read/);
 });

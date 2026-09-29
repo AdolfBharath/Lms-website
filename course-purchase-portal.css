@@ -1,0 +1,21 @@
+.purchase-modal { position: fixed; inset: 0; z-index: 2147483100; display: none; place-items: center; padding: 20px; background: #0f172a99; }
+.purchase-modal.open { display: grid; }
+.purchase-dialog { position: relative; width: min(640px, 100%); max-height: 90dvh; overflow: auto; background: white; border-radius: 8px; padding: 28px; color: #172b4d; }
+.purchase-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; cursor: pointer; }
+.purchase-summary { padding-right: 25px; border-bottom: 1px solid #dbe3ee; margin-bottom: 20px; }
+.purchase-summary > img, .purchase-summary > dl, .purchase-summary h2 { display: none; }
+.purchase-summary h3 { margin: 8px 0; }
+.purchase-panel[hidden], .purchase-modal [hidden] { display: none !important; }
+.purchase-form { display: grid; gap: 16px; }
+.purchase-form label { display: grid; gap: 6px; }
+.purchase-form input { width: 100%; min-height: 44px; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; }
+.purchase-password-wrap { display: flex; }
+.purchase-primary, .purchase-link { min-height: 44px; padding: 10px 18px; margin: 8px 8px 0 0; border-radius: 6px; cursor: pointer; }
+.purchase-primary { background: #2164cb; color: white; border: 0; }
+.purchase-link { border: 1px solid #cbd5e1; background: white; color: #2164cb; }
+.purchase-status-details div { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; padding: 8px 0; }
+.purchase-status-details dd { margin: 0; overflow-wrap: anywhere; }
+.purchase-status p { line-height: 1.6; }
+.purchase-message.error { color: #b42318; }
+.purchase-modal button:focus-visible { outline: 3px solid #639df4; outline-offset: 2px; }
+@media(max-width: 480px) { .purchase-dialog { padding: 20px; } .purchase-status-details div { grid-template-columns: 1fr; gap: 4px; } }

@@ -7,6 +7,7 @@ const baseCorsHeaders = {
 
 type Action =
   | "course"
+  | "access"
   | "config_check"
   | "create_student_profile"
   | "create_order"
@@ -42,6 +43,8 @@ type ProfileRow = {
   referral_key?: string | null;
   course_ids?: unknown;
   batch_id?: string | null;
+  status?: string | null;
+  deleted_at?: string | null;
 };
 
 type PaymentEnv = ReturnType<typeof loadEnv>;
@@ -96,18 +99,25 @@ Deno.serve(async (request) => {
 
     const profile = await ensureStudentProfile(admin, authUser, {});
 
+    if (action === "access") {
+      const course = await findCourse(admin, String(body.course_id || body.course_slug || ""));
+      return respond({ enrollment: await activeEnrollment(admin, profile.id, course.id) });
+    }
+
     if (action === "create_order") {
+      if (["price", "amount", "user_id", "payment_status"].some((key) => key in body)) throw httpError("Unsupported purchase fields", 400, "invalid_purchase_fields");
       const result = await createCourseOrder(admin, env, profile, String(body.course_id || body.course_slug || body.course || ""));
       return respond(result);
     }
 
     if (action === "verify_payment") {
+      if (["course_id", "course_slug", "price", "amount", "user_id", "payment_status"].some((key) => key in body)) throw httpError("Payment verification uses the saved order only", 400, "invalid_verification_fields");
       const result = await verifyPayment(admin, env, profile, String(body.order_id || ""), String(body.provider_order_id || ""));
       return respond(result);
     }
 
     if (action === "mark_cancelled") {
-      const result = await markCancelled(admin, profile, String(body.order_id || ""));
+      const result = await verifyPayment(admin, env, profile, String(body.order_id || ""));
       return respond(result);
     }
 
@@ -162,9 +172,12 @@ async function ensureStudentProfile(admin: ReturnType<typeof createClient>, auth
   const referralSource = cleanText(profilePayload.referral_source || profilePayload.referral || profilePayload.ref || "");
 
   if (existing?.id) {
+    if (existing.deleted_at || ["disabled", "inactive", "deleted", "archived", "suspended"].includes(String(existing.status || "").toLowerCase())) throw httpError("Account is not active", 403, "account_inactive");
+    if (existing.auth_user_id && existing.auth_user_id !== authUser.id) throw httpError("Account identity mismatch", 403, "identity_mismatch");
     if (String(existing.role || "").toLowerCase() !== "student") {
       throw httpError("Only student accounts can buy courses", 403, "student_required");
     }
+    if (!Object.keys(profilePayload).length && existing.auth_user_id) return existing;
     const { data, error } = await admin.from("users").update({
       auth_user_id: existing.auth_user_id || authUser.id,
       name,
@@ -246,40 +259,32 @@ async function createCourseOrder(admin: ReturnType<typeof createClient>, env: Re
   const amount = courseAmount(course);
   const currency = "INR";
   if (amount > 0) assertPaymentConfiguration(env);
-  const pending = await pendingOrder(admin, profile.id, course.id);
-  if (pending?.provider_payment_session_id && Number(pending.amount) === amount && String(pending.currency).toUpperCase() === currency) {
-    return {
-      order: pending,
-      course: publicCourse(course),
-      provider: { provider: pending.provider, mode: env.cashfreeEnv, payment_session_id: pending.provider_payment_session_id },
-      payment_status: pending.status,
-    };
-  }
-
-  const providerOrderId = `jnv_${crypto.randomUUID().replaceAll("-", "")}`;
-  const { data: order, error } = await admin.from("lms_course_orders").insert({
-    user_id: profile.id,
-    course_id: course.id,
-    amount,
-    currency,
-    status: amount > 0 ? "pending" : "success",
-    provider: env.provider,
-    provider_order_id: providerOrderId,
-    metadata: { course_title: course.title },
-  }).select("*").single();
+  const { data: order, error } = await admin.rpc("lms_reserve_course_order", {
+    target_user_id: profile.id, target_course_id: course.id,
+    expected_amount: amount, target_provider: env.provider,
+  });
   if (error) throw error;
-
-  if (amount <= 0) {
-    const enrollment = await grantEnrollment(admin, profile.id, course.id);
-    return { order, course: publicCourse(course), enrollment, payment_status: "success" };
+  if (order.status === "success") return { ...await verifyPayment(admin, env, profile, String(order.id)), course: publicCourse(course) };
+  if (Number(order.amount) !== amount) throw httpError("Course price changed. Please contact support to reset the pending payment.", 409, "order_price_changed");
+  if (Number(order.amount) <= 0) return { ...await completeOrder(admin, order, { free_course: true }), course: publicCourse(course) };
+  if (order.provider_payment_session_id) {
+    const providerOrder = await fetchProviderOrder(env, String(order.provider_order_id));
+    if (providerOrder.order_status === "PAID") return { ...await verifyPayment(admin, env, profile, String(order.id)), course: publicCourse(course) };
+    if (["EXPIRED", "TERMINATED", "TERMINATION_REQUESTED"].includes(String(providerOrder.order_status))) {
+      const retired = await admin.from("lms_course_orders").update({ status: "cancelled" }).eq("id", order.id).neq("status", "success");
+      if (retired.error) throw retired.error;
+      return await createCourseOrder(admin, env, profile, selector);
+    }
+    return { order, course: publicCourse(course), provider: { payment_session_id: order.provider_payment_session_id, mode: env.cashfreeEnv }, payment_status: order.status };
   }
 
   const provider = await createProviderOrder(env, order, profile, course);
   if (provider.payment_session_id) {
-    await admin.from("lms_course_orders").update({
+    const saved = await admin.from("lms_course_orders").update({
       provider_payment_session_id: provider.payment_session_id,
       metadata: { course_title: course.title, provider: provider.raw || {} },
     }).eq("id", order.id);
+    if (saved.error) throw saved.error;
   }
 
   return {
@@ -304,6 +309,7 @@ async function createProviderOrder(env: ReturnType<typeof loadEnv>, order: Recor
       "x-api-version": "2023-08-01",
       "x-client-id": env.cashfreeAppId,
       "x-client-secret": env.cashfreeSecret,
+      "x-idempotency-key": String(order.id),
     },
     body: JSON.stringify({
       order_id: order.provider_order_id,
@@ -326,23 +332,18 @@ async function createProviderOrder(env: ReturnType<typeof loadEnv>, order: Recor
 
 async function verifyPayment(admin: ReturnType<typeof createClient>, env: ReturnType<typeof loadEnv>, profile: ProfileRow, orderId: string, providerOrderId = "") {
   const order = await findOwnedOrder(admin, profile.id, orderId, providerOrderId);
-  if (order.status === "success") {
-    // Heal a legacy successful order only when its protected enrollment row is absent.
-    const enrollment = await activeEnrollment(admin, profile.id, order.course_id)
-      || await grantEnrollment(admin, String(order.user_id), String(order.course_id));
-    await syncProfileCourseIds(admin, String(order.user_id), String(order.course_id));
-    return { order, payment_status: "success", enrollment };
-  }
-
+  if (Number(order.amount) === 0) return await completeOrder(admin, order, { free_course: true });
   const provider = await fetchProviderOrder(env, String(order.provider_order_id || ""));
-  const status = normalizeProviderStatus(provider.status || provider.order_status);
+  if (String(provider.order_id) !== String(order.provider_order_id)) throw httpError("Payment order mismatch", 409, "payment_mismatch");
+  const status = provider.order_status === "PAID" ? "success" : provider.order_status === "EXPIRED" ? "failed" : provider.order_status === "TERMINATED" ? "cancelled" : "processing";
   if (status !== "success") {
-    await admin.from("lms_course_orders").update({ status, updated_at: new Date().toISOString() }).eq("id", order.id);
+    const updated = await admin.from("lms_course_orders").update({ status, updated_at: new Date().toISOString() }).eq("id", order.id).neq("status", "success");
+    if (updated.error) throw updated.error;
     return { order: { ...order, status }, payment_status: status, provider };
   }
 
-  const paidAmount = Math.round(Number(provider.amount || provider.order_amount || provider.payment_amount || 0));
-  if (paidAmount !== Number(order.amount) || String(provider.currency || provider.order_currency || order.currency).toUpperCase() !== String(order.currency).toUpperCase()) {
+  const paidAmount = Number(provider.order_amount);
+  if (paidAmount !== Number(order.amount) || String(provider.order_currency).toUpperCase() !== String(order.currency).toUpperCase()) {
     throw httpError("Payment amount or currency mismatch", 409, "payment_mismatch");
   }
   const result = await completeOrder(admin, order, provider);
@@ -377,25 +378,20 @@ async function handleWebhook(admin: ReturnType<typeof createClient>, env: Return
   if (!order) throw httpError("Order not found", 404, "order_not_found");
   const status = normalizeProviderStatus(String(paymentPayload.payment_status || orderPayload.order_status || payload.type || ""));
   if (status === "success") {
-    const paidAmount = Math.round(Number(paymentPayload.payment_amount || orderPayload.order_amount || payload.payment_amount || 0));
+    const paidAmount = Number(paymentPayload.payment_amount || orderPayload.order_amount || payload.payment_amount || 0);
     const currency = String(paymentPayload.payment_currency || orderPayload.order_currency || payload.payment_currency || order.currency).toUpperCase();
     if (paidAmount !== Number(order.amount) || currency !== String(order.currency).toUpperCase()) {
       throw httpError("Webhook amount or currency mismatch", 409, "webhook_payment_mismatch");
     }
-    await completeOrder(admin, order, {
-      status,
-      order_amount: order.amount,
-      order_currency: order.currency,
-      cf_payment_id: paymentPayload.cf_payment_id || paymentPayload.payment_id || providerOrderId,
-      raw: parsed,
-    });
+    await verifyPayment(admin, env, { id: String(order.user_id) }, String(order.id));
   } else {
-    await admin.from("lms_course_orders").update({ status, updated_at: new Date().toISOString(), metadata: { webhook: parsed } }).eq("id", order.id);
+    // A failed payment attempt does not terminate an otherwise payable order.
+    await verifyPayment(admin, env, { id: String(order.user_id) }, String(order.id));
   }
 }
 
 async function verifyCashfreeWebhook(env: ReturnType<typeof loadEnv>, request: Request, rawBody: string) {
-  if (!env.webhookSecret) return;
+  if (!env.webhookSecret) throw httpError("Webhook verification is not configured", 503, "webhook_secret_missing");
   const signature = request.headers.get("x-webhook-signature") || "";
   const timestamp = request.headers.get("x-webhook-timestamp") || "";
   if (!signature || !timestamp) throw httpError("Webhook signature missing", 401, "webhook_signature_missing");
@@ -406,105 +402,13 @@ async function verifyCashfreeWebhook(env: ReturnType<typeof loadEnv>, request: R
 }
 
 async function completeOrder(admin: ReturnType<typeof createClient>, order: Record<string, unknown>, provider: Record<string, unknown>) {
-  const paymentId = String(provider.cf_payment_id || provider.payment_id || provider.provider_payment_id || order.provider_order_id || "");
-  await admin.from("lms_course_payments").upsert({
-    order_id: order.id,
-    user_id: order.user_id,
-    course_id: order.course_id,
-    amount: order.amount,
-    currency: order.currency,
-    provider: order.provider || "cashfree",
-    provider_payment_id: paymentId,
-    provider_order_id: order.provider_order_id,
-    status: "success",
-    verified_at: new Date().toISOString(),
-    raw_payload: provider,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: "provider,provider_payment_id" });
-  const { data: updatedOrder, error } = await admin.from("lms_course_orders").update({
-    status: "success",
-    updated_at: new Date().toISOString(),
-  }).eq("id", order.id).select("*").single();
-  if (error) throw error;
-  const enrollment = await grantEnrollment(admin, String(order.user_id), String(order.course_id));
-  await syncProfileCourseIds(admin, String(order.user_id), String(order.course_id));
-  return { order: updatedOrder, payment_status: "success", enrollment };
-}
-
-async function grantEnrollment(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
-  const existing = await activeEnrollment(admin, userId, courseId);
-  if (existing) return existing;
-  const archived = await admin.from("user_courses").select("*").eq("course_id", courseId).or(`user_id.eq.${userId},student_id.eq.${userId},learner_id.eq.${userId}`).limit(1).maybeSingle();
-  if (archived.error) throw archived.error;
-  if (archived.data?.id) {
-    const { data, error } = await admin.from("user_courses").update({
-      user_id: userId,
-      student_id: userId,
-      learner_id: userId,
-      course_id: courseId,
-      status: "active",
-      deleted_at: null,
-    }).eq("id", archived.data.id).select("*").single();
-    if (error) throw error;
-    return data;
-  }
-  const { data, error } = await admin.from("user_courses").insert({
-    user_id: userId,
-    student_id: userId,
-    learner_id: userId,
-    course_id: courseId,
-    status: "active",
-    created_at: new Date().toISOString(),
-  }).select("*").single();
-  if (error) throw error;
-  return data;
-}
-
-async function syncProfileCourseIds(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
-  const { data: profile, error: profileError } = await admin.from("users")
-    .select("id,course_ids")
-    .eq("id", userId)
-    .maybeSingle();
-  if (profileError) throw profileError;
-  if (!profile?.id) throw httpError("Student profile not found", 404, "profile_not_found");
-
-  const courseIds = parseCourseIds(profile.course_ids);
-  if (courseIds.includes(courseId)) return;
-
-  // Assignment fields are protected by a database trigger. Use the existing
-  // service-only RPC so this post-payment update is explicit and auditable.
-  const { error } = await admin.rpc("lms_admin_update_user_assignment", {
-    target_user_id: userId,
-    target_batch_id: null,
-    target_course_ids: [...courseIds, courseId],
+  const { data, error } = await admin.rpc("lms_complete_course_order", {
+    target_order_id: order.id, verified_provider: provider,
   });
   if (error) throw error;
-}
-
-function parseCourseIds(value: unknown): string[] {
-  if (Array.isArray(value)) return [...new Set(value.map(String).filter(Boolean))];
-  if (typeof value === "string") {
-    try {
-      return parseCourseIds(JSON.parse(value));
-    } catch {
-      return [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))];
-    }
-  }
-  return [];
-}
-
-async function pendingOrder(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
-  const { data, error } = await admin.from("lms_course_orders")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("course_id", courseId)
-    .in("status", ["pending", "processing"])
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (error) throw error;
   return data;
 }
+
 
 async function activeEnrollment(admin: ReturnType<typeof createClient>, userId: string, courseId: string) {
   const { data, error } = await admin.from("user_courses")
@@ -528,13 +432,6 @@ async function findOwnedOrder(admin: ReturnType<typeof createClient>, userId: st
   return data;
 }
 
-async function markCancelled(admin: ReturnType<typeof createClient>, profile: ProfileRow, orderId: string) {
-  const order = await findOwnedOrder(admin, profile.id, orderId, "");
-  if (order.status === "success") return { order, payment_status: "success" };
-  const { data, error } = await admin.from("lms_course_orders").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", order.id).select("*").single();
-  if (error) throw error;
-  return { order: data, payment_status: "cancelled" };
-}
 
 function publicCourse(course: CourseRow) {
   const modules = parseModules(course.modules);
@@ -577,9 +474,9 @@ function publicProfile(profile: ProfileRow) {
 }
 
 function courseAmount(course: CourseRow) {
-  const text = String(course.price ?? "").replace(/,/g, "");
-  const match = text.match(/\d+(?:\.\d+)?/);
-  return Math.max(0, Math.round(Number(match?.[0] || 0)));
+  const amount = Number(course.price);
+  if (course.price == null || String(course.price).trim() === "" || !Number.isSafeInteger(amount) || amount < 0) throw httpError("Course price is not configured", 409, "invalid_course_price");
+  return amount;
 }
 
 function parseModules(value: unknown): Array<Record<string, unknown>> {
@@ -677,9 +574,9 @@ function courseSlugAliases(value: unknown) {
 
 function normalizeProviderStatus(value: unknown) {
   const status = String(value || "").toLowerCase();
-  if (["paid", "success", "successful", "payment_success", "order_paid"].some((item) => status.includes(item))) return "success";
-  if (["failed", "failure", "expired"].some((item) => status.includes(item))) return "failed";
-  if (["cancelled", "canceled", "user_dropped"].some((item) => status.includes(item))) return "cancelled";
+  if (["paid", "success"].includes(status)) return "success";
+  if (["failed", "failure", "expired"].includes(status)) return "failed";
+  if (["cancelled", "canceled", "user_dropped", "terminated"].includes(status)) return "cancelled";
   return "processing";
 }
 

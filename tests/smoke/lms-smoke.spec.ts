@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 type Role = "admin" | "mentor" | "student";
 type MockOptions = {
+  userCourses?: unknown[];
   chats?: unknown[];
   courses?: unknown[];
   profile?: Record<string, unknown>;
@@ -23,7 +24,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
     });
   });
 
-  await page.addInitScript(({ activeRole, mockChats, mockCourses, profileOverrides }) => {
+  await page.addInitScript(({ activeRole, mockChats, mockCourses, profileOverrides, mockEnrollments }) => {
     const profile = {
       id: `${activeRole}-user`,
       auth_user_id: `${activeRole}-auth`,
@@ -65,7 +66,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
       support_notifications: [],
       support_tickets: [],
       task_submissions: [],
-      user_courses: [{ id: "enrollment-1", user_id: "student-user", course_id: "course-1", batch_id: "batch-1", status: "active" }],
+      user_courses: mockEnrollments ?? [{ id: "enrollment-1", user_id: "student-user", course_id: "course-1", batch_id: "batch-1", status: "active" }],
       users: [profile]
     };
 
@@ -102,6 +103,7 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
       from: (table: string) => chain(table),
       removeChannel: async () => undefined,
       rpc: async (name: string) => {
+        if (name === "lms_course_catalog") return { data: tableRows.courses, error: null };
         if (name === "lms_student_directory") return { data: [profile], error: null };
         if (name === "lms_claim_daily_login_reward") return { data: { coins: 25, streak_count: 1, claimed: false }, error: null };
         if (name === "lms_submit_public_form") return { data: { ok: true }, error: null };
@@ -112,12 +114,127 @@ async function mockSupabase(page: Page, role: Role = "student", options: MockOpt
         from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" }, error: null }), upload: async () => ({ error: null }) })
       }
     };
-  }, { activeRole: role, mockChats: options.chats || [], mockCourses: options.courses || [], profileOverrides: options.profile || {} });
+  }, { activeRole: role, mockChats: options.chats || [], mockCourses: options.courses || [], profileOverrides: options.profile || {}, mockEnrollments: options.userCourses });
 }
 
 async function waitForLegacyScripts(page: Page) {
   await page.waitForFunction(() => Boolean(window.getLmsPlatformClient || window.getSupabaseClient));
 }
+
+async function mockPurchase(page: Page, options: { loggedIn?: boolean; owned?: boolean; result?: string; catalog?: boolean } = {}) {
+  await mockSupabase(page, "student", { courses: [{ id: "course-1", title: "Design Foundations", status: "active", modules: [] }], ...(options.catalog ? { userCourses: [], profile: { course_ids: [], batch_id: null } } : {}) });
+  await page.route("https://sdk.cashfree.com/**", route => route.fulfill({ contentType: "text/javascript", body: "" }));
+  await page.addInitScript((settings) => {
+    const runtime = window as unknown as { __mockSupabaseClient: any; Cashfree: any; purchaseCalls: string[] };
+    const client = runtime.__mockSupabaseClient;
+    runtime.purchaseCalls = JSON.parse(sessionStorage.getItem("purchase-calls") || "[]");
+    const record = (action: string) => { runtime.purchaseCalls.push(action); sessionStorage.setItem("purchase-calls", JSON.stringify(runtime.purchaseCalls)); };
+    let loggedIn = settings.loggedIn !== false && !localStorage.getItem("test-signed-out");
+    let owned = settings.owned || localStorage.getItem("test-purchased") === "yes";
+    const course = { id: "course-1", title: "Design Foundations", amount: 5999, final_amount: 5999 };
+    const order = { id: "order-1", course_id: "course-1", user_id: "student-user", amount: 5999 };
+    const enrollment = { id: "enrollment-1", course_id: "course-1", user_id: "student-user" };
+    client.auth.getSession = async () => ({ data: { session: loggedIn ? { user: { id: "student-auth" }, access_token: "test-session" } : null } });
+    client.auth.signUp = async () => { loggedIn = true; record("signup"); return { data: { session: { user: { id: "student-auth" } } } }; };
+    client.auth.signOut = async () => { loggedIn = false; localStorage.setItem("test-signed-out", "yes"); return {}; };
+    client.auth.signInWithPassword = async () => { loggedIn = true; localStorage.removeItem("test-signed-out"); return { data: { user: { id: "student-auth" } } }; };
+    client.functions = { invoke: async (_: string, { body }: any) => {
+      record(body.action);
+      if (body.action === "course") return { data: { course } };
+      if (body.action === "access") return { data: { enrollment: owned ? enrollment : null } };
+      if (body.action === "create_student_profile") return { data: { profile: { role: "student" } } };
+      if (body.action === "create_order") return { data: owned ? { already_owned: true, course, enrollment } : { order, course, provider: { payment_session_id: "test-payment-session", mode: "sandbox" } } };
+      if (body.action === "verify_payment") {
+        const result = settings.result || "success";
+        if (result === "success") { owned = true; localStorage.setItem("test-purchased", "yes"); }
+        return { data: { order, course, payment_status: result, enrollment: result === "success" ? enrollment : null } };
+      }
+      throw new Error(`Unexpected purchase action: ${body.action}`);
+    } };
+    runtime.Cashfree = () => ({ checkout: async () => {
+      record("cashfree");
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return settings.result === "cancelled" ? { error: { message: "Payment cancelled" } } : {};
+    } });
+  }, options);
+}
+
+test("signed-in purchase opens Cashfree once and lands in the purchased course", async ({ page }) => {
+  await mockPurchase(page);
+  await page.goto("/course-detail.html?course=design");
+  await page.locator("[data-buy-course]").first().evaluate((button: HTMLElement) => { button.click(); button.click(); button.click(); });
+  await expect(page.locator('[data-purchase-panel="account"]')).toBeHidden();
+  await expect(page.locator('[data-purchase-panel="checkout"]')).toBeHidden();
+  await expect(page.locator("#purchaseStatusTitle")).toHaveText("Payment Successful");
+  const calls = await page.evaluate(() => (window as any).purchaseCalls as string[]);
+  expect(calls.filter(action => action === "create_order")).toHaveLength(1);
+  expect(calls.filter(action => action === "cashfree")).toHaveLength(1);
+  await expect(page).toHaveURL(/student.html\?view=learn&course=course-1/);
+  await expect(page.locator("#learnView")).toHaveClass(/active/);
+  await page.reload();
+  await expect(page.locator("#learnView")).toHaveClass(/active/);
+  await page.goto("/course-detail.html?course=design");
+  await expect(page.locator("[data-buy-course]").first()).toHaveText("Continue Course");
+  await page.evaluate(() => (window as any).__mockSupabaseClient.auth.signOut());
+  await page.reload();
+  await page.locator("[data-buy-course]").first().click();
+  if (await page.locator("#purchaseAccountForm").isVisible()) await page.locator('[data-purchase-mode="login"]').click();
+  await page.locator("#purchaseLoginEmail").fill("learner@example.test");
+  await page.locator("#purchaseLoginPassword").fill("TestPassword123");
+  await page.locator('#purchaseLoginForm button[type="submit"]').click();
+  await expect(page).toHaveURL(/student.html\?view=learn&course=course-1/);
+  expect(await page.evaluate(() => (window as any).purchaseCalls.filter((action: string) => action === "cashfree").length)).toBe(1);
+});
+
+for (const paymentResult of ["success", "failed"]) test(`new visitor registration continues to payment: ${paymentResult}`, async ({ page }) => {
+  await mockPurchase(page, { loggedIn: false, result: paymentResult });
+  await page.goto("/course-detail.html?course=design&checkout=1");
+  await expect(page.locator("#purchaseAccountForm")).toBeVisible();
+  await page.locator("#purchaseName").fill("Test Learner");
+  await page.locator("#purchaseEmail").fill("learner@example.test");
+  await page.locator("#purchasePhone").fill("9999999999");
+  await page.locator("#purchasePassword").fill("TestPassword123");
+  await page.locator("#purchaseConfirmPassword").fill("TestPassword123");
+  await page.locator('#purchaseAccountForm button[type="submit"]').click();
+  if (paymentResult === "success") {
+    await expect(page.locator("#purchaseStatusTitle")).toHaveText("Payment Successful");
+    await expect(page).toHaveURL(/student.html\?view=learn&course=course-1/);
+  } else {
+    await expect(page.locator("#purchaseStatusTitle")).toHaveText("Payment Failed");
+    expect(await page.evaluate(() => localStorage.getItem("test-purchased"))).toBeNull();
+  }
+});
+
+for (const result of ["failed", "cancelled"]) {
+  test(`payment ${result} grants no access and allows retry`, async ({ page }) => {
+    await mockPurchase(page, { result });
+    await page.goto("/course-detail.html?course=design&checkout=1");
+    await expect(page.locator("#purchaseRetryButton")).toBeVisible();
+    await expect(page.locator("#purchaseStartButton")).toBeHidden();
+    expect(await page.evaluate(() => localStorage.getItem("test-purchased"))).toBeNull();
+    await page.locator("#purchaseRetryButton").click();
+    await expect.poll(() => page.evaluate(() => (window as any).purchaseCalls.filter((action: string) => action === "cashfree").length)).toBe(2);
+  });
+}
+
+test("already enrolled student opens the course without an order", async ({ page }) => {
+  await mockPurchase(page, { owned: true });
+  await page.goto("/course-detail.html?course=design");
+  await expect(page.locator("[data-buy-course]").first()).toHaveText("Continue Course");
+  await page.locator("[data-buy-course]").first().click();
+  await expect(page).toHaveURL(/student.html\?view=learn&course=course-1/);
+  expect(await page.evaluate(() => (window as any).purchaseCalls.includes("create_order"))).toBe(false);
+});
+
+test("catalog Buy Now stays on the LMS while opening payment", async ({ page }) => {
+  await mockPurchase(page, { result: "failed", catalog: true });
+  await page.goto("/student.html");
+  await page.locator('[data-view="catalog"]').first().click();
+  await page.locator('[data-buy-catalog-course="course-1"]').click();
+  await expect(page.locator("#purchaseRetryButton")).toBeVisible();
+  await expect(page).toHaveURL(/student.html$/);
+  expect(await page.evaluate(() => (window as any).purchaseCalls.includes("cashfree"))).toBe(true);
+});
 
 test("login routes authenticated users to their role portal", async ({ page }) => {
   await mockSupabase(page, "mentor");

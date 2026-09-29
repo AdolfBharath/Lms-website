@@ -1,5 +1,6 @@
 (function () {
-  const COURSE_SELECTOR = new URLSearchParams(window.location.search).get("course") || "javascript-imagination";
+  let COURSE_SELECTOR = new URLSearchParams(window.location.search).get("course") || "javascript-imagination";
+  const studentPortal = Boolean(document.getElementById("catalogCoursesGrid"));
   const PURCHASE_FUNCTION = "course-purchase";
   const CASHFREE_SCRIPT = "https://sdk.cashfree.com/js/v3/cashfree.js";
   const DEFAULT_COURSE_AMOUNT = 5999;
@@ -18,6 +19,7 @@
     if (window.__jenovatePurchaseFlowInitialized) return;
     window.__jenovatePurchaseFlowInitialized = true;
     document.body.insertAdjacentHTML("beforeend", modalMarkup());
+    document.getElementById("purchaseRetryButton").insertAdjacentHTML("afterend", '<button class="purchase-primary" id="purchaseVerifyButton" type="button" hidden>Check Payment Status</button>');
     document.querySelectorAll("#masterclassEnroll,.primary-action").forEach((button) => {
       button.setAttribute("href", "#checkout");
       button.setAttribute("data-buy-course", COURSE_SELECTOR);
@@ -27,11 +29,12 @@
     document.getElementById("purchaseAccountForm")?.addEventListener("submit", createStudentAndContinue);
     document.getElementById("purchaseLoginForm")?.addEventListener("submit", loginAndContinue);
     document.getElementById("purchaseCheckoutPayButton")?.addEventListener("click", payForSelectedCourse);
-    document.getElementById("purchaseRetryButton")?.addEventListener("click", payForSelectedCourse);
+    document.getElementById("purchaseRetryButton")?.addEventListener("click", () => void startPurchase());
+    document.getElementById("purchaseVerifyButton")?.addEventListener("click", () => void verifyOrder(state.order?.id));
     state.course = pageCourseSnapshot();
     renderCheckoutCourse();
     prefillExistingLogin();
-    state.courseLoad = hydrateBackendCourse();
+    if (!studentPortal) state.courseLoad = hydrateBackendCourse();
     void verifyReturnedPayment();
     if (shouldAutoOpenCheckout()) {
       window.setTimeout(() => void startPurchase(), 120);
@@ -42,6 +45,12 @@
     try {
       const response = await invokePurchase("course", { course_slug: COURSE_SELECTOR }, false);
       state.course = normalizeCourse(response.course, state.course);
+      const session = await currentSession();
+      if (session?.user) {
+        const access = await invokePurchase("access", { course_id: state.course.id });
+        state.ownedCourseId = access.enrollment?.course_id || "";
+        document.querySelectorAll("[data-buy-course]").forEach((button) => { button.textContent = state.ownedCourseId ? "Continue Course" : "Buy Now"; });
+      }
       renderCheckoutCourse();
       setText("coursePrice", money(response.course.final_amount ?? response.course.amount));
     } catch {
@@ -54,19 +63,38 @@
   async function verifyReturnedPayment() {
     const orderId = new URLSearchParams(window.location.search).get("purchase_order_id");
     if (!orderId) return;
+    state.order = { id: orderId };
+    await verifyOrder(orderId);
+  }
+
+  async function verifyOrder(orderId) {
+    if (!orderId || state.verifying) return;
+    state.verifying = true;
     openPurchaseModal("status");
     setStatus("Payment Processing", "Verifying your payment securely. Course access opens only after backend verification.");
     try {
-      handlePaymentResult(await invokePurchase("verify_payment", { order_id: orderId }));
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        const result = await invokePurchase("verify_payment", { order_id: orderId });
+        if (["success", "failed", "cancelled"].includes(result.payment_status) || attempt === 4) { handlePaymentResult(result); break; }
+        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      }
     } catch (error) {
       setStatus("Payment Processing", userMessage(error, "We could not confirm the payment yet. Please retry verification in a moment."), "processing");
+    } finally {
+      state.verifying = false;
     }
   }
 
   function handlePurchaseClick(event) {
-    const buy = event.target.closest("[data-buy-course]");
+    const buy = event.target.closest("[data-buy-course],[data-buy-catalog-course]");
     if (buy) {
       event.preventDefault();
+      if (state.busy || state.paymentBusy || state.verifying) return;
+      if (buy.dataset.buyCatalogCourse && COURSE_SELECTOR !== buy.dataset.buyCatalogCourse) {
+        COURSE_SELECTOR = buy.dataset.buyCatalogCourse;
+        state.course = null; state.order = null; state.ownedCourseId = "";
+        state.courseLoad = hydrateBackendCourse();
+      }
       void startPurchase();
       return;
     }
@@ -89,7 +117,7 @@
       renderMode();
     }
     if (event.target.closest("[data-start-learning]")) {
-      window.location.href = "student.html?view=courses";
+      openPurchasedCourse();
     }
   }
 
@@ -101,15 +129,16 @@
   }
 
   async function startPurchase() {
-    if (state.busy) return;
+    if (state.busy || state.paymentBusy || state.verifying) return;
     state.busy = true;
+    document.querySelectorAll("[data-buy-course],[data-buy-catalog-course]").forEach((button) => { button.setAttribute("aria-disabled", "true"); });
     openPurchaseModal("loading");
     setStatus("Checking Account", "Preparing secure checkout for the selected course.");
     try {
       await ensureCourseReady();
       const session = await currentSession();
       if (session?.user) {
-        await ensureStudentProfile({});
+        if (state.ownedCourseId) { openPurchasedCourse(state.ownedCourseId); return; }
         await openCheckout();
         return;
       }
@@ -121,6 +150,7 @@
       setStatus("Checkout Unavailable", userMessage(error, "Unable to prepare checkout right now."), "failed");
     } finally {
       state.busy = false;
+      document.querySelectorAll("[data-buy-course],[data-buy-catalog-course]").forEach((button) => { button.removeAttribute("aria-disabled"); });
     }
   }
 
@@ -201,20 +231,20 @@
   }
 
   async function openCheckout() {
-    openPurchaseModal("checkout");
+    openPurchaseModal("status");
     setStatus("Secure Checkout", "Creating a pending order for the exact selected course.");
     await ensureCourseReady();
     const response = await invokePurchase("create_order", { course_slug: COURSE_SELECTOR });
     state.course = normalizeCourse(response.course, state.course);
     state.order = response.order || null;
     renderCheckoutCourse();
-    if (response.already_owned) return setStatus("Already Purchased", "This course is already available in My Courses.", "owned", response);
+    if (response.already_owned) { state.ownedCourseId = response.enrollment.course_id; openPurchasedCourse(state.ownedCourseId); return; }
     if (response.payment_status === "success") return handlePaymentResult(response);
-    switchPanel("checkout");
     document.getElementById("purchaseCheckoutPayButton").disabled = false;
     if (response.provider?.payment_session_id) {
       state.order.provider_payment_session_id = response.provider.payment_session_id;
       state.order.provider_mode = response.provider.mode || "sandbox";
+      await payForSelectedCourse();
     } else {
       setStatus("Payment Provider Not Configured", "Payment credentials are not configured yet. No enrollment has been granted.", "processing", response);
     }
@@ -230,11 +260,12 @@
       if (!state.order.provider_payment_session_id) throw new Error("Payment session is not available. Configure the payment provider secrets and retry.");
       const gatewayResult = await openCashfreeCheckout(state.order.provider_payment_session_id, state.order.provider_mode || "sandbox");
       if (isCancelledGatewayResult(gatewayResult)) {
-        await invokePurchase("mark_cancelled", { order_id: state.order.id }).catch(() => null);
-        return setStatus("Payment Cancelled", "No enrollment was created. You can return to checkout when ready.", "cancelled", { order: state.order, course: state.course });
+        await verifyOrder(state.order.id);
+        if (!state.ownedCourseId) setStatus("Payment Cancelled", "Payment wasn't completed. You can retry or return to your course.", "cancelled", { order: state.order, course: state.course });
+        return;
       }
       setStatus("Payment Processing", "Verifying your payment securely with the backend.");
-      handlePaymentResult(await invokePurchase("verify_payment", { order_id: state.order.id }));
+      await verifyOrder(state.order.id);
     } catch (error) {
       document.getElementById("purchaseCheckoutPayButton").disabled = false;
       updatePayButton();
@@ -250,17 +281,26 @@
     const cashfree = window.Cashfree({ mode: mode === "production" ? "production" : "sandbox" });
     // Hosted redirect checkout also works in in-app browsers; backend verification resumes from the return URL.
     const result = await cashfree.checkout({ paymentSessionId, redirectTarget: "_self" });
-    if (result?.error) throw new Error(result.error.message || "Payment failed.");
+    if (result?.error && !isCancelledGatewayResult(result)) throw new Error(result.error.message || "Payment failed.");
     return result;
   }
 
   function handlePaymentResult(response) {
     state.order = response.order || state.order;
     state.payment = response.payment || response.provider || null;
-    if (response.payment_status === "success") return setStatus("Payment Successful", "Your course has been assigned to My Courses. You can start learning now.", "success", response);
+    if (response.payment_status === "success" && response.enrollment?.course_id && response.enrollment.course_id === response.order?.course_id) {
+      state.ownedCourseId = response.enrollment.course_id;
+      setStatus("Payment Successful", "You are enrolled. Opening your course...", "success", response);
+      window.setTimeout(() => openPurchasedCourse(), 1200);
+      return;
+    }
     if (response.payment_status === "cancelled") return setStatus("Payment Cancelled", "No enrollment was created. You can return to checkout anytime.", "cancelled", response);
     if (response.payment_status === "failed") return setStatus("Payment Failed", "No enrollment was created. Please try again.", "failed", response);
     setStatus("Payment Processing", "Payment is not confirmed yet. Access will unlock after backend verification.", "processing", response);
+  }
+
+  function openPurchasedCourse(courseId = state.ownedCourseId) {
+    if (courseId) window.location.href = `student.html?view=learn&course=${encodeURIComponent(courseId)}`;
   }
 
   async function invokePurchase(action, payload = {}, requireAuth = true) {
@@ -276,7 +316,7 @@
       const { data } = await withTimeout(getClient().auth.getSession(), 2500);
       return data?.session || null;
     } catch {
-      return null;
+      throw new Error("Unable to check your login. Please try again.");
     }
   }
 
@@ -373,13 +413,14 @@
     setText("purchaseStatusAmount", money(course.final_amount ?? order.amount ?? course.amount ?? 0));
     setText("purchaseStatusOrder", order.provider_order_id || order.id || "-");
     setText("purchaseStatusTransaction", transaction);
-    document.getElementById("purchaseRetryButton").hidden = tone !== "failed";
+    document.getElementById("purchaseRetryButton").hidden = !["failed", "cancelled"].includes(tone);
+    document.getElementById("purchaseVerifyButton").hidden = tone !== "processing" || !state.order?.id;
     const backButton = document.getElementById("purchaseBackButton");
     if (backButton) {
       backButton.hidden = !["failed", "cancelled", "processing"].includes(tone);
-      backButton.textContent = tone === "cancelled" ? "Return to Checkout" : "Back to Course";
-      backButton.toggleAttribute("data-return-checkout", tone === "cancelled");
-      backButton.toggleAttribute("data-close-purchase", tone !== "cancelled");
+      backButton.textContent = "Back to Course";
+      backButton.removeAttribute("data-return-checkout");
+      backButton.setAttribute("data-close-purchase", "");
     }
     document.getElementById("purchaseStartButton").hidden = !["success", "owned"].includes(tone);
   }
@@ -459,7 +500,6 @@
   }
 
   async function ensureCourseReady() {
-    if (state.course?.title && Number((state.course.final_amount ?? state.course.amount) || 0) > 0) return state.course;
     if (state.courseLoad) await state.courseLoad.catch(() => null);
     state.course = normalizeCourse(state.course, pageCourseSnapshot());
     renderCheckoutCourse();
@@ -486,11 +526,12 @@
     const course = { ...(fallback || {}), ...(primary || {}) };
     const parsedAmount = parseMoney(course.final_amount ?? course.amount ?? course.price);
     const fallbackAmount = parseMoney(fallback?.final_amount ?? fallback?.amount ?? fallback?.price);
-    const amount = parsedAmount || fallbackAmount || DEFAULT_COURSE_AMOUNT;
+    const hasAmount = course.final_amount != null || course.amount != null || course.price != null;
+    const amount = hasAmount ? parsedAmount : fallbackAmount || DEFAULT_COURSE_AMOUNT;
     return {
       ...course,
       amount,
-      final_amount: parseMoney(course.final_amount) || amount,
+      final_amount: course.final_amount != null ? parseMoney(course.final_amount) : amount,
       thumbnail_url: course.thumbnail_url || fallback?.thumbnail_url || document.getElementById("courseHeroImage")?.getAttribute("src") || "",
     };
   }

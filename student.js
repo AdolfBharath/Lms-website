@@ -54,7 +54,7 @@
   const PAGE_SIZE = 20;
   const CHAT_PAGE_SIZE = 30;
   const QUERY_CACHE_TTL = 45_000;
-  const QUERY_CACHE_PREFIX = "jenovate:lms:student:v3:";
+  const QUERY_CACHE_PREFIX = "jenovate:lms:student:v4:";
   const SELECTS = {
     users: "id,name,full_name,display_name,email,role,username,phone,batch_id,course_ids,coins,coin_balance,streak_count,last_active_date,last_login_reward_date,reward_history,status,deleted_at,created_at,referral,referral_key",
     courses: "id,title,description,category,duration,module_type,instructor_name,thumbnail_url,rating,price,difficulty,modules,is_featured,is_my_course,status,created_by_admin,quiz_coin_reward,quiz_pass_score,mentor_id,created_at,google_form_url",
@@ -289,6 +289,10 @@
 
     void syncDailyStreak({ render: true, notify: true });
     await loadAllData({ initial: true, force: true });
+    const requestedCourse = new URLSearchParams(location.search).get("course");
+    if (requestedCourse && enrolledCourses().some((course) => sameId(course.id, requestedCourse))) {
+      state.selectedCourseId = requestedCourse; state.selectedLessonKey = ""; setView("learn", { historyMode: "none" });
+    }
     setupRealtime();
     window.setTimeout(() => void loadAllData({ silent: true }), 0);
   }
@@ -967,6 +971,11 @@
   }
 
   async function runStudentSpecialQuery(platformClient, spec, limit) {
+    if (spec.key === "catalogCourses") {
+      const { data, error } = await platformClient.rpc("lms_course_catalog");
+      if (error) throw error;
+      return (data || []).slice(0, limit);
+    }
     if (spec.scope === "studentUsers") {
       const [profileResult, directoryResult] = await Promise.all([
         platformClient.from("users").select(spec.select).eq("id", state.student.id).maybeSingle(),
