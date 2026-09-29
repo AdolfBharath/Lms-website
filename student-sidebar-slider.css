@@ -9,7 +9,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover,
-  body[data-ui-build] .student-sidebar:focus-within {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) {
     width: 232px !important;
     min-width: 232px !important;
     box-shadow: 18px 0 42px rgba(15, 23, 42, 0.1) !important;
@@ -36,7 +36,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover .brand-panel,
-  body[data-ui-build] .student-sidebar:focus-within .brand-panel {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) .brand-panel {
     width: 212px !important;
     padding: 0 12px !important;
   }
@@ -82,7 +82,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover .nav-item,
-  body[data-ui-build] .student-sidebar:focus-within .nav-item {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) .nav-item {
     width: 212px !important;
   }
 
@@ -108,7 +108,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover .nav-item > span,
-  body[data-ui-build] .student-sidebar:focus-within .nav-item > span {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) .nav-item > span {
     opacity: 1 !important;
     transform: translateX(0) !important;
   }
@@ -127,7 +127,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover .logout-btn.full,
-  body[data-ui-build] .student-sidebar:focus-within .logout-btn.full {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) .logout-btn.full {
     width: 212px !important;
   }
 
@@ -140,7 +140,7 @@
   }
 
   body[data-ui-build] .student-sidebar:hover .logout-btn.full b,
-  body[data-ui-build] .student-sidebar:focus-within .logout-btn.full b {
+  body[data-ui-build] .student-sidebar:has(:focus-visible) .logout-btn.full b {
     opacity: 1 !important;
   }
 }

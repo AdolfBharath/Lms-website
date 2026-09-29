@@ -128,6 +128,7 @@
     courseVisibleCount: 8,
     catalogCategory: "all",
     catalogFilter: "all",
+    catalogSort: "featured",
     catalogFiltersOpen: false,
     taskFilter: "pending",
     query: "",
@@ -597,6 +598,11 @@
       renderCourses();
     });
 
+    document.getElementById("catalogCoursesGrid")?.addEventListener("change", (event) => {
+      if (!event.target.matches("#catalogSort")) return;
+      state.catalogSort = event.target.value;
+      renderCatalog(); document.getElementById("catalogSort")?.focus();
+    });
     document.getElementById("catalogCoursesGrid")?.addEventListener("click", (event) => {
       const button = event.target.closest("[data-catalog-category]");
       if (button) {
@@ -616,7 +622,7 @@
       }
       const resetButton = event.target.closest("[data-catalog-reset]");
       if (resetButton) {
-        state.catalogCategory = state.catalogFilter = "all"; state.catalogFiltersOpen = false; state.query = "";
+        state.catalogCategory = state.catalogFilter = "all"; state.catalogSort = "featured"; state.catalogFiltersOpen = false; state.query = "";
         const topSearch = document.getElementById("topSearchInput");
         if (topSearch) topSearch.value = "";
         renderCatalog();
@@ -1979,32 +1985,37 @@
       .sort((a, b) => String(a.title || "").localeCompare(String(b.title || "")));
     const categories = [...new Set(catalog
       .map((course) => String(course.category || course.difficulty || "").trim())
-      .filter(Boolean))]
-      .slice(0, 5);
+      .filter(Boolean))];
     const activeCategory = state.catalogCategory || "all";
     const categoryCatalog = activeCategory === "all"
       ? catalog
       : catalog.filter((course) => String(course.category || course.difficulty || "").trim().toLowerCase() === activeCategory.toLowerCase());
     const activeFilter = state.catalogFilter || "all";
     const visibleCatalog = categoryCatalog.filter((course) => {
-      const modules = parseModules(course.modules);
-      if (activeFilter === "quiz") return modules.some((module) => moduleQuiz(module));
-      if (activeFilter === "modules") return modules.length > 0;
+      const enrolled = enrolledIds.has(String(course.id));
+      if (activeFilter === "enrolled") return enrolled;
+      if (activeFilter === "available") return !enrolled;
       return true;
+    }).sort((a, b) => {
+      if (state.catalogSort === "newest") return (Date.parse(b.created_at) || 0) - (Date.parse(a.created_at) || 0);
+      if (state.catalogSort === "title") return String(a.title || "").localeCompare(String(b.title || ""));
+      if (state.catalogSort === "price-asc") return Number(a.price || 0) - Number(b.price || 0);
+      if (state.catalogSort === "price-desc") return Number(b.price || 0) - Number(a.price || 0);
+      return Number(Boolean(b.is_featured)) - Number(Boolean(a.is_featured));
     });
     const totalModules = visibleCatalog.reduce((sum, course) => sum + parseModules(course.modules).length, 0);
     const enrolledCount = enrolledCourses().length;
     const filterLabels = {
       all: "Filters",
-      quiz: "Has Quiz",
-      modules: "Has Modules"
+      enrolled: "Enrolled",
+      available: "Not enrolled"
     };
     target.innerHTML = `
       <section class="course-discovery-hero">
         <div>
-          <span>Premium learning collection</span>
-          <h2>Master New Skills Today.</h2>
-          <p>Explore ${visibleCatalog.length || 0} available courses with ${totalModules || 0} modules. Assigned courses are marked in the catalog.</p>
+          <span>Your next step</span>
+          <h2>Build skills. Open possibilities.</h2>
+          <p>${visibleCatalog.length || 0} courses. ${totalModules || 0} modules. Find your next learning goal.</p>
           <div class="catalog-hero-actions">
             <label class="catalog-search-pill" for="catalogSearchInput">
               <input id="catalogSearchInput" type="search" value="${escapeAttr(state.query || "")}" placeholder="Search for courses, tools, or mentors..." autocomplete="off" />
@@ -2024,19 +2035,19 @@
           ${categories.map((category) => `<button class="${activeCategory.toLowerCase() === category.toLowerCase() ? "active" : ""}" type="button" data-catalog-category="${escapeAttr(category)}">${escapeHtml(category)}</button>`).join("")}
         </div>
         <div class="catalog-actions">
-          <button type="button">Sort: Featured</button>
+          <label class="catalog-sort-label" for="catalogSort">Sort by <select id="catalogSort">${Object.entries({ featured: "Featured", newest: "Newest first", title: "Name: A to Z", "price-asc": "Price: Low to high", "price-desc": "Price: High to low" }).map(([value, label]) => `<option value="${value}" ${state.catalogSort === value ? "selected" : ""}>${label}</option>`).join("")}</select></label>
           <button class="${activeFilter !== "all" || state.catalogFiltersOpen ? "active" : ""}" type="button" data-catalog-filter-toggle aria-expanded="${state.catalogFiltersOpen ? "true" : "false"}">${escapeHtml(activeFilter === "all" ? "Filters" : filterLabels[activeFilter] || "Filters")}</button>
         </div>
       </div>
       <div class="catalog-filter-row ${state.catalogFiltersOpen ? "open" : ""}" aria-label="Course filters" ${state.catalogFiltersOpen ? "" : "hidden"}>
         <button class="${activeFilter === "all" ? "active" : ""}" type="button" data-catalog-filter="all">All</button>
-        <button class="${activeFilter === "quiz" ? "active" : ""}" type="button" data-catalog-filter="quiz">Has Quiz</button>
-        <button class="${activeFilter === "modules" ? "active" : ""}" type="button" data-catalog-filter="modules">Has Modules</button>
+        <button class="${activeFilter === "enrolled" ? "active" : ""}" type="button" data-catalog-filter="enrolled">Enrolled</button>
+        <button class="${activeFilter === "available" ? "active" : ""}" type="button" data-catalog-filter="available">Not enrolled</button>
       </div>
       <div class="catalog-card-grid">
         ${visibleCatalog.length
         ? visibleCatalog.map((course) => courseCatalogCard(course, enrolledIds)).join("")
-        : emptyState("No courses available", "Published courses will appear here when they are ready.")}
+        : emptyState("No matching courses", "Try another category or clear your filters with Explore All.")}
       </div>
       <section class="catalog-accelerator-card">
         <div>
@@ -2561,6 +2572,7 @@
       state.selectedLessonKey = (lessons.find((item) => item.mediaUrl) || lessons[0]).key;
     }
     const selectedLesson = lessons.find((item) => item.key === state.selectedLessonKey) || lessons[0] || null;
+    const lessonPosition = lessons.indexOf(selectedLesson);
     const selectedModuleNumber = selectedLesson ? selectedLesson.moduleIndex + 1 : 0;
     const selectedLessonNumber = selectedLesson ? selectedLesson.lessonIndex + 1 : 0;
     const progress = courseProgress(course);
@@ -2589,12 +2601,15 @@
               <span>${escapeHtml(course?.duration || `${lessons.length || 1} lessons`)}</span>
             </div>
           </div>
-          <button class="primary-btn mark-complete-btn" type="button" data-select-lesson="${escapeAttr((selectedLesson || lessons[0])?.key || "")}">
-            Mark Complete
-          </button>
+          <button class="secondary-btn" type="button" data-jump="courses">My courses</button>
         </header>
 
         <div class="lesson-player stitch-video-player reference-video-player" id="lessonPlayer"></div>
+        <nav class="lesson-navigation" aria-label="Lesson navigation">
+          <button class="secondary-btn" type="button" data-select-lesson="${escapeAttr(lessons[lessonPosition - 1]?.key || "")}" ${lessonPosition <= 0 ? "disabled" : ""}>Previous lesson</button>
+          <span>Lesson ${lessonPosition + 1} of ${lessons.length}</span>
+          <button class="primary-btn" type="button" data-select-lesson="${escapeAttr(lessons[lessonPosition + 1]?.key || "")}" ${lessonPosition < 0 || lessonPosition >= lessons.length - 1 ? "disabled" : ""}>Next lesson</button>
+        </nav>
 
         <nav class="lesson-tabs reference-lesson-tabs" aria-label="Lesson tabs">
           <button class="${activeLessonTab === "overview" ? "active" : ""}" type="button" data-lesson-tab="overview">Overview</button>
@@ -2612,15 +2627,6 @@
               <span>${escapeHtml(category)}</span>
             </div>
             <p>${escapeHtml(selectedLesson?.lesson?.description || description)}</p>
-            <div class="learning-outcomes-card">
-              <span>WHAT YOU'LL LEARN</span>
-              <ul>
-                <li>Complete the active lesson in this module.</li>
-                <li>Practice with module resources and study material.</li>
-                <li>Track progress through course content and quizzes.</li>
-                <li>Ask questions when you need mentor support.</li>
-              </ul>
-            </div>
           </article>
           <article class="lesson-about-card reference-overview-card lesson-tab-panel ${activeLessonTab === "notes" ? "active" : ""}" data-lesson-panel="notes" ${activeLessonTab === "notes" ? "" : "hidden"}>
             <h3>Lesson Notes</h3>
@@ -2696,9 +2702,7 @@
             <span>${progress.percent}% Complete</span>
           </div>
           <div class="mini-progress"><span style="width:${progress.percent}%"></span></div>
-          <button class="primary-btn mark-complete-btn" type="button" data-select-lesson="${escapeAttr((selectedLesson || lessons[0])?.key || "")}">
-            Mark as Complete
-          </button>
+          <small>${modules.length} modules &middot; ${lessons.length} lessons &middot; ${quizCount} quizzes</small>
         </div>
         <div class="course-rail-scroll">
           <div class="module-list udemy-modules" id="moduleList"></div>
@@ -2709,7 +2713,7 @@
             <strong>${Math.max(lessons.length - Number(progress.completedLessons || 0), 0)} Lessons Left</strong>
             <small>${progress.percent}% complete</small>
           </div>
-          <button class="secondary-btn" type="button" aria-label="More learning actions">More</button>
+          <button class="secondary-btn" type="button" data-jump="questions">Ask mentor</button>
         </footer>
       </aside>
     `;
@@ -2839,7 +2843,7 @@
       </div>
       <div class="media-frame" data-player-direct="${directVideo ? "true" : "false"}" data-player-title="${escapeAttr(lesson.title || "Lesson")}">
         ${directVideo ? `
-          <video playsinline preload="metadata" src="${escapeAttr(playableUrl)}"></video>
+          <video controls playsinline preload="metadata" src="${escapeAttr(playableUrl)}"></video>
         ` : embedUrl ? `
           <iframe src="${escapeAttr(embedUrl)}" title="${escapeAttr(lesson.title || "Lesson video")}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         ` : documentEmbedUrl ? `
@@ -2850,30 +2854,6 @@
             <p>${escapeHtml(playableUrl ? LMS_MESSAGES.video : "Your mentor has not attached this lesson yet.")}</p>
           </div>
         `}
-        ${directVideo ? `
-          <button class="lesson-fullscreen-launch" type="button" data-lesson-fullscreen aria-label="Open lesson in full screen">Full Screen</button>
-          <div class="lesson-video-controls" aria-label="Lesson player controls">
-            <div class="lesson-control-progress" aria-hidden="true">
-              <span class="lesson-control-buffer"></span>
-              <span class="lesson-control-played" data-lesson-played></span>
-            </div>
-            <div class="lesson-control-row">
-              <div class="lesson-control-left">
-                <button class="lesson-icon-control lesson-play-toggle" type="button" data-lesson-toggle-play ${canSeek ? "" : "disabled"} aria-label="Play lesson">
-                  <span data-lesson-play-icon>Play</span>
-                </button>
-                <button class="lesson-icon-control" type="button" data-lesson-toggle-mute ${canSeek ? "" : "disabled"} aria-label="Mute lesson">Audio</button>
-                <span class="lesson-time-readout" data-lesson-time>0:00 / 0:00</span>
-              </div>
-              <div class="lesson-control-right">
-                <button class="lesson-icon-control" type="button" data-lesson-seek="-10" ${canSeek ? "" : "disabled"} aria-label="Rewind 10 seconds">-10</button>
-                <button class="lesson-icon-control" type="button" data-lesson-seek="10" ${canSeek ? "" : "disabled"} aria-label="Forward 10 seconds">+10</button>
-                ${[0.75, 1, 1.25, 1.5, 2].map((speed) => `<button class="lesson-speed-chip ${speed === 1 ? "active" : ""}" type="button" data-lesson-speed="${speed}" ${canSeek ? "" : "disabled"}>${speed}x</button>`).join("")}
-                <button class="lesson-icon-control" type="button" data-lesson-fullscreen aria-label="Open fullscreen">Full</button>
-              </div>
-            </div>
-          </div>
-        ` : ""}
       </div>
       <div class="player-description">
         <strong>Description</strong>

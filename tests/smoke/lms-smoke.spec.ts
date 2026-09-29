@@ -198,6 +198,81 @@ test("student shell uses username fallback and Courses shows all available cours
   await expect(page.locator("#referralCodeValue")).not.toHaveValue(/^JNV-(?:PENDING|ACCOUNT|0+)$/);
 });
 
+test("catalog sorting and enrollment filters work together", async ({ page }) => {
+  await mockSupabase(page, "student", { courses: [
+    { id: "course-1", title: "Python", category: "Technology", status: "active", price: 6000, created_at: "2026-01-01", modules: [] },
+    { id: "course-2", title: "Design", category: "Design", status: "active", price: 2000, created_at: "2026-09-01", modules: [], is_featured: true },
+    { id: "course-3", title: "Analytics", category: "Technology", status: "active", price: 4000, created_at: "2026-06-01", modules: [] }
+  ] });
+  await page.goto("/student.html");
+  await page.locator('[data-view="catalog"]').first().click();
+  const cards = page.locator(".discovery-course-card");
+  await expect(cards.first()).toContainText("Design");
+  await page.locator("#catalogSort").selectOption("title");
+  await expect(cards.first()).toContainText("Analytics");
+  await page.locator("#catalogSort").selectOption("price-desc");
+  await expect(cards.first()).toContainText("Python");
+  await page.locator("#catalogSort").selectOption("price-asc");
+  await expect(cards.first()).toContainText("Design");
+  await page.locator("#catalogSort").selectOption("newest");
+  await expect(cards.first()).toContainText("Design");
+  await page.locator('[data-catalog-filter-toggle]').click();
+  await page.locator('[data-catalog-filter="enrolled"]').click();
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText("Python");
+  await page.locator('[data-catalog-filter-toggle]').click();
+  await page.locator('[data-catalog-filter="available"]').click();
+  await expect(cards).toHaveCount(2);
+  await page.locator('[data-catalog-category="Technology"]').click();
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText("Analytics");
+  await page.locator('[data-catalog-reset]').click();
+  await expect(cards).toHaveCount(3);
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(page.locator("#catalogSort")).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: `test-results/catalog-${width}.png`, fullPage: true });
+  }
+});
+
+test("learning player navigates lessons and fits desktop and mobile", async ({ page }) => {
+  await mockSupabase(page, "student", { courses: [{
+    id: "course-1", title: "Design Foundations", category: "Design", status: "active",
+    modules: [{ id: "module-1", title: "Visual fundamentals", lessons: [
+      { id: "lesson-1", title: "Start with a clear visual hierarchy", description: "Explore how contrast, spacing, and scale guide attention.", video_url: "http://127.0.0.1:4173/assets/categories/20260611-1010-34.1341205.mp4" },
+      { id: "lesson-2", title: "Balance and composition", description: "Arrange elements with purpose.", video_url: "https://drive.google.com/file/d/test-video/preview" }
+    ] }]
+  }] });
+  await page.route("https://drive.google.com/**", route => route.fulfill({ contentType: "text/html", body: "<body style='background:#101827;color:white'>Embedded lesson preview</body>" }));
+  await page.goto("/student.html");
+  await page.locator('[data-view="courses"]').first().click();
+  await page.mouse.move(900, 400);
+  await page.locator('#coursesGrid [data-open-course="course-1"]').click();
+  const previous = page.getByRole("button", { name: "Previous lesson", exact: true });
+  const next = page.getByRole("button", { name: "Next lesson", exact: true });
+  await expect(previous).toBeDisabled();
+  await expect(page.locator("#lessonPlayer video")).toHaveAttribute("controls", "");
+  await page.locator("#lessonPlayer video").evaluate(async (video: HTMLVideoElement) => { video.muted = true; await video.play(); });
+  await expect.poll(() => page.locator("#lessonPlayer video").evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: `test-results/learning-${width}.png`, fullPage: true });
+  }
+  await next.click();
+  await expect(page.locator(".stitch-lesson-header h2")).toHaveText("Balance and composition");
+  await expect(page.locator("#lessonPlayer iframe")).toBeVisible();
+  await expect(next).toBeDisabled();
+  await previous.click();
+  await expect(page.locator(".stitch-lesson-header h2")).toHaveText("Start with a clear visual hierarchy");
+  await page.locator('[data-lesson-tab="notes"]').click();
+  await expect(page.locator('[data-lesson-panel="notes"]')).toBeVisible();
+  await page.locator('[data-lesson-tab="discussion"]').click();
+  await expect(page.locator('[data-lesson-panel="discussion"]')).toBeVisible();
+  await page.screenshot({ path: "test-results/learning-mobile-tabs.png", fullPage: true });
+});
+
 test("student task page fits the viewport without horizontal overflow", async ({ page }) => {
   await mockSupabase(page, "student");
   await page.setViewportSize({ width: 1440, height: 900 });

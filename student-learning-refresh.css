@@ -1,0 +1,131 @@
+/* Catalog and lesson workspace: scoped after the legacy theme layers. */
+body[data-ui-build] #catalogView,
+body[data-ui-build] #learnView { background: #f6f8fc !important; }
+body[data-ui-build] #catalogView .course-discovery-hero {
+  background: #eef5ff !important;
+  border: 0 !important;
+  border-bottom: 1px solid #dbe7f7 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 28px !important;
+  min-height: 0 !important;
+}
+body[data-ui-build] #catalogView .course-discovery-hero h2 {
+  font-size: 28px !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+  color: #152b4b !important;
+}
+body[data-ui-build] #catalogView .course-discovery-hero p { color: #52647c !important; }
+body[data-ui-build] #catalogView .course-discovery-hero > div > span { color: #2164cb !important; }
+body[data-ui-build] #catalogView .catalog-search-pill {
+  background: #fff !important; border: 1px solid #ccd8e8 !important; border-radius: 6px !important; color: #52647c !important;
+}
+body[data-ui-build] #catalogView .catalog-search-pill input { color: #152b4b !important; font-weight: 400 !important; }
+body[data-ui-build] #catalogView .catalog-search-pill input::placeholder { color: #64748b !important; opacity: 1 !important; }
+body[data-ui-build] #catalogView .catalog-search-pill::before { border-color: #64748b !important; }
+body[data-ui-build] #catalogView .catalog-search-pill::after { background: #64748b !important; }
+body[data-ui-build] #catalogView :is(p, small, select) { font-weight: 400 !important; }
+body[data-ui-build] #catalogView .catalog-hero-stat {
+  background: transparent !important; box-shadow: none !important; border: 0 !important;
+}
+body[data-ui-build] #catalogView .catalog-control-row {
+  display: flex !important; flex-wrap: wrap !important; gap: 16px !important;
+  align-items: center !important; justify-content: space-between !important; padding: 20px 0 !important;
+}
+body[data-ui-build] #catalogView .catalog-chip-row {
+  display: flex !important; flex-wrap: wrap !important; gap: 8px !important; min-width: 0 !important;
+}
+body[data-ui-build] #catalogView .catalog-actions {
+  display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important;
+}
+body[data-ui-build] #catalogView .catalog-sort-label {
+  display: flex; align-items: center; gap: 10px; color: #52647c; font-size: 13px; white-space: nowrap;
+}
+body[data-ui-build] #catalogView #catalogSort {
+  min-height: 44px; max-width: 100%; padding: 8px 30px 8px 12px;
+  border: 1px solid #ccd8e8; border-radius: 6px; background: #fff; color: #152b4b; font: inherit;
+}
+body[data-ui-build] #catalogView .catalog-actions button,
+body[data-ui-build] #catalogView .catalog-chip-row button,
+body[data-ui-build] #catalogView .catalog-filter-row button {
+  min-height: 44px !important; border-radius: 6px !important; box-shadow: none !important;
+}
+body[data-ui-build] #catalogView .catalog-chip-row button.active,
+body[data-ui-build] #catalogView .catalog-filter-row button.active {
+  background: #e6efff !important; color: #1959bf !important; border-color: #a9c6f5 !important;
+}
+body[data-ui-build] #catalogView .discovery-course-card {
+  border-radius: 8px !important; border: 1px solid #dfe5ee !important;
+  box-shadow: 0 3px 12px #172d4a08 !important; overflow: hidden;
+}
+body[data-ui-build] #learnView .learn-reference-main { padding: 24px !important; min-width: 0; }
+body[data-ui-build] #learnView .stitch-lesson-header {
+  display: flex !important; align-items: start !important; justify-content: space-between !important;
+  gap: 16px !important; margin-bottom: 18px !important;
+}
+body[data-ui-build] #learnView .stitch-lesson-header > div { min-width: 0; }
+body[data-ui-build] #learnView .stitch-lesson-header h2 {
+  font-size: 24px !important; line-height: 1.35 !important; letter-spacing: 0 !important;
+  overflow-wrap: anywhere; color: #152b4b !important;
+}
+body[data-ui-build] #learnView .learn-kicker { color: #2164cb !important; font-size: 12px !important; }
+body[data-ui-build] #learnView .stitch-lesson-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+body[data-ui-build] #learnView .reference-video-player,
+body[data-ui-build] #learnView .reference-video-player .media-frame,
+body[data-ui-build] #learnView .reference-video-player video,
+body[data-ui-build] #learnView .reference-video-player iframe {
+  border-radius: 8px !important; box-shadow: none !important;
+}
+body[data-ui-build] #learnView .reference-video-player .media-frame { max-height: none !important; }
+body[data-ui-build] #learnView .lesson-navigation {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0;
+  border-bottom: 1px solid #dfe5ee;
+}
+body[data-ui-build] #learnView .lesson-navigation span { font-size: 13px; color: #52647c; text-align: center; }
+body[data-ui-build] #learnView .primary-btn,
+body[data-ui-build] #learnView .secondary-btn { border-radius: 6px !important; min-height: 44px; box-shadow: none !important; }
+body[data-ui-build] #learnView .primary-btn { background: #2164cb !important; color: white !important; }
+body[data-ui-build] #learnView button:disabled { opacity: .45; cursor: not-allowed; }
+body[data-ui-build] #learnView .reference-course-rail { background: #fff !important; backdrop-filter: none !important; }
+body[data-ui-build] #learnView .rail-progress-card { gap: 12px; border-bottom: 1px solid #dfe5ee; }
+body[data-ui-build] #learnView .rail-progress-card small { color: #52647c; line-height: 1.6; }
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li.active {
+  background: #edf4ff !important; box-shadow: inset 3px 0 #2164cb !important;
+}
+body[data-ui-build] #learnView .module-summary-main em { display: none !important; }
+body[data-ui-build] #learnView .module-summary-main strong { font-size: 14px !important; line-height: 1.5; overflow-wrap: anywhere; }
+body[data-ui-build] #learnView .reference-overview-card,
+body[data-ui-build] #learnView .reference-resource-card,
+body[data-ui-build] #learnView .lesson-mentor-card {
+  background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+}
+body[data-ui-build] #learnView .lesson-tab-panel[data-lesson-panel="notes"] { min-height: 0 !important; padding: 20px 0 !important; }
+body[data-ui-build] #learnView .reference-lesson-tabs { margin-top: 0 !important; }
+body[data-ui-build] #learnView .reference-lesson-tabs button.active { color: #2164cb !important; border-color: #2164cb !important; }
+body[data-ui-build] #learnView :is(button, a):focus-visible,
+body[data-ui-build] #catalogView :is(button, select, input, a):focus-visible { outline: 3px solid #639df4 !important; outline-offset: 3px; }
+@media (max-width: 760px) {
+  body[data-ui-build]:not(.sidebar-open) .student-sidebar:not(.open):not(.mobile-open) { transform: translateX(-100%) !important; visibility: hidden !important; }
+  body[data-ui-build] .student-side-panel { display: none !important; }
+  body[data-ui-build] .student-main { margin-left: 0 !important; width: 100% !important; min-width: 0 !important; }
+  body[data-ui-build] #catalogView .course-discovery-hero { padding: 20px 16px !important; grid-template-columns: 1fr !important; }
+  body[data-ui-build] #catalogView .course-discovery-hero h2 { font-size: 23px !important; }
+  body[data-ui-build] #catalogView .catalog-hero-stat { display: none !important; }
+  body[data-ui-build] #catalogView .catalog-actions { width: 100%; justify-content: space-between; }
+  body[data-ui-build] #catalogView .catalog-sort-label { flex: 1; }
+  body[data-ui-build] #catalogView #catalogSort { min-width: 0; flex: 1; }
+  body[data-ui-build] #learnView .learn-reference-main { padding: 16px 12px !important; }
+  body[data-ui-build] #learnView .stitch-lesson-header { flex-wrap: wrap; }
+  body[data-ui-build] #learnView .stitch-lesson-header h2 { font-size: 20px !important; }
+  body[data-ui-build] #learnView .lesson-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  body[data-ui-build] #learnView .lesson-navigation span { grid-column: 1 / -1; grid-row: 1; }
+  body[data-ui-build] #learnView .lesson-navigation button { min-width: 0; padding: 10px !important; font-size: 13px; }
+  body[data-ui-build] #learnView .reference-course-rail .course-rail-scroll { max-height: none !important; }
+  body[data-ui-build] #learnView .reference-lesson-tabs { gap: 0 !important; justify-content: space-between; }
+  body[data-ui-build] #learnView .reference-lesson-tabs button { padding: 14px 8px !important; font-size: 13px !important; }
+}
+@media (max-width: 420px) {
+  body[data-ui-build] #learnView .reference-lesson-tabs { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto !important; max-height: none !important; overflow: visible !important; }
+  body[data-ui-build] #learnView .reference-lesson-tabs button { width: 100% !important; min-width: 0 !important; text-align: center; }
+}
