@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="student-learning-dashboard-split.css?v=20260731-file-size-v1" />
   <link rel="stylesheet" href="student-referral-final-split.css?v=20260731-file-size-v1" />
   <style>nextjs-portal{pointer-events:none!important}</style>
-  <link rel="stylesheet" href="student-dashboard-v3.css?v=20260714-alignment" />
+  <link rel="stylesheet" href="student-dashboard-v3.css?v=20261001-home-refresh-v1" />
   <link rel="stylesheet" href="student-streak-v4.css?v=20260716-streak-spacing" />
   <link rel="stylesheet" href="student-session-hero.css?v=20260714-time-sessions" />
   <link rel="stylesheet" href="student-course-cards.css?v=20260714-reference-cards" />
@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="student-tasks-reference.css?v=20260725-reference-tasks-fit-v4" />
   <link rel="stylesheet" href="student-batch-chat.css?v=20260908-batch-alert-fix-v1" />
   <link rel="stylesheet" href="student-referral-refresh.css?v=20260720-referral-ui-v2" />
-  <link rel="stylesheet" href="student-learning-player-youtube.css?v=20260802-discussion-notes-v1" />
+  <link rel="stylesheet" href="student-learning-player-youtube.css?v=20261001-player-refresh-v1" />
   <link rel="stylesheet" href="student-quiz-polish.css?v=20260924-v2" />
   <link rel="stylesheet" href="lms-ux.css?v=20260726-production-ux-v1" />
   <link rel="stylesheet" href="jenovate-design-system.css?v=20260822-final-ui-v1" />
@@ -316,6 +316,28 @@
                   <strong>Stay Positive</strong>
                   <span>You're doing great today!</span>
                 </div>
+              </div>
+              <div class="dashboard-quick-actions" aria-label="Quick student actions">
+                <button type="button" data-jump="learn">
+                  <span aria-hidden="true">▶</span>
+                  <strong>Resume</strong>
+                  <small>Open player</small>
+                </button>
+                <button type="button" data-jump="catalog">
+                  <span aria-hidden="true">⌕</span>
+                  <strong>Explore</strong>
+                  <small>Find courses</small>
+                </button>
+                <button type="button" data-jump="tasks">
+                  <span aria-hidden="true">✓</span>
+                  <strong>Tasks</strong>
+                  <small>Stay current</small>
+                </button>
+                <button type="button" data-jump="questions">
+                  <span aria-hidden="true">?</span>
+                  <strong>Ask</strong>
+                  <small>Get help</small>
+                </button>
               </div>
               <div class="dashboard-hero-actions">
                 <button class="primary-btn" type="button" data-jump="learn">Continue Learning</button>
@@ -1193,7 +1215,7 @@
   <script type="module" src="student-referral.js?v=20260821-referral-live-v3"></script>
   <script defer src="modules/dom-utils.js?v=20260728-dom-utils-v1"></script>
   <script defer src="modules/portal-utils.js?v=20260731-file-size-v1"></script>
-  <script defer src="student.js?v=20260929-purchase-v1"></script>
+  <script defer src="student.js?v=20261001-player-home-refresh-v1"></script>
   <script defer src="course-purchase.js?v=20260929-v1"></script>
 </body>
 </html>

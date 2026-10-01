@@ -2597,6 +2597,9 @@
     const activeLessonTab = ["overview", "notes", "resources", "discussion"].includes(state.lessonTab) ? state.lessonTab : "overview";
     const notesText = lessonNotesText(selectedLesson?.lesson, activeModule, course);
     const activeMaterialUrl = lessonMaterialUrl(selectedLesson?.lesson);
+    const lessonStats = selectedLesson ? lessonProgressFromState(progress.row, selectedLesson) : null, activeModuleProgress = activeModule ? moduleProgressFromState(course, modules, selectedLesson?.moduleIndex || 0, progress.row) : null, lessonsLeft = Math.max(lessons.length - Number(progress.completedLessons || 0), 0);
+    const lessonTimeLabel = lessonDurationLabel(selectedLesson?.lesson, course?.duration || "Self paced");
+    const courseMomentum = progress.percent >= 100 ? "Ready for revision" : progress.percent > 0 ? `${lessonsLeft} lesson${lessonsLeft === 1 ? "" : "s"} left` : "Start strong today";
 
     surface.innerHTML = `
       <section class="stitch-learn-main learn-reference-main">
@@ -2612,6 +2615,13 @@
           </div>
           <button class="secondary-btn" type="button" data-jump="courses">My courses</button>
         </header>
+
+        <section class="lesson-focus-strip" aria-label="Current lesson status"><div class="lesson-focus-copy">
+            <span class="lesson-focus-eyebrow">Now Playing</span><strong>${escapeHtml(selectedTitle)}</strong><small>${escapeHtml(activeModule?.title || title)}</small></div>
+          <div class="lesson-focus-metrics" aria-label="Lesson progress">
+            <span><b id="lessonProgressPercent">${lessonStats?.percent || 0}%</b><small id="lessonProgressMeta">${lessonStats?.durationSeconds ? `${formatDuration(lessonStats.watchedSeconds)} / ${formatDuration(lessonStats.durationSeconds)}` : lessonTimeLabel}</small></span>
+            <span><b>${activeModuleProgress?.percent || 0}%</b><small>Module progress</small></span>
+            <span><b>${progress.percent}%</b><small>${escapeHtml(courseMomentum)}</small></span></div></section>
 
         <div class="lesson-player stitch-video-player reference-video-player" id="lessonPlayer"></div>
         <nav class="lesson-navigation" aria-label="Lesson navigation">
@@ -2848,7 +2858,7 @@
           <span>${escapeHtml(`${moduleLabel} - ${contentLabel} ${lessonItem.lessonIndex + 1}`)}</span>
           <h3>${escapeHtml(lesson.title || "Lesson")}</h3>
         </div>
-        ${playableUrl ? `<button class="secondary-btn" type="button" data-lesson-fullscreen>Full Screen</button>` : ""}
+        <div class="player-quick-actions">${directVideo ? `<button class="lesson-icon-control lesson-play-toggle" type="button" data-lesson-toggle-play aria-label="Play lesson"><span data-lesson-play-icon>Play</span></button><button class="lesson-icon-control" type="button" data-lesson-seek="-10" aria-label="Back 10 seconds">-10</button><button class="lesson-icon-control" type="button" data-lesson-seek="10" aria-label="Forward 10 seconds">+10</button><button class="lesson-speed-chip active" type="button" data-lesson-speed="1">1x</button><button class="lesson-speed-chip" type="button" data-lesson-speed="1.25">1.25x</button><button class="lesson-icon-control" type="button" data-lesson-toggle-mute aria-label="Mute lesson">Audio</button><span class="lesson-time-readout" data-lesson-time>0:00 / 0:00</span>` : `<span class="player-format-chip">${escapeHtml(contentLabel)}</span>`}${playableUrl ? `<button class="secondary-btn player-fullscreen-btn" type="button" data-lesson-fullscreen>Full Screen</button>` : ""}</div>
       </div>
       <div class="media-frame" data-player-direct="${directVideo ? "true" : "false"}" data-player-title="${escapeAttr(lesson.title || "Lesson")}">
         ${directVideo ? `

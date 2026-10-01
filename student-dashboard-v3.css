@@ -524,6 +524,166 @@ body[data-ui-build] #dashboardView .dashboard-widget-card {
   border-radius: 18px !important;
 }
 
+/* Dashboard refresh: make the home screen feel like a usable student workspace. */
+body[data-ui-build] #dashboardView .dashboard-hero-card {
+  border-color: #d7e7fb !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(236, 247, 255, .92)),
+    #f7fbff !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(90deg, rgba(29, 123, 240, .12), transparent 34%),
+    linear-gradient(145deg, transparent 58%, rgba(20, 184, 166, .12)) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-card::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 42px !important;
+  right: 42px !important;
+  bottom: 0 !important;
+  z-index: 1 !important;
+  height: 4px !important;
+  border-radius: 999px 999px 0 0 !important;
+  background: linear-gradient(90deg, #1d7bf0, #16b7b3, #f6b73c) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy {
+  z-index: 3 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
+  max-width: 690px !important;
+  color: #10213f !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-hero-copy > p {
+  max-width: 620px !important;
+  color: #536681 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-insight-panel {
+  max-width: 720px !important;
+  border: 1px solid rgba(215, 231, 251, .95) !important;
+  background: rgba(255, 255, 255, .78) !important;
+  box-shadow: 0 16px 34px rgba(33, 100, 203, .08) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: min(720px, 100%) !important;
+  margin: 18px 0 0 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  gap: 2px 10px !important;
+  min-height: 70px !important;
+  padding: 12px !important;
+  border: 1px solid #d9e7f8 !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, .9) !important;
+  color: #10213f !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  box-shadow: 0 12px 24px rgba(33, 100, 203, .08) !important;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button:hover {
+  transform: translateY(-2px) !important;
+  border-color: #9fc7f8 !important;
+  box-shadow: 0 16px 30px rgba(33, 100, 203, .13) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button > span {
+  grid-row: 1 / span 2 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+  background: #eaf4ff !important;
+  color: #1d6fe8 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button:nth-child(2) > span {
+  background: #eef7f7 !important;
+  color: #0f8a9d !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button:nth-child(3) > span {
+  background: #fff7e8 !important;
+  color: #b46908 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions button:nth-child(4) > span {
+  background: #eef2ff !important;
+  color: #4757db !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions strong {
+  min-width: 0 !important;
+  color: #10213f !important;
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-quick-actions small {
+  min-width: 0 !important;
+  color: #60728e !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-session-visual {
+  filter: drop-shadow(0 20px 35px rgba(29, 111, 232, .12)) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-main,
+body[data-ui-build] #dashboardView .dashboard-widget-card,
+body[data-ui-build] #dashboardView .streak-widget-bar {
+  border-color: #dce8f8 !important;
+  box-shadow: 0 18px 42px rgba(36, 64, 108, .08) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-section-title h2,
+body[data-ui-build] #dashboardView .dashboard-widget-card h2 {
+  color: #10213f !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course:hover {
+  transform: translateY(-3px) !important;
+  border-color: #b9d7fb !important;
+  box-shadow: 0 18px 36px rgba(33, 100, 203, .12) !important;
+}
+
+body[data-ui-build] #dashboardView .dashboard-reference-course-status.in-progress,
+body[data-ui-build] #dashboardView .dashboard-reference-course-status.ready {
+  background: #eaf4ff !important;
+  color: #1d6fe8 !important;
+}
+
 @media (max-width: 1240px) {
   body[data-ui-build] #dashboardView .dashboard-reference-shell {
     grid-template-columns: minmax(0, 1fr) 360px !important;
@@ -600,27 +760,72 @@ body[data-ui-build] #dashboardView .dashboard-widget-card {
   body[data-ui-build] #dashboardView .streak-progress-box {
     grid-template-columns: 42px minmax(0, 1fr) auto !important;
   }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
 }
 
 @media (max-width: 600px) {
   body[data-ui-build] #dashboardView .dashboard-hero-card {
-    height: 490px !important;
-    min-height: 490px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding-bottom: 210px !important;
+    border-radius: 22px !important;
   }
 
   body[data-ui-build] #dashboardView .dashboard-hero-card .dashboard-hero-copy {
-    top: 26px !important;
-    left: 22px !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
     width: calc(100% - 44px) !important;
+    margin: 24px 22px 0 !important;
   }
 
   body[data-ui-build] #dashboardView .dashboard-hero-copy h2 {
     margin-top: 16px !important;
-    font-size: 2.15rem !important;
+    font-size: 1.85rem !important;
   }
 
   body[data-ui-build] #dashboardView .dashboard-hero-copy > p {
     font-size: .9rem !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-insight-panel {
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+    gap: 11px !important;
+    padding: 13px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-vibe-copy {
+    display: none !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions {
+    width: 100% !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions button {
+    grid-template-columns: 32px minmax(0, 1fr) !important;
+    min-height: 62px !important;
+    padding: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions button > span {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions strong {
+    font-size: 13px !important;
+  }
+
+  body[data-ui-build] #dashboardView .dashboard-quick-actions small {
+    font-size: 10px !important;
   }
 
   body[data-ui-build] #dashboardView .dashboard-goal-panel {
@@ -634,11 +839,13 @@ body[data-ui-build] #dashboardView .dashboard-widget-card {
   }
 
   body[data-ui-build] #dashboardView .dashboard-session-visual {
-    right: 0 !important;
-    bottom: -75px !important;
-    width: 280px !important;
-    min-width: 280px !important;
-    transform: scale(.68) !important;
+    right: -26px !important;
+    bottom: -72px !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    height: 260px !important;
+    transform: none !important;
+    opacity: .92 !important;
   }
 
   body[data-ui-build] #dashboardView .streak-widget-bar {

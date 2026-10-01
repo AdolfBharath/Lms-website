@@ -453,3 +453,278 @@ body[data-ui-build] #learnView .reference-course-rail .course-rail-footer {
     overflow-x: auto !important;
   }
 }
+
+/* Fresh learning player polish: active lesson context, compact controls, calmer rail. */
+body[data-ui-build] #learnView .stitch-lesson-header {
+  align-items: end !important;
+  padding: 6px 0 2px !important;
+}
+
+body[data-ui-build] #learnView .stitch-lesson-header h2 {
+  max-width: 980px !important;
+  font-size: clamp(24px, 2.2vw, 36px) !important;
+  font-weight: 900 !important;
+  color: #10213f !important;
+}
+
+body[data-ui-build] #learnView .stitch-lesson-meta span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  border: 1px solid #dce8fa !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: #4b5f7a !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-strip {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 0 0 18px !important;
+  padding: 16px !important;
+  border: 1px solid #dbe8fa !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(239, 247, 255, .92)),
+    #fff !important;
+  box-shadow: 0 16px 40px rgba(33, 100, 203, .08) !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-copy,
+body[data-ui-build] #learnView .lesson-focus-metrics span {
+  min-width: 0 !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-copy {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-eyebrow {
+  color: #0f8a9d !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-copy strong {
+  color: #10213f !important;
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-copy small {
+  color: #60728e !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(112px, auto)) !important;
+  gap: 10px !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-metrics span {
+  display: grid !important;
+  gap: 3px !important;
+  padding: 12px 14px !important;
+  border: 1px solid #dbe8fa !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-metrics b {
+  color: #1d6fe8 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+body[data-ui-build] #learnView .lesson-focus-metrics small {
+  color: #60728e !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player {
+  overflow: hidden !important;
+  border-color: rgba(16, 33, 63, .16) !important;
+  background:
+    linear-gradient(180deg, #111b2e 0%, #05060a 72%) !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .player-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 16px !important;
+  color: #fff !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .player-header span {
+  color: rgba(255, 255, 255, .68) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
+}
+
+body[data-ui-build] #learnView .reference-video-player .player-header h3 {
+  margin: 4px 0 0 !important;
+  color: #fff !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+  line-height: 1.25 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-ui-build] #learnView .player-quick-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+body[data-ui-build] #learnView .player-quick-actions .lesson-icon-control,
+body[data-ui-build] #learnView .player-quick-actions .lesson-speed-chip,
+body[data-ui-build] #learnView .player-quick-actions .lesson-time-readout,
+body[data-ui-build] #learnView .player-format-chip {
+  background: rgba(255, 255, 255, .12) !important;
+  border: 1px solid rgba(255, 255, 255, .14) !important;
+}
+
+body[data-ui-build] #learnView .player-quick-actions .lesson-time-readout {
+  color: #fff !important;
+}
+
+body[data-ui-build] #learnView .player-quick-actions .lesson-icon-control span {
+  color: #fff !important;
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body[data-ui-build] #learnView .player-fullscreen-btn {
+  min-height: 38px !important;
+  border-color: rgba(255, 255, 255, .18) !important;
+  background: #ffffff !important;
+  color: #10213f !important;
+}
+
+body[data-ui-build] #learnView .player-format-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+body[data-ui-build] #learnView .player-description {
+  display: grid !important;
+  gap: 6px !important;
+  padding: 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, .08) !important;
+  color: rgba(255, 255, 255, .72) !important;
+}
+
+body[data-ui-build] #learnView .player-description strong {
+  color: #fff !important;
+}
+
+body[data-ui-build] #learnView .player-description p {
+  margin: 0 !important;
+  color: rgba(255, 255, 255, .72) !important;
+  line-height: 1.6 !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail {
+  border-left-color: #dbe8fa !important;
+  background: rgba(248, 252, 255, .94) !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .rail-progress-card,
+body[data-ui-build] #learnView .reference-course-rail .course-rail-footer {
+  background: rgba(255, 255, 255, .96) !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .module-card {
+  border-bottom: 1px solid #e3edf9 !important;
+  background: transparent !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .module-card.active summary {
+  background: #eef6ff !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li {
+  transition: background 160ms ease, transform 160ms ease !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li:hover {
+  background: #f5f9ff !important;
+}
+
+body[data-ui-build] #learnView .reference-course-rail .lesson-list li.active {
+  background: #e9f4ff !important;
+  box-shadow: inset 4px 0 #1d7bf0 !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-ui-build] #learnView .lesson-focus-strip {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-focus-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-ui-build] #learnView .stitch-lesson-header {
+    align-items: start !important;
+  }
+
+  body[data-ui-build] #learnView .stitch-lesson-header h2 {
+    font-size: 22px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-focus-strip {
+    padding: 13px !important;
+    border-radius: 14px !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-focus-metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-ui-build] #learnView .lesson-focus-metrics span {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    align-items: center !important;
+  }
+
+  body[data-ui-build] #learnView .reference-video-player .player-header {
+    grid-template-columns: 1fr !important;
+    padding: 13px !important;
+  }
+
+  body[data-ui-build] #learnView .player-quick-actions {
+    justify-content: flex-start !important;
+  }
+
+  body[data-ui-build] #learnView .player-quick-actions .lesson-time-readout {
+    order: 8 !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
